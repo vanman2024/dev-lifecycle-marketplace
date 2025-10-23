@@ -1,0 +1,30 @@
+{
+  "name": "project-automation",
+  "version": "1.0.0",
+  "description": "End-to-end project automation from specification to production. Works with any framework.",
+  "author": {
+    "name": "Project Automation Team",
+    "email": "noreply@projectautomation.dev"
+  },
+  "homepage": "https://github.com/project-automation/marketplace",
+  "repository": "https://github.com/project-automation/marketplace",
+  "license": "MIT",
+  "plugins": [
+    {
+      "name": "core",
+      "path": "./plugins/core",
+      "description": "Foundation - project detection, shared state, initialization",
+      "version": "1.0.0",
+      "category": "foundation"
+    }
+  ],
+  "keywords": [
+    "automation",
+    "project-management",
+    "framework-agnostic",
+    "code-generation",
+    "deployment",
+    "testing",
+    "planning"
+  ]
+}
