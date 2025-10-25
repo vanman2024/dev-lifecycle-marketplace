@@ -1,0 +1,89 @@
+name: Automated Testing with Playwright MCP
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Run tests every 6 hours
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+    inputs:
+      test_type:
+        description: 'Type of test to run'
+        required: true
+        default: 'full'
+        type: choice
+        options:
+          - full
+          - smoke
+          - api-only
+          - ui-only
+
+jobs:
+  playwright-mcp-tests:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        test-scenario: [login, api, forms, performance]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          npm install
+          npx playwright install
+
+      - name: Start MCP Server
+        run: |
+          # Start your MCP server in background
+          npx @executeautomation/playwright-mcp-server &
+          sleep 5
+
+      - name: Run Playwright MCP Tests
+        env:
+          TEST_SCENARIO: ${{ matrix.test-scenario }}
+          PLAYWRIGHT_MCP_URL: http://localhost:3000
+        run: |
+          # This is where the MAGIC happens - calling your MCP functions
+          node test-automation.js ${{ github.event.inputs.test_type || 'full' }}
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-results-${{ matrix.test-scenario }}
+          path: |
+            test-results/
+            screenshots/
+
+      - name: Comment PR with Results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '🤖 Playwright MCP tests completed! Check the workflow for details.'
+            })
+
+  notify-on-failure:
+    needs: playwright-mcp-tests
+    runs-on: ubuntu-latest
+    if: failure()
+
+    steps:
+      - name: Send Slack notification
+        # Add your notification logic here
+        run: echo "Tests failed - implement your notification system"

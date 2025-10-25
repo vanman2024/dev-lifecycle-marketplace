@@ -3,6 +3,35 @@
 ## Goal
 Consolidate 28 scattered plugins → 6 lifecycle-ordered plugins that work together systematically.
 
+**Pattern:** Each plugin follows orchestrator + granular commands + skills structure.
+
+**Related Documentation:** See `LIFECYCLE-PLUGIN-GUIDE.md` in multiagent-build-system for HOW to build these plugins.
+
+---
+
+## Plugin Architecture Pattern
+
+Every lifecycle plugin follows this structure:
+
+### 1. Orchestrator Command
+- **Purpose:** Single entry point that chains granular commands
+- **Example:** `/develop` (chains /feature, /component, /api, /mcp-build based on what's being built)
+- **Pattern:** Detects context → runs appropriate command chain
+
+### 2. Granular Commands
+- **Purpose:** Focused, standalone tasks that can run independently or be chained
+- **Example:** `/feature`, `/component`, `/api`, `/mcp-build`
+- **Pattern:** Each command does ONE thing well
+
+### 3. Skills
+- **Purpose:** Auto-invoked resources (templates, scripts, patterns) that Claude loads based on description matching
+- **Example:** MCP Development skill auto-loads when building MCP servers
+- **Pattern:** Provide supporting resources, not duplicate command functionality
+
+### 4. Infrastructure
+- **MCP Servers:** Marketplace-wide services (like memory-api)
+- **Shared Resources:** Cross-plugin utilities
+
 ---
 
 ## Current State: 28 Plugins in multiagent-marketplace
@@ -41,41 +70,34 @@ Consolidate 28 scattered plugins → 6 lifecycle-ordered plugins that work toget
 ## New Structure: 6 Lifecycle Plugins
 
 ### 1. **core** (Foundation & Setup)
-**Purpose:** Initialize projects, detect stack, set up version control, manage memory, configure MCP environment
+**Purpose:** Initialize projects, detect stack, set up version control, configure MCP environment
 
 **Consolidates:**
 - multiagent-core → detection, initialization
 - multiagent-git → git setup and workflows
 - multiagent-github → GitHub integration
 - multiagent-version → versioning strategy
-- multiagent-memory → memory/knowledge management
 - multiagent-mcp → MCP environment setup/configuration ONLY (not building)
 
-**Commands:**
+**Orchestrator Command:**
+- `/core` - Initialize complete project foundation (chains init → detect → git-setup → mcp-setup based on project state)
+
+**Granular Commands:**
 - `/init` - Initialize project (detect OR bootstrap)
-- `/detect` - Analyze existing project
+- `/detect` - Analyze existing project structure
 - `/git-setup` - Configure git workflows
 - `/version` - Manage semantic versioning
-- `/mcp-setup` - Configure MCP API keys ✅ KEEP (setup/config only)
-- `/mcp-manage` - Manage MCP server configs ✅ KEEP (add/remove servers)
-- `/mcp-info` - List available MCP servers ✅ KEEP
-- `/mcp-clear` - Clear MCP server configs ✅ KEEP
-- `/memory-search` - Search project memory ✅ KEEP
-- `/memory-store` - Store knowledge ✅ KEEP
-
-**Agents:**
-- project-detector (detect framework/stack)
-- git-configurator (setup .gitignore, hooks, workflows)
+- `/mcp-setup` - Configure MCP API keys (setup/config only)
+- `/mcp-manage` - Manage MCP server configs (add/remove servers)
+- `/mcp-info` - List available MCP servers
+- `/mcp-clear` - Clear MCP server configs
 
 **Skills:**
-- Project state management
-- Git workflow automation
-- Memory management (SQLite/Chroma) ✅ KEEP
+- Project detection (framework/stack analysis)
+- Git workflow patterns
+- MCP configuration templates
 
-**MCP Servers:**
-- memory-api (from multiagent-memory) ✅ KEEP
-
-**Estimated Size:** 10 commands, 2 agents, 3 skills ⚠️ Larger but foundational
+**Estimated Size:** 1 orchestrator + 8 granular commands, 3 skills
 
 ---
 
@@ -87,9 +109,11 @@ Consolidate 28 scattered plugins → 6 lifecycle-ordered plugins that work toget
 - multiagent-notes → note-taking and organization
 - multiagent-idea → idea capture and refinement
 - multiagent-cto → technical decision-making
-- multiagent-supervisor → oversight and coordination
 
-**Commands:**
+**Orchestrator Command:**
+- `/planning` - Full planning workflow (chains spec → architecture → plan → roadmap)
+
+**Granular Commands:**
 - `/spec` - Create specifications (works with spec-kit)
 - `/plan` - Generate development plans
 - `/architecture` - Design system architecture
@@ -97,17 +121,12 @@ Consolidate 28 scattered plugins → 6 lifecycle-ordered plugins that work toget
 - `/notes` - Capture technical notes
 - `/decide` - Make technical decisions (CTO-level)
 
-**Agents:**
-- spec-creator (generates specs from conversation)
-- architecture-designer (creates system diagrams)
-- technical-advisor (CTO-level decisions)
-
 **Skills:**
-- Spec management
+- Spec management patterns
 - Architecture pattern library
-- Decision tracking
+- Decision tracking templates
 
-**Estimated Size:** 6 commands, 3 agents, 3 skills ⚠️ Larger but necessary
+**Estimated Size:** 1 orchestrator + 6 granular commands, 3 skills
 
 ---
 
@@ -121,28 +140,25 @@ Consolidate 28 scattered plugins → 6 lifecycle-ordered plugins that work toget
 - multiagent-ai-infrastructure → AI/LLM integration
 - multiagent-mcp → MCP server BUILDING commands + skill (not setup/config)
 
-**Commands:**
+**Orchestrator Command:**
+- `/develop` - Build any feature/component/API/MCP server (detects what's being built → chains appropriate commands)
+
+**Granular Commands:**
 - `/feature` - Add new feature (reads specs)
 - `/component` - Generate UI component
 - `/api` - Create API endpoint
 - `/scaffold` - Scaffold entire module
 - `/ai-integration` - Add AI capabilities
-- `/mcp-build` - Build complete FastMCP server ✅ (references .claude/commands/mcp/build-complete-fastmcp-server.md)
-- `/mcp-test` - Test MCP servers ✅ (references .claude/commands/mcp/mcp-comprehensive-testing.md)
-
-**Agents:**
-- feature-builder (implements features from specs)
-- frontend-generator (creates components for detected framework)
-- backend-generator (creates APIs for detected stack)
-- ai-integrator (adds LLM capabilities)
+- `/mcp-build` - Build complete FastMCP server (references .claude/commands/mcp/build-complete-fastmcp-server.md)
+- `/mcp-test` - Test MCP servers (references .claude/commands/mcp/mcp-comprehensive-testing.md)
 
 **Skills:**
-- Code generation for 20+ frameworks
+- Code generation patterns (20+ frameworks)
 - Component library templates
 - API pattern library
-- **MCP Development** ✅ - FastMCP templates, patterns, testing (from multiagent-mcp)
+- **MCP Development** - FastMCP templates, patterns, testing (from multiagent-mcp)
 
-**Estimated Size:** 7 commands, 4 agents, 4 skills ⚠️ Larger but comprehensive
+**Estimated Size:** 1 orchestrator + 7 granular commands, 4 skills
 
 **Note:** MCP building is development work, just like building APIs or components. Setup/config stays in core.
 
@@ -152,32 +168,33 @@ Consolidate 28 scattered plugins → 6 lifecycle-ordered plugins that work toget
 **Purpose:** Modify, refactor, enhance, sync during active development
 
 **Consolidates:**
-- multiagent-iterate → /adjust, /sync, /tasks + **task-layering agent**
+- multiagent-iterate → /adjust, /sync, /tasks + task-layering agent
 - multiagent-supervisor → /start, /mid, /end (worktree management)
 - multiagent-refactoring → code refactoring
 - multiagent-enhancement → feature enhancements
 
-**Commands:**
-- `/tasks` - Task layering (invokes task-layering agent) ✅ KEEP
-- `/start` - Setup worktrees for parallel work ✅ KEEP
-- `/mid` - Check progress during development ✅ KEEP
-- `/end` - Validate completion ✅ KEEP
-- `/adjust` - Modify features mid-development ✅ KEEP
-- `/sync` - Sync changes across agents ✅ KEEP
+**Orchestrator Command:**
+- `/iterate` - Full iteration workflow (chains tasks → start → [development] → mid → end)
+
+**Granular Commands:**
+- `/tasks` - Task layering (invokes task-layering agent)
+- `/start` - Setup worktrees for parallel work
+- `/mid` - Check progress during development
+- `/end` - Validate completion
+- `/adjust` - Modify features mid-development
+- `/sync` - Sync changes across agents
 - `/refactor` - Refactor code
 - `/enhance` - Enhance existing features
 
-**Agents:**
-- task-layering (reads spec tasks.md → creates layered-tasks.md) ✅ CRITICAL - KEEP
-- refactoring-assistant (suggests and applies refactors)
-
 **Skills:**
-- Iteration tracking ✅ KEEP
-- Worktree management scripts ✅ KEEP
-- Task layering scripts ✅ KEEP
+- Iteration tracking patterns
+- Worktree management scripts (from multiagent-supervisor)
+- Task layering scripts (from multiagent-iterate)
 - Code refactoring patterns
 
-**Estimated Size:** 8 commands, 2 agents, 4 skills ⚠️ Larger but necessary
+**Estimated Size:** 1 orchestrator + 8 granular commands, 4 skills
+
+**Critical:** Task-layering agent (reads spec tasks.md → creates layered-tasks.md) must be preserved
 
 ---
 
@@ -191,7 +208,10 @@ Consolidate 28 scattered plugins → 6 lifecycle-ordered plugins that work toget
 - multiagent-performance → performance optimization
 - multiagent-compliance → compliance checks
 
-**Commands:**
+**Orchestrator Command:**
+- `/quality` - Full quality check (chains test → security → performance → validate → compliance)
+
+**Granular Commands:**
 - `/test` - Run tests (detects framework's test tools)
 - `/test-generate` - Generate tests from specs
 - `/security` - Security audit
@@ -199,17 +219,12 @@ Consolidate 28 scattered plugins → 6 lifecycle-ordered plugins that work toget
 - `/validate` - Validate against specs
 - `/compliance` - Check compliance (GDPR, accessibility, etc.)
 
-**Agents:**
-- test-generator (creates tests from acceptance criteria)
-- security-auditor (scans for vulnerabilities)
-- performance-optimizer (identifies bottlenecks)
-
 **Skills:**
 - Test framework integration (Jest, Pytest, Go test, etc.)
-- Security scanning
-- Performance monitoring
+- Security scanning patterns
+- Performance monitoring tools
 
-**Estimated Size:** 6 commands, 3 agents, 3 skills ⚠️ Larger but necessary
+**Estimated Size:** 1 orchestrator + 6 granular commands, 3 skills
 
 ---
 
@@ -220,22 +235,66 @@ Consolidate 28 scattered plugins → 6 lifecycle-ordered plugins that work toget
 - multiagent-deployment → deployment workflows (ALREADY GOOD!)
 - multiagent-observability → monitoring and logging
 
-**Commands:**
-- `/deploy` - Deploy to production ✅
-- `/deploy-prepare` - Prepare deployment ✅
-- `/deploy-validate` - Validate deployment ✅
+**Orchestrator Command:**
+- `/deploy` - Full deployment workflow (chains prepare → validate → deploy → monitor)
+
+**Granular Commands:**
+- `/deploy-prepare` - Prepare deployment
+- `/deploy-validate` - Validate deployment readiness
+- `/deploy-run` - Execute deployment
 - `/monitor` - Set up monitoring
 - `/logs` - View/analyze logs
 
-**Agents:**
-- deployment-orchestrator (handles deployment) ✅
-- observability-setup (configures monitoring)
-
 **Skills:**
-- Platform detection (Vercel, AWS, Railway, etc.) ✅
+- Platform detection (Vercel, AWS, Railway, etc.)
 - Monitoring integration (Sentry, DataDog, etc.)
 
-**Estimated Size:** 5 commands, 2 agents, 2 skills ✅ Reasonable
+**Estimated Size:** 1 orchestrator + 5 granular commands, 2 skills
+
+---
+
+## Marketplace Infrastructure
+
+### MCP Servers (Marketplace-Wide)
+
+These services are available to ALL plugins via MCP protocol:
+
+#### memory-api
+**Source:** multiagent-memory plugin → converted to standalone MCP server
+**Purpose:** Persistent memory and knowledge management across all plugins
+**Technology:** FastMCP + SQLite (metadata) + ChromaDB (vector search)
+**Location:** Bundle with marketplace OR deploy as standalone service
+
+**Capabilities:**
+- Store conversation memories
+- Search project knowledge
+- Cross-plugin context sharing
+- Agent knowledge persistence
+
+**Why MCP Server (not plugin):**
+- All plugins need memory access
+- Reduces duplication (no /memory-search, /memory-store in each plugin)
+- Centralized knowledge graph
+- Protocol-level integration
+
+**Configuration:**
+```json
+// marketplace.json or ~/.claude.json
+{
+  "mcpServers": {
+    "memory-api": {
+      "type": "stdio",
+      "command": "python",
+      "args": ["-m", "memory_api.server"]
+    }
+  }
+}
+```
+
+**Usage in Plugins:**
+- Plugins use via MCP protocol calls
+- No need for memory-specific commands in each plugin
+- Automatic context enrichment during workflows
 
 ---
 
@@ -263,21 +322,24 @@ Consolidate 28 scattered plugins → 6 lifecycle-ordered plugins that work toget
 
 ## Size Analysis:
 
-**Reasonable size (4-6 commands):**
-- ✅ core (4 commands)
-- ✅ iterate (6 commands)
-- ✅ deploy (5 commands)
+**Every plugin follows the same pattern:**
+- 1 orchestrator command (entry point)
+- 5-8 granular commands (focused, chainable tasks)
+- 2-4 skills (auto-invoked resources)
 
-**Larger but necessary (6+ commands):**
-- ⚠️ planning (6 commands) - architectural decisions are complex
-- ⚠️ develop (6 commands) - consider splitting AI out
-- ⚠️ quality (6 commands) - testing/security are broad domains
+**Actual sizes:**
+- ✅ core: 1 orchestrator + 8 granular = manageable
+- ✅ planning: 1 orchestrator + 6 granular = good
+- ✅ develop: 1 orchestrator + 7 granular = good
+- ✅ iterate: 1 orchestrator + 8 granular = manageable
+- ✅ quality: 1 orchestrator + 6 granular = good
+- ✅ deploy: 1 orchestrator + 5 granular = perfect
 
-**Recommendation:**
-- Start with 6 plugins as planned
-- If `develop` gets unwieldy, split into:
-  - `develop` (general features)
-  - `ai` (AI/LLM-specific infrastructure)
+**Why this works:**
+- Users can call orchestrator OR granular commands
+- Orchestrator chains granular commands based on context
+- Skills auto-load to provide supporting resources
+- Each command has clear, focused purpose
 
 ---
 
@@ -301,12 +363,19 @@ Consolidate 28 scattered plugins → 6 lifecycle-ordered plugins that work toget
 
 ## Success Criteria:
 
-Each plugin should:
-- ✅ Have clear lifecycle purpose
+Each plugin must:
+- ✅ Have 1 orchestrator command (entry point)
+- ✅ Have 5-8 granular commands (focused, chainable)
+- ✅ Have 2-4 skills (auto-invoked resources with scripts)
 - ✅ Read from `.claude/project.json` for framework detection
 - ✅ Work with spec-kit OR standalone
-- ✅ Use subagents for multi-step work
-- ✅ Chain with other lifecycle plugins
-- ✅ Be buildable via `/build-lifecycle-plugin`
+- ✅ Chain commands (orchestrator chains granular commands)
+- ✅ Be buildable via `/lifecycle` command
+- ✅ Follow patterns documented in LIFECYCLE-PLUGIN-GUIDE.md
+
+**Infrastructure:**
+- ✅ memory-api MCP server available marketplace-wide
+- ✅ All plugins can use memory via MCP protocol
+- ✅ No /memory-* commands in individual plugins
 
 **No more consolidation after this. We build, test, use.**
