@@ -1,30 +1,42 @@
 {
-  "name": "ai-dev-marketplace",
+  "name": "dev-lifecycle-marketplace",
   "owner": {
-    "name": "Project Automation Team",
-    "email": "noreply@ai-dev-marketplace.dev"
+    "name": "Development Lifecycle Team",
+    "email": "noreply@dev-lifecycle-marketplace.dev"
   },
   "metadata": {
-    "description": "building ai applications and websites.",
+    "description": "Tech-agnostic development workflow automation - from init to deploy",
     "version": "1.0.0"
   },
   "plugins": [
     {
       "name": "01-core",
       "source": "./plugins/01-core",
-      "description": "Foundation - project detection, shared state, initialization, MCP registry",
+      "description": "Foundation & Setup: Initialize projects, detect stack, version control, MCP config",
       "version": "1.0.0"
     },
     {
       "name": "02-develop",
       "source": "./plugins/02-develop",
-      "description": "Development - code generation, features, MCP building",
+      "description": "Code Generation & Implementation: Build features, scaffold code, framework-agnostic",
       "version": "1.0.0"
     },
     {
-      "name": "agent-sdk-dev",
-      "source": "./plugins/agent-sdk-dev",
-      "description": "Claude Agent SDK development - build applications using the official Agent SDK",
+      "name": "03-planning",
+      "source": "./plugins/03-planning",
+      "description": "Spec → Architecture: Create specs, plans, architecture, documentation",
+      "version": "1.0.0"
+    },
+    {
+      "name": "04-iterate",
+      "source": "./plugins/04-iterate",
+      "description": "Refinement & Adjustment: Modify, refactor, enhance during active development",
+      "version": "1.0.0"
+    },
+    {
+      "name": "05-quality",
+      "source": "./plugins/05-quality",
+      "description": "Testing & Validation: Framework-aware testing, security, performance, compliance",
       "version": "1.0.0"
     }
   ]
