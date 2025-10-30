@@ -1,0 +1,144 @@
+#!/usr/bin/env bash
+#
+# PATH Configuration for {{PROJECT_NAME}}
+#
+# Add this to your shell configuration file:
+# - Bash: ~/.bashrc or ~/.bash_profile
+# - Zsh: ~/.zshrc
+# - Fish: ~/.config/fish/config.fish
+#
+
+# System paths (should come first for security)
+export PATH="/usr/local/bin:$PATH"
+export PATH="/usr/bin:$PATH"
+export PATH="/bin:$PATH"
+
+{{#INCLUDE_SYSTEM_SBIN}}
+# System administration binaries
+export PATH="/usr/local/sbin:$PATH"
+export PATH="/usr/sbin:$PATH"
+export PATH="/sbin:$PATH"
+{{/INCLUDE_SYSTEM_SBIN}}
+
+# User-local binaries
+export PATH="$HOME/.local/bin:$PATH"
+
+{{#USES_NODE}}
+# Node.js and npm global packages
+export PATH="$HOME/.npm-global/bin:$PATH"
+
+# nvm (Node Version Manager)
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+{{/USES_NODE}}
+
+{{#USES_YARN}}
+# Yarn global binaries
+export PATH="$HOME/.yarn/bin:$PATH"
+export PATH="$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+{{/USES_YARN}}
+
+{{#USES_PNPM}}
+# pnpm global binaries
+export PNPM_HOME="$HOME/.local/share/pnpm"
+export PATH="$PNPM_HOME:$PATH"
+{{/USES_PNPM}}
+
+{{#USES_PYTHON}}
+# Python user binaries
+export PATH="$HOME/.local/bin:$PATH"
+
+# pyenv (Python Version Manager)
+export PYENV_ROOT="$HOME/.pyenv"
+if [ -d "$PYENV_ROOT" ]; then
+  export PATH="$PYENV_ROOT/bin:$PATH"
+  eval "$(pyenv init -)"
+  # pyenv-virtualenv
+  if command -v pyenv-virtualenv-init > /dev/null; then
+    eval "$(pyenv virtualenv-init -)"
+  fi
+fi
+{{/USES_PYTHON}}
+
+{{#USES_GO}}
+# Go language
+export GOPATH="$HOME/go"
+export PATH="$GOPATH/bin:$PATH"
+export PATH="/usr/local/go/bin:$PATH"
+{{/USES_GO}}
+
+{{#USES_RUST}}
+# Rust and Cargo
+export PATH="$HOME/.cargo/bin:$PATH"
+
+# rustup initialization
+if [ -f "$HOME/.cargo/env" ]; then
+  . "$HOME/.cargo/env"
+fi
+{{/USES_RUST}}
+
+{{#USES_RUBY}}
+# Ruby and rbenv
+export PATH="$HOME/.rbenv/bin:$PATH"
+if command -v rbenv > /dev/null; then
+  eval "$(rbenv init -)"
+fi
+
+# Ruby gems
+export PATH="$HOME/.gem/ruby/{{RUBY_VERSION}}/bin:$PATH"
+{{/USES_RUBY}}
+
+{{#USES_JAVA}}
+# Java and jenv
+export PATH="$HOME/.jenv/bin:$PATH"
+if command -v jenv > /dev/null; then
+  eval "$(jenv init -)"
+fi
+{{/USES_JAVA}}
+
+{{#USES_PHP}}
+# PHP and Composer
+export PATH="$HOME/.composer/vendor/bin:$PATH"
+export PATH="$HOME/.config/composer/vendor/bin:$PATH"
+
+# phpbrew
+if [ -f "$HOME/.phpbrew/bashrc" ]; then
+  source "$HOME/.phpbrew/bashrc"
+fi
+{{/USES_PHP}}
+
+{{#CUSTOM_PATHS}}
+# Custom project paths
+{{#PATHS}}
+export PATH="{{PATH}}:$PATH"
+{{/PATHS}}
+{{/CUSTOM_PATHS}}
+
+# Remove duplicate PATH entries (preserving order)
+if [ -n "$PATH" ]; then
+  old_PATH=$PATH:; PATH=
+  while [ -n "$old_PATH" ]; do
+    x=${old_PATH%%:*}
+    case $PATH: in
+      *:"$x":*) ;;
+      *) PATH=$PATH:$x;;
+    esac
+    old_PATH=${old_PATH#*:}
+  done
+  PATH=${PATH#:}
+  export PATH
+fi
+
+{{#ADDITIONAL_ENV_VARS}}
+# Additional environment variables
+{{#VARS}}
+export {{VAR_NAME}}="{{VAR_VALUE}}"
+{{/VARS}}
+{{/ADDITIONAL_ENV_VARS}}
+
+# Verification (uncomment to debug)
+# echo "PATH configured for {{PROJECT_NAME}}"
+# echo "Node: $(command -v node 2>/dev/null || echo 'not found')"
+# echo "Python: $(command -v python3 2>/dev/null || echo 'not found')"
+# echo "Go: $(command -v go 2>/dev/null || echo 'not found')"

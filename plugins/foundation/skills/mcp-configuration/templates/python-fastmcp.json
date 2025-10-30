@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "my-python-server": {
+      "type": "stdio",
+      "command": "python3",
+      "args": ["-m", "fastmcp", "run", "server_name"],
+      "env": {
+        "PYTHONPATH": "${PYTHONPATH}",
+        "API_KEY": "${API_KEY}",
+        "DEBUG": "false"
+      },
+      "workingDirectory": "/path/to/your/project"
+    }
+  }
+}

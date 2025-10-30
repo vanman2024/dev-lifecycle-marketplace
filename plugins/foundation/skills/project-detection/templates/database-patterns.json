@@ -1,0 +1,217 @@
+{
+  "database_systems": {
+    "PostgreSQL": {
+      "package_names_js": ["pg", "postgres"],
+      "package_names_python": ["psycopg2", "psycopg2-binary", "asyncpg"],
+      "package_names_go": ["github.com/lib/pq", "github.com/jackc/pgx"],
+      "env_vars": ["DATABASE_URL", "POSTGRES_URL", "PG_CONNECTION_STRING"],
+      "default_port": 5432,
+      "confidence": "high"
+    },
+    "MySQL": {
+      "package_names_js": ["mysql", "mysql2"],
+      "package_names_python": ["pymysql", "mysqlclient", "mysql-connector-python"],
+      "package_names_go": ["github.com/go-sql-driver/mysql"],
+      "env_vars": ["MYSQL_URL", "DATABASE_URL"],
+      "default_port": 3306,
+      "confidence": "high"
+    },
+    "MongoDB": {
+      "package_names_js": ["mongodb"],
+      "package_names_python": ["pymongo", "motor"],
+      "package_names_go": ["go.mongodb.org/mongo-driver"],
+      "env_vars": ["MONGODB_URI", "MONGO_URL"],
+      "default_port": 27017,
+      "confidence": "high"
+    },
+    "Redis": {
+      "package_names_js": ["redis", "ioredis"],
+      "package_names_python": ["redis", "redis-py"],
+      "package_names_go": ["github.com/redis/go-redis", "github.com/gomodule/redigo"],
+      "env_vars": ["REDIS_URL", "REDIS_HOST"],
+      "default_port": 6379,
+      "confidence": "high"
+    },
+    "SQLite": {
+      "file_patterns": ["*.db", "*.sqlite", "*.sqlite3"],
+      "package_names_js": ["better-sqlite3", "sqlite3"],
+      "package_names_python": ["sqlite3"],
+      "confidence": "high"
+    },
+    "MariaDB": {
+      "package_names_js": ["mariadb"],
+      "env_vars": ["MARIADB_URL"],
+      "default_port": 3306,
+      "confidence": "medium"
+    },
+    "CockroachDB": {
+      "package_names_js": ["pg"],
+      "env_vars": ["COCKROACH_URL"],
+      "confidence": "medium"
+    },
+    "Cassandra": {
+      "package_names_python": ["cassandra-driver"],
+      "package_names_js": ["cassandra-driver"],
+      "confidence": "high"
+    },
+    "DynamoDB": {
+      "package_names_js": ["@aws-sdk/client-dynamodb"],
+      "package_names_python": ["boto3"],
+      "env_vars": ["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY"],
+      "confidence": "medium"
+    }
+  },
+  "database_services": {
+    "Supabase": {
+      "package_names_js": ["@supabase/supabase-js"],
+      "package_names_python": ["supabase"],
+      "config_files": ["supabase/config.toml"],
+      "env_vars": ["SUPABASE_URL", "SUPABASE_KEY", "SUPABASE_ANON_KEY"],
+      "directory_structure": ["supabase/migrations/"],
+      "confidence": "high"
+    },
+    "PlanetScale": {
+      "package_names_js": ["@planetscale/database"],
+      "env_vars": ["DATABASE_URL"],
+      "confidence": "medium"
+    },
+    "Neon": {
+      "env_vars": ["DATABASE_URL"],
+      "confidence": "low"
+    },
+    "Railway": {
+      "env_vars": ["DATABASE_URL"],
+      "confidence": "low"
+    },
+    "MongoDB Atlas": {
+      "env_vars": ["MONGODB_URI"],
+      "confidence": "low"
+    },
+    "Firebase": {
+      "package_names_js": ["firebase", "firebase-admin"],
+      "package_names_python": ["firebase-admin"],
+      "config_files": ["firebase.json"],
+      "confidence": "high"
+    }
+  },
+  "orms": {
+    "Prisma": {
+      "package_names_js": ["@prisma/client", "prisma"],
+      "config_files": ["prisma/schema.prisma"],
+      "directory_structure": ["prisma/migrations/"],
+      "cli_commands": ["prisma"],
+      "confidence": "high"
+    },
+    "TypeORM": {
+      "package_names_js": ["typeorm"],
+      "config_files": ["ormconfig.json", "ormconfig.js", "ormconfig.ts"],
+      "directory_structure": ["src/entity/", "src/migration/"],
+      "confidence": "high"
+    },
+    "Sequelize": {
+      "package_names_js": ["sequelize"],
+      "config_files": [".sequelizerc", "config/config.json"],
+      "directory_structure": ["models/", "migrations/", "seeders/"],
+      "confidence": "high"
+    },
+    "Drizzle ORM": {
+      "package_names_js": ["drizzle-orm", "drizzle-kit"],
+      "config_files": ["drizzle.config.ts", "drizzle.config.js"],
+      "directory_structure": ["drizzle/"],
+      "confidence": "high"
+    },
+    "Mongoose": {
+      "package_names_js": ["mongoose"],
+      "file_patterns": ["**/models/*.js", "**/schemas/*.js"],
+      "confidence": "high"
+    },
+    "SQLAlchemy": {
+      "package_names_python": ["sqlalchemy"],
+      "imports": ["from sqlalchemy import", "import sqlalchemy"],
+      "file_patterns": ["**/models.py"],
+      "confidence": "high"
+    },
+    "Django ORM": {
+      "config_files": ["manage.py"],
+      "directory_structure": ["**/migrations/"],
+      "file_patterns": ["**/models.py"],
+      "confidence": "high"
+    },
+    "Tortoise ORM": {
+      "package_names_python": ["tortoise-orm"],
+      "imports": ["from tortoise import"],
+      "confidence": "high"
+    },
+    "GORM": {
+      "package_names_go": ["gorm.io/gorm"],
+      "confidence": "high"
+    },
+    "Diesel": {
+      "package_names_rust": ["diesel"],
+      "config_files": ["diesel.toml"],
+      "directory_structure": ["migrations/"],
+      "confidence": "high"
+    },
+    "SeaORM": {
+      "package_names_rust": ["sea-orm"],
+      "confidence": "high"
+    },
+    "ActiveRecord": {
+      "package_names_ruby": ["activerecord"],
+      "directory_structure": ["db/migrate/"],
+      "confidence": "high"
+    },
+    "Eloquent": {
+      "package_names_php": ["laravel/framework"],
+      "directory_structure": ["database/migrations/"],
+      "confidence": "high"
+    }
+  },
+  "query_builders": {
+    "Knex.js": {
+      "package_names_js": ["knex"],
+      "config_files": ["knexfile.js"],
+      "confidence": "high"
+    },
+    "Kysely": {
+      "package_names_js": ["kysely"],
+      "confidence": "high"
+    }
+  },
+  "migration_tools": {
+    "Alembic": {
+      "package_names_python": ["alembic"],
+      "config_files": ["alembic.ini"],
+      "directory_structure": ["alembic/versions/"],
+      "confidence": "high"
+    },
+    "Flyway": {
+      "config_files": ["flyway.conf"],
+      "directory_structure": ["db/migration/"],
+      "confidence": "high"
+    },
+    "Liquibase": {
+      "config_files": ["liquibase.properties"],
+      "file_patterns": ["**/changelog.xml"],
+      "confidence": "high"
+    }
+  },
+  "connection_poolers": {
+    "PgBouncer": {
+      "config_files": ["pgbouncer.ini"],
+      "confidence": "medium"
+    },
+    "Pgpool": {
+      "config_files": ["pgpool.conf"],
+      "confidence": "medium"
+    }
+  },
+  "database_detection_strategies": {
+    "direct_client": "Direct database client libraries",
+    "orm": "ORM framework detection",
+    "env_vars": "Environment variable patterns",
+    "config_files": "Database configuration files",
+    "migration_dirs": "Migration directory structures",
+    "connection_strings": "Connection string patterns in code"
+  }
+}

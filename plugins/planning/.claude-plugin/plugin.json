@@ -1,0 +1,29 @@
+{
+  "name": "planning",
+  "version": "1.0.0",
+  "description": "Specification and architecture documentation for dev-lifecycle-marketplace",
+  "author": "dev-lifecycle-marketplace team",
+  "type": "custom",
+  "category": "planning",
+  "tags": ["specs", "architecture", "adr", "documentation", "lifecycle"],
+  "commands": [
+    "spec",
+    "architecture",
+    "decide",
+    "notes",
+    "roadmap"
+  ],
+  "agents": [
+    "spec-writer",
+    "architecture-designer",
+    "decision-documenter",
+    "roadmap-planner"
+  ],
+  "skills": [
+    "spec-management",
+    "architecture-patterns",
+    "decision-tracking"
+  ],
+  "dependencies": [],
+  "mcp_servers": []
+}

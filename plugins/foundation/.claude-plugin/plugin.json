@@ -1,0 +1,25 @@
+{
+  "name": "foundation",
+  "version": "1.0.0",
+  "description": "MCP ecosystem management and minimal environment setup for dev-lifecycle-marketplace",
+  "author": "dev-lifecycle-marketplace team",
+  "type": "custom",
+  "category": "infrastructure",
+  "tags": ["mcp", "environment", "detection", "lifecycle"],
+  "commands": [
+    "mcp-manage",
+    "detect",
+    "env-check",
+    "env-vars"
+  ],
+  "agents": [
+    "stack-detector"
+  ],
+  "skills": [
+    "mcp-configuration",
+    "project-detection",
+    "environment-setup"
+  ],
+  "dependencies": [],
+  "mcp_servers": []
+}

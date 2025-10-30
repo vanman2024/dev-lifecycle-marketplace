@@ -1,0 +1,397 @@
+# Installation Guide - {{PROJECT_NAME}}
+
+This guide provides step-by-step instructions for setting up your development environment.
+
+**Last Updated**: {{LAST_UPDATED}}
+
+---
+
+## Prerequisites
+
+Before starting, ensure you have:
+- [ ] An account with necessary permissions
+- [ ] Internet connection for downloading tools
+- [ ] Terminal/command line access
+- [ ] Text editor or IDE
+
+## Quick Start
+
+If you have all tools installed, run:
+
+```bash
+# Clone the repository
+git clone {{REPO_URL}}
+cd {{PROJECT_NAME}}
+
+# Check environment
+bash .claude/plugins/foundation/skills/environment-setup/scripts/check-environment.sh
+
+# Install dependencies
+{{INSTALL_COMMAND}}
+
+# Start development
+{{START_COMMAND}}
+```
+
+---
+
+## Detailed Installation
+
+### Step 1: Install Operating System Tools
+
+{{#OS_LINUX}}
+#### Linux (Ubuntu/Debian)
+
+```bash
+# Update package list
+sudo apt update && sudo apt upgrade -y
+
+# Install essential build tools
+sudo apt install -y build-essential curl git
+
+# Install additional dependencies
+sudo apt install -y {{LINUX_PACKAGES}}
+```
+{{/OS_LINUX}}
+
+{{#OS_MACOS}}
+#### macOS
+
+```bash
+# Install Homebrew (if not already installed)
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Install essential tools
+brew install git curl
+
+# Install additional dependencies
+brew install {{MACOS_PACKAGES}}
+```
+{{/OS_MACOS}}
+
+{{#OS_WINDOWS}}
+#### Windows (WSL 2)
+
+```powershell
+# Install WSL 2 (PowerShell as Administrator)
+wsl --install -d Ubuntu
+
+# Restart your computer
+
+# Open Ubuntu terminal and follow Linux instructions above
+```
+{{/OS_WINDOWS}}
+
+### Step 2: Install Version Managers
+
+{{#USES_NODE}}
+#### Node.js - nvm (Recommended)
+
+```bash
+# Install nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+
+# Reload shell configuration
+source ~/.bashrc  # or ~/.zshrc
+
+# Install Node.js
+nvm install {{NODE_VERSION}}
+nvm use {{NODE_VERSION}}
+nvm alias default {{NODE_VERSION}}
+
+# Verify installation
+node --version
+npm --version
+```
+
+**Alternative**: Direct installation from https://nodejs.org/
+{{/USES_NODE}}
+
+{{#USES_PYTHON}}
+#### Python - pyenv (Recommended)
+
+```bash
+# Install pyenv dependencies (Ubuntu/Debian)
+sudo apt install -y make build-essential libssl-dev zlib1g-dev \
+  libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm \
+  libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev
+
+# Install pyenv
+curl https://pyenv.run | bash
+
+# Add to shell configuration (~/.bashrc or ~/.zshrc)
+echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
+echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
+echo 'eval "$(pyenv init -)"' >> ~/.bashrc
+
+# Reload shell
+source ~/.bashrc
+
+# Install Python
+pyenv install {{PYTHON_VERSION}}
+pyenv global {{PYTHON_VERSION}}
+
+# Verify installation
+python --version
+pip --version
+```
+
+**Alternative**: Direct installation from https://www.python.org/downloads/
+{{/USES_PYTHON}}
+
+{{#USES_GO}}
+#### Go
+
+```bash
+# Download and install Go
+wget https://go.dev/dl/go{{GO_VERSION}}.linux-amd64.tar.gz
+sudo rm -rf /usr/local/go
+sudo tar -C /usr/local -xzf go{{GO_VERSION}}.linux-amd64.tar.gz
+
+# Add to PATH (~/.bashrc or ~/.zshrc)
+echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.bashrc
+echo 'export GOPATH=$HOME/go' >> ~/.bashrc
+echo 'export PATH=$PATH:$GOPATH/bin' >> ~/.bashrc
+
+# Reload shell
+source ~/.bashrc
+
+# Verify installation
+go version
+```
+{{/USES_GO}}
+
+{{#USES_RUST}}
+#### Rust - rustup
+
+```bash
+# Install Rust via rustup
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+# Choose default installation (option 1)
+
+# Reload shell
+source $HOME/.cargo/env
+
+# Verify installation
+rustc --version
+cargo --version
+```
+{{/USES_RUST}}
+
+{{#USES_RUBY}}
+#### Ruby - rbenv (Recommended)
+
+```bash
+# Install rbenv
+git clone https://github.com/rbenv/rbenv.git ~/.rbenv
+echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
+echo 'eval "$(rbenv init -)"' >> ~/.bashrc
+
+# Install ruby-build
+git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
+
+# Reload shell
+source ~/.bashrc
+
+# Install Ruby
+rbenv install {{RUBY_VERSION}}
+rbenv global {{RUBY_VERSION}}
+
+# Verify installation
+ruby --version
+gem --version
+```
+{{/USES_RUBY}}
+
+### Step 3: Install Package Managers
+
+{{#USES_YARN}}
+#### Yarn
+
+```bash
+# Via npm
+npm install -g yarn
+
+# Verify installation
+yarn --version
+```
+{{/USES_YARN}}
+
+{{#USES_PNPM}}
+#### pnpm
+
+```bash
+# Via npm
+npm install -g pnpm
+
+# Or via standalone script
+curl -fsSL https://get.pnpm.io/install.sh | sh -
+
+# Verify installation
+pnpm --version
+```
+{{/USES_PNPM}}
+
+{{#USES_DOCKER}}
+### Step 4: Install Docker
+
+#### Linux
+
+```bash
+# Install Docker
+curl -fsSL https://get.docker.com | sh
+
+# Add user to docker group (avoid sudo)
+sudo usermod -aG docker $USER
+
+# Log out and back in for group changes
+
+# Start Docker service
+sudo systemctl start docker
+sudo systemctl enable docker
+
+# Verify installation
+docker --version
+docker-compose --version
+```
+
+#### macOS
+
+Download and install Docker Desktop from https://www.docker.com/products/docker-desktop
+
+#### Windows
+
+Install Docker Desktop for Windows from https://www.docker.com/products/docker-desktop
+{{/USES_DOCKER}}
+
+### Step 5: Configure Environment
+
+```bash
+# Navigate to project directory
+cd {{PROJECT_NAME}}
+
+# Copy environment template
+cp .env.example .env
+
+# Edit .env with your configuration
+{{EDITOR}} .env
+
+# Validate environment configuration
+bash .claude/plugins/foundation/skills/environment-setup/scripts/check-env-vars.sh
+```
+
+### Step 6: Install Project Dependencies
+
+```bash
+# Install dependencies
+{{INSTALL_COMMAND}}
+
+# Run setup scripts (if any)
+{{SETUP_COMMAND}}
+```
+
+### Step 7: Verify Installation
+
+```bash
+# Run comprehensive environment check
+bash .claude/plugins/foundation/skills/environment-setup/scripts/check-environment.sh --verbose
+
+# Check tool versions
+bash .claude/plugins/foundation/skills/environment-setup/scripts/validate-versions.sh
+
+# Check PATH configuration
+bash .claude/plugins/foundation/skills/environment-setup/scripts/validate-path.sh
+```
+
+---
+
+## Troubleshooting
+
+### Common Issues
+
+#### "command not found" errors
+
+**Cause**: Tool not in PATH
+
+**Solution**:
+```bash
+# Check PATH
+bash .claude/plugins/foundation/skills/environment-setup/scripts/validate-path.sh --verbose
+
+# Add to PATH in shell config
+echo 'export PATH="/path/to/tool:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+#### Version mismatch errors
+
+**Cause**: Installed version doesn't meet requirements
+
+**Solution**:
+```bash
+# Check version requirements
+bash .claude/plugins/foundation/skills/environment-setup/scripts/validate-versions.sh
+
+# Install correct version using version manager
+nvm install {{NODE_VERSION}}  # for Node.js
+pyenv install {{PYTHON_VERSION}}  # for Python
+```
+
+#### Permission denied errors
+
+**Cause**: Missing permissions or need sudo
+
+**Solution**:
+```bash
+# For Docker
+sudo usermod -aG docker $USER
+# Log out and back in
+
+# For npm global packages
+mkdir ~/.npm-global
+npm config set prefix '~/.npm-global'
+echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.bashrc
+source ~/.bashrc
+```
+
+#### Environment variables not set
+
+**Cause**: .env file missing or not loaded
+
+**Solution**:
+```bash
+# Copy template
+cp .env.example .env
+
+# Edit values
+nano .env
+
+# Verify
+bash .claude/plugins/foundation/skills/environment-setup/scripts/check-env-vars.sh
+```
+
+---
+
+## Next Steps
+
+After installation:
+
+1. [ ] Read the project README
+2. [ ] Review contributing guidelines
+3. [ ] Set up your IDE/editor
+4. [ ] Run tests to verify setup
+5. [ ] Start development!
+
+---
+
+## Getting Help
+
+- **Documentation**: See project docs in `/docs`
+- **Issues**: Check existing issues on GitHub
+- **Environment Validation**: Run check scripts in this skill
+- **Team**: Contact {{MAINTAINER_CONTACT}}
+
+---
+
+*Generated by Environment Setup Skill*

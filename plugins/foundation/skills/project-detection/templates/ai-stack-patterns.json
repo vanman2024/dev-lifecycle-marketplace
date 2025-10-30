@@ -1,0 +1,186 @@
+{
+  "ai_sdk_patterns": {
+    "Vercel AI SDK": {
+      "package_names": ["ai", "@ai-sdk/anthropic", "@ai-sdk/openai", "@ai-sdk/google"],
+      "config_files": [],
+      "imports": ["from 'ai'", "from '@ai-sdk"],
+      "usage_patterns": ["streamText", "generateText", "streamObject", "generateObject"],
+      "confidence": "high"
+    },
+    "Claude Agent SDK": {
+      "package_names": ["@anthropic-ai/agent-sdk", "claude-agent-sdk"],
+      "config_files": [".claude/config.json"],
+      "imports": ["from '@anthropic-ai/agent-sdk'"],
+      "confidence": "high"
+    },
+    "Anthropic SDK": {
+      "package_names_js": ["@anthropic-ai/sdk"],
+      "package_names_python": ["anthropic"],
+      "imports": ["from '@anthropic-ai/sdk'", "import anthropic"],
+      "env_vars": ["ANTHROPIC_API_KEY"],
+      "confidence": "high"
+    },
+    "OpenAI SDK": {
+      "package_names_js": ["openai"],
+      "package_names_python": ["openai"],
+      "imports": ["from 'openai'", "import openai"],
+      "env_vars": ["OPENAI_API_KEY"],
+      "confidence": "high"
+    },
+    "LangChain": {
+      "package_names_js": ["langchain", "@langchain/core", "@langchain/openai", "@langchain/anthropic"],
+      "package_names_python": ["langchain", "langchain-core", "langchain-openai", "langchain-anthropic"],
+      "imports": ["from langchain", "from '@langchain"],
+      "confidence": "high"
+    },
+    "LlamaIndex": {
+      "package_names_python": ["llama-index", "llama-index-core"],
+      "imports": ["from llama_index", "import llama_index"],
+      "confidence": "high"
+    },
+    "Mem0": {
+      "package_names_python": ["mem0", "mem0ai"],
+      "config_files": ["mem0-config.yaml", ".mem0/config.yaml"],
+      "imports": ["from mem0 import", "import mem0"],
+      "confidence": "high"
+    }
+  },
+  "vector_databases": {
+    "Pinecone": {
+      "package_names_js": ["@pinecone-database/pinecone"],
+      "package_names_python": ["pinecone-client"],
+      "env_vars": ["PINECONE_API_KEY", "PINECONE_ENVIRONMENT"],
+      "confidence": "high"
+    },
+    "Weaviate": {
+      "package_names_python": ["weaviate-client"],
+      "package_names_js": ["weaviate-ts-client"],
+      "config_files": ["weaviate-config.yaml"],
+      "confidence": "high"
+    },
+    "ChromaDB": {
+      "package_names_python": ["chromadb"],
+      "package_names_js": ["chromadb"],
+      "confidence": "high"
+    },
+    "Qdrant": {
+      "package_names_python": ["qdrant-client"],
+      "package_names_js": ["@qdrant/js-client-rest"],
+      "confidence": "high"
+    },
+    "pgvector": {
+      "package_names_js": ["pgvector"],
+      "postgres_extension": true,
+      "sql_files": ["*.sql"],
+      "confidence": "medium"
+    },
+    "Milvus": {
+      "package_names_python": ["pymilvus"],
+      "confidence": "high"
+    },
+    "FAISS": {
+      "package_names_python": ["faiss-cpu", "faiss-gpu"],
+      "confidence": "high"
+    }
+  },
+  "ml_frameworks": {
+    "TensorFlow": {
+      "package_names_python": ["tensorflow", "tensorflow-gpu"],
+      "imports": ["import tensorflow", "from tensorflow"],
+      "file_patterns": ["*.h5", "*.pb"],
+      "confidence": "high"
+    },
+    "PyTorch": {
+      "package_names_python": ["torch", "torchvision", "torchaudio"],
+      "imports": ["import torch", "from torch"],
+      "file_patterns": ["*.pt", "*.pth"],
+      "confidence": "high"
+    },
+    "Transformers": {
+      "package_names_python": ["transformers"],
+      "imports": ["from transformers import"],
+      "confidence": "high"
+    },
+    "scikit-learn": {
+      "package_names_python": ["scikit-learn"],
+      "imports": ["from sklearn import", "import sklearn"],
+      "confidence": "high"
+    },
+    "JAX": {
+      "package_names_python": ["jax", "jaxlib"],
+      "imports": ["import jax"],
+      "confidence": "high"
+    }
+  },
+  "embeddings_providers": {
+    "OpenAI Embeddings": {
+      "detection": "openai SDK + env vars",
+      "env_vars": ["OPENAI_API_KEY"],
+      "models": ["text-embedding-ada-002", "text-embedding-3-small", "text-embedding-3-large"]
+    },
+    "Cohere Embeddings": {
+      "package_names_python": ["cohere"],
+      "env_vars": ["COHERE_API_KEY"],
+      "confidence": "high"
+    },
+    "Anthropic Embeddings": {
+      "detection": "anthropic SDK",
+      "env_vars": ["ANTHROPIC_API_KEY"]
+    },
+    "Voyage AI": {
+      "package_names_python": ["voyageai"],
+      "env_vars": ["VOYAGE_API_KEY"],
+      "confidence": "high"
+    }
+  },
+  "agent_frameworks": {
+    "AutoGPT": {
+      "directory_structure": ["autogpt/"],
+      "config_files": ["ai_settings.yaml"],
+      "confidence": "medium"
+    },
+    "BabyAGI": {
+      "file_patterns": ["babyagi.py"],
+      "confidence": "low"
+    },
+    "CrewAI": {
+      "package_names_python": ["crewai"],
+      "imports": ["from crewai import"],
+      "confidence": "high"
+    }
+  },
+  "rag_tools": {
+    "detection_indicators": {
+      "chunking_libraries": ["langchain", "llama-index", "semantic-text-splitter"],
+      "embedding_generation": ["openai", "cohere", "sentence-transformers"],
+      "vector_storage": ["pinecone", "weaviate", "chromadb", "qdrant"],
+      "retrieval_patterns": ["similarity_search", "semantic_search", "vector_search"]
+    }
+  },
+  "model_providers": {
+    "OpenAI": {
+      "env_vars": ["OPENAI_API_KEY", "OPENAI_ORG_ID"],
+      "models": ["gpt-4", "gpt-4-turbo", "gpt-3.5-turbo"]
+    },
+    "Anthropic": {
+      "env_vars": ["ANTHROPIC_API_KEY"],
+      "models": ["claude-3-opus", "claude-3-sonnet", "claude-3-haiku"]
+    },
+    "Google": {
+      "env_vars": ["GOOGLE_API_KEY", "GOOGLE_APPLICATION_CREDENTIALS"],
+      "models": ["gemini-pro", "gemini-pro-vision"]
+    },
+    "Mistral": {
+      "env_vars": ["MISTRAL_API_KEY"],
+      "models": ["mistral-small", "mistral-medium", "mistral-large"]
+    },
+    "Groq": {
+      "env_vars": ["GROQ_API_KEY"],
+      "models": ["llama2-70b", "mixtral-8x7b"]
+    },
+    "Together": {
+      "env_vars": ["TOGETHER_API_KEY"],
+      "confidence": "medium"
+    }
+  }
+}

@@ -1,0 +1,106 @@
+# Fly.io deployment configuration
+# Docs: https://fly.io/docs/reference/configuration/
+
+app = "my-app"
+primary_region = "iad"
+
+[build]
+  # Build strategy: dockerfile (default) or buildpacks
+  # dockerfile = "Dockerfile"
+  # buildpacks = ["nodejs"]
+
+[env]
+  NODE_ENV = "production"
+  PORT = "8080"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 1
+
+  # HTTP service checks
+  [[http_service.checks]]
+    grace_period = "10s"
+    interval = "30s"
+    method = "GET"
+    timeout = "5s"
+    path = "/health"
+
+# Compute resources
+[vm]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 256
+
+# Scaling configuration
+[scaling]
+  min_count = 1
+  max_count = 3
+
+# Health checks
+[[services]]
+  internal_port = 8080
+  protocol = "tcp"
+
+  [[services.ports]]
+    handlers = ["http"]
+    port = 80
+    force_https = true
+
+  [[services.ports]]
+    handlers = ["tls", "http"]
+    port = 443
+
+  [[services.tcp_checks]]
+    grace_period = "10s"
+    interval = "30s"
+    restart_limit = 0
+    timeout = "5s"
+
+  [[services.http_checks]]
+    interval = "30s"
+    grace_period = "10s"
+    method = "GET"
+    path = "/health"
+    protocol = "http"
+    timeout = "5s"
+    tls_skip_verify = false
+
+# Persistent storage (optional)
+# [[mounts]]
+#   source = "data"
+#   destination = "/data"
+
+# Secrets (set via: flyctl secrets set KEY=value)
+# DATABASE_URL
+# API_KEY
+# SESSION_SECRET
+
+# Multiple regions (optional)
+# [[regions]]
+#   name = "iad"  # US East
+#   primary = true
+#
+# [[regions]]
+#   name = "lax"  # US West
+
+# Metrics
+[metrics]
+  port = 9091
+  path = "/metrics"
+
+# Processes (for multi-process apps)
+# [processes]
+#   web = "node server.js"
+#   worker = "node worker.js"
+
+# Deploy configuration
+[deploy]
+  release_command = "npm run migrate"
+  strategy = "rolling"
+
+# Experimental features
+[experimental]
+  auto_rollback = true

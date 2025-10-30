@@ -1,0 +1,94 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "version": 2,
+  "name": "{{PROJECT_NAME}}",
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  },
+  "buildCommand": "{{BUILD_COMMAND}}",
+  "devCommand": "{{DEV_COMMAND}}",
+  "installCommand": "{{INSTALL_COMMAND}}",
+  "outputDirectory": "{{OUTPUT_DIRECTORY}}",
+  "framework": "{{FRAMEWORK}}",
+  "regions": ["iad1"],
+  "public": true,
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [],
+  "rewrites": [],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ]
+    }
+  ],
+  "functions": {
+    "api/*.ts": {
+      "runtime": "nodejs20.x",
+      "memory": 1024,
+      "maxDuration": 10
+    }
+  },
+  "crons": [],
+  "github": {
+    "enabled": true,
+    "autoAlias": true,
+    "silent": false,
+    "autoJobCancelation": true
+  },
+  "framework_presets": {
+    "nextjs": {
+      "framework": "nextjs",
+      "buildCommand": "next build",
+      "devCommand": "next dev",
+      "installCommand": "npm install",
+      "outputDirectory": ".next"
+    },
+    "astro": {
+      "framework": "astro",
+      "buildCommand": "astro build",
+      "devCommand": "astro dev",
+      "installCommand": "npm install",
+      "outputDirectory": "dist"
+    },
+    "react-vite": {
+      "framework": null,
+      "buildCommand": "vite build",
+      "devCommand": "vite",
+      "installCommand": "npm install",
+      "outputDirectory": "dist"
+    },
+    "vue": {
+      "framework": "vue",
+      "buildCommand": "npm run build",
+      "devCommand": "npm run dev",
+      "installCommand": "npm install",
+      "outputDirectory": "dist"
+    }
+  }
+}

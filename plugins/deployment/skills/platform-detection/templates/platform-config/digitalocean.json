@@ -1,0 +1,94 @@
+{
+  "$schema": "https://docs.digitalocean.com/products/app-platform/reference/app-spec/",
+  "name": "{{PROJECT_NAME}}",
+  "region": "nyc",
+  "services": [
+    {
+      "name": "{{SERVICE_NAME}}",
+      "environment_slug": "{{ENVIRONMENT_SLUG}}",
+      "github": {
+        "repo": "{{GITHUB_REPO}}",
+        "branch": "main",
+        "deploy_on_push": true
+      },
+      "build_command": "{{BUILD_COMMAND}}",
+      "run_command": "{{RUN_COMMAND}}",
+      "http_port": 8080,
+      "instance_count": 1,
+      "instance_size_slug": "basic-xxs",
+      "routes": [
+        {
+          "path": "/"
+        }
+      ],
+      "envs": [
+        {
+          "key": "NODE_ENV",
+          "value": "production",
+          "scope": "RUN_AND_BUILD_TIME",
+          "type": "GENERAL"
+        },
+        {
+          "key": "PORT",
+          "value": "8080",
+          "scope": "RUN_TIME",
+          "type": "GENERAL"
+        }
+      ],
+      "health_check": {
+        "http_path": "/health",
+        "initial_delay_seconds": 30,
+        "period_seconds": 10,
+        "timeout_seconds": 5,
+        "success_threshold": 1,
+        "failure_threshold": 3
+      }
+    }
+  ],
+  "databases": [],
+  "workers": [],
+  "jobs": [],
+  "static_sites": [],
+  "ingress": {
+    "rules": [
+      {
+        "component": {
+          "name": "{{SERVICE_NAME}}"
+        },
+        "match": {
+          "path": {
+            "prefix": "/"
+          }
+        }
+      }
+    ]
+  },
+  "alerts": [
+    {
+      "rule": "DEPLOYMENT_FAILED"
+    },
+    {
+      "rule": "DOMAIN_FAILED"
+    }
+  ],
+  "features": [
+    "buildpack-stack=ubuntu-22"
+  ],
+  "domains": [],
+  "examples": {
+    "nodejs": {
+      "environment_slug": "node-js",
+      "build_command": "npm install && npm run build",
+      "run_command": "npm start"
+    },
+    "python": {
+      "environment_slug": "python",
+      "build_command": "pip install -r requirements.txt",
+      "run_command": "gunicorn --bind :8080 app:app"
+    },
+    "docker": {
+      "dockerfile_path": "Dockerfile",
+      "source_dir": "/"
+    }
+  }
+}

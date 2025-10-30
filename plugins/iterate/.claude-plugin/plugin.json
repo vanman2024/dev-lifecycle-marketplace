@@ -1,0 +1,21 @@
+{
+  "name": "iterate",
+  "version": "1.0.0",
+  "description": "Task breakdown, layering, and iteration workflow management with parallel multi-agent execution",
+  "commands": [
+    "tasks",
+    "adjust",
+    "sync"
+  ],
+  "agents": [
+    "task-layering",
+    "implementation-adjuster",
+    "code-refactorer",
+    "feature-enhancer"
+  ],
+  "skills": [
+    "task-stratification",
+    "iteration-tracking",
+    "code-refinement"
+  ]
+}

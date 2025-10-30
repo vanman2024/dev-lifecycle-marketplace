@@ -1,0 +1,92 @@
+{
+  "$schema": "https://fastmcp.com/schemas/cloud-config.json",
+  "name": "{{PROJECT_NAME}}",
+  "description": "{{PROJECT_DESCRIPTION}}",
+  "version": "1.0.0",
+  "server": {
+    "type": "mcp",
+    "protocol_version": "1.0",
+    "runtime": "{{RUNTIME}}",
+    "entry_point": "{{ENTRY_POINT}}",
+    "config": {
+      "typescript": {
+        "runtime": "node",
+        "node_version": "20",
+        "entry_point": "dist/index.js",
+        "build_command": "npm run build",
+        "install_command": "npm install"
+      },
+      "python": {
+        "runtime": "python",
+        "python_version": "3.11",
+        "entry_point": "src/server.py",
+        "install_command": "pip install -r requirements.txt"
+      }
+    }
+  },
+  "environment": {
+    "variables": {
+      "NODE_ENV": "production",
+      "LOG_LEVEL": "info"
+    },
+    "secrets": [
+      "API_KEY",
+      "DATABASE_URL",
+      "ANTHROPIC_API_KEY"
+    ]
+  },
+  "resources": {
+    "memory": "512MB",
+    "cpu": "0.5",
+    "max_instances": 10,
+    "min_instances": 1
+  },
+  "scaling": {
+    "auto_scale": true,
+    "scale_up_threshold": 80,
+    "scale_down_threshold": 20,
+    "cooldown_period": 300
+  },
+  "health_check": {
+    "enabled": true,
+    "endpoint": "/health",
+    "interval": 30,
+    "timeout": 5,
+    "unhealthy_threshold": 3
+  },
+  "monitoring": {
+    "enabled": true,
+    "metrics": [
+      "requests_per_second",
+      "error_rate",
+      "response_time",
+      "active_connections"
+    ],
+    "alerts": {
+      "error_rate_threshold": 5,
+      "response_time_threshold": 1000
+    }
+  },
+  "deployment": {
+    "strategy": "rolling",
+    "max_surge": 1,
+    "max_unavailable": 0,
+    "rollback_on_error": true
+  },
+  "networking": {
+    "public": true,
+    "domains": [],
+    "cors": {
+      "enabled": true,
+      "origins": ["*"],
+      "methods": ["GET", "POST", "OPTIONS"],
+      "headers": ["Content-Type", "Authorization"]
+    }
+  },
+  "logging": {
+    "enabled": true,
+    "level": "info",
+    "retention_days": 30,
+    "format": "json"
+  }
+}

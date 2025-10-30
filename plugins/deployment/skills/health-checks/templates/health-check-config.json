@@ -1,0 +1,96 @@
+{
+  "healthChecks": {
+    "version": "1.0.0",
+    "description": "Health check configuration for deployment validation",
+    "endpoints": [
+      {
+        "name": "frontend",
+        "type": "http",
+        "url": "https://example.com",
+        "enabled": true,
+        "expectedStatus": 200,
+        "maxResponseTime": 3000,
+        "contentPattern": "",
+        "timeout": 10,
+        "retries": 3,
+        "retryDelay": 2
+      },
+      {
+        "name": "api",
+        "type": "api",
+        "url": "https://api.example.com/health",
+        "enabled": true,
+        "authentication": {
+          "type": "bearer",
+          "token": "${API_TOKEN}"
+        },
+        "expectedJsonPath": ".status",
+        "expectedValue": "ok",
+        "timeout": 15,
+        "retries": 3,
+        "retryDelay": 3
+      },
+      {
+        "name": "mcp-server",
+        "type": "mcp",
+        "url": "https://mcp.example.com",
+        "enabled": true,
+        "testTool": "list_tools",
+        "timeout": 20,
+        "retries": 3,
+        "retryDelay": 5
+      },
+      {
+        "name": "ssl-certificate",
+        "type": "ssl",
+        "hostname": "example.com",
+        "port": 443,
+        "enabled": true,
+        "minDaysValid": 30,
+        "timeout": 10
+      }
+    ],
+    "performance": {
+      "enabled": true,
+      "url": "https://example.com",
+      "concurrentRequests": 50,
+      "totalRequests": 500,
+      "timeout": 10,
+      "thresholds": {
+        "successRate": 95.0,
+        "avgResponseTime": 3000,
+        "p95ResponseTime": 5000,
+        "p99ResponseTime": 8000
+      }
+    },
+    "scheduling": {
+      "enabled": false,
+      "interval": "5m",
+      "continuous": false
+    },
+    "notifications": {
+      "enabled": true,
+      "channels": [
+        {
+          "type": "slack",
+          "webhookUrl": "${SLACK_WEBHOOK_URL}",
+          "onFailure": true,
+          "onRecovery": true
+        },
+        {
+          "type": "email",
+          "recipients": ["devops@example.com"],
+          "onFailure": true,
+          "onRecovery": false
+        }
+      ]
+    },
+    "reporting": {
+      "enabled": true,
+      "outputFormat": "json",
+      "outputPath": "/var/log/health-checks",
+      "keepHistory": true,
+      "historyRetention": "30d"
+    }
+  }
+}

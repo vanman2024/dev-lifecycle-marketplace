@@ -1,0 +1,115 @@
+# Render Blueprint
+# Docs: https://render.com/docs/blueprint-spec
+
+services:
+  # Web service
+  - type: web
+    name: my-app
+    runtime: node
+    plan: starter
+    region: oregon
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 8080
+      - key: DATABASE_URL
+        fromDatabase:
+          name: my-database
+          property: connectionString
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: my-redis
+          property: connectionString
+      - key: API_KEY
+        sync: false  # Manual secret
+    domains:
+      - my-app.com
+      - www.my-app.com
+    autoDeploy: true
+    branch: main
+    scaling:
+      minInstances: 1
+      maxInstances: 3
+      targetMemoryPercent: 80
+      targetCPUPercent: 70
+
+  # Background worker
+  - type: worker
+    name: my-worker
+    runtime: node
+    plan: starter
+    region: oregon
+    buildCommand: npm install
+    startCommand: node worker.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: my-database
+          property: connectionString
+
+  # Cron job
+  - type: cron
+    name: daily-cleanup
+    runtime: node
+    plan: starter
+    region: oregon
+    schedule: "0 0 * * *"
+    buildCommand: npm install
+    startCommand: node scripts/cleanup.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+
+  # Static site
+  - type: static
+    name: my-frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    pullRequestPreviewsEnabled: true
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: DENY
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+# Databases
+databases:
+  - name: my-database
+    databaseName: myapp
+    user: myapp
+    plan: starter
+    region: oregon
+    ipAllowList: []
+
+# Redis
+redis:
+  - name: my-redis
+    plan: starter
+    region: oregon
+    maxmemoryPolicy: allkeys-lru
+    ipAllowList: []
+
+# Environment groups (shared env vars)
+envVarGroups:
+  - name: shared-config
+    envVars:
+      - key: LOG_LEVEL
+        value: info
+      - key: TIMEZONE
+        value: America/Los_Angeles

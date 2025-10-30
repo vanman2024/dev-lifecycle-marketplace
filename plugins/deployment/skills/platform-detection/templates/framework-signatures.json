@@ -1,0 +1,434 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Framework Detection Signatures",
+  "description": "Comprehensive patterns for detecting frameworks from dependencies, files, and code patterns",
+  "version": "1.0.0",
+  "frameworks": {
+    "fastmcp": {
+      "name": "FastMCP",
+      "category": "mcp-framework",
+      "languages": ["typescript", "python"],
+      "signatures": {
+        "typescript": {
+          "package_json": {
+            "dependencies": ["fastmcp"],
+            "dev_dependencies": []
+          },
+          "files": [
+            ".mcp.json",
+            "mcp.json"
+          ],
+          "code_patterns": [
+            "import { FastMCP }",
+            "import FastMCP",
+            "from 'fastmcp'",
+            "new FastMCP(",
+            "createMCPServer"
+          ],
+          "directory_patterns": [
+            "src/tools",
+            "src/resources"
+          ]
+        },
+        "python": {
+          "requirements_txt": ["fastmcp"],
+          "pyproject_toml": ["fastmcp"],
+          "files": [
+            ".mcp.json",
+            "mcp.json"
+          ],
+          "code_patterns": [
+            "from fastmcp import",
+            "import fastmcp",
+            "FastMCP(",
+            "@mcp.tool"
+          ],
+          "directory_patterns": [
+            "tools/",
+            "resources/"
+          ]
+        }
+      },
+      "version_detection": {
+        "package_json": "dependencies.fastmcp",
+        "requirements_txt": "fastmcp==",
+        "pyproject_toml": "dependencies.fastmcp"
+      }
+    },
+    "nextjs": {
+      "name": "Next.js",
+      "category": "frontend-framework",
+      "languages": ["typescript", "javascript"],
+      "signatures": {
+        "typescript": {
+          "package_json": {
+            "dependencies": ["next"],
+            "related": ["react", "react-dom"]
+          },
+          "files": [
+            "next.config.js",
+            "next.config.mjs",
+            "next.config.ts"
+          ],
+          "code_patterns": [
+            "import { NextPage }",
+            "import { GetServerSideProps }",
+            "import { GetStaticProps }",
+            "export default function Page"
+          ],
+          "directory_patterns": [
+            "pages/",
+            "app/",
+            "src/pages/",
+            "src/app/"
+          ]
+        },
+        "javascript": {
+          "package_json": {
+            "dependencies": ["next", "react"],
+            "dev_dependencies": []
+          },
+          "files": [
+            "next.config.js",
+            "next.config.mjs"
+          ],
+          "directory_patterns": [
+            "pages/",
+            "app/"
+          ]
+        }
+      },
+      "version_detection": {
+        "package_json": "dependencies.next"
+      },
+      "variants": {
+        "app_router": {
+          "detection": "directory app/ exists",
+          "version": "13+"
+        },
+        "pages_router": {
+          "detection": "directory pages/ exists",
+          "version": "any"
+        }
+      }
+    },
+    "astro": {
+      "name": "Astro",
+      "category": "frontend-framework",
+      "languages": ["typescript", "javascript"],
+      "signatures": {
+        "typescript": {
+          "package_json": {
+            "dependencies": ["astro"]
+          },
+          "files": [
+            "astro.config.mjs",
+            "astro.config.ts"
+          ],
+          "directory_patterns": [
+            "src/pages/",
+            "src/components/"
+          ],
+          "file_patterns": [
+            "*.astro"
+          ]
+        }
+      },
+      "version_detection": {
+        "package_json": "dependencies.astro"
+      },
+      "rendering_modes": {
+        "static": "output: 'static' in config",
+        "server": "output: 'server' in config",
+        "hybrid": "output: 'hybrid' in config"
+      }
+    },
+    "react": {
+      "name": "React",
+      "category": "frontend-library",
+      "languages": ["typescript", "javascript"],
+      "signatures": {
+        "typescript": {
+          "package_json": {
+            "dependencies": ["react"],
+            "related": ["react-dom"]
+          },
+          "code_patterns": [
+            "import React from",
+            "import { useState }",
+            "import { useEffect }",
+            "export default function",
+            "export const"
+          ],
+          "file_patterns": [
+            "*.tsx",
+            "*.jsx"
+          ]
+        }
+      },
+      "version_detection": {
+        "package_json": "dependencies.react"
+      },
+      "build_tools": {
+        "vite": {
+          "detection": "vite in dependencies",
+          "config_file": "vite.config.ts"
+        },
+        "cra": {
+          "detection": "react-scripts in dependencies",
+          "config_file": "none (uses defaults)"
+        },
+        "webpack": {
+          "detection": "webpack in devDependencies",
+          "config_file": "webpack.config.js"
+        }
+      }
+    },
+    "vue": {
+      "name": "Vue",
+      "category": "frontend-framework",
+      "languages": ["typescript", "javascript"],
+      "signatures": {
+        "typescript": {
+          "package_json": {
+            "dependencies": ["vue"]
+          },
+          "files": [
+            "vue.config.js"
+          ],
+          "code_patterns": [
+            "import { createApp }",
+            "import { ref }",
+            "import { computed }",
+            "<script setup>"
+          ],
+          "file_patterns": [
+            "*.vue"
+          ]
+        }
+      },
+      "version_detection": {
+        "package_json": "dependencies.vue"
+      },
+      "frameworks": {
+        "nuxt": {
+          "detection": "nuxt in dependencies",
+          "config_file": "nuxt.config.ts"
+        }
+      }
+    },
+    "svelte": {
+      "name": "Svelte",
+      "category": "frontend-framework",
+      "languages": ["typescript", "javascript"],
+      "signatures": {
+        "typescript": {
+          "package_json": {
+            "dependencies": ["svelte"]
+          },
+          "files": [
+            "svelte.config.js"
+          ],
+          "file_patterns": [
+            "*.svelte"
+          ]
+        }
+      },
+      "frameworks": {
+        "sveltekit": {
+          "detection": "@sveltejs/kit in dependencies",
+          "config_file": "svelte.config.js"
+        }
+      }
+    },
+    "fastapi": {
+      "name": "FastAPI",
+      "category": "backend-framework",
+      "languages": ["python"],
+      "signatures": {
+        "python": {
+          "requirements_txt": ["fastapi"],
+          "pyproject_toml": ["fastapi"],
+          "code_patterns": [
+            "from fastapi import",
+            "import fastapi",
+            "FastAPI(",
+            "@app.get",
+            "@app.post",
+            "@router.get"
+          ],
+          "directory_patterns": [
+            "routers/",
+            "api/"
+          ]
+        }
+      },
+      "version_detection": {
+        "requirements_txt": "fastapi==",
+        "pyproject_toml": "dependencies.fastapi"
+      },
+      "typical_stack": {
+        "server": "uvicorn",
+        "orm": ["sqlalchemy", "tortoise-orm"],
+        "validation": "pydantic"
+      }
+    },
+    "flask": {
+      "name": "Flask",
+      "category": "backend-framework",
+      "languages": ["python"],
+      "signatures": {
+        "python": {
+          "requirements_txt": ["flask"],
+          "pyproject_toml": ["flask"],
+          "code_patterns": [
+            "from flask import",
+            "import flask",
+            "Flask(__name__)",
+            "@app.route"
+          ],
+          "files": [
+            "app.py",
+            "application.py"
+          ]
+        }
+      },
+      "version_detection": {
+        "requirements_txt": "flask==",
+        "pyproject_toml": "dependencies.flask"
+      }
+    },
+    "django": {
+      "name": "Django",
+      "category": "backend-framework",
+      "languages": ["python"],
+      "signatures": {
+        "python": {
+          "requirements_txt": ["django"],
+          "pyproject_toml": ["django"],
+          "files": [
+            "manage.py",
+            "settings.py"
+          ],
+          "code_patterns": [
+            "from django.",
+            "import django",
+            "INSTALLED_APPS",
+            "urlpatterns"
+          ],
+          "directory_patterns": [
+            "*/settings.py",
+            "*/urls.py",
+            "*/wsgi.py"
+          ]
+        }
+      },
+      "version_detection": {
+        "requirements_txt": "django==",
+        "pyproject_toml": "dependencies.django"
+      }
+    },
+    "express": {
+      "name": "Express",
+      "category": "backend-framework",
+      "languages": ["typescript", "javascript"],
+      "signatures": {
+        "typescript": {
+          "package_json": {
+            "dependencies": ["express"]
+          },
+          "code_patterns": [
+            "import express from",
+            "const express = require",
+            "express()",
+            "app.get(",
+            "app.post(",
+            "router.get("
+          ]
+        }
+      },
+      "version_detection": {
+        "package_json": "dependencies.express"
+      }
+    },
+    "gatsby": {
+      "name": "Gatsby",
+      "category": "static-site-generator",
+      "languages": ["typescript", "javascript"],
+      "signatures": {
+        "typescript": {
+          "package_json": {
+            "dependencies": ["gatsby"]
+          },
+          "files": [
+            "gatsby-config.js",
+            "gatsby-config.ts",
+            "gatsby-node.js"
+          ],
+          "directory_patterns": [
+            "src/pages/"
+          ]
+        }
+      }
+    },
+    "hugo": {
+      "name": "Hugo",
+      "category": "static-site-generator",
+      "languages": ["go"],
+      "signatures": {
+        "config": {
+          "files": [
+            "config.toml",
+            "config.yaml",
+            "hugo.toml"
+          ],
+          "directory_patterns": [
+            "content/",
+            "themes/",
+            "layouts/"
+          ]
+        }
+      }
+    },
+    "jekyll": {
+      "name": "Jekyll",
+      "category": "static-site-generator",
+      "languages": ["ruby"],
+      "signatures": {
+        "config": {
+          "files": [
+            "_config.yml"
+          ],
+          "directory_patterns": [
+            "_posts/",
+            "_layouts/",
+            "_includes/"
+          ]
+        }
+      }
+    }
+  },
+  "detection_priority": [
+    "nextjs",
+    "astro",
+    "nuxt",
+    "sveltekit",
+    "gatsby",
+    "fastmcp",
+    "fastapi",
+    "django",
+    "flask",
+    "express",
+    "vue",
+    "react",
+    "svelte",
+    "hugo",
+    "jekyll"
+  ],
+  "usage_notes": {
+    "priority_order": "Detect more specific frameworks first (e.g., Next.js before React)",
+    "version_matching": "Extract version from package.json or requirements.txt",
+    "multi_framework": "Projects may use multiple frameworks (e.g., Next.js includes React)",
+    "custom_detection": "If no framework matches, analyze build scripts and file structure"
+  }
+}

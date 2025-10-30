@@ -1,0 +1,221 @@
+{
+  "alerts": {
+    "version": "1.0.0",
+    "description": "Alert rules for health check failures and performance degradation",
+    "groups": [
+      {
+        "name": "health_check_alerts",
+        "interval": "30s",
+        "rules": [
+          {
+            "alert": "HealthCheckFailure",
+            "expr": "health_check_success == 0",
+            "for": "2m",
+            "labels": {
+              "severity": "critical",
+              "category": "availability"
+            },
+            "annotations": {
+              "summary": "Health check failed for {{ $labels.endpoint }}",
+              "description": "The health check for {{ $labels.endpoint }} has failed for more than 2 minutes. Current status: {{ $value }}",
+              "runbook_url": "https://wiki.example.com/runbooks/health-check-failure"
+            }
+          },
+          {
+            "alert": "HighResponseTime",
+            "expr": "health_check_response_time_ms > 5000",
+            "for": "5m",
+            "labels": {
+              "severity": "warning",
+              "category": "performance"
+            },
+            "annotations": {
+              "summary": "High response time for {{ $labels.endpoint }}",
+              "description": "The endpoint {{ $labels.endpoint }} has response time above 5000ms (current: {{ $value }}ms) for more than 5 minutes.",
+              "runbook_url": "https://wiki.example.com/runbooks/high-response-time"
+            }
+          },
+          {
+            "alert": "LowSuccessRate",
+            "expr": "(sum(rate(health_check_success[5m])) by (endpoint) / sum(rate(health_check_total[5m])) by (endpoint)) * 100 < 95",
+            "for": "3m",
+            "labels": {
+              "severity": "warning",
+              "category": "reliability"
+            },
+            "annotations": {
+              "summary": "Low success rate for {{ $labels.endpoint }}",
+              "description": "The success rate for {{ $labels.endpoint }} is below 95% (current: {{ $value }}%) over the last 5 minutes.",
+              "runbook_url": "https://wiki.example.com/runbooks/low-success-rate"
+            }
+          },
+          {
+            "alert": "SSLCertificateExpiringSoon",
+            "expr": "ssl_cert_days_until_expiry < 30",
+            "for": "1h",
+            "labels": {
+              "severity": "warning",
+              "category": "security"
+            },
+            "annotations": {
+              "summary": "SSL certificate expiring soon for {{ $labels.hostname }}",
+              "description": "The SSL certificate for {{ $labels.hostname }} will expire in {{ $value }} days. Please renew the certificate.",
+              "runbook_url": "https://wiki.example.com/runbooks/ssl-renewal"
+            }
+          },
+          {
+            "alert": "SSLCertificateExpired",
+            "expr": "ssl_cert_days_until_expiry < 0",
+            "for": "5m",
+            "labels": {
+              "severity": "critical",
+              "category": "security"
+            },
+            "annotations": {
+              "summary": "SSL certificate EXPIRED for {{ $labels.hostname }}",
+              "description": "The SSL certificate for {{ $labels.hostname }} has expired {{ $value }} days ago. Service may be unavailable.",
+              "runbook_url": "https://wiki.example.com/runbooks/ssl-expired"
+            }
+          },
+          {
+            "alert": "MCPServerUnreachable",
+            "expr": "mcp_server_reachable == 0",
+            "for": "2m",
+            "labels": {
+              "severity": "critical",
+              "category": "availability"
+            },
+            "annotations": {
+              "summary": "MCP server unreachable: {{ $labels.endpoint }}",
+              "description": "The MCP server at {{ $labels.endpoint }} has been unreachable for more than 2 minutes.",
+              "runbook_url": "https://wiki.example.com/runbooks/mcp-server-down"
+            }
+          },
+          {
+            "alert": "PerformanceTestThresholdExceeded",
+            "expr": "performance_test_p95_response_time > 5000",
+            "for": "1m",
+            "labels": {
+              "severity": "warning",
+              "category": "performance"
+            },
+            "annotations": {
+              "summary": "Performance test p95 threshold exceeded for {{ $labels.endpoint }}",
+              "description": "The p95 response time for {{ $labels.endpoint }} is {{ $value }}ms, exceeding the 5000ms threshold.",
+              "runbook_url": "https://wiki.example.com/runbooks/performance-degradation"
+            }
+          },
+          {
+            "alert": "APIResponseCodeError",
+            "expr": "sum(rate(health_check_http_status_total{status_code=~\"5..\"}[5m])) by (endpoint) > 0",
+            "for": "2m",
+            "labels": {
+              "severity": "critical",
+              "category": "availability"
+            },
+            "annotations": {
+              "summary": "API returning 5xx errors for {{ $labels.endpoint }}",
+              "description": "The endpoint {{ $labels.endpoint }} is returning 5xx status codes at rate {{ $value }}/sec.",
+              "runbook_url": "https://wiki.example.com/runbooks/api-5xx-errors"
+            }
+          },
+          {
+            "alert": "ConsecutiveFailures",
+            "expr": "health_check_consecutive_failures >= 3",
+            "for": "1m",
+            "labels": {
+              "severity": "critical",
+              "category": "availability"
+            },
+            "annotations": {
+              "summary": "Multiple consecutive failures for {{ $labels.endpoint }}",
+              "description": "The endpoint {{ $labels.endpoint }} has failed {{ $value }} consecutive health checks.",
+              "runbook_url": "https://wiki.example.com/runbooks/consecutive-failures"
+            }
+          }
+        ]
+      },
+      {
+        "name": "deployment_alerts",
+        "interval": "1m",
+        "rules": [
+          {
+            "alert": "PostDeploymentHealthCheckFailed",
+            "expr": "deployment_health_check_passed == 0",
+            "for": "30s",
+            "labels": {
+              "severity": "critical",
+              "category": "deployment"
+            },
+            "annotations": {
+              "summary": "Post-deployment health check failed for {{ $labels.service }}",
+              "description": "The deployment of {{ $labels.service }} version {{ $labels.version }} failed health checks. Consider rollback.",
+              "runbook_url": "https://wiki.example.com/runbooks/deployment-failure"
+            }
+          }
+        ]
+      }
+    ],
+    "receivers": [
+      {
+        "name": "critical_alerts",
+        "slack_configs": [
+          {
+            "api_url": "${SLACK_WEBHOOK_URL}",
+            "channel": "#critical-alerts",
+            "title": "{{ .GroupLabels.alertname }}",
+            "text": "{{ range .Alerts }}{{ .Annotations.description }}{{ end }}"
+          }
+        ],
+        "pagerduty_configs": [
+          {
+            "service_key": "${PAGERDUTY_SERVICE_KEY}",
+            "severity": "critical"
+          }
+        ],
+        "email_configs": [
+          {
+            "to": "oncall@example.com",
+            "from": "alerts@example.com",
+            "smarthost": "smtp.example.com:587",
+            "auth_username": "${SMTP_USERNAME}",
+            "auth_password": "${SMTP_PASSWORD}"
+          }
+        ]
+      },
+      {
+        "name": "warning_alerts",
+        "slack_configs": [
+          {
+            "api_url": "${SLACK_WEBHOOK_URL}",
+            "channel": "#monitoring",
+            "title": "{{ .GroupLabels.alertname }}",
+            "text": "{{ range .Alerts }}{{ .Annotations.description }}{{ end }}"
+          }
+        ]
+      }
+    ],
+    "route": {
+      "group_by": ["alertname", "cluster", "service"],
+      "group_wait": "10s",
+      "group_interval": "10s",
+      "repeat_interval": "12h",
+      "receiver": "warning_alerts",
+      "routes": [
+        {
+          "match": {
+            "severity": "critical"
+          },
+          "receiver": "critical_alerts",
+          "continue": false
+        },
+        {
+          "match": {
+            "severity": "warning"
+          },
+          "receiver": "warning_alerts"
+        }
+      ]
+    }
+  }
+}

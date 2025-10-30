@@ -1,0 +1,191 @@
+# Environment Configuration for {{PROJECT_NAME}}
+#
+# Copy this file to .env and fill in the values
+# IMPORTANT: Never commit .env files with real credentials to version control
+#
+# Generated: {{TIMESTAMP}}
+
+# ============================================================================
+# Application Configuration
+# ============================================================================
+
+# Environment (development, staging, production)
+NODE_ENV={{DEFAULT_NODE_ENV}}
+
+# Application port
+PORT={{DEFAULT_PORT}}
+
+# Application URL (used for callbacks, emails, etc.)
+APP_URL={{DEFAULT_APP_URL}}
+
+{{#USES_API_VERSIONING}}
+# API version
+API_VERSION={{API_VERSION}}
+{{/USES_API_VERSIONING}}
+
+# ============================================================================
+# Database Configuration
+# ============================================================================
+
+{{#USES_POSTGRES}}
+# PostgreSQL database
+DATABASE_URL=postgresql://{{DB_USER}}:{{DB_PASSWORD}}@{{DB_HOST}}:{{DB_PORT}}/{{DB_NAME}}
+# Or separate variables:
+# DB_HOST=localhost
+# DB_PORT=5432
+# DB_NAME={{PROJECT_NAME}}_{{ENV}}
+# DB_USER=postgres
+# DB_PASSWORD=your_password_here
+{{/USES_POSTGRES}}
+
+{{#USES_MYSQL}}
+# MySQL/MariaDB database
+DATABASE_URL=mysql://{{DB_USER}}:{{DB_PASSWORD}}@{{DB_HOST}}:{{DB_PORT}}/{{DB_NAME}}
+{{/USES_MYSQL}}
+
+{{#USES_MONGODB}}
+# MongoDB database
+MONGODB_URI=mongodb://{{DB_USER}}:{{DB_PASSWORD}}@{{DB_HOST}}:{{DB_PORT}}/{{DB_NAME}}
+# Or MongoDB Atlas:
+# MONGODB_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/{{DB_NAME}}
+{{/USES_MONGODB}}
+
+{{#USES_REDIS}}
+# Redis cache/session store
+REDIS_URL=redis://{{REDIS_HOST}}:{{REDIS_PORT}}
+# REDIS_PASSWORD=your_redis_password
+{{/USES_REDIS}}
+
+# ============================================================================
+# Authentication & Security
+# ============================================================================
+
+{{#USES_JWT}}
+# JWT signing secret (generate with: openssl rand -base64 32)
+JWT_SECRET=your_jwt_secret_here_change_in_production
+JWT_EXPIRES_IN={{JWT_EXPIRES_IN}}
+{{/USES_JWT}}
+
+{{#USES_SESSION}}
+# Session secret (generate with: openssl rand -base64 32)
+SESSION_SECRET=your_session_secret_here_change_in_production
+SESSION_MAX_AGE={{SESSION_MAX_AGE}}
+{{/USES_SESSION}}
+
+{{#USES_ENCRYPTION}}
+# Encryption key (generate with: openssl rand -hex 32)
+ENCRYPTION_KEY=your_encryption_key_here_change_in_production
+{{/USES_ENCRYPTION}}
+
+# ============================================================================
+# External Services
+# ============================================================================
+
+{{#USES_AWS}}
+# AWS credentials
+AWS_ACCESS_KEY_ID=your_aws_access_key_id
+AWS_SECRET_ACCESS_KEY=your_aws_secret_access_key
+AWS_REGION={{AWS_DEFAULT_REGION}}
+AWS_S3_BUCKET={{S3_BUCKET_NAME}}
+{{/USES_AWS}}
+
+{{#USES_OPENAI}}
+# OpenAI API
+OPENAI_API_KEY=sk-your_openai_api_key_here
+OPENAI_ORGANIZATION=your_org_id_optional
+{{/USES_OPENAI}}
+
+{{#USES_ANTHROPIC}}
+# Anthropic API (Claude)
+ANTHROPIC_API_KEY=sk-ant-your_anthropic_api_key_here
+{{/USES_ANTHROPIC}}
+
+{{#USES_STRIPE}}
+# Stripe payment processing
+STRIPE_PUBLISHABLE_KEY=pk_test_your_publishable_key
+STRIPE_SECRET_KEY=sk_test_your_secret_key
+STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret
+{{/USES_STRIPE}}
+
+{{#USES_SENDGRID}}
+# SendGrid email service
+SENDGRID_API_KEY=SG.your_sendgrid_api_key_here
+SENDGRID_FROM_EMAIL={{DEFAULT_FROM_EMAIL}}
+SENDGRID_FROM_NAME={{DEFAULT_FROM_NAME}}
+{{/USES_SENDGRID}}
+
+{{#USES_GITHUB}}
+# GitHub OAuth/API
+GITHUB_CLIENT_ID=your_github_client_id
+GITHUB_CLIENT_SECRET=your_github_client_secret
+GITHUB_TOKEN=ghp_your_github_personal_access_token
+{{/USES_GITHUB}}
+
+{{#USES_GOOGLE}}
+# Google OAuth/API
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+{{/USES_GOOGLE}}
+
+# ============================================================================
+# Logging & Monitoring
+# ============================================================================
+
+# Log level (error, warn, info, debug)
+LOG_LEVEL={{DEFAULT_LOG_LEVEL}}
+
+{{#USES_SENTRY}}
+# Sentry error tracking
+SENTRY_DSN=https://your_sentry_dsn_here
+SENTRY_ENVIRONMENT={{ENV}}
+{{/USES_SENTRY}}
+
+{{#USES_DATADOG}}
+# Datadog monitoring
+DD_API_KEY=your_datadog_api_key
+DD_SITE={{DD_SITE}}
+{{/USES_DATADOG}}
+
+# ============================================================================
+# Development Tools
+# ============================================================================
+
+{{#INCLUDE_DEV_VARS}}
+# Debug mode (true/false)
+DEBUG={{DEFAULT_DEBUG}}
+
+# Verbose logging (true/false)
+VERBOSE={{DEFAULT_VERBOSE}}
+
+# Hot reload (true/false)
+HOT_RELOAD={{DEFAULT_HOT_RELOAD}}
+{{/INCLUDE_DEV_VARS}}
+
+# ============================================================================
+# Custom Variables
+# ============================================================================
+
+{{#CUSTOM_VARS}}
+# {{VAR_DESCRIPTION}}
+{{VAR_NAME}}={{VAR_DEFAULT_VALUE}}
+{{/CUSTOM_VARS}}
+
+# ============================================================================
+# Notes
+# ============================================================================
+#
+# 1. Generate secure secrets:
+#    openssl rand -base64 32
+#    openssl rand -hex 32
+#
+# 2. Validate this configuration:
+#    bash scripts/check-env-vars.sh
+#
+# 3. Load environment variables:
+#    source .env           (for bash/zsh)
+#    export $(cat .env)    (alternative)
+#
+# 4. Keep .env out of version control:
+#    Add .env to .gitignore
+#    Commit .env.example instead
+#

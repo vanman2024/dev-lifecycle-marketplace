@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "example-http-server": {
+      "type": "http",
+      "url": "https://api.example.com",
+      "headers": {
+        "Authorization": "Bearer ${API_TOKEN}",
+        "Content-Type": "application/json"
+      },
+      "env": {
+        "API_TOKEN": "${API_TOKEN}"
+      }
+    }
+  }
+}

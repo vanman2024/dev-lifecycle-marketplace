@@ -1,0 +1,113 @@
+# Specification Metadata Template
+# Use this as frontmatter for all specification documents
+
+---
+# Unique numeric identifier (auto-assigned)
+spec-id: 001
+
+# Short, descriptive title
+title: Feature Name
+
+# Current status of the specification
+# Valid values: draft, in-progress, review, approved, implemented, rejected
+status: draft
+
+# Priority level
+# Valid values: low, medium, high, critical
+priority: medium
+
+# Owner or team responsible
+# Can be team name, individual, or email
+owner: team-name
+
+# Creation date (ISO 8601 format: YYYY-MM-DD)
+created: 2025-01-15
+
+# Last updated date (ISO 8601 format: YYYY-MM-DD)
+updated: 2025-01-15
+
+# Tags for categorization and filtering
+# Use consistent tags across specs for better organization
+tags: [feature-type, category, technology]
+
+# Optional fields below:
+
+# Related specs (list of spec IDs)
+# related: [002, 003]
+
+# Assigned developers
+# assignees: [developer1, developer2]
+
+# Epic or milestone this belongs to
+# epic: epic-name
+
+# Estimated effort (in story points or hours)
+# effort: 13
+
+# Target version or release
+# version: 1.2.0
+
+# Links to external resources
+# links:
+#   design: https://figma.com/...
+#   jira: https://jira.company.com/...
+#   pr: https://github.com/org/repo/pull/123
+---
+
+# Common Tag Categories
+
+## By Feature Type
+- feature: New feature
+- enhancement: Improvement to existing feature
+- bugfix: Bug fix specification
+- refactor: Code refactoring
+- infrastructure: Infrastructure or tooling
+
+## By Technology Area
+- frontend: Frontend changes
+- backend: Backend changes
+- database: Database changes
+- api: API changes
+- devops: DevOps/infrastructure changes
+
+## By Domain
+- auth: Authentication/authorization
+- payments: Payment processing
+- notifications: Notifications system
+- search: Search functionality
+- analytics: Analytics and tracking
+- admin: Admin tools
+- user-management: User management
+
+## By Scale
+- small: Small change (< 1 day)
+- medium: Medium change (1-3 days)
+- large: Large change (> 3 days)
+- epic: Epic spanning multiple specs
+
+## By Status Context
+- spike: Research or investigation needed
+- blocked: Blocked by dependencies
+- experimental: Experimental feature
+- deprecated: Deprecation notice
+
+# Example Complete Frontmatter
+
+---
+spec-id: 042
+title: OAuth 2.0 Integration with Google
+status: in-progress
+priority: high
+owner: auth-team
+created: 2025-01-10
+updated: 2025-01-15
+tags: [feature, auth, backend, oauth, security]
+related: [041, 043]
+assignees: [alice@company.com, bob@company.com]
+epic: user-authentication
+effort: 21
+version: 2.0.0
+links:
+  design: https://figma.com/oauth-flow
+  jira: https://jira.company.com/AUTH-123
+---

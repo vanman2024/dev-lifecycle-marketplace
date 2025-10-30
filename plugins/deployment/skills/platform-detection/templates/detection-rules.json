@@ -1,0 +1,338 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Project Type Detection Rules",
+  "description": "Comprehensive ruleset for detecting project types based on files, dependencies, and patterns",
+  "version": "1.0.0",
+  "rules": {
+    "mcp-server": {
+      "description": "MCP (Model Context Protocol) Server",
+      "priority": 100,
+      "detection_patterns": {
+        "files": {
+          "required": [],
+          "any_of": [
+            ".mcp.json",
+            "mcp.json",
+            ".mcp.yaml",
+            "mcp.yaml"
+          ],
+          "scoring": {
+            ".mcp.json": 10,
+            "mcp.json": 10,
+            ".mcp.yaml": 10
+          }
+        },
+        "dependencies": {
+          "npm": {
+            "fastmcp": 8,
+            "@modelcontextprotocol/sdk": 7,
+            "mcp-framework": 6
+          },
+          "python": {
+            "fastmcp": 8,
+            "mcp": 7,
+            "fastmcp-server": 8
+          }
+        },
+        "code_patterns": {
+          "typescript": [
+            "FastMCP",
+            "createMCPServer",
+            "MCPServer",
+            "@modelcontextprotocol"
+          ],
+          "javascript": [
+            "FastMCP",
+            "createMCPServer",
+            "MCPServer"
+          ],
+          "python": [
+            "from fastmcp import",
+            "FastMCP(",
+            "mcp.Server",
+            "MCPServer"
+          ]
+        },
+        "directory_structure": {
+          "any_of": [
+            "src/tools",
+            "src/resources",
+            "tools/",
+            "resources/"
+          ]
+        }
+      },
+      "threshold_score": 8
+    },
+    "api": {
+      "description": "REST API or GraphQL API",
+      "priority": 80,
+      "detection_patterns": {
+        "files": {
+          "any_of": [
+            "openapi.json",
+            "openapi.yaml",
+            "swagger.json",
+            "swagger.yaml"
+          ],
+          "scoring": {
+            "openapi.json": 5,
+            "swagger.json": 5
+          }
+        },
+        "dependencies": {
+          "npm": {
+            "express": 7,
+            "fastify": 7,
+            "koa": 6,
+            "hapi": 6,
+            "@nestjs/core": 7,
+            "apollo-server": 7,
+            "graphql": 5
+          },
+          "python": {
+            "fastapi": 7,
+            "flask": 7,
+            "django": 7,
+            "starlette": 6,
+            "aiohttp": 5,
+            "tornado": 5
+          }
+        },
+        "directory_structure": {
+          "any_of": [
+            "routes/",
+            "routers/",
+            "api/",
+            "endpoints/",
+            "controllers/"
+          ],
+          "scoring": {
+            "routes/": 4,
+            "routers/": 4,
+            "api/": 3,
+            "controllers/": 3
+          }
+        },
+        "code_patterns": {
+          "typescript": [
+            "app.get(",
+            "app.post(",
+            "router.get(",
+            "@Get(",
+            "@Post(",
+            "express()"
+          ],
+          "javascript": [
+            "app.get(",
+            "app.post(",
+            "router.get(",
+            "express()"
+          ],
+          "python": [
+            "@app.get",
+            "@app.post",
+            "@router.get",
+            "FastAPI(",
+            "Flask(__name__)"
+          ]
+        }
+      },
+      "threshold_score": 7
+    },
+    "frontend": {
+      "description": "Frontend Web Application",
+      "priority": 90,
+      "detection_patterns": {
+        "files": {
+          "any_of": [
+            "next.config.js",
+            "next.config.mjs",
+            "next.config.ts",
+            "astro.config.mjs",
+            "astro.config.ts",
+            "vite.config.js",
+            "vite.config.ts",
+            "vue.config.js",
+            "svelte.config.js"
+          ],
+          "scoring": {
+            "next.config.js": 10,
+            "next.config.mjs": 10,
+            "next.config.ts": 10,
+            "astro.config.mjs": 10,
+            "astro.config.ts": 10,
+            "vite.config.js": 6,
+            "vite.config.ts": 6
+          }
+        },
+        "dependencies": {
+          "npm": {
+            "next": 8,
+            "react": 6,
+            "vue": 6,
+            "astro": 8,
+            "svelte": 6,
+            "@solidjs/start": 7,
+            "nuxt": 8,
+            "gatsby": 7
+          }
+        },
+        "directory_structure": {
+          "any_of": [
+            "pages/",
+            "app/",
+            "src/pages/",
+            "src/routes/",
+            "components/",
+            "src/components/"
+          ],
+          "scoring": {
+            "pages/": 5,
+            "app/": 5,
+            "src/pages/": 5,
+            "components/": 3
+          }
+        }
+      },
+      "threshold_score": 8
+    },
+    "static-site": {
+      "description": "Static Website",
+      "priority": 70,
+      "detection_patterns": {
+        "files": {
+          "any_of": [
+            "index.html",
+            "_config.yml",
+            "config.toml",
+            "config.yaml",
+            "gatsby-config.js"
+          ],
+          "scoring": {
+            "index.html": 8,
+            "_config.yml": 10,
+            "config.toml": 10,
+            "gatsby-config.js": 10
+          }
+        },
+        "dependencies": {
+          "npm": {
+            "gatsby": 7,
+            "@11ty/eleventy": 8,
+            "jekyll": 8
+          }
+        },
+        "directory_structure": {
+          "any_of": [
+            "_posts/",
+            "content/",
+            "themes/",
+            "_layouts/",
+            "_includes/"
+          ],
+          "scoring": {
+            "_posts/": 5,
+            "content/": 3,
+            "themes/": 4
+          }
+        },
+        "exclusions": {
+          "files": [
+            "package.json"
+          ],
+          "note": "If package.json exists with build dependencies, likely not pure static"
+        }
+      },
+      "threshold_score": 8
+    },
+    "monorepo": {
+      "description": "Monorepo with Multiple Services",
+      "priority": 95,
+      "detection_patterns": {
+        "files": {
+          "any_of": [
+            "pnpm-workspace.yaml",
+            "lerna.json",
+            "nx.json",
+            "turbo.json",
+            "rush.json"
+          ],
+          "scoring": {
+            "pnpm-workspace.yaml": 10,
+            "lerna.json": 10,
+            "nx.json": 10,
+            "turbo.json": 10
+          }
+        },
+        "package_json": {
+          "fields": {
+            "workspaces": 10
+          }
+        },
+        "directory_structure": {
+          "multiple_package_json": {
+            "threshold": 2,
+            "exclude_paths": [
+              "node_modules",
+              ".git",
+              "dist",
+              "build"
+            ],
+            "score": 8
+          },
+          "multiple_requirements_txt": {
+            "threshold": 2,
+            "exclude_paths": [
+              "venv",
+              ".venv",
+              "env"
+            ],
+            "score": 6
+          }
+        }
+      },
+      "threshold_score": 10
+    }
+  },
+  "detection_algorithm": {
+    "steps": [
+      "1. Scan project for detection rule files and patterns",
+      "2. Calculate score for each project type using scoring weights",
+      "3. Select type with highest score if above threshold",
+      "4. If multiple types score above threshold, use priority to break ties",
+      "5. Return 'unknown' if no type reaches threshold score"
+    ],
+    "scoring": {
+      "file_match": "Add file's scoring weight",
+      "dependency_match": "Add dependency's scoring weight",
+      "directory_match": "Add directory's scoring weight",
+      "code_pattern_match": "Add fixed weight (5 points per pattern)",
+      "exclusion_match": "Subtract from total score"
+    }
+  },
+  "usage_examples": [
+    {
+      "project": "FastMCP Server",
+      "files": [".mcp.json", "package.json"],
+      "dependencies": ["fastmcp"],
+      "expected_result": "mcp-server",
+      "expected_score": 18
+    },
+    {
+      "project": "Next.js App",
+      "files": ["next.config.js", "package.json"],
+      "dependencies": ["next", "react"],
+      "expected_result": "frontend",
+      "expected_score": 24
+    },
+    {
+      "project": "FastAPI Backend",
+      "files": ["requirements.txt"],
+      "dependencies": ["fastapi"],
+      "directories": ["routers/"],
+      "expected_result": "api",
+      "expected_score": 11
+    }
+  ]
+}

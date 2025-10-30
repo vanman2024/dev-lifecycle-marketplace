@@ -1,0 +1,240 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Tool Version Requirements",
+  "description": "Specifies minimum version requirements for development tools",
+  "type": "object",
+  "properties": {
+    "languages": {
+      "type": "object",
+      "properties": {
+        "node": {
+          "type": "string",
+          "description": "Node.js version (semver format)",
+          "examples": [">=18.0.0", "^20.0.0", "20.11.0"]
+        },
+        "npm": {
+          "type": "string",
+          "description": "npm version",
+          "examples": [">=9.0.0", "^10.0.0"]
+        },
+        "python": {
+          "type": "string",
+          "description": "Python version",
+          "examples": [">=3.9.0", "^3.11.0"]
+        },
+        "go": {
+          "type": "string",
+          "description": "Go version",
+          "examples": [">=1.20.0", "^1.21.0"]
+        },
+        "rust": {
+          "type": "string",
+          "description": "Rust version",
+          "examples": [">=1.70.0", "^1.75.0"]
+        },
+        "ruby": {
+          "type": "string",
+          "description": "Ruby version",
+          "examples": [">=3.0.0", "^3.2.0"]
+        },
+        "java": {
+          "type": "string",
+          "description": "Java version",
+          "examples": [">=11", "^17"]
+        },
+        "php": {
+          "type": "string",
+          "description": "PHP version",
+          "examples": [">=8.0.0", "^8.2.0"]
+        }
+      }
+    },
+    "packageManagers": {
+      "type": "object",
+      "properties": {
+        "yarn": {
+          "type": "string",
+          "examples": [">=1.22.0", "^4.0.0"]
+        },
+        "pnpm": {
+          "type": "string",
+          "examples": [">=8.0.0", "^8.15.0"]
+        },
+        "pip": {
+          "type": "string",
+          "examples": [">=23.0.0"]
+        },
+        "cargo": {
+          "type": "string",
+          "examples": [">=1.70.0"]
+        },
+        "gem": {
+          "type": "string",
+          "examples": [">=3.0.0"]
+        },
+        "composer": {
+          "type": "string",
+          "examples": [">=2.0.0"]
+        },
+        "maven": {
+          "type": "string",
+          "examples": [">=3.6.0"]
+        },
+        "gradle": {
+          "type": "string",
+          "examples": [">=7.0.0"]
+        }
+      }
+    },
+    "buildTools": {
+      "type": "object",
+      "properties": {
+        "make": {
+          "type": "string",
+          "examples": [">=4.0"]
+        },
+        "cmake": {
+          "type": "string",
+          "examples": [">=3.20.0"]
+        },
+        "webpack": {
+          "type": "string",
+          "examples": [">=5.0.0"]
+        },
+        "vite": {
+          "type": "string",
+          "examples": [">=5.0.0"]
+        },
+        "esbuild": {
+          "type": "string",
+          "examples": [">=0.19.0"]
+        }
+      }
+    },
+    "tools": {
+      "type": "object",
+      "properties": {
+        "git": {
+          "type": "string",
+          "examples": [">=2.30.0"]
+        },
+        "docker": {
+          "type": "string",
+          "examples": [">=20.0.0"]
+        },
+        "docker-compose": {
+          "type": "string",
+          "examples": [">=2.0.0"]
+        }
+      }
+    },
+    "versionManagers": {
+      "type": "object",
+      "description": "Optional version managers (not required but recommended)",
+      "properties": {
+        "nvm": {
+          "type": "boolean",
+          "description": "Node Version Manager"
+        },
+        "pyenv": {
+          "type": "boolean",
+          "description": "Python version manager"
+        },
+        "rbenv": {
+          "type": "boolean",
+          "description": "Ruby version manager"
+        },
+        "rustup": {
+          "type": "boolean",
+          "description": "Rust toolchain manager"
+        }
+      }
+    },
+    "operatingSystems": {
+      "type": "object",
+      "description": "Supported operating systems",
+      "properties": {
+        "linux": {
+          "type": "object",
+          "properties": {
+            "supported": {
+              "type": "boolean"
+            },
+            "distributions": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "examples": [["ubuntu", "debian", "fedora", "arch"]]
+            }
+          }
+        },
+        "macos": {
+          "type": "object",
+          "properties": {
+            "supported": {
+              "type": "boolean"
+            },
+            "minimumVersion": {
+              "type": "string",
+              "examples": ["12.0"]
+            }
+          }
+        },
+        "windows": {
+          "type": "object",
+          "properties": {
+            "supported": {
+              "type": "boolean"
+            },
+            "requiresWSL": {
+              "type": "boolean"
+            },
+            "wslVersion": {
+              "type": "string",
+              "examples": ["2"]
+            }
+          }
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "languages": {
+        "node": ">=18.0.0",
+        "npm": ">=9.0.0",
+        "python": ">=3.9.0"
+      },
+      "packageManagers": {
+        "pnpm": ">=8.0.0"
+      },
+      "buildTools": {
+        "make": ">=4.0"
+      },
+      "tools": {
+        "git": ">=2.30.0",
+        "docker": ">=20.0.0"
+      },
+      "versionManagers": {
+        "nvm": true,
+        "pyenv": true
+      },
+      "operatingSystems": {
+        "linux": {
+          "supported": true,
+          "distributions": ["ubuntu", "debian"]
+        },
+        "macos": {
+          "supported": true,
+          "minimumVersion": "12.0"
+        },
+        "windows": {
+          "supported": true,
+          "requiresWSL": true,
+          "wslVersion": "2"
+        }
+      }
+    }
+  ]
+}

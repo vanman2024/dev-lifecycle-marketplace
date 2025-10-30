@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "example-stdio-server": {
+      "type": "stdio",
+      "command": "python3",
+      "args": ["-m", "server_module"],
+      "env": {
+        "LOG_LEVEL": "info"
+      }
+    }
+  }
+}

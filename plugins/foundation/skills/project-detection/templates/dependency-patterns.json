@@ -1,0 +1,151 @@
+{
+  "dependency_sources": {
+    "javascript": {
+      "package_managers": ["npm", "yarn", "pnpm", "bun"],
+      "files": {
+        "package.json": {
+          "sections": ["dependencies", "devDependencies", "peerDependencies", "optionalDependencies"],
+          "parser": "json",
+          "version_formats": ["exact", "caret", "tilde", "range"]
+        },
+        "package-lock.json": {
+          "parser": "json",
+          "contains_exact_versions": true
+        },
+        "yarn.lock": {
+          "parser": "yaml",
+          "contains_exact_versions": true
+        },
+        "pnpm-lock.yaml": {
+          "parser": "yaml",
+          "contains_exact_versions": true
+        }
+      }
+    },
+    "python": {
+      "package_managers": ["pip", "poetry", "pipenv"],
+      "files": {
+        "requirements.txt": {
+          "parser": "line-by-line",
+          "version_operators": ["==", ">=", "<=", ">", "<", "~=", "!="],
+          "comments": "#"
+        },
+        "requirements-dev.txt": {
+          "type": "development",
+          "parser": "line-by-line"
+        },
+        "pyproject.toml": {
+          "parser": "toml",
+          "sections": ["dependencies", "dev-dependencies"]
+        },
+        "setup.py": {
+          "parser": "python",
+          "extract_from": ["install_requires", "extras_require"]
+        },
+        "Pipfile": {
+          "parser": "toml",
+          "sections": ["packages", "dev-packages"]
+        }
+      }
+    },
+    "go": {
+      "package_manager": "go modules",
+      "files": {
+        "go.mod": {
+          "parser": "custom",
+          "sections": ["require", "replace"],
+          "version_format": "semver"
+        },
+        "go.sum": {
+          "contains_checksums": true
+        }
+      }
+    },
+    "rust": {
+      "package_manager": "cargo",
+      "files": {
+        "Cargo.toml": {
+          "parser": "toml",
+          "sections": ["dependencies", "dev-dependencies", "build-dependencies"],
+          "version_formats": ["exact", "caret", "tilde", "range", "git", "path"]
+        },
+        "Cargo.lock": {
+          "parser": "toml",
+          "contains_exact_versions": true
+        }
+      }
+    },
+    "ruby": {
+      "package_manager": "bundler",
+      "files": {
+        "Gemfile": {
+          "parser": "ruby",
+          "version_operators": ["~>", ">=", "<=", "="],
+          "groups": ["default", "development", "test", "production"]
+        },
+        "Gemfile.lock": {
+          "contains_exact_versions": true
+        }
+      }
+    },
+    "php": {
+      "package_manager": "composer",
+      "files": {
+        "composer.json": {
+          "parser": "json",
+          "sections": ["require", "require-dev"],
+          "version_formats": ["exact", "caret", "tilde", "range"]
+        },
+        "composer.lock": {
+          "parser": "json",
+          "contains_exact_versions": true
+        }
+      }
+    },
+    "java": {
+      "build_tools": ["maven", "gradle"],
+      "files": {
+        "pom.xml": {
+          "parser": "xml",
+          "sections": ["dependencies", "dependencyManagement"]
+        },
+        "build.gradle": {
+          "parser": "groovy",
+          "sections": ["dependencies", "implementation", "testImplementation"]
+        },
+        "build.gradle.kts": {
+          "parser": "kotlin",
+          "sections": ["dependencies", "implementation", "testImplementation"]
+        }
+      }
+    },
+    "dotnet": {
+      "package_manager": "nuget",
+      "files": {
+        "*.csproj": {
+          "parser": "xml",
+          "sections": ["PackageReference"]
+        },
+        "packages.config": {
+          "parser": "xml"
+        }
+      }
+    }
+  },
+  "version_ranges": {
+    "semver": {
+      "exact": "1.2.3",
+      "caret": "^1.2.3 (allows 1.x.x)",
+      "tilde": "~1.2.3 (allows 1.2.x)",
+      "range": ">=1.2.3 <2.0.0",
+      "wildcard": "1.2.*",
+      "latest": "*"
+    }
+  },
+  "dependency_types": {
+    "production": "Runtime dependencies required in production",
+    "development": "Development-only dependencies (testing, build tools)",
+    "peer": "Dependencies that should be provided by the consumer",
+    "optional": "Optional dependencies that enhance functionality"
+  }
+}

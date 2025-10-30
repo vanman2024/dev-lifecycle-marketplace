@@ -1,0 +1,307 @@
+# CI/CD Pipeline Health Check Integration
+# Example for GitHub Actions, GitLab CI, and Jenkins
+
+# ============================================
+# GitHub Actions Example
+# ============================================
+# File: .github/workflows/health-check.yml
+
+name: Post-Deployment Health Check
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to check'
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+  deployment_status:
+    types: [success]
+
+env:
+  HEALTH_CHECK_SCRIPTS_PATH: ./scripts/health-checks
+
+jobs:
+  health-check:
+    name: Run Health Checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl jq openssl bc
+
+      - name: Set environment variables
+        run: |
+          if [ "${{ inputs.environment }}" == "production" ]; then
+            echo "BASE_URL=https://example.com" >> $GITHUB_ENV
+            echo "API_URL=https://api.example.com" >> $GITHUB_ENV
+            echo "MCP_URL=https://mcp.example.com" >> $GITHUB_ENV
+          else
+            echo "BASE_URL=https://staging.example.com" >> $GITHUB_ENV
+            echo "API_URL=https://api.staging.example.com" >> $GITHUB_ENV
+            echo "MCP_URL=https://mcp.staging.example.com" >> $GITHUB_ENV
+          fi
+
+      - name: HTTP Health Check
+        id: http-check
+        run: |
+          bash ${{ env.HEALTH_CHECK_SCRIPTS_PATH }}/http-health-check.sh \
+            "${{ env.BASE_URL }}" 200 3000
+        continue-on-error: true
+
+      - name: API Health Check
+        id: api-check
+        run: |
+          bash ${{ env.HEALTH_CHECK_SCRIPTS_PATH }}/api-health-check.sh \
+            "${{ env.API_URL }}/health" \
+            "Bearer ${{ secrets.API_TOKEN }}" \
+            ".status" "ok"
+        continue-on-error: true
+
+      - name: MCP Server Health Check
+        id: mcp-check
+        run: |
+          bash ${{ env.HEALTH_CHECK_SCRIPTS_PATH }}/mcp-server-health-check.sh \
+            "${{ env.MCP_URL }}"
+        continue-on-error: true
+
+      - name: SSL Certificate Check
+        id: ssl-check
+        run: |
+          HOSTNAME=$(echo "${{ env.BASE_URL }}" | sed 's|https://||' | sed 's|/.*||')
+          bash ${{ env.HEALTH_CHECK_SCRIPTS_PATH }}/ssl-tls-validator.sh \
+            "$HOSTNAME" 443 30
+        continue-on-error: true
+
+      - name: Performance Test
+        id: perf-test
+        run: |
+          bash ${{ env.HEALTH_CHECK_SCRIPTS_PATH }}/performance-tester.sh \
+            "${{ env.BASE_URL }}" 50 500 10
+        continue-on-error: true
+
+      - name: Evaluate Results
+        id: evaluate
+        run: |
+          FAILED=0
+
+          [ "${{ steps.http-check.outcome }}" != "success" ] && FAILED=$((FAILED+1))
+          [ "${{ steps.api-check.outcome }}" != "success" ] && FAILED=$((FAILED+1))
+          [ "${{ steps.mcp-check.outcome }}" != "success" ] && FAILED=$((FAILED+1))
+          [ "${{ steps.ssl-check.outcome }}" != "success" ] && FAILED=$((FAILED+1))
+          [ "${{ steps.perf-test.outcome }}" != "success" ] && FAILED=$((FAILED+1))
+
+          echo "failed_checks=$FAILED" >> $GITHUB_OUTPUT
+
+          if [ $FAILED -gt 0 ]; then
+            echo "::error::$FAILED health checks failed"
+            exit 1
+          else
+            echo "::notice::All health checks passed successfully"
+            exit 0
+          fi
+
+      - name: Notify on Failure
+        if: failure()
+        uses: slackapi/slack-github-action@v1.24.0
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            {
+              "text": "Health Check Failed",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "🚨 Health Check Failed: ${{ inputs.environment }}"
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Environment:*\n${{ inputs.environment }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Failed Checks:*\n${{ steps.evaluate.outputs.failed_checks }}"
+                    }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Details>"
+                  }
+                }
+              ]
+            }
+
+# ============================================
+# GitLab CI Example
+# ============================================
+# File: .gitlab-ci.yml
+
+.health-check-template:
+  image: ubuntu:22.04
+  before_script:
+    - apt-get update && apt-get install -y curl jq openssl bc
+  timeout: 15 minutes
+
+health-check:staging:
+  extends: .health-check-template
+  stage: test
+  environment:
+    name: staging
+  variables:
+    BASE_URL: "https://staging.example.com"
+    API_URL: "https://api.staging.example.com"
+    MCP_URL: "https://mcp.staging.example.com"
+  script:
+    - bash scripts/health-checks/http-health-check.sh "$BASE_URL" 200 3000
+    - bash scripts/health-checks/api-health-check.sh "$API_URL/health" "Bearer $API_TOKEN" ".status" "ok"
+    - bash scripts/health-checks/mcp-server-health-check.sh "$MCP_URL"
+    - bash scripts/health-checks/ssl-tls-validator.sh staging.example.com 443 30
+    - bash scripts/health-checks/performance-tester.sh "$BASE_URL" 50 500 10
+  only:
+    - merge_requests
+    - staging
+  allow_failure: false
+
+health-check:production:
+  extends: .health-check-template
+  stage: deploy
+  environment:
+    name: production
+  variables:
+    BASE_URL: "https://example.com"
+    API_URL: "https://api.example.com"
+    MCP_URL: "https://mcp.example.com"
+  script:
+    - bash scripts/health-checks/http-health-check.sh "$BASE_URL" 200 3000
+    - bash scripts/health-checks/api-health-check.sh "$API_URL/health" "Bearer $API_TOKEN" ".status" "ok"
+    - bash scripts/health-checks/mcp-server-health-check.sh "$MCP_URL"
+    - bash scripts/health-checks/ssl-tls-validator.sh example.com 443 30
+    - bash scripts/health-checks/performance-tester.sh "$BASE_URL" 100 1000 10
+  only:
+    - main
+    - master
+  when: on_success
+  allow_failure: false
+
+# ============================================
+# Jenkins Pipeline Example
+# ============================================
+# File: Jenkinsfile
+
+pipeline {
+    agent any
+
+    parameters {
+        choice(
+            name: 'ENVIRONMENT',
+            choices: ['staging', 'production'],
+            description: 'Environment to check'
+        )
+    }
+
+    environment {
+        HEALTH_CHECK_SCRIPTS = "${WORKSPACE}/scripts/health-checks"
+    }
+
+    stages {
+        stage('Setup') {
+            steps {
+                script {
+                    if (params.ENVIRONMENT == 'production') {
+                        env.BASE_URL = 'https://example.com'
+                        env.API_URL = 'https://api.example.com'
+                        env.MCP_URL = 'https://mcp.example.com'
+                    } else {
+                        env.BASE_URL = 'https://staging.example.com'
+                        env.API_URL = 'https://api.staging.example.com'
+                        env.MCP_URL = 'https://mcp.staging.example.com'
+                    }
+                }
+            }
+        }
+
+        stage('HTTP Health Check') {
+            steps {
+                sh """
+                    bash ${HEALTH_CHECK_SCRIPTS}/http-health-check.sh \
+                        ${BASE_URL} 200 3000
+                """
+            }
+        }
+
+        stage('API Health Check') {
+            steps {
+                withCredentials([string(credentialsId: 'api-token', variable: 'API_TOKEN')]) {
+                    sh """
+                        bash ${HEALTH_CHECK_SCRIPTS}/api-health-check.sh \
+                            ${API_URL}/health "Bearer ${API_TOKEN}" ".status" "ok"
+                    """
+                }
+            }
+        }
+
+        stage('MCP Server Health Check') {
+            steps {
+                sh """
+                    bash ${HEALTH_CHECK_SCRIPTS}/mcp-server-health-check.sh \
+                        ${MCP_URL}
+                """
+            }
+        }
+
+        stage('SSL Certificate Check') {
+            steps {
+                script {
+                    def hostname = env.BASE_URL.replaceAll('https://', '').split('/')[0]
+                    sh """
+                        bash ${HEALTH_CHECK_SCRIPTS}/ssl-tls-validator.sh \
+                            ${hostname} 443 30
+                    """
+                }
+            }
+        }
+
+        stage('Performance Test') {
+            steps {
+                sh """
+                    bash ${HEALTH_CHECK_SCRIPTS}/performance-tester.sh \
+                        ${BASE_URL} 50 500 10
+                """
+            }
+        }
+    }
+
+    post {
+        failure {
+            slackSend(
+                color: 'danger',
+                message: "Health Check Failed: ${params.ENVIRONMENT}\nBuild: ${env.BUILD_URL}"
+            )
+        }
+        success {
+            slackSend(
+                color: 'good',
+                message: "Health Check Passed: ${params.ENVIRONMENT}\nBuild: ${env.BUILD_URL}"
+            )
+        }
+    }
+}

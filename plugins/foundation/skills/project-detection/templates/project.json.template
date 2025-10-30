@@ -1,0 +1,78 @@
+{
+  "name": "${PROJECT_NAME}",
+  "version": "1.0.0",
+  "description": "${PROJECT_DESCRIPTION}",
+  "language": "${PRIMARY_LANGUAGE}",
+  "package_manager": "${PACKAGE_MANAGER}",
+  "frameworks": [
+    {
+      "name": "${FRAMEWORK_NAME}",
+      "version": "${FRAMEWORK_VERSION}",
+      "confidence": "high|medium|low",
+      "evidence": "${EVIDENCE_FILE}"
+    }
+  ],
+  "dependencies": {
+    "production": [
+      {
+        "name": "${PACKAGE_NAME}",
+        "version": "${PACKAGE_VERSION}",
+        "type": "production",
+        "source": "${SOURCE_FILE}"
+      }
+    ],
+    "development": [
+      {
+        "name": "${DEV_PACKAGE_NAME}",
+        "version": "${DEV_PACKAGE_VERSION}",
+        "type": "development",
+        "source": "${SOURCE_FILE}"
+      }
+    ],
+    "all": []
+  },
+  "ai_stack": [
+    {
+      "name": "${AI_COMPONENT_NAME}",
+      "type": "sdk|framework|vector-db|embeddings|ml-library",
+      "version": "${VERSION}",
+      "evidence": "${EVIDENCE_FILE}"
+    }
+  ],
+  "databases": [
+    {
+      "name": "${DATABASE_NAME}",
+      "type": "database|orm|cache|database-service",
+      "version": "${VERSION}",
+      "evidence": "${EVIDENCE_FILE}"
+    }
+  ],
+  "build_tools": [
+    "${BUILD_TOOL_1}",
+    "${BUILD_TOOL_2}"
+  ],
+  "test_frameworks": [
+    "${TEST_FRAMEWORK_1}",
+    "${TEST_FRAMEWORK_2}"
+  ],
+  "deployment_targets": [
+    "${DEPLOYMENT_TARGET}"
+  ],
+  "monorepo": {
+    "enabled": false,
+    "tool": "turborepo|nx|lerna|yarn-workspaces|pnpm-workspaces",
+    "packages": []
+  },
+  "ci_cd": {
+    "provider": "github-actions|gitlab-ci|circleci|jenkins",
+    "config_file": "${CI_CONFIG_PATH}"
+  },
+  "metadata": {
+    "detected_at": "${DETECTION_TIMESTAMP}",
+    "detection_version": "1.0.0",
+    "project_path": "${PROJECT_PATH}",
+    "git_repository": "${GIT_REPO_URL}",
+    "primary_maintainer": "${MAINTAINER}",
+    "license": "${LICENSE}"
+  }
+}

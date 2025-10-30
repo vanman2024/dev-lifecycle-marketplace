@@ -1,0 +1,268 @@
+{
+  "dashboard": {
+    "title": "Health Checks Monitoring Dashboard",
+    "description": "Real-time monitoring dashboard for deployment health checks",
+    "tags": ["health-checks", "monitoring", "deployment"],
+    "timezone": "browser",
+    "schemaVersion": 16,
+    "version": 1,
+    "refresh": "30s",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Overall Health Status",
+        "type": "stat",
+        "gridPos": {
+          "x": 0,
+          "y": 0,
+          "w": 6,
+          "h": 4
+        },
+        "targets": [
+          {
+            "expr": "sum(health_check_success) / sum(health_check_total) * 100",
+            "legendFormat": "Success Rate"
+          }
+        ],
+        "options": {
+          "colorMode": "background",
+          "graphMode": "none",
+          "orientation": "auto",
+          "textMode": "auto"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percent",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red",
+                  "value": 0
+                },
+                {
+                  "color": "yellow",
+                  "value": 90
+                },
+                {
+                  "color": "green",
+                  "value": 95
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "Average Response Time",
+        "type": "graph",
+        "gridPos": {
+          "x": 6,
+          "y": 0,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "avg(health_check_response_time_ms) by (endpoint)",
+            "legendFormat": "{{endpoint}}"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "ms",
+            "label": "Response Time"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Endpoint Status",
+        "type": "table",
+        "gridPos": {
+          "x": 0,
+          "y": 4,
+          "w": 6,
+          "h": 8
+        },
+        "targets": [
+          {
+            "expr": "health_check_status",
+            "format": "table",
+            "instant": true
+          }
+        ],
+        "transformations": [
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {},
+              "indexByName": {},
+              "renameByName": {
+                "endpoint": "Endpoint",
+                "status": "Status",
+                "Value": "Last Check"
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Response Time Distribution (P95)",
+        "type": "graph",
+        "gridPos": {
+          "x": 6,
+          "y": 8,
+          "w": 12,
+          "h": 6
+        },
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, sum(rate(health_check_response_time_bucket[5m])) by (endpoint, le))",
+            "legendFormat": "{{endpoint}} (p95)"
+          }
+        ],
+        "yaxes": [
+          {
+            "format": "ms",
+            "label": "P95 Response Time"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "HTTP Status Codes",
+        "type": "piechart",
+        "gridPos": {
+          "x": 0,
+          "y": 12,
+          "w": 6,
+          "h": 6
+        },
+        "targets": [
+          {
+            "expr": "sum by (status_code) (health_check_http_status_total)",
+            "legendFormat": "{{status_code}}"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "SSL Certificate Expiry",
+        "type": "gauge",
+        "gridPos": {
+          "x": 6,
+          "y": 14,
+          "w": 6,
+          "h": 6
+        },
+        "targets": [
+          {
+            "expr": "ssl_cert_days_until_expiry",
+            "legendFormat": "{{hostname}}"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "days",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red",
+                  "value": 0
+                },
+                {
+                  "color": "yellow",
+                  "value": 7
+                },
+                {
+                  "color": "orange",
+                  "value": 30
+                },
+                {
+                  "color": "green",
+                  "value": 60
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 7,
+        "title": "Performance Test Results",
+        "type": "graph",
+        "gridPos": {
+          "x": 12,
+          "y": 14,
+          "w": 12,
+          "h": 6
+        },
+        "targets": [
+          {
+            "expr": "performance_test_requests_per_second",
+            "legendFormat": "Requests/sec"
+          },
+          {
+            "expr": "performance_test_success_rate",
+            "legendFormat": "Success Rate %"
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "title": "Recent Failures",
+        "type": "logs",
+        "gridPos": {
+          "x": 0,
+          "y": 20,
+          "w": 24,
+          "h": 6
+        },
+        "targets": [
+          {
+            "expr": "{job=\"health-checks\"} |= \"FAILED\"",
+            "legendFormat": ""
+          }
+        ]
+      }
+    ],
+    "templating": {
+      "list": [
+        {
+          "name": "datasource",
+          "type": "datasource",
+          "query": "prometheus"
+        },
+        {
+          "name": "environment",
+          "type": "query",
+          "query": "label_values(health_check_status, environment)",
+          "multi": true,
+          "includeAll": true
+        },
+        {
+          "name": "endpoint",
+          "type": "query",
+          "query": "label_values(health_check_status, endpoint)",
+          "multi": true,
+          "includeAll": true
+        }
+      ]
+    },
+    "annotations": {
+      "list": [
+        {
+          "name": "Deployments",
+          "datasource": "Prometheus",
+          "expr": "deployment_timestamp",
+          "iconColor": "blue",
+          "tagKeys": "version,environment"
+        }
+      ]
+    }
+  }
+}

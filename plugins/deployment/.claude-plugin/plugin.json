@@ -1,0 +1,18 @@
+{
+  "name": "deployment",
+  "version": "1.0.0",
+  "description": "Automated deployment orchestration for AI applications - detects project type and routes to appropriate platform (FastMCP Cloud, DigitalOcean, Vercel, Hostinger, Netlify, Cloudflare Pages)",
+  "author": {
+    "name": "AI Dev Marketplace",
+    "email": "marketplace@aidev.tools"
+  },
+  "keywords": ["deployment", "ci-cd", "fastmcp", "digitalocean", "vercel", "hosting", "devops"],
+  "category": "deployment",
+  "homepage": "https://github.com/ai-dev-marketplace/plugins/tree/master/deployment",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ai-dev-marketplace/plugins.git",
+    "directory": "plugins/deployment"
+  },
+  "license": "MIT"
+}

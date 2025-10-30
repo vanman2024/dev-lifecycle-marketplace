@@ -1,0 +1,165 @@
+{
+  "dockerHealthCheck": {
+    "description": "Docker HEALTHCHECK instruction templates for various service types",
+    "examples": [
+      {
+        "name": "HTTP Service",
+        "dockerfile": {
+          "HEALTHCHECK": {
+            "test": ["CMD", "curl", "-f", "http://localhost:3000/health"],
+            "interval": "30s",
+            "timeout": "10s",
+            "retries": 3,
+            "start_period": "40s"
+          }
+        },
+        "dockerfileSnippet": "# HTTP Service Health Check\nHEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=40s \\\n  CMD curl -f http://localhost:3000/health || exit 1"
+      },
+      {
+        "name": "API Service with JSON Response",
+        "dockerfile": {
+          "HEALTHCHECK": {
+            "test": [
+              "CMD-SHELL",
+              "curl -f http://localhost:8080/health | jq -e '.status == \"ok\"' || exit 1"
+            ],
+            "interval": "30s",
+            "timeout": "10s",
+            "retries": 3,
+            "start_period": "40s"
+          }
+        },
+        "dockerfileSnippet": "# API Service Health Check with JSON validation\nHEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=40s \\\n  CMD curl -f http://localhost:8080/health | jq -e '.status == \"ok\"' || exit 1"
+      },
+      {
+        "name": "Database Service",
+        "dockerfile": {
+          "HEALTHCHECK": {
+            "test": [
+              "CMD-SHELL",
+              "pg_isready -U postgres -d mydb || exit 1"
+            ],
+            "interval": "10s",
+            "timeout": "5s",
+            "retries": 5,
+            "start_period": "30s"
+          }
+        },
+        "dockerfileSnippet": "# PostgreSQL Database Health Check\nHEALTHCHECK --interval=10s --timeout=5s --retries=5 --start-period=30s \\\n  CMD pg_isready -U postgres -d mydb || exit 1"
+      },
+      {
+        "name": "Redis Cache",
+        "dockerfile": {
+          "HEALTHCHECK": {
+            "test": ["CMD", "redis-cli", "ping"],
+            "interval": "10s",
+            "timeout": "3s",
+            "retries": 3,
+            "start_period": "10s"
+          }
+        },
+        "dockerfileSnippet": "# Redis Health Check\nHEALTHCHECK --interval=10s --timeout=3s --retries=3 --start-period=10s \\\n  CMD redis-cli ping || exit 1"
+      },
+      {
+        "name": "MCP Server",
+        "dockerfile": {
+          "HEALTHCHECK": {
+            "test": [
+              "CMD-SHELL",
+              "curl -X POST http://localhost:3000/mcp -H 'Content-Type: application/json' -d '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2024-11-05\",\"capabilities\":{},\"clientInfo\":{\"name\":\"healthcheck\",\"version\":\"1.0.0\"}}}' | jq -e '.result.protocolVersion' || exit 1"
+            ],
+            "interval": "30s",
+            "timeout": "15s",
+            "retries": 3,
+            "start_period": "60s"
+          }
+        },
+        "dockerfileSnippet": "# MCP Server Health Check\nHEALTHCHECK --interval=30s --timeout=15s --retries=3 --start-period=60s \\\n  CMD curl -X POST http://localhost:3000/mcp \\\n    -H 'Content-Type: application/json' \\\n    -d '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2024-11-05\",\"capabilities\":{},\"clientInfo\":{\"name\":\"healthcheck\",\"version\":\"1.0.0\"}}}' \\\n    | jq -e '.result.protocolVersion' || exit 1"
+      },
+      {
+        "name": "Next.js Application",
+        "dockerfile": {
+          "HEALTHCHECK": {
+            "test": ["CMD", "curl", "-f", "http://localhost:3000/api/health"],
+            "interval": "30s",
+            "timeout": "10s",
+            "retries": 3,
+            "start_period": "60s"
+          }
+        },
+        "dockerfileSnippet": "# Next.js Application Health Check\nHEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=60s \\\n  CMD curl -f http://localhost:3000/api/health || exit 1"
+      },
+      {
+        "name": "Custom Script Based",
+        "dockerfile": {
+          "HEALTHCHECK": {
+            "test": ["CMD", "/app/health-check.sh"],
+            "interval": "30s",
+            "timeout": "10s",
+            "retries": 3,
+            "start_period": "40s"
+          }
+        },
+        "dockerfileSnippet": "# Custom Health Check Script\n# Note: Ensure health-check.sh is copied to /app/ and is executable\nCOPY health-check.sh /app/health-check.sh\nRUN chmod +x /app/health-check.sh\n\nHEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=40s \\\n  CMD /app/health-check.sh"
+      }
+    ],
+    "dockerComposeExample": {
+      "description": "Docker Compose health check configuration",
+      "yaml": "version: '3.8'\n\nservices:\n  web:\n    image: myapp:latest\n    healthcheck:\n      test: [\"CMD\", \"curl\", \"-f\", \"http://localhost:3000/health\"]\n      interval: 30s\n      timeout: 10s\n      retries: 3\n      start_period: 40s\n    depends_on:\n      db:\n        condition: service_healthy\n\n  db:\n    image: postgres:15\n    healthcheck:\n      test: [\"CMD-SHELL\", \"pg_isready -U postgres\"]\n      interval: 10s\n      timeout: 5s\n      retries: 5\n      start_period: 30s\n\n  redis:\n    image: redis:7-alpine\n    healthcheck:\n      test: [\"CMD\", \"redis-cli\", \"ping\"]\n      interval: 10s\n      timeout: 3s\n      retries: 3\n      start_period: 10s\n\n  api:\n    image: myapi:latest\n    healthcheck:\n      test: |\n        CMD-SHELL curl -f http://localhost:8080/health \\\n          | jq -e '.status == \"ok\"' || exit 1\n      interval: 30s\n      timeout: 10s\n      retries: 3\n      start_period: 40s\n    depends_on:\n      db:\n        condition: service_healthy\n      redis:\n        condition: service_healthy"
+    },
+    "kubernetesExample": {
+      "description": "Kubernetes liveness and readiness probes",
+      "yaml": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: myapp\nspec:\n  containers:\n  - name: app\n    image: myapp:latest\n    ports:\n    - containerPort: 3000\n\n    # Liveness probe - determines if container should be restarted\n    livenessProbe:\n      httpGet:\n        path: /health\n        port: 3000\n      initialDelaySeconds: 40\n      periodSeconds: 30\n      timeoutSeconds: 10\n      failureThreshold: 3\n      successThreshold: 1\n\n    # Readiness probe - determines if container can receive traffic\n    readinessProbe:\n      httpGet:\n        path: /ready\n        port: 3000\n      initialDelaySeconds: 20\n      periodSeconds: 10\n      timeoutSeconds: 5\n      failureThreshold: 3\n      successThreshold: 1\n\n    # Startup probe - for slow-starting containers\n    startupProbe:\n      httpGet:\n        path: /health\n        port: 3000\n      initialDelaySeconds: 0\n      periodSeconds: 10\n      timeoutSeconds: 5\n      failureThreshold: 30  # Allow up to 5 minutes for startup\n      successThreshold: 1"
+    },
+    "bestPractices": [
+      "Set start_period longer than application startup time",
+      "Use interval that balances responsiveness and resource usage",
+      "Set timeout less than interval to avoid overlapping checks",
+      "Use retries to handle transient failures",
+      "Keep health checks lightweight and fast",
+      "Check critical dependencies in health endpoint",
+      "Return appropriate HTTP status codes (200 for healthy)",
+      "Include health check endpoint in your application",
+      "Test health checks locally before deployment",
+      "Monitor health check failures in production"
+    ],
+    "healthCheckParameters": {
+      "interval": {
+        "description": "Time between health checks",
+        "default": "30s",
+        "recommendations": {
+          "fast": "10s - For critical services",
+          "normal": "30s - For most services",
+          "slow": "60s - For resource-intensive checks"
+        }
+      },
+      "timeout": {
+        "description": "Maximum time allowed for health check",
+        "default": "10s",
+        "recommendations": {
+          "fast": "3s - For simple checks",
+          "normal": "10s - For most checks",
+          "slow": "15s - For complex checks"
+        }
+      },
+      "retries": {
+        "description": "Number of consecutive failures before unhealthy",
+        "default": "3",
+        "recommendations": {
+          "strict": "1 - Fail fast",
+          "normal": "3 - Handle transient errors",
+          "lenient": "5 - For flaky services"
+        }
+      },
+      "start_period": {
+        "description": "Grace period for container initialization",
+        "default": "40s",
+        "recommendations": {
+          "fast": "10s - For lightweight apps",
+          "normal": "40s - For most apps",
+          "slow": "120s - For heavy initialization"
+        }
+      }
+    }
+  }
+}

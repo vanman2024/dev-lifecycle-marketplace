@@ -1,6 +1,8 @@
 # Development Lifecycle Marketplace
 
-**Tech-agnostic workflow automation - from spec to production in 5 lifecycle phases.**
+**Tech-agnostic workflow automation - from init to deploy in 5 lifecycle phases.**
+
+**Version**: 2.0.0 (Rebuilt October 2025)
 
 ---
 
@@ -14,14 +16,14 @@ The **dev-lifecycle-marketplace** provides structured development workflow plugi
 
 ## Architecture: 5 Lifecycle Plugins
 
-### 1. **01-core** - Foundation & Setup
-Initialize projects, detect tech stack, configure version control, set up MCP servers
+### 1. **foundation** - Foundation & Setup
+Initialize projects, detect tech stack, configure environment
 
 **Commands:**
-- `/core:init` - Initialize project structure
-- `/core:detect` - Detect and document tech stack
-- `/core:project-setup` - Complete project setup
-- `/core:upgrade-to` - Upgrade dependencies
+- `/foundation:init` - Initialize project structure
+- `/foundation:detect-stack` - Detect and document tech stack
+- `/foundation:setup-env` - Setup environment configuration
+- `/foundation:verify-setup` - Verify project setup
 
 **What it does:**
 - Creates `.claude/project.json` with detected framework, languages, structure
@@ -29,378 +31,274 @@ Initialize projects, detect tech stack, configure version control, set up MCP se
 - Sets up MCP configuration
 - Bootstraps project from scratch OR detects existing project
 
----
-
-### 2. **02-develop** - Code Generation & Implementation
-Build features, scaffold code, implement functionality
-
-**Commands:**
-- `/develop:feature` - Implement new features
-- `/develop:component` - Create components
-- `/develop:api` - Build API endpoints
-- `/develop:scaffold` - Generate boilerplate code
-
-**What it does:**
-- Reads `.claude/project.json` to understand your tech stack
-- Generates code following your project's patterns
-- Uses framework-specific conventions (Next.js vs Django vs Rails, etc.)
-- Integrates with planning specs
+**Components:**
+- 4 commands
+- 1 agent (stack-detector)
+- 3 skills (framework-detection, environment-setup, project-initialization)
 
 ---
 
-### 3. **03-planning** - Spec → Architecture
-Create specifications, plans, architecture, documentation
+### 2. **planning** - Planning & Architecture
+Create specifications, architecture designs, roadmaps, and ADRs
 
 **Commands:**
-- `/planning:spec-create` - Create project specifications
+- `/planning:plan` - Create comprehensive project plans
+- `/planning:spec` - Write feature specifications
 - `/planning:architecture` - Design system architecture
-- `/planning:roadmap` - Create development roadmap
+- `/planning:roadmap` - Create project roadmaps
+- `/planning:decisions` - Document architectural decisions (ADRs)
 
 **What it does:**
-- Generates specs in `specs/` directory
-- Creates architecture documentation
-- Plans features and milestones
-- Documents technical decisions
+- Reads `.claude/project.json` to understand your project
+- Creates detailed specifications and architecture documents
+- Generates roadmaps with timelines
+- Documents architectural decisions as ADRs
+- Provides planning templates and patterns
+
+**Components:**
+- 5 commands
+- 4 agents (spec-writer, architecture-designer, roadmap-planner, decision-documenter)
+- 3 skills (specification-templates, architecture-patterns, adr-templates)
 
 ---
 
-### 4. **04-iterate** - Refinement & Adjustment
-Modify, refactor, enhance, sync during active development
+### 3. **iterate** - Iterative Development
+Task management, code adjustments, refactoring, feature enhancement
 
 **Commands:**
-- `/iterate:adjust` - Modify existing features
-- `/iterate:sync` - Coordinate multi-agent work
-- `/iterate:tasks` - Task management
+- `/iterate:adjust` - Adjust implementation based on feedback
+- `/iterate:sync` - Sync implementation with specifications
+- `/iterate:tasks` - Transform sequential tasks into layered tasks with agent assignments
 
 **What it does:**
-- Makes targeted adjustments to code
-- Coordinates changes across multiple agents
-- Manages task lists and priorities
-- Refactors code while preserving functionality
+- Manages iterative development workflows
+- Adjusts and refactors code based on feedback
+- Enhances existing features
+- Transforms tasks.md into organized layered-tasks.md with agent assignments
+- Preserves critical task-layering agent from legacy system
+
+**Components:**
+- 3 commands
+- 4 agents (implementation-adjuster, feature-enhancer, code-refactorer, task-layering)
+- 1 skill (task-management)
+
+**Special Note:** Preserves the critical task-layering agent that intelligently assigns agents to tasks.
 
 ---
 
-### 5. **05-quality** - Testing & Validation
-Test, validate, secure, optimize, ensure compliance
+### 4. **quality** - Testing & Quality Assurance
+Standardized testing with Newman/Postman, Playwright, security scanning
 
 **Commands:**
-- `/quality:test` - Run all tests
-- `/quality:test-generate` - Generate test suites
-- `/quality:validate` - Comprehensive validation
-- `/quality:security` - Security audit
-- `/quality:performance` - Performance analysis
+- `/quality:test` - Run comprehensive test suite (Newman API, Playwright E2E, security scans)
+- `/quality:security` - Run security scans and vulnerability checks
+- `/quality:performance` - Analyze performance and identify bottlenecks
 
 **What it does:**
-- Detects your test framework (Jest, Pytest, Go test, RSpec, etc.)
-- Generates framework-appropriate tests
-- Runs security audits
-- Validates compliance
-- Checks performance
+- **Newman/Postman**: API testing with collections, environments, assertions
+- **Playwright**: E2E browser testing with page object models
+- **DigitalOcean Webhooks**: $4-6/month webhook testing infrastructure
+- **Security Scanning**: npm audit, safety, bandit, secret detection
+- **Performance Analysis**: Lighthouse, profiling, bottleneck identification
 
-**Testing Infrastructure:**
-The root directory contains testing harnesses that 05-quality configures:
-- `test-automation.js` - Test orchestration
-- `test-real-mcp.js` - MCP testing utilities
-- `playwright-mcp-wrapper.js` - Playwright wrapper for E2E tests
-- `package.json` - Testing framework dependencies
+**Components:**
+- 3 commands
+- 4 agents (test-generator, security-scanner, performance-analyzer, compliance-checker)
+- 3 skills (newman-testing, playwright-e2e, security-patterns)
 
-These get adapted based on your detected project type.
+**Note:** Skills have comprehensive documentation but require full implementation (scripts, templates, examples).
 
 ---
 
-## How It Works: Tech-Agnostic Design
+### 5. **deployment** - Deployment Orchestration
+Automated deployment with platform detection
 
-### Detection System
+**Commands:**
+- `/deployment:deploy` - Deploy application to detected platform
+- `/deployment:prepare` - Prepare project for deployment
+- `/deployment:validate` - Validate deployment configuration
+- `/deployment:rollback` - Rollback to previous deployment
 
-All lifecycle plugins read `.claude/project.json`:
+**What it does:**
+- **Platform Detection**: Auto-detects project type and routes to appropriate platform
+- **FastMCP Cloud**: MCP server hosting
+- **Vercel**: Next.js/frontend deployments
+- **Railway**: Backend/database deployments
+- **DigitalOcean**: Full-stack hosting ($4-6/month)
+- **Netlify/Cloudflare Pages**: Static site deployments
 
-```json
-{
-  "framework": "nextjs",
-  "language": "typescript",
-  "ui_library": "react",
-  "css": "tailwind",
-  "database": "supabase",
-  "ai_sdk": "vercel-ai-sdk",
-  "test_framework": "jest",
-  "package_manager": "npm"
-}
-```
-
-This file is created by `/core:detect` and used by ALL other lifecycle commands.
-
-### Example: Testing Different Frameworks
-
-When you run `/quality:test`:
-
-**Next.js project detected:**
-```bash
-npm run test  # Runs Jest tests
-```
-
-**Python/Django project detected:**
-```bash
-pytest tests/  # Runs Pytest
-```
-
-**Go project detected:**
-```bash
-go test ./...  # Runs Go tests
-```
-
-**Rails project detected:**
-```bash
-bundle exec rspec  # Runs RSpec
-```
-
-Same command, different execution based on detected stack!
+**Components:**
+- 4 commands
+- 3 agents (deployment-detector, deployment-deployer, deployment-validator)
+- 3 skills (platform-detection, deployment-scripts, health-checks)
 
 ---
 
-## How It Works with Tech Plugins
+## Plugin Component Summary
 
-Lifecycle plugins work TOGETHER with tech-specific plugins from [ai-dev-marketplace](https://github.com/vanman2024/ai-dev-marketplace):
+| Plugin | Commands | Agents | Skills | Total |
+|--------|----------|--------|--------|-------|
+| foundation | 4 | 1 | 3 | 8 |
+| planning | 5 | 4 | 3 | 12 |
+| iterate | 3 | 4 | 1 | 8 |
+| quality | 3 | 4 | 3 | 10 |
+| deployment | 4 | 3 | 3 | 10 |
+| **TOTAL** | **19** | **16** | **13** | **48** |
 
-```
-┌─────────────────────────────────────────┐
-│  dev-lifecycle-marketplace (THIS REPO)  │  ← HOW you develop
-│  - 01-core, 02-develop, 03-planning     │    (Process & workflow)
-│  - 04-iterate, 05-quality               │
-└─────────────────────────────────────────┘
-              ↓ works with
-┌─────────────────────────────────────────┐
-│  ai-dev-marketplace                     │  ← WHAT you develop with
-│  - vercel-ai-sdk, mem0, supabase        │    (SDKs & frameworks)
-│  - nextjs, react, etc.                  │
-└─────────────────────────────────────────┘
-```
+---
 
-### Complete Workflow Example
+## Quick Start
 
+### 1. Initialize New Project
 ```bash
-# 1. Initialize with lifecycle (tech-agnostic)
-/core:init my-ai-chatbot
+/foundation:init my-new-project
+```
 
-# 2. Install tech plugins from ai-dev-marketplace
-claude plugin install vercel-ai-sdk --source github:vanman2024/ai-dev-marketplace
-claude plugin install supabase --source github:vanman2024/ai-dev-marketplace
+### 2. Create Specifications
+```bash
+/planning:spec "user authentication feature"
+```
 
-# 3. Create architecture plan (lifecycle)
-/planning:spec-create ai-chatbot
+### 3. Manage Tasks
+```bash
+/iterate:tasks
+```
 
-# 4. Initialize tech tools (tech-specific)
-/vercel-ai-sdk:new-app my-chatbot
-/supabase:init
-
-# 5. Build features (tech-specific)
-/vercel-ai-sdk:add-streaming
-/vercel-ai-sdk:add-data-features
-
-# 6. Test and validate (lifecycle - detects Jest/Vitest automatically)
-/quality:test-generate
+### 4. Run Tests
+```bash
 /quality:test
-
-# 7. Iterate and refine (lifecycle)
-/iterate:adjust "Add conversation search"
-
-# 8. Final validation (lifecycle)
-/quality:security
-/quality:performance
-
-# 9. Deploy (lifecycle - detects Vercel/AWS/etc.)
-/deploy:run
 ```
 
-**Result:** Lifecycle provides structure, tech plugins provide implementation.
-
----
-
-## Framework Agnostic Examples
-
-### Detecting Your Stack
-
+### 5. Deploy
 ```bash
-/core:detect
-
-# Output for Next.js project:
-# ✅ Framework: Next.js 14 (App Router)
-# ✅ Language: TypeScript
-# ✅ UI: React + Tailwind CSS
-# ✅ Package Manager: npm
-# ✅ Saved to .claude/project.json
-
-# Output for Django project:
-# ✅ Framework: Django 5.0
-# ✅ Language: Python 3.11
-# ✅ Database: PostgreSQL
-# ✅ Package Manager: pip
-# ✅ Saved to .claude/project.json
-
-# Output for Go project:
-# ✅ Framework: Go 1.21
-# ✅ Web Framework: Gin
-# ✅ Database: PostgreSQL
-# ✅ Package Manager: go mod
-# ✅ Saved to .claude/project.json
-```
-
-### Generating Tests (Framework-Aware)
-
-```bash
-/quality:test-generate
-
-# For TypeScript/Jest:
-# ✅ Created tests/api/chat.test.ts
-# ✅ Created tests/components/ChatUI.test.tsx
-# ✅ Using Jest + React Testing Library
-
-# For Python/Pytest:
-# ✅ Created tests/test_api.py
-# ✅ Created tests/test_models.py
-# ✅ Using Pytest + fixtures
-
-# For Go:
-# ✅ Created api/chat_test.go
-# ✅ Created models/conversation_test.go
-# ✅ Using Go testing package
+/deployment:deploy
 ```
 
 ---
 
-## When to Use Lifecycle Plugins
+## Migration from v1.x
 
-### ✅ Use Lifecycle Plugins When:
-- You want structured development phases
-- Working on complex multi-phase projects
-- Coordinating multiple agents
-- Need consistent workflow across different tech stacks
-- Want automated testing/validation infrastructure
+If you're upgrading from the old numbered plugin structure (01-core, 02-develop, etc.), see [MIGRATION.md](./MIGRATION.md) for detailed migration instructions.
 
-### ⚠️ Don't Need Lifecycle Plugins When:
-- Quick prototyping with single tech stack
-- Already have your own workflow/process
-- Just want to use specific SDK (Vercel AI, etc.)
-- Prefer manual control over each step
-
-**Lifecycle plugins are OPTIONAL** - tech plugins work standalone!
+**Quick Summary:**
+- `01-core` → `foundation`
+- `02-develop` → (removed - functionality distributed)
+- `03-planning` → `planning`
+- `04-iterate` → `iterate`
+- `05-quality` → `quality`
+- `06-deployment` → `deployment`
 
 ---
 
-## Installation
+## Key Changes in v2.0
 
-### Option 1: Install from GitHub
+### Architecture Improvements
 
-```bash
-# Install entire lifecycle marketplace
-claude marketplace add dev-lifecycle-marketplace \
-  --source github:vanman2024/dev-lifecycle-marketplace
+1. **Clean Naming**: Removed numbered prefixes for better usability
+2. **Standardized Testing**: Newman/Postman for APIs, Playwright for E2E
+3. **Standardized Deployment**: Platform auto-detection with FastMCP Cloud, Vercel, Railway, DigitalOcean
+4. **Preserved Critical Components**: task-layering agent migrated successfully
+5. **Removed 02-develop**: Functionality distributed to other plugins
 
-# Install individual lifecycle plugins
-claude plugin install 01-core \
-  --source github:vanman2024/dev-lifecycle-marketplace/plugins/01-core
-```
+### Quality Plugin Standardization
 
-### Option 2: Clone and Install Locally
+- **Newman/Postman**: Standardized API testing framework
+- **Playwright**: Standardized E2E testing framework
+- **DigitalOcean**: Cost-effective webhook testing ($4-6/month)
+- **Security Scanning**: Comprehensive vulnerability detection
 
-```bash
-# Clone repository
-git clone https://github.com/vanman2024/dev-lifecycle-marketplace.git
-cd dev-lifecycle-marketplace
+### Deployment Plugin Standardization
 
-# Install plugins
-claude plugin install 01-core --project
-claude plugin install 02-develop --project
-claude plugin install 03-planning --project
-claude plugin install 04-iterate --project
-claude plugin install 05-quality --project
-```
-
-### Option 3: Use with Tech Stack Marketplace
-
-Some tech stack marketplaces automatically include lifecycle plugins:
-
-```bash
-# Install a curated tech stack that includes lifecycle
-claude marketplace add ai-chatbot-stack-complete \
-  --source github:vanman2024/ai-chatbot-stack-marketplace
-
-# This might include:
-# - dev-lifecycle-marketplace (lifecycle workflow)
-# - vercel-ai-sdk, mem0, supabase (tech stack)
-```
+- **Auto-detection**: Detects project type and routes to appropriate platform
+- **Multi-platform**: FastMCP Cloud, Vercel, Railway, DigitalOcean, Netlify
+- **Cost-optimized**: DigitalOcean option at $4-6/month
 
 ---
 
-## Testing Infrastructure
+## Development Workflow
 
-The root directory contains testing harnesses that work across frameworks:
+### Typical Full-Stack Project Workflow
 
-### test-automation.js
-- Test orchestration and execution
-- Framework detection (Jest, Vitest, Pytest, RSpec, Go test)
-- Parallel test running
-- Coverage reporting
+1. **Initialize** (`/foundation:init`)
+   - Set up project structure
+   - Detect/configure tech stack
+   - Initialize git repository
 
-### test-real-mcp.js
-- MCP server testing utilities
-- Tool validation
-- Integration testing helpers
+2. **Plan** (`/planning:spec`, `/planning:architecture`)
+   - Write feature specifications
+   - Design system architecture
+   - Create project roadmap
 
-### playwright-mcp-wrapper.js
-- E2E testing with Playwright
-- Browser automation
-- Visual regression testing
+3. **Develop** (External plugins or manual development)
+   - Implement features based on specifications
+   - Follow architecture patterns
 
-### package.json
-- Testing framework dependencies
-- Test runner configurations
-- Coverage tools
+4. **Iterate** (`/iterate:adjust`, `/iterate:tasks`)
+   - Manage task layers with agent assignments
+   - Adjust implementation based on feedback
+   - Refactor and enhance features
 
-**How it works:**
-1. `/core:detect` identifies your test framework
-2. `/quality:test-generate` creates tests using your framework
-3. `/quality:test` uses the appropriate harness to run tests
+5. **Test** (`/quality:test`, `/quality:security`)
+   - Run API tests with Newman
+   - Run E2E tests with Playwright
+   - Perform security scans
 
----
-
-## Status
-
-**Current Plugins:**
-- ✅ 01-core (Foundation & Setup)
-- ✅ 02-develop (Code Generation)
-- ✅ 03-planning (Spec → Architecture)
-- ✅ 04-iterate (Refinement)
-- ✅ 05-quality (Testing & Validation)
-
-**Coming Soon:**
-- 06-deploy (Deployment & Monitoring)
+6. **Deploy** (`/deployment:deploy`)
+   - Auto-detect platform
+   - Deploy to production
+   - Validate deployment
 
 ---
 
-## Related Repositories
+## Plugin Dependencies
 
-- **[ai-dev-marketplace](https://github.com/vanman2024/ai-dev-marketplace)** - Tech-specific plugins (SDKs, frameworks, platforms)
-- **[ai-tech-stack-marketplaces](https://github.com/vanman2024/)** - Curated tech stack combinations
+- **All plugins** use `.claude/project.json` for tech stack detection
+- **Planning** outputs specs that **iterate** can reference
+- **Quality** validates implementations
+- **Deployment** requires successful quality checks
 
 ---
 
-## Contributing
+## Tech Stack Agnostic
 
-Contributions welcome! Lifecycle plugins should remain **completely tech-agnostic**.
+These plugins work with:
+- **Languages**: TypeScript, JavaScript, Python, Go, Rust, Java, etc.
+- **Frontend**: React, Next.js, Vue, Svelte, Angular, etc.
+- **Backend**: Express, FastAPI, Django, Rails, Go, etc.
+- **Databases**: PostgreSQL, MongoDB, MySQL, Supabase, etc.
+- **Testing**: Jest, Vitest, pytest, Playwright, Newman, etc.
+- **Deployment**: Vercel, Railway, DigitalOcean, Netlify, etc.
 
-**Guidelines:**
-- Never hardcode framework-specific logic in lifecycle plugins
-- Always read `.claude/project.json` for tech stack info
-- Provide clear fallbacks when detection fails
-- Test with multiple frameworks (Next.js, Django, Go, Rails, etc.)
-- Document what project structures are supported
+---
+
+## Documentation
+
+- [MIGRATION.md](./MIGRATION.md) - Migration guide from v1.x
+- [REBUILD-SUMMARY.md](./REBUILD-SUMMARY.md) - Detailed rebuild documentation
+- [CHANGELOG.md](./CHANGELOG.md) - Version history
+
+---
+
+## Support
+
+- **Issues**: Report at repository issues
+- **Questions**: See plugin-specific README files
+- **Contributions**: Follow contribution guidelines
 
 ---
 
 ## License
 
-MIT License - See LICENSE file
+MIT License - See [LICENSE](./LICENSE) for details
 
 ---
 
-**Tech-agnostic workflow automation. Works with ANY stack.**
+## Version History
+
+- **v2.0.0** (October 2025): Complete rebuild with clean naming, standardized testing/deployment
+- **v1.0.0** (Initial): Numbered plugin structure (01-core through 06-deployment)
+
+---
+
+**Generated**: October 29, 2025
+**Framework**: domain-plugin-builder v1.0.0

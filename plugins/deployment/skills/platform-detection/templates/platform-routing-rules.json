@@ -1,0 +1,293 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Platform Routing Rules",
+  "description": "Rules for recommending deployment platforms based on project characteristics",
+  "version": "1.0.0",
+  "platforms": {
+    "fastmcp-cloud": {
+      "name": "FastMCP Cloud",
+      "description": "Managed MCP server hosting with automatic scaling",
+      "website": "https://fastmcp.com",
+      "optimal_for": [
+        "MCP servers built with FastMCP",
+        "Python or TypeScript MCP implementations",
+        "Projects requiring MCP protocol compliance"
+      ],
+      "routing_rules": {
+        "project_type": {
+          "mcp-server": 100
+        },
+        "framework": {
+          "FastMCP (Python)": 100,
+          "FastMCP (TypeScript)": 100
+        },
+        "required_files": [".mcp.json"],
+        "required_dependencies": ["fastmcp"]
+      },
+      "priority": 1,
+      "match_threshold": 100
+    },
+    "digitalocean": {
+      "name": "DigitalOcean App Platform",
+      "description": "Flexible container and buildpack hosting",
+      "website": "https://www.digitalocean.com/products/app-platform",
+      "optimal_for": [
+        "Containerized applications",
+        "Non-FastMCP MCP servers",
+        "REST APIs and GraphQL APIs",
+        "Custom backend applications",
+        "Monorepo services requiring containers"
+      ],
+      "routing_rules": {
+        "project_type": {
+          "api": 90,
+          "mcp-server": 85,
+          "monorepo": 70
+        },
+        "has_dockerfile": {
+          "true": 20
+        },
+        "framework": {
+          "FastAPI": 85,
+          "Flask": 85,
+          "Django": 85,
+          "Express": 85,
+          "Fastify": 80,
+          "custom": 90
+        }
+      },
+      "priority": 2,
+      "match_threshold": 70
+    },
+    "vercel": {
+      "name": "Vercel",
+      "description": "Frontend and full-stack web application hosting",
+      "website": "https://vercel.com",
+      "optimal_for": [
+        "Next.js applications",
+        "React applications",
+        "Astro sites",
+        "Vue/Nuxt applications",
+        "Serverless functions",
+        "Edge computing"
+      ],
+      "routing_rules": {
+        "project_type": {
+          "frontend": 100,
+          "static-site": 60
+        },
+        "framework": {
+          "Next.js": 100,
+          "React (Vite)": 85,
+          "Astro": 90,
+          "Vue": 80,
+          "Nuxt.js": 90,
+          "Svelte": 85,
+          "SvelteKit": 90
+        },
+        "has_serverless": {
+          "true": 10
+        }
+      },
+      "priority": 1,
+      "match_threshold": 80
+    },
+    "netlify": {
+      "name": "Netlify",
+      "description": "Static site and JAMstack hosting",
+      "website": "https://www.netlify.com",
+      "optimal_for": [
+        "Static sites with build processes",
+        "JAMstack applications",
+        "Sites with serverless functions",
+        "Gatsby sites",
+        "Eleventy sites"
+      ],
+      "routing_rules": {
+        "project_type": {
+          "static-site": 90,
+          "frontend": 75
+        },
+        "framework": {
+          "Gatsby": 95,
+          "@11ty/eleventy": 95,
+          "Astro": 85,
+          "Next.js": 70,
+          "Hugo": 90,
+          "Jekyll": 90
+        },
+        "has_build_process": {
+          "true": 10
+        },
+        "has_functions_directory": {
+          "true": 10
+        }
+      },
+      "priority": 2,
+      "match_threshold": 75
+    },
+    "cloudflare-pages": {
+      "name": "Cloudflare Pages",
+      "description": "Fast global CDN for static sites",
+      "website": "https://pages.cloudflare.com",
+      "optimal_for": [
+        "Static sites",
+        "Simple frontend applications",
+        "Sites requiring global CDN",
+        "Sites with Cloudflare Workers"
+      ],
+      "routing_rules": {
+        "project_type": {
+          "static-site": 95,
+          "frontend": 70
+        },
+        "has_static_only": {
+          "true": 15
+        },
+        "framework": {
+          "Astro": 85,
+          "Hugo": 90,
+          "Jekyll": 90,
+          "Next.js": 70
+        },
+        "has_workers": {
+          "true": 10
+        }
+      },
+      "priority": 3,
+      "match_threshold": 70
+    },
+    "hostinger": {
+      "name": "Hostinger",
+      "description": "Shared hosting for simple static and PHP sites",
+      "website": "https://www.hostinger.com",
+      "optimal_for": [
+        "Simple static websites",
+        "PHP applications",
+        "WordPress sites",
+        "Budget hosting needs"
+      ],
+      "routing_rules": {
+        "project_type": {
+          "static-site": 80
+        },
+        "has_php": {
+          "true": 20
+        },
+        "has_wordpress": {
+          "true": 25
+        },
+        "complexity": {
+          "simple": 15
+        }
+      },
+      "priority": 4,
+      "match_threshold": 60
+    }
+  },
+  "decision_algorithm": {
+    "description": "Multi-criteria decision algorithm for platform recommendation",
+    "steps": [
+      "1. Calculate base score from project_type match",
+      "2. Add framework-specific bonuses",
+      "3. Add feature bonuses (Docker, serverless, etc.)",
+      "4. Filter platforms below match_threshold",
+      "5. Select highest scoring platform",
+      "6. Use priority as tiebreaker if scores are equal"
+    ],
+    "scoring_weights": {
+      "project_type_match": 1.0,
+      "framework_match": 1.0,
+      "feature_bonus": 1.0,
+      "file_match": 0.5
+    }
+  },
+  "special_cases": {
+    "monorepo": {
+      "recommendation": "multiple-platforms",
+      "strategy": "Analyze each service independently",
+      "note": "Monorepos typically require different platforms for different services"
+    },
+    "hybrid_projects": {
+      "nextjs_with_api": {
+        "recommendation": "vercel",
+        "reason": "Vercel handles both frontend and API routes optimally"
+      },
+      "static_with_functions": {
+        "options": ["netlify", "vercel", "cloudflare-pages"],
+        "decision_factors": ["function complexity", "traffic patterns", "budget"]
+      }
+    },
+    "unknown_framework": {
+      "has_dockerfile": {
+        "recommendation": "digitalocean",
+        "reason": "DigitalOcean supports any containerized application"
+      },
+      "no_dockerfile": {
+        "recommendation": "manual-analysis-required",
+        "suggestion": "Review project structure and create appropriate Dockerfile"
+      }
+    }
+  },
+  "migration_paths": {
+    "from_heroku": {
+      "api": "digitalocean",
+      "frontend": "vercel",
+      "static": "netlify"
+    },
+    "from_aws_ec2": {
+      "containerized": "digitalocean",
+      "serverless": "vercel"
+    },
+    "from_shared_hosting": {
+      "static": "cloudflare-pages",
+      "dynamic": "digitalocean"
+    }
+  },
+  "cost_considerations": {
+    "free_tier_available": [
+      "vercel",
+      "netlify",
+      "cloudflare-pages"
+    ],
+    "paid_only": [
+      "fastmcp-cloud",
+      "digitalocean"
+    ],
+    "cost_order": {
+      "lowest_to_highest": [
+        "cloudflare-pages",
+        "hostinger",
+        "netlify",
+        "vercel",
+        "digitalocean",
+        "fastmcp-cloud"
+      ],
+      "note": "Actual costs depend on usage, traffic, and features"
+    }
+  },
+  "usage_example": {
+    "input": {
+      "project_type": "frontend",
+      "framework": "Next.js 14.2.0",
+      "has_dockerfile": false,
+      "has_serverless": true
+    },
+    "calculation": {
+      "vercel": {
+        "base_score": 100,
+        "framework_bonus": 100,
+        "serverless_bonus": 10,
+        "total": 210
+      },
+      "netlify": {
+        "base_score": 75,
+        "framework_bonus": 70,
+        "serverless_bonus": 10,
+        "total": 155
+      }
+    },
+    "recommendation": "vercel",
+    "reasoning": "Vercel scores highest (210 vs 155) due to Next.js optimization"
+  }
+}

@@ -6,37 +6,37 @@
   },
   "metadata": {
     "description": "Tech-agnostic development workflow automation - from init to deploy",
-    "version": "1.0.0"
+    "version": "2.0.0"
   },
   "plugins": [
     {
-      "name": "01-core",
-      "source": "./plugins/01-core",
-      "description": "Foundation & Setup: Initialize projects, detect stack, version control, MCP config",
+      "name": "foundation",
+      "source": "./plugins/foundation",
+      "description": "Foundation & Setup: Initialize projects, detect stack, setup environment, verify configuration",
       "version": "1.0.0"
     },
     {
-      "name": "02-develop",
-      "source": "./plugins/02-develop",
-      "description": "Code Generation & Implementation: Build features, scaffold code, framework-agnostic",
+      "name": "planning",
+      "source": "./plugins/planning",
+      "description": "Planning & Architecture: Create specs, architecture designs, roadmaps, and ADRs",
       "version": "1.0.0"
     },
     {
-      "name": "03-planning",
-      "source": "./plugins/03-planning",
-      "description": "Spec → Architecture: Create specs, plans, architecture, documentation",
+      "name": "iterate",
+      "source": "./plugins/iterate",
+      "description": "Iterative Development: Task management, code adjustments, refactoring, feature enhancement",
       "version": "1.0.0"
     },
     {
-      "name": "04-iterate",
-      "source": "./plugins/04-iterate",
-      "description": "Refinement & Adjustment: Modify, refactor, enhance during active development",
+      "name": "quality",
+      "source": "./plugins/quality",
+      "description": "Testing & Quality: Newman/Postman API tests, Playwright E2E, security scanning, performance analysis",
       "version": "1.0.0"
     },
     {
-      "name": "05-quality",
-      "source": "./plugins/05-quality",
-      "description": "Testing & Validation: Framework-aware testing, security, performance, compliance",
+      "name": "deployment",
+      "source": "./plugins/deployment",
+      "description": "Deployment Orchestration: Automated deployment with platform detection (FastMCP Cloud, DigitalOcean, Vercel, Railway, Netlify)",
       "version": "1.0.0"
     }
   ]

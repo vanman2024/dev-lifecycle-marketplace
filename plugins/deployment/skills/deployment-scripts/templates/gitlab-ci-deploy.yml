@@ -1,0 +1,196 @@
+# GitLab CI/CD Pipeline
+# Docs: https://docs.gitlab.com/ee/ci/
+
+variables:
+  NODE_VERSION: "18"
+  NPM_CONFIG_CACHE: "$CI_PROJECT_DIR/.npm"
+  DOCKER_DRIVER: overlay2
+
+stages:
+  - install
+  - test
+  - build
+  - deploy
+  - notify
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - .npm/
+    - node_modules/
+
+# Install dependencies
+install:
+  stage: install
+  image: node:${NODE_VERSION}
+  script:
+    - npm ci --cache .npm --prefer-offline
+  artifacts:
+    paths:
+      - node_modules/
+    expire_in: 1 day
+
+# Run linting
+lint:
+  stage: test
+  image: node:${NODE_VERSION}
+  dependencies:
+    - install
+  script:
+    - npm run lint
+  allow_failure: false
+
+# Run type checking
+type-check:
+  stage: test
+  image: node:${NODE_VERSION}
+  dependencies:
+    - install
+  script:
+    - npm run type-check
+  allow_failure: true
+
+# Run unit tests
+test:
+  stage: test
+  image: node:${NODE_VERSION}
+  dependencies:
+    - install
+  script:
+    - npm test
+  coverage: '/Lines\s*:\s*(\d+\.\d+)%/'
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage/cobertura-coverage.xml
+      junit: junit.xml
+    paths:
+      - coverage/
+    expire_in: 30 days
+
+# Build application
+build:
+  stage: build
+  image: node:${NODE_VERSION}
+  dependencies:
+    - install
+  script:
+    - npm run build
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 1 day
+
+# Deploy to staging
+deploy:staging:
+  stage: deploy
+  image: node:${NODE_VERSION}
+  dependencies:
+    - build
+  environment:
+    name: staging
+    url: https://staging.my-app.com
+  script:
+    - npm install -g vercel
+    - vercel --token $VERCEL_TOKEN --scope $VERCEL_ORG_ID --yes
+  only:
+    - develop
+
+# Deploy to production
+deploy:production:
+  stage: deploy
+  image: node:${NODE_VERSION}
+  dependencies:
+    - build
+  environment:
+    name: production
+    url: https://my-app.com
+    on_stop: rollback:production
+  script:
+    - npm install -g vercel
+    - vercel --prod --token $VERCEL_TOKEN --scope $VERCEL_ORG_ID --yes
+  only:
+    - main
+  when: manual
+
+# Deploy to production (automatic)
+deploy:production:auto:
+  stage: deploy
+  image: node:${NODE_VERSION}
+  dependencies:
+    - build
+  environment:
+    name: production
+    url: https://my-app.com
+  script:
+    - npm install -g vercel
+    - vercel --prod --token $VERCEL_TOKEN --scope $VERCEL_ORG_ID --yes
+  only:
+    - tags
+
+# Rollback production
+rollback:production:
+  stage: deploy
+  image: node:${NODE_VERSION}
+  environment:
+    name: production
+    action: stop
+  script:
+    - echo "Rolling back production deployment"
+    - npm install -g vercel
+    - vercel rollback --token $VERCEL_TOKEN --scope $VERCEL_ORG_ID --yes
+  when: manual
+  only:
+    - main
+
+# Docker build and push
+docker:build:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA -t $CI_REGISTRY_IMAGE:latest .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE:latest
+  only:
+    - main
+
+# Health check
+health-check:
+  stage: deploy
+  image: curlimages/curl:latest
+  dependencies: []
+  script:
+    - curl -f https://my-app.com/health || exit 1
+  only:
+    - main
+  needs:
+    - deploy:production
+
+# Notify Slack
+notify:slack:
+  stage: notify
+  image: curlimages/curl:latest
+  script:
+    - |
+      curl -X POST $SLACK_WEBHOOK_URL \
+        -H 'Content-Type: application/json' \
+        -d "{
+          \"text\": \"Deployment completed\",
+          \"attachments\": [{
+            \"color\": \"good\",
+            \"fields\": [
+              {\"title\": \"Project\", \"value\": \"$CI_PROJECT_NAME\", \"short\": true},
+              {\"title\": \"Branch\", \"value\": \"$CI_COMMIT_REF_NAME\", \"short\": true},
+              {\"title\": \"Commit\", \"value\": \"$CI_COMMIT_SHORT_SHA\", \"short\": true},
+              {\"title\": \"Author\", \"value\": \"$GITLAB_USER_NAME\", \"short\": true}
+            ]
+          }]
+        }"
+  only:
+    - main
+  when: on_success

@@ -1,0 +1,178 @@
+{
+  "framework_detection_patterns": {
+    "frontend": {
+      "Next.js": {
+        "config_files": ["next.config.js", "next.config.ts", "next.config.mjs"],
+        "package_deps": ["next"],
+        "directory_structure": ["app/", "pages/", ".next/"],
+        "confidence": "high"
+      },
+      "React": {
+        "config_files": [],
+        "package_deps": ["react", "react-dom"],
+        "file_patterns": ["*.jsx", "*.tsx"],
+        "imports": ["from 'react'", "from \"react\""],
+        "confidence": "high"
+      },
+      "Vue": {
+        "config_files": ["vue.config.js", "vite.config.js"],
+        "package_deps": ["vue"],
+        "file_patterns": ["*.vue"],
+        "directory_structure": ["src/components/"],
+        "confidence": "high"
+      },
+      "Svelte": {
+        "config_files": ["svelte.config.js", "svelte.config.ts"],
+        "package_deps": ["svelte"],
+        "file_patterns": ["*.svelte"],
+        "confidence": "high"
+      },
+      "Angular": {
+        "config_files": ["angular.json"],
+        "package_deps": ["@angular/core"],
+        "directory_structure": ["src/app/"],
+        "confidence": "high"
+      },
+      "Solid.js": {
+        "package_deps": ["solid-js"],
+        "file_patterns": ["*.jsx", "*.tsx"],
+        "imports": ["from 'solid-js'"],
+        "confidence": "medium"
+      },
+      "Qwik": {
+        "config_files": ["vite.config.js"],
+        "package_deps": ["@builder.io/qwik"],
+        "confidence": "high"
+      }
+    },
+    "backend": {
+      "FastAPI": {
+        "package_deps": ["fastapi"],
+        "file_patterns": ["*.py"],
+        "imports": ["from fastapi import", "import fastapi"],
+        "confidence": "high"
+      },
+      "Django": {
+        "config_files": ["manage.py"],
+        "package_deps": ["django"],
+        "directory_structure": ["*/settings.py"],
+        "confidence": "high"
+      },
+      "Flask": {
+        "package_deps": ["flask"],
+        "file_patterns": ["*.py"],
+        "imports": ["from flask import", "import flask"],
+        "confidence": "high"
+      },
+      "Express": {
+        "package_deps": ["express"],
+        "file_patterns": ["*.js", "*.ts"],
+        "imports": ["require('express')", "from 'express'"],
+        "confidence": "high"
+      },
+      "NestJS": {
+        "config_files": ["nest-cli.json"],
+        "package_deps": ["@nestjs/core"],
+        "directory_structure": ["src/"],
+        "confidence": "high"
+      },
+      "Gin": {
+        "go_imports": ["github.com/gin-gonic/gin"],
+        "file_patterns": ["*.go"],
+        "confidence": "high"
+      },
+      "Echo": {
+        "go_imports": ["github.com/labstack/echo"],
+        "file_patterns": ["*.go"],
+        "confidence": "high"
+      },
+      "Fiber": {
+        "go_imports": ["github.com/gofiber/fiber"],
+        "file_patterns": ["*.go"],
+        "confidence": "high"
+      },
+      "Actix-web": {
+        "cargo_deps": ["actix-web"],
+        "file_patterns": ["*.rs"],
+        "confidence": "high"
+      },
+      "Rocket": {
+        "cargo_deps": ["rocket"],
+        "file_patterns": ["*.rs"],
+        "confidence": "high"
+      },
+      "Axum": {
+        "cargo_deps": ["axum"],
+        "file_patterns": ["*.rs"],
+        "confidence": "high"
+      }
+    },
+    "meta_frameworks": {
+      "Remix": {
+        "config_files": ["remix.config.js"],
+        "package_deps": ["@remix-run/react"],
+        "directory_structure": ["app/routes/"],
+        "confidence": "high"
+      },
+      "Nuxt": {
+        "config_files": ["nuxt.config.js", "nuxt.config.ts"],
+        "package_deps": ["nuxt"],
+        "directory_structure": ["pages/", "nuxt/"],
+        "confidence": "high"
+      },
+      "SvelteKit": {
+        "config_files": ["svelte.config.js"],
+        "package_deps": ["@sveltejs/kit"],
+        "directory_structure": ["src/routes/"],
+        "confidence": "high"
+      },
+      "Astro": {
+        "config_files": ["astro.config.mjs"],
+        "package_deps": ["astro"],
+        "file_patterns": ["*.astro"],
+        "confidence": "high"
+      }
+    },
+    "build_tools": {
+      "Vite": {
+        "config_files": ["vite.config.js", "vite.config.ts"],
+        "package_deps": ["vite"],
+        "confidence": "high"
+      },
+      "Webpack": {
+        "config_files": ["webpack.config.js"],
+        "package_deps": ["webpack"],
+        "confidence": "high"
+      },
+      "Parcel": {
+        "package_deps": ["parcel"],
+        "confidence": "medium"
+      },
+      "Rollup": {
+        "config_files": ["rollup.config.js"],
+        "package_deps": ["rollup"],
+        "confidence": "high"
+      },
+      "esbuild": {
+        "config_files": ["esbuild.config.js"],
+        "package_deps": ["esbuild"],
+        "confidence": "high"
+      },
+      "Turborepo": {
+        "config_files": ["turbo.json"],
+        "package_deps": ["turbo"],
+        "confidence": "high"
+      },
+      "Nx": {
+        "config_files": ["nx.json"],
+        "package_deps": ["@nrwl/workspace", "nx"],
+        "confidence": "high"
+      }
+    }
+  },
+  "confidence_levels": {
+    "high": "Multiple indicators present (config file + package dep + file patterns)",
+    "medium": "Some indicators present (package dep OR config file)",
+    "low": "Weak indicators (only file patterns or imports)"
+  }
+}

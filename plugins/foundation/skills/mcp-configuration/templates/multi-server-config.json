@@ -1,0 +1,53 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "@modelcontextprotocol/server-filesystem",
+        "/home/user/projects"
+      ],
+      "env": {
+        "NODE_ENV": "production"
+      }
+    },
+    "python-api": {
+      "type": "stdio",
+      "command": "python3",
+      "args": ["-m", "my_mcp_server"],
+      "env": {
+        "API_KEY": "${OPENAI_API_KEY}",
+        "DEBUG": "false"
+      }
+    },
+    "remote-service": {
+      "type": "http",
+      "url": "https://mcp.example.com/api",
+      "headers": {
+        "Authorization": "Bearer ${REMOTE_API_TOKEN}"
+      },
+      "env": {
+        "REMOTE_API_TOKEN": "${REMOTE_API_TOKEN}"
+      }
+    },
+    "database": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["dist/database-server.js"],
+      "env": {
+        "DATABASE_URL": "${DATABASE_URL}",
+        "DB_POOL_SIZE": "10"
+      },
+      "workingDirectory": "/opt/mcp-servers/database"
+    },
+    "slack-integration": {
+      "type": "stdio",
+      "command": "python3",
+      "args": ["-m", "slack_mcp_server"],
+      "env": {
+        "SLACK_BOT_TOKEN": "${SLACK_BOT_TOKEN}",
+        "SLACK_SIGNING_SECRET": "${SLACK_SIGNING_SECRET}"
+      }
+    }
+  }
+}

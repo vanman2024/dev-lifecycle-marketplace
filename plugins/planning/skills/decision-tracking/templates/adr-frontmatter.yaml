@@ -1,0 +1,177 @@
+# ADR Frontmatter Template
+# Copy this YAML frontmatter to the top of every ADR file
+# Place between --- markers at the very beginning of the file
+
+---
+# REQUIRED FIELDS
+
+# Sequential 4-digit ADR number (0001, 0002, etc.)
+number: NNNN
+
+# Clear, concise title describing the decision
+# Use title case, keep under 80 characters
+# Examples:
+#   "Use PostgreSQL for Primary Database"
+#   "Adopt Microservices Architecture"
+#   "Implement OAuth 2.0 for Authentication"
+title: Title of the Decision
+
+# Date the ADR was created or last updated (YYYY-MM-DD format)
+date: YYYY-MM-DD
+
+# Current status of the decision
+# Must be one of: proposed | accepted | deprecated | superseded
+status: proposed
+
+# OPTIONAL FIELDS
+
+# List of people who made the decision
+# Use actual names or roles
+deciders:
+  - Tech Lead
+  - Senior Engineer
+  - Product Manager
+
+# List of people who were consulted for input
+# These people provided expertise but didn't make the final decision
+consulted:
+  - Security Team
+  - DevOps Engineer
+  - Database Administrator
+
+# List of people or teams who were informed about the decision
+# These people need to know but weren't directly involved
+informed:
+  - Frontend Team
+  - QA Team
+  - Product Team
+  - Customer Support
+
+# RELATIONSHIP FIELDS
+
+# Reference to ADR(s) that this decision supersedes (if applicable)
+# Format: ADR-NNNN or list of ADR numbers
+# supersedes: ADR-0042
+
+# Reference to ADR that superseded this one (if status is 'superseded')
+# Format: ADR-NNNN
+# superseded_by: ADR-0099
+
+# Date when this ADR was superseded (if applicable)
+# superseded_date: YYYY-MM-DD
+
+# List of related ADRs that should be considered together
+# related_adrs:
+#   - ADR-0001
+#   - ADR-0015
+#   - ADR-0023
+
+# METADATA FIELDS
+
+# Tags or categories for organizing ADRs
+tags:
+  - architecture
+  - database
+  - security
+  - performance
+  - infrastructure
+
+# The primary domain or component this decision affects
+domain: backend
+
+# Technology stack or tools involved
+technologies:
+  - PostgreSQL
+  - Docker
+  - Kubernetes
+
+# Estimated impact level
+# Must be one of: low | medium | high | critical
+impact: medium
+
+# Estimated effort to implement
+# Must be one of: low | medium | high
+effort: medium
+
+# Who owns the implementation of this decision
+owner: Backend Team
+
+# Target completion date (if applicable)
+# target_date: YYYY-MM-DD
+
+# Actual completion date (when status changed to 'accepted')
+# completion_date: YYYY-MM-DD
+
+# Review cycle (how often to review this decision)
+# Examples: monthly, quarterly, annually, never
+review_cycle: quarterly
+
+# Next review date
+# next_review: YYYY-MM-DD
+
+# CUSTOM FIELDS
+# Add any additional metadata specific to your organization
+# Examples:
+# jira_ticket: PROJ-1234
+# confluence_page: https://example.com/page
+# discussion_thread: https://example.com/discussion
+# approval_required: yes
+# approved_by: CTO
+# approval_date: YYYY-MM-DD
+---
+
+# USAGE NOTES
+
+# Minimal Required Frontmatter:
+# ---
+# number: 0001
+# title: Use PostgreSQL for Primary Database
+# date: 2025-10-28
+# status: proposed
+# ---
+
+# Recommended Frontmatter (includes key stakeholders):
+# ---
+# number: 0001
+# title: Use PostgreSQL for Primary Database
+# date: 2025-10-28
+# status: proposed
+# deciders: [Tech Lead, Backend Team]
+# consulted: [DevOps, Database Team]
+# informed: [Frontend Team, Product]
+# tags: [database, architecture]
+# domain: backend
+# impact: high
+# ---
+
+# Full Frontmatter (includes all fields):
+# Use this when you want comprehensive tracking and metadata
+# See the complete example above with all fields
+
+# STATUS LIFECYCLE:
+# 1. proposed    -> Initial state, under discussion
+# 2. accepted    -> Approved and being implemented
+# 3. deprecated  -> No longer recommended, but may still be in use
+# 4. superseded  -> Replaced by a newer ADR (add 'superseded_by' field)
+
+# RELATIONSHIP PATTERNS:
+#
+# When superseding an ADR:
+# Old ADR gets:
+#   status: superseded
+#   superseded_by: ADR-NNNN
+#   superseded_date: YYYY-MM-DD
+#
+# New ADR gets:
+#   supersedes: ADR-NNNN
+#
+# When ADRs are related but don't supersede:
+#   related_adrs: [ADR-NNNN, ADR-MMMM]
+
+# VALIDATION RULES:
+# - number must be 4 digits: 0001-9999
+# - status must be: proposed | accepted | deprecated | superseded
+# - date must be YYYY-MM-DD format
+# - title must not be empty
+# - if status is 'superseded', superseded_by should be present
+# - if supersedes is present, check that referenced ADR exists

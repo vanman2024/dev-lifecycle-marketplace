@@ -1,0 +1,23 @@
+{
+  "mcpServers": {
+    "my-typescript-server": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["dist/index.js"],
+      "env": {
+        "NODE_ENV": "production",
+        "API_KEY": "${API_KEY}",
+        "LOG_LEVEL": "info"
+      },
+      "workingDirectory": "/path/to/your/typescript/project"
+    },
+    "using-npx": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["@modelcontextprotocol/server-filesystem", "/path/to/files"],
+      "env": {
+        "NODE_ENV": "production"
+      }
+    }
+  }
+}
