@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Scan Report - {{REPORT_DATE}}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f7fa;
+            color: #2d3748;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+        .header h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        .header .subtitle {
+            opacity: 0.95;
+            font-size: 16px;
+        }
+        .risk-score-container {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        .risk-circle {
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 56px;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            background: {{RISK_COLOR}};
+        }
+        .risk-level {
+            font-size: 28px;
+            font-weight: 700;
+            color: {{RISK_COLOR}};
+            margin-bottom: 15px;
+        }
+        .risk-description {
+            color: #718096;
+            font-size: 15px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 5px solid;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transition: transform 0.2s;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+        .stat-card.critical { border-color: #e53e3e; }
+        .stat-card.high { border-color: #ed8936; }
+        .stat-card.medium { border-color: #ecc94b; }
+        .stat-card.low { border-color: #48bb78; }
+        .stat-label {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #718096;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .stat-value {
+            font-size: 42px;
+            font-weight: 700;
+            color: #2d3748;
+        }
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .section h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #2d3748;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 12px;
+        }
+        .scan-result {
+            background: #f7fafc;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .scan-result h3 {
+            color: #667eea;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        .scan-stat {
+            display: inline-block;
+            margin-right: 25px;
+            color: #4a5568;
+        }
+        .scan-stat strong {
+            color: #2d3748;
+            font-weight: 600;
+        }
+        .finding {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 18px;
+            margin-bottom: 12px;
+            transition: border-color 0.2s;
+        }
+        .finding:hover {
+            border-color: #cbd5e0;
+        }
+        .finding-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .finding-title {
+            font-weight: 600;
+            color: #2d3748;
+            font-size: 15px;
+        }
+        .severity-badge {
+            display: inline-block;
+            padding: 5px 14px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .severity-badge.critical {
+            background: #fed7d7;
+            color: #c53030;
+        }
+        .severity-badge.high {
+            background: #feebc8;
+            color: #c05621;
+        }
+        .severity-badge.medium {
+            background: #fefcbf;
+            color: #975a16;
+        }
+        .severity-badge.low {
+            background: #c6f6d5;
+            color: #276749;
+        }
+        .finding-detail {
+            color: #718096;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        .recommendations {
+            background: linear-gradient(135deg, #e0e7ff 0%, #cffafe 100%);
+            padding: 30px;
+            border-radius: 12px;
+            border-left: 6px solid #3b82f6;
+        }
+        .recommendations h2 {
+            color: #1e40af;
+            border-bottom: none;
+            margin-bottom: 20px;
+        }
+        .recommendations h3 {
+            color: #1e40af;
+            margin-top: 20px;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        .recommendations ul {
+            margin-left: 25px;
+            color: #334155;
+        }
+        .recommendations li {
+            margin-bottom: 10px;
+            line-height: 1.7;
+        }
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #718096;
+            font-size: 14px;
+        }
+        @media print {
+            .container { max-width: 100%; }
+            .stat-card { break-inside: avoid; }
+            .section { break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Security Scan Report</h1>
+            <p class="subtitle">Generated on {{REPORT_DATE}} | Scan ID: {{SCAN_ID}}</p>
+        </div>
+
+        <div class="risk-score-container">
+            <div class="risk-circle">{{RISK_SCORE}}</div>
+            <div class="risk-level">{{RISK_LEVEL}} RISK</div>
+            <p class="risk-description">Overall security posture based on findings across all scans</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card critical">
+                <div class="stat-label">Critical</div>
+                <div class="stat-value">{{CRITICAL_COUNT}}</div>
+            </div>
+            <div class="stat-card high">
+                <div class="stat-label">High</div>
+                <div class="stat-value">{{HIGH_COUNT}}</div>
+            </div>
+            <div class="stat-card medium">
+                <div class="stat-label">Medium</div>
+                <div class="stat-value">{{MEDIUM_COUNT}}</div>
+            </div>
+            <div class="stat-card low">
+                <div class="stat-label">Low</div>
+                <div class="stat-value">{{LOW_COUNT}}</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Scan Results Summary</h2>
+
+            <div class="scan-result">
+                <h3>Secret Detection Scan</h3>
+                <div class="scan-stat"><strong>Total Findings:</strong> {{SECRETS_TOTAL}}</div>
+                <div class="scan-stat"><strong>Critical:</strong> {{SECRETS_CRITICAL}}</div>
+                <div class="scan-stat"><strong>High:</strong> {{SECRETS_HIGH}}</div>
+            </div>
+
+            <div class="scan-result">
+                <h3>Dependency Vulnerability Scan</h3>
+                <div class="scan-stat"><strong>Total Findings:</strong> {{DEPS_TOTAL}}</div>
+                <div class="scan-stat"><strong>Critical:</strong> {{DEPS_CRITICAL}}</div>
+                <div class="scan-stat"><strong>High:</strong> {{DEPS_HIGH}}</div>
+            </div>
+
+            <div class="scan-result">
+                <h3>OWASP Top 10 Pattern Scan</h3>
+                <div class="scan-stat"><strong>Total Findings:</strong> {{OWASP_TOTAL}}</div>
+                <div class="scan-stat"><strong>Critical:</strong> {{OWASP_CRITICAL}}</div>
+                <div class="scan-stat"><strong>High:</strong> {{OWASP_HIGH}}</div>
+            </div>
+
+            <div class="scan-result">
+                <h3>Security Headers Validation</h3>
+                <div class="scan-stat"><strong>Security Score:</strong> {{HEADERS_SCORE}}%</div>
+                <div class="scan-stat"><strong>Failed Checks:</strong> {{HEADERS_FAILED}}</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Top Priority Findings</h2>
+            {{FINDINGS_LIST}}
+        </div>
+
+        <div class="recommendations">
+            <h2>Recommendations</h2>
+
+            <h3>Immediate Actions (24-48 hours)</h3>
+            <ul>
+                <li>Rotate all exposed credentials and API keys immediately</li>
+                <li>Patch critical dependency vulnerabilities</li>
+                <li>Address all critical severity findings</li>
+                <li>Block production deployment until critical issues resolved</li>
+            </ul>
+
+            <h3>Short-term Actions (1-2 weeks)</h3>
+            <ul>
+                <li>Fix high severity vulnerabilities in application code</li>
+                <li>Update all high-risk dependencies</li>
+                <li>Configure missing security headers</li>
+                <li>Implement input validation on vulnerable endpoints</li>
+            </ul>
+
+            <h3>Long-term Improvements</h3>
+            <ul>
+                <li>Integrate security scans into CI/CD pipeline</li>
+                <li>Establish security baseline and track improvements</li>
+                <li>Conduct quarterly penetration testing</li>
+                <li>Provide security training for development team</li>
+                <li>Implement automated dependency update process</li>
+                <li>Regular security audits (quarterly minimum)</li>
+            </ul>
+        </div>
+
+        <div class="footer">
+            <p><strong>Generated by security-patterns skill</strong></p>
+            <p>For detailed findings, see individual scan JSON files</p>
+            <p>Next scan recommended: {{NEXT_SCAN_DATE}}</p>
+        </div>
+    </div>
+</body>
+</html>

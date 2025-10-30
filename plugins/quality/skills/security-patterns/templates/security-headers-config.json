@@ -1,0 +1,118 @@
+{
+  "recommended_headers": {
+    "Content-Security-Policy": {
+      "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
+      "description": "Controls resources the browser is allowed to load",
+      "severity": "high",
+      "references": [
+        "https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP",
+        "https://content-security-policy.com/"
+      ],
+      "nginx": "add_header Content-Security-Policy \"default-src 'self'\" always;",
+      "apache": "Header always set Content-Security-Policy \"default-src 'self'\"",
+      "express": "helmet.contentSecurityPolicy({ directives: { defaultSrc: [\"'self'\"] } })"
+    },
+    "Strict-Transport-Security": {
+      "value": "max-age=31536000; includeSubDomains; preload",
+      "description": "Forces HTTPS connections for specified duration",
+      "severity": "high",
+      "references": [
+        "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security"
+      ],
+      "nginx": "add_header Strict-Transport-Security \"max-age=31536000; includeSubDomains; preload\" always;",
+      "apache": "Header always set Strict-Transport-Security \"max-age=31536000; includeSubDomains; preload\"",
+      "express": "helmet.hsts({ maxAge: 31536000, includeSubDomains: true, preload: true })"
+    },
+    "X-Frame-Options": {
+      "value": "DENY",
+      "description": "Prevents clickjacking attacks",
+      "severity": "high",
+      "references": [
+        "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options"
+      ],
+      "nginx": "add_header X-Frame-Options \"DENY\" always;",
+      "apache": "Header always set X-Frame-Options \"DENY\"",
+      "express": "helmet.frameguard({ action: 'deny' })"
+    },
+    "X-Content-Type-Options": {
+      "value": "nosniff",
+      "description": "Prevents MIME type sniffing",
+      "severity": "medium",
+      "references": [
+        "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options"
+      ],
+      "nginx": "add_header X-Content-Type-Options \"nosniff\" always;",
+      "apache": "Header always set X-Content-Type-Options \"nosniff\"",
+      "express": "helmet.noSniff()"
+    },
+    "X-XSS-Protection": {
+      "value": "0",
+      "description": "Disables legacy XSS filter (use CSP instead)",
+      "severity": "low",
+      "references": [
+        "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection"
+      ],
+      "nginx": "add_header X-XSS-Protection \"0\" always;",
+      "apache": "Header always set X-XSS-Protection \"0\"",
+      "express": "helmet.xssFilter()"
+    },
+    "Referrer-Policy": {
+      "value": "strict-origin-when-cross-origin",
+      "description": "Controls referrer information sent with requests",
+      "severity": "medium",
+      "references": [
+        "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy"
+      ],
+      "nginx": "add_header Referrer-Policy \"strict-origin-when-cross-origin\" always;",
+      "apache": "Header always set Referrer-Policy \"strict-origin-when-cross-origin\"",
+      "express": "helmet.referrerPolicy({ policy: 'strict-origin-when-cross-origin' })"
+    },
+    "Permissions-Policy": {
+      "value": "geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()",
+      "description": "Controls browser features and APIs",
+      "severity": "medium",
+      "references": [
+        "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Permissions-Policy"
+      ],
+      "nginx": "add_header Permissions-Policy \"geolocation=(), microphone=(), camera=()\" always;",
+      "apache": "Header always set Permissions-Policy \"geolocation=(), microphone=(), camera=()\"",
+      "express": "helmet.permissionsPolicy({ features: { geolocation: [], microphone: [], camera: [] } })"
+    },
+    "Cross-Origin-Opener-Policy": {
+      "value": "same-origin",
+      "description": "Isolates browsing context from cross-origin windows",
+      "severity": "medium",
+      "references": [
+        "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cross-Origin-Opener-Policy"
+      ],
+      "nginx": "add_header Cross-Origin-Opener-Policy \"same-origin\" always;",
+      "apache": "Header always set Cross-Origin-Opener-Policy \"same-origin\"",
+      "express": "helmet.crossOriginOpenerPolicy({ policy: 'same-origin' })"
+    },
+    "Cross-Origin-Resource-Policy": {
+      "value": "same-origin",
+      "description": "Protects resources from being loaded by other origins",
+      "severity": "medium",
+      "references": [
+        "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cross-Origin-Resource-Policy"
+      ],
+      "nginx": "add_header Cross-Origin-Resource-Policy \"same-origin\" always;",
+      "apache": "Header always set Cross-Origin-Resource-Policy \"same-origin\"",
+      "express": "helmet.crossOriginResourcePolicy({ policy: 'same-origin' })"
+    },
+    "Cross-Origin-Embedder-Policy": {
+      "value": "require-corp",
+      "description": "Prevents loading cross-origin resources without explicit permission",
+      "severity": "low",
+      "references": [
+        "https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cross-Origin-Embedder-Policy"
+      ],
+      "nginx": "add_header Cross-Origin-Embedder-Policy \"require-corp\" always;",
+      "apache": "Header always set Cross-Origin-Embedder-Policy \"require-corp\"",
+      "express": "helmet.crossOriginEmbedderPolicy({ policy: 'require-corp' })"
+    }
+  },
+  "nginx_config_template": "# Security Headers Configuration for Nginx\n\n# Content Security Policy\nadd_header Content-Security-Policy \"default-src 'self'\" always;\n\n# HSTS\nadd_header Strict-Transport-Security \"max-age=31536000; includeSubDomains; preload\" always;\n\n# Clickjacking Protection\nadd_header X-Frame-Options \"DENY\" always;\n\n# MIME Type Sniffing Protection\nadd_header X-Content-Type-Options \"nosniff\" always;\n\n# Disable Legacy XSS Filter\nadd_header X-XSS-Protection \"0\" always;\n\n# Referrer Policy\nadd_header Referrer-Policy \"strict-origin-when-cross-origin\" always;\n\n# Permissions Policy\nadd_header Permissions-Policy \"geolocation=(), microphone=(), camera=()\" always;\n\n# Cross-Origin Policies\nadd_header Cross-Origin-Opener-Policy \"same-origin\" always;\nadd_header Cross-Origin-Resource-Policy \"same-origin\" always;\nadd_header Cross-Origin-Embedder-Policy \"require-corp\" always;",
+  "apache_config_template": "# Security Headers Configuration for Apache\n\n# Content Security Policy\nHeader always set Content-Security-Policy \"default-src 'self'\"\n\n# HSTS\nHeader always set Strict-Transport-Security \"max-age=31536000; includeSubDomains; preload\"\n\n# Clickjacking Protection\nHeader always set X-Frame-Options \"DENY\"\n\n# MIME Type Sniffing Protection\nHeader always set X-Content-Type-Options \"nosniff\"\n\n# Disable Legacy XSS Filter\nHeader always set X-XSS-Protection \"0\"\n\n# Referrer Policy\nHeader always set Referrer-Policy \"strict-origin-when-cross-origin\"\n\n# Permissions Policy\nHeader always set Permissions-Policy \"geolocation=(), microphone=(), camera=()\"\n\n# Cross-Origin Policies\nHeader always set Cross-Origin-Opener-Policy \"same-origin\"\nHeader always set Cross-Origin-Resource-Policy \"same-origin\"\nHeader always set Cross-Origin-Embedder-Policy \"require-corp\"",
+  "express_config_template": "// Security Headers Configuration for Express.js\nconst helmet = require('helmet');\n\napp.use(helmet({\n  contentSecurityPolicy: {\n    directives: {\n      defaultSrc: [\"'self'\"],\n      scriptSrc: [\"'self'\"],\n      styleSrc: [\"'self'\", \"'unsafe-inline'\"],\n      imgSrc: [\"'self'\", \"data:\", \"https:\"],\n      connectSrc: [\"'self'\"],\n      fontSrc: [\"'self'\"],\n      objectSrc: [\"'none'\"],\n      mediaSrc: [\"'self'\"],\n      frameSrc: [\"'none'\"]\n    }\n  },\n  hsts: {\n    maxAge: 31536000,\n    includeSubDomains: true,\n    preload: true\n  },\n  frameguard: {\n    action: 'deny'\n  },\n  referrerPolicy: {\n    policy: 'strict-origin-when-cross-origin'\n  },\n  permissionsPolicy: {\n    features: {\n      geolocation: [],\n      microphone: [],\n      camera: []\n    }\n  },\n  crossOriginOpenerPolicy: { policy: 'same-origin' },\n  crossOriginResourcePolicy: { policy: 'same-origin' },\n  crossOriginEmbedderPolicy: { policy: 'require-corp' }\n}));"
+}
