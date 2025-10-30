@@ -2,20 +2,19 @@
   "name": "iterate",
   "version": "1.0.0",
   "description": "Task breakdown, layering, and iteration workflow management with parallel multi-agent execution",
-  "commands": [
+  "author": {
+    "name": "dev-lifecycle-marketplace",
+    "email": "noreply@dev-lifecycle-marketplace.dev"
+  },
+  "homepage": "https://github.com/dev-lifecycle-marketplace/plugins/tree/master/iterate",
+  "repository": "https://github.com/dev-lifecycle-marketplace/plugins",
+  "license": "MIT",
+  "keywords": [
     "tasks",
-    "adjust",
-    "sync"
-  ],
-  "agents": [
-    "task-layering",
-    "implementation-adjuster",
-    "code-refactorer",
-    "feature-enhancer"
-  ],
-  "skills": [
-    "task-stratification",
-    "iteration-tracking",
-    "code-refinement"
+    "iteration",
+    "refactoring",
+    "enhancement",
+    "workflow",
+    "lifecycle"
   ]
 }

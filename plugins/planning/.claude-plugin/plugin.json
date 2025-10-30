@@ -2,28 +2,19 @@
   "name": "planning",
   "version": "1.0.0",
   "description": "Specification and architecture documentation for dev-lifecycle-marketplace",
-  "author": "dev-lifecycle-marketplace team",
-  "type": "custom",
-  "category": "planning",
-  "tags": ["specs", "architecture", "adr", "documentation", "lifecycle"],
-  "commands": [
-    "spec",
+  "author": {
+    "name": "dev-lifecycle-marketplace",
+    "email": "noreply@dev-lifecycle-marketplace.dev"
+  },
+  "homepage": "https://github.com/dev-lifecycle-marketplace/plugins/tree/master/planning",
+  "repository": "https://github.com/dev-lifecycle-marketplace/plugins",
+  "license": "MIT",
+  "keywords": [
+    "specs",
     "architecture",
-    "decide",
-    "notes",
-    "roadmap"
-  ],
-  "agents": [
-    "spec-writer",
-    "architecture-designer",
-    "decision-documenter",
-    "roadmap-planner"
-  ],
-  "skills": [
-    "spec-management",
-    "architecture-patterns",
-    "decision-tracking"
-  ],
-  "dependencies": [],
-  "mcp_servers": []
+    "adr",
+    "documentation",
+    "lifecycle",
+    "planning"
+  ]
 }

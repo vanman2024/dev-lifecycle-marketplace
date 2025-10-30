@@ -2,20 +2,22 @@
   "name": "quality",
   "version": "1.0.0",
   "description": "Standardized testing framework with Newman/Postman API testing, DigitalOcean webhook testing, Playwright E2E, and comprehensive quality checks",
-  "commands": [
-    "test",
+  "author": {
+    "name": "dev-lifecycle-marketplace",
+    "email": "noreply@dev-lifecycle-marketplace.dev"
+  },
+  "homepage": "https://github.com/dev-lifecycle-marketplace/plugins/tree/master/quality",
+  "repository": "https://github.com/dev-lifecycle-marketplace/plugins",
+  "license": "MIT",
+  "keywords": [
+    "testing",
     "security",
-    "performance"
-  ],
-  "agents": [
-    "test-generator",
-    "security-scanner",
-    "performance-analyzer",
-    "compliance-checker"
-  ],
-  "skills": [
-    "newman-testing",
-    "playwright-e2e",
-    "security-patterns"
+    "performance",
+    "compliance",
+    "quality",
+    "newman",
+    "playwright",
+    "e2e",
+    "lifecycle"
   ]
 }
