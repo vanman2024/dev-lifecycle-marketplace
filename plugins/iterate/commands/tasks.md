@@ -1,7 +1,7 @@
 ---
 description: Transform sequential tasks.md into layered-tasks.md with parallel agent assignments and functional grouping
 argument-hint: [spec-id]
-allowed-tools: Task(*), Read(*), Write(*), Bash(*), Glob(*), Grep(*)
+allowed-tools: Task, Read, Write, Bash, Glob, Grep
 ---
 
 **Arguments**: $ARGUMENTS

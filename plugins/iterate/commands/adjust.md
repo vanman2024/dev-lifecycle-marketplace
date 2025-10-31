@@ -1,7 +1,7 @@
 ---
 description: Adjust implementation based on feedback or requirements change
 argument-hint: [file-or-feature]
-allowed-tools: Task(*), Read(*), Write(*), Edit(*), Bash(*), Glob(*), Grep(*), AskUserQuestion(*)
+allowed-tools: Task, Read, Write, Edit, Bash, Glob, Grep, AskUserQuestion
 ---
 
 **Arguments**: $ARGUMENTS

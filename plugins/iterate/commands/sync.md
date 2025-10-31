@@ -1,7 +1,7 @@
 ---
 description: Sync project state - update specs, tasks, and documentation based on current implementation
 argument-hint: none
-allowed-tools: Task(*), Read(*), Write(*), Bash(*), Glob(*), Grep(*)
+allowed-tools: Task, Read, Write, Bash, Glob, Grep
 ---
 
 **Arguments**: $ARGUMENTS
