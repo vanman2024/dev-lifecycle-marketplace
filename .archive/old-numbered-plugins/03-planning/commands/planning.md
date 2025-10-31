@@ -1,5 +1,5 @@
 ---
-allowed-tools: Task(*), Read(*), Write(*), Bash(*), Grep(*), Glob(*), SlashCommand(*), AskUserQuestion(*)
+allowed-tools: Task, Read, Write, Bash, Grep, Glob, SlashCommand, AskUserQuestion
 description: Master orchestrator that chains granular planning commands based on context. Analyzes project needs and runs appropriate planning workflows.
 argument-hint: [feature-name|--full]
 ---

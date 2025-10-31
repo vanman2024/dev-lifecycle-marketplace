@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(*), Read(*), Write(*), Edit(*), TodoWrite(*), Task(*), Glob(*), LS(*), MultiEdit(*), Grep(*)
+allowed-tools: Bash, Read, Write, Edit, TodoWrite, Task, Glob, LS, MultiEdit, Grep
 description: Comprehensive MCP server testing framework - validates servers thoroughly using FastMCP Client in-memory testing pattern. Executes 4-phase workflow with 32 steps covering functional testing, protocol compliance, and deployment readiness. Uses proven testing patterns that work reliably.
 ---
 

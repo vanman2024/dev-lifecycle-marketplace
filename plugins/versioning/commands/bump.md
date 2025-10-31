@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(*), Read(*), Write(*), Edit(*)
+allowed-tools: Bash, Read, Write, Edit
 description: Increment semantic version and create git tag with changelog
 argument-hint: [major|minor|patch] [--dry-run] [--force]
 ---

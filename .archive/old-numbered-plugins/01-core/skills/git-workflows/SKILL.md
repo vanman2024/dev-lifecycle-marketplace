@@ -1,7 +1,7 @@
 ---
 name: Git Workflows
 description: Git commit patterns, branch helpers, and workflow automation. Use when working with git, creating commits, managing branches, setting up git hooks, or when user mentions git workflows, commit conventions, branch management, or git automation.
-allowed-tools: Read(*), Bash(git:*), Write(*)
+allowed-tools: Read, Bash, Write
 ---
 
 # Git Workflows

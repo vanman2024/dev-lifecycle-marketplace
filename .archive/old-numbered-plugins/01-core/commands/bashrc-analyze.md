@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(*), Read(*)
+allowed-tools: Bash, Read
 description: Analyze .bashrc for duplicates, conflicts, and organization issues
 argument-hint: none
 ---

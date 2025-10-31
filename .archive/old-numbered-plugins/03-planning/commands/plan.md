@@ -1,5 +1,5 @@
 ---
-allowed-tools: Task(*), Read(*), Write(*), Bash(*), Grep(*), Glob(*)
+allowed-tools: Task, Read, Write, Bash, Grep, Glob
 description: Generate implementation plans from specs
 argument-hint: <spec-name>
 ---

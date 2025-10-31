@@ -1,7 +1,7 @@
 ---
 name: Spec Management
 description: Templates, scripts, and examples for managing feature specifications in specs/ directory. Use when creating feature specs, listing specifications, validating spec completeness, updating spec status, searching spec content, organizing project requirements, tracking feature development, managing technical documentation, or when user mentions spec management, feature specifications, requirements docs, spec validation, or specification organization.
-allowed-tools: [Bash, Read, Write, Glob, Grep, Edit]
+allowed-tools: 
 ---
 
 # Spec Management Skill

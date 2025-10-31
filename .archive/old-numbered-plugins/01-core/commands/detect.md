@@ -1,5 +1,5 @@
 ---
-allowed-tools: Task(*), Read(*), Write(*), Bash(*), Glob(*)
+allowed-tools: Task, Read, Write, Bash, Glob
 description: Analyze existing project structure and detect framework/stack
 argument-hint: [--update] [--verbose]
 ---

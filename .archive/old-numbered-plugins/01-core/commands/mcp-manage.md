@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(*), Read(*), Edit(*), Write(*), AskUserQuestion(*), WebFetch(*)
+allowed-tools: Bash, Read, Edit, Write, AskUserQuestion, WebFetch
 description: Comprehensive MCP server management (add, remove, list, setup, clear)
 argument-hint: <action> [server-name...]
 ---

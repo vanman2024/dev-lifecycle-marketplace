@@ -1,5 +1,5 @@
 ---
-allowed-tools: Read(*), Write(*), Edit(*), Bash(git:*), Glob(*), AskUserQuestion(*)
+allowed-tools: Read, Write, Edit, Bash, Glob, AskUserQuestion
 description: Manage semantic versioning and releases
 argument-hint: [major|minor|patch] [--tag] [--changelog]
 ---

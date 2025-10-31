@@ -1,5 +1,5 @@
 ---
-allowed-tools: Read(*), Write(*), Edit(*), Bash(*), Grep(*), Glob(*)
+allowed-tools: Read, Write, Edit, Bash, Grep, Glob
 description: Manage development notes and decision logs
 argument-hint: <add|view|search> [query]
 ---

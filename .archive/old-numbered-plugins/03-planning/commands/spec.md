@@ -1,5 +1,5 @@
 ---
-allowed-tools: Task(*), Read(*), Write(*), Bash(*), Grep(*), Glob(*)
+allowed-tools: Task, Read, Write, Bash, Grep, Glob
 description: Create feature specifications and requirements documents
 argument-hint: <spec-name>
 ---

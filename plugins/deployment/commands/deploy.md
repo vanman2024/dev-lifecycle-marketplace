@@ -1,7 +1,7 @@
 ---
 description: Deploy application to detected platform with automated routing (FastMCP Cloud, DigitalOcean, Vercel, Hostinger)
 argument-hint: [project-path]
-allowed-tools: Task(*), Read(*), Write(*), Bash(*), Glob(*), Grep(*), AskUserQuestion(*), TodoWrite(*)
+allowed-tools: Task, Read, Write, Bash, Glob, Grep, AskUserQuestion, TodoWrite
 ---
 
 **Arguments**: $ARGUMENTS

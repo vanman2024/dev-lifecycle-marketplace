@@ -1,5 +1,5 @@
 ---
-allowed-tools: Task(*), Read(*), Write(*), Bash(*), Glob(*), Grep(*), AskUserQuestion(*)
+allowed-tools: Task, Read, Write, Bash, Glob, Grep, AskUserQuestion
 description: Create API endpoint for detected backend framework
 argument-hint: <endpoint-name> [--method=GET,POST,PUT,DELETE]
 ---

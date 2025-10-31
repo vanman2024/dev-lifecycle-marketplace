@@ -1,7 +1,7 @@
 ---
 name: Iteration Tracking
 description: Tracks iteration progress and state management. Use when starting, checkpointing, or ending iteration cycles, or when user mentions iteration tracking, progress monitoring, or iteration state.
-allowed-tools: Read(*), Bash(*), Write(*)
+allowed-tools: Read, Bash, Write
 ---
 
 # Iteration Tracking

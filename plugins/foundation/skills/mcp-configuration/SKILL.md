@@ -1,7 +1,7 @@
 ---
 name: MCP Configuration Management
 description: Comprehensive MCP server configuration templates, .mcp.json management, API key handling, and server installation helpers. Use when configuring MCP servers, managing .mcp.json files, setting up API keys, installing MCP servers, validating MCP configs, or when user mentions MCP setup, server configuration, MCP environment, API key storage, or MCP installation.
-allowed-tools: Read(*), Write(*), Bash(*), Grep(*), Glob(*)
+allowed-tools: Read, Write, Bash, Grep, Glob
 ---
 
 # MCP Configuration Management

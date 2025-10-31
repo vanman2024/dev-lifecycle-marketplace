@@ -1,5 +1,5 @@
 ---
-allowed-tools: Task(*), Read(*), Bash(*)
+allowed-tools: Task, Read, Bash
 description: Adjust implementation based on feedback or requirements change
 argument-hint: <target>
 ---

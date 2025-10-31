@@ -1,5 +1,5 @@
 ---
-allowed-tools: Task(*), Read(*), Write(*), Bash(*), Glob(*), Grep(*), AskUserQuestion(*)
+allowed-tools: Task, Read, Write, Bash, Glob, Grep, AskUserQuestion
 description: Generate UI component for detected frontend framework
 argument-hint: <component-name> [--variant=style]
 ---

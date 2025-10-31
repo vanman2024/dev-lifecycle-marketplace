@@ -1,5 +1,5 @@
 ---
-allowed-tools: Task(*), Read(*), Bash(*)
+allowed-tools: Task, Read, Bash
 description: Enhance feature with improvements and optimizations
 argument-hint: <feature-target>
 ---

@@ -1,7 +1,7 @@
 ---
 description: Create development roadmap and timeline
 argument-hint: [timeframe]
-allowed-tools: Task(*), Read(*), Write(*), Bash(*), Glob(*), Grep(*), AskUserQuestion(*)
+allowed-tools: Task, Read, Write, Bash, Glob, Grep, AskUserQuestion
 ---
 
 **Arguments**: $ARGUMENTS

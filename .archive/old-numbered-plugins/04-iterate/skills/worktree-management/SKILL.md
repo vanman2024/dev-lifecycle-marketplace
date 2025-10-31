@@ -1,7 +1,7 @@
 ---
 name: Worktree Management
 description: Git worktree helpers for parallel development. Use when working with git worktrees, managing parallel branches, or when user mentions worktrees, parallel development, or branch isolation.
-allowed-tools: Read(*), Bash(git:*), Write(*)
+allowed-tools: Read, Bash, Write
 ---
 
 # Worktree Management

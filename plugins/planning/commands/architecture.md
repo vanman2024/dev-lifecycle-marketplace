@@ -1,7 +1,7 @@
 ---
 description: Design and document system architecture
 argument-hint: <action> [architecture-name]
-allowed-tools: Task(*), Read(*), Write(*), Bash(*), Glob(*), Grep(*), AskUserQuestion(*)
+allowed-tools: Task, Read, Write, Bash, Glob, Grep, AskUserQuestion
 ---
 
 **Arguments**: $ARGUMENTS

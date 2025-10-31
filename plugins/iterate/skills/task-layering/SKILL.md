@@ -1,7 +1,7 @@
 ---
 name: Task Layering
 description: Breaks down specs into complexity-stratified tasks. Use when organizing tasks, assigning work to agents, or when user mentions task layering, task stratification, or parallel task execution.
-allowed-tools: Read(*), Write(*), Bash(*)
+allowed-tools: Read, Write, Bash
 ---
 
 # Task Layering

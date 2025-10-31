@@ -1,5 +1,5 @@
 ---
-allowed-tools: Read(*), Write(*), Bash(git:*), AskUserQuestion(*)
+allowed-tools: Read, Write, Bash, AskUserQuestion
 description: Configure git workflows and conventions
 argument-hint: [--hooks] [--templates]
 ---

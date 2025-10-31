@@ -1,5 +1,5 @@
 ---
-allowed-tools: Task(*), Read(*), Write(*), Bash(*), Glob(*), Grep(*), AskUserQuestion(*)
+allowed-tools: Task, Read, Write, Bash, Glob, Grep, AskUserQuestion
 description: Add new feature from specification - reads specs or creates through conversation
 argument-hint: [feature-name]
 ---

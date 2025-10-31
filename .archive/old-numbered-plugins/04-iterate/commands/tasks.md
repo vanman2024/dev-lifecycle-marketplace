@@ -1,5 +1,5 @@
 ---
-allowed-tools: Task(*), Read(*), Bash(*)
+allowed-tools: Task, Read, Bash
 description: Layer tasks by complexity and assign to agents for parallel work
 argument-hint: <spec-id>
 ---

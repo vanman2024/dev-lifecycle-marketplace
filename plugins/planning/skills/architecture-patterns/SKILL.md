@@ -1,7 +1,7 @@
 ---
 name: Architecture Patterns
 description: Architecture design templates, mermaid diagrams, documentation patterns, and validation tools. Use when designing system architecture, creating architecture documentation, generating mermaid diagrams, documenting component relationships, designing data flows, planning deployments, creating API architectures, or when user mentions architecture diagrams, system design, mermaid, architecture documentation, or component design.
-allowed-tools: [Bash, Read, Write, Edit, Glob, Grep]
+allowed-tools: 
 ---
 
 # Architecture Patterns Skill

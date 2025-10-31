@@ -1,5 +1,5 @@
 ---
-allowed-tools: Task(*), Read(*), Write(*), Bash(*), Grep(*), Glob(*)
+allowed-tools: Task, Read, Write, Bash, Grep, Glob
 description: Track architectural decisions (ADRs)
 argument-hint: <decision-title>
 ---

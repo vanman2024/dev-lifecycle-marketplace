@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(*), Read(*), Write(*)
+allowed-tools: Bash, Read, Write
 description: Synchronize spec files and cross-references for consistency
 argument-hint: <spec-id>
 ---

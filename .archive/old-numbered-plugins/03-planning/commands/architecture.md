@@ -1,5 +1,5 @@
 ---
-allowed-tools: Task(*), Read(*), Write(*), Bash(*), Grep(*), Glob(*)
+allowed-tools: Task, Read, Write, Bash, Grep, Glob
 description: Design system architecture and technical decisions
 argument-hint: <feature-name|--full>
 ---

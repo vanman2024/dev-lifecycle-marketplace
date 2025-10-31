@@ -1,5 +1,5 @@
 ---
-allowed-tools: Task(*), Read(*), Write(*), Bash(*), Glob(*), Grep(*), SlashCommand(*), AskUserQuestion(*)
+allowed-tools: Task, Read, Write, Bash, Glob, Grep, SlashCommand, AskUserQuestion
 description: Scaffold entire module with frontend, backend, and tests
 argument-hint: <module-name>
 ---

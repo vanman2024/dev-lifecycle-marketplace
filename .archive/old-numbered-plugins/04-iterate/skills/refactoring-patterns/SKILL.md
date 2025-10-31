@@ -1,7 +1,7 @@
 ---
 name: Refactoring Patterns
 description: Common refactoring patterns and code improvement techniques. Use when refactoring code, improving structure, or when user mentions refactoring, code smells, or code quality improvements.
-allowed-tools: Read(*), Write(*), Edit(*), Bash(*)
+allowed-tools: Read, Write, Edit, Bash
 ---
 
 # Refactoring Patterns

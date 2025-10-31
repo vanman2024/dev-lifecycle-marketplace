@@ -1,5 +1,5 @@
 ---
-allowed-tools: Task(*), Read(*), Write(*), Bash(*), Glob(*), AskUserQuestion(*)
+allowed-tools: Task, Read, Write, Bash, Glob, AskUserQuestion
 description: Initialize project - detect OR bootstrap new project, create .claude/project.json
 argument-hint: [--bootstrap] [--force]
 ---

@@ -1,5 +1,5 @@
 ---
-allowed-tools: Task(*), Read(*), Bash(*), SlashCommand(*)
+allowed-tools: Task, Read, Bash, SlashCommand
 description: Iteration workflow orchestrator - manages refinement and adjustment cycles
 argument-hint: <workflow-type>
 ---

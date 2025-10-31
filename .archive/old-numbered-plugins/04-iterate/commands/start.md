@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(*), Read(*), Write(*)
+allowed-tools: Bash, Read, Write
 description: Start iteration cycle and initialize tracking
 argument-hint: <iteration-name>
 ---

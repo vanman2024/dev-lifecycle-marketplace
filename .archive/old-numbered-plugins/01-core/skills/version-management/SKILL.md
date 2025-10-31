@@ -1,7 +1,7 @@
 ---
 name: Version Management
 description: Semantic versioning helpers and release scripts. Use when managing versions, bumping version numbers, creating releases, generating changelogs, or when user mentions versioning, semantic versioning, release management, version bumps, or semver.
-allowed-tools: Read(*), Write(*), Edit(*), Bash(git:*)
+allowed-tools: Read, Write, Edit, Bash
 ---
 
 # Version Management

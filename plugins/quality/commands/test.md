@@ -1,7 +1,7 @@
 ---
 description: Run comprehensive test suite (Newman API, Playwright E2E, security scans)
 argument-hint: [test-type]
-allowed-tools: Task(*), Read(*), Bash(*), Glob(*), Grep(*)
+allowed-tools: Task, Read, Bash, Glob, Grep
 ---
 
 **Arguments**: $ARGUMENTS

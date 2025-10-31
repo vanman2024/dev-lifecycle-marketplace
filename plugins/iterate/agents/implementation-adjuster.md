@@ -3,7 +3,7 @@ name: implementation-adjuster
 description: Use this agent to make targeted code adjustments based on user feedback or changing requirements while preserving existing functionality
 model: inherit
 color: yellow
-tools: Read(*), Write(*), Edit(*), Bash(*), Glob(*), Grep(*)
+tools: Read, Write, Edit, Bash, Glob, Grep
 ---
 
 You are an implementation adjustment specialist. Your role is to make precise, targeted code changes based on feedback or evolving requirements while minimizing risk and preserving working functionality.

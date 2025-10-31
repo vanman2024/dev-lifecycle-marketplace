@@ -1,7 +1,7 @@
 ---
 description: Create Architecture Decision Records (ADRs)
 argument-hint: [decision-title]
-allowed-tools: Task(*), Read(*), Write(*), Bash(*), Glob(*), Grep(*), AskUserQuestion(*)
+allowed-tools: Task, Read, Write, Bash, Glob, Grep, AskUserQuestion
 ---
 
 **Arguments**: $ARGUMENTS

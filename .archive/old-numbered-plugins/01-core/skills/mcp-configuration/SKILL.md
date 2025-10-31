@@ -1,7 +1,7 @@
 ---
 name: MCP Configuration
 description: MCP server configuration templates and setup scripts. Use when configuring MCP servers, setting up MCP environment, managing MCP configs, adding MCP servers, or when user mentions MCP setup, MCP configuration, server environment, or MCP installation.
-allowed-tools: Read(*), Write(*), Bash(*)
+allowed-tools: Read, Write, Bash
 ---
 
 # MCP Configuration

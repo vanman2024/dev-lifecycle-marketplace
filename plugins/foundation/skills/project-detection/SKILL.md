@@ -1,7 +1,7 @@
 ---
 name: Project Detection
 description: Comprehensive tech stack detection, framework identification, dependency analysis, and project.json generation. Use when analyzing project structure, detecting frameworks, identifying dependencies, discovering AI stack components, detecting databases, or when user mentions project detection, tech stack analysis, framework discovery, or project.json generation.
-allowed-tools: [Bash, Read, Glob, Grep, Write]
+allowed-tools: 
 ---
 
 # Project Detection Skill

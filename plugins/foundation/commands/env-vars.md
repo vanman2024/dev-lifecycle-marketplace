@@ -1,7 +1,7 @@
 ---
 description: Manage environment variables for project configuration
 argument-hint: <action> [key] [value]
-allowed-tools: Read(*), Write(*), Edit(*), Bash(*), Grep(*), AskUserQuestion(*)
+allowed-tools: Read, Write, Edit, Bash, Grep, AskUserQuestion
 ---
 
 **Arguments**: $ARGUMENTS

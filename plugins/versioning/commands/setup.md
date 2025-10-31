@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(*), Read(*), Write(*), Edit(*), Grep(*), Glob(*), AskUserQuestion(*)
+allowed-tools: Bash, Read, Write, Edit, Grep, Glob, AskUserQuestion
 description: Setup semantic versioning with validation and templates for Python and TypeScript projects
 argument-hint: [python|typescript|javascript]
 ---

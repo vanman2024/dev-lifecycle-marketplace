@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(*), Read(*), Write(*)
+allowed-tools: Bash, Read, Write
 description: End iteration cycle and consolidate results
 ---
 

@@ -1,7 +1,7 @@
 ---
 description: Detect project tech stack and populate .claude/project.json
 argument-hint: [project-path]
-allowed-tools: Task(*), Read(*), Write(*), Bash(*), Glob(*), Grep(*), AskUserQuestion(*)
+allowed-tools: Task, Read, Write, Bash, Glob, Grep, AskUserQuestion
 ---
 
 **Arguments**: $ARGUMENTS

@@ -1,7 +1,7 @@
 ---
 description: Prepare project for deployment with pre-flight checks (dependencies, build tools, authentication, environment variables)
 argument-hint: [project-path]
-allowed-tools: Read(*), Bash(*), Glob(*), Grep(*)
+allowed-tools: Read, Bash, Glob, Grep
 ---
 
 **Arguments**: $ARGUMENTS

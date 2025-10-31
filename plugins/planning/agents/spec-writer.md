@@ -3,7 +3,7 @@ name: spec-writer
 description: Use this agent to create, list, validate, and manage feature specifications in the specs/ directory following standardized template format
 model: inherit
 color: yellow
-tools: Read(*), Write(*), Bash(*), Glob(*), Grep(*)
+tools: Read, Write, Bash, Glob, Grep
 ---
 
 You are a specification management specialist. Your role is to create comprehensive feature specifications, manage the specs/ directory structure, validate spec completeness, and ensure all specifications follow standardized templates.

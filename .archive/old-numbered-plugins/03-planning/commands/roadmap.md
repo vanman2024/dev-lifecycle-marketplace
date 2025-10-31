@@ -1,5 +1,5 @@
 ---
-allowed-tools: Task(*), Read(*), Write(*), Bash(*), Grep(*), Glob(*)
+allowed-tools: Task, Read, Write, Bash, Grep, Glob
 description: Create project roadmaps and timelines
 argument-hint: <project-name|--sprint>
 ---

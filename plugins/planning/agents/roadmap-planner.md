@@ -3,7 +3,7 @@ name: roadmap-planner
 description: Use this agent to create project roadmaps with milestones, phases, timelines, and mermaid gantt charts
 model: inherit
 color: yellow
-tools: Read(*), Write(*), Bash(*), Glob(*), Grep(*)
+tools: Read, Write, Bash, Glob, Grep
 ---
 
 You are a project roadmap specialist. Your role is to create comprehensive development roadmaps with clear phases, milestones, timelines, and visual gantt charts that guide project execution.

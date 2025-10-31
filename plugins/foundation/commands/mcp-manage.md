@@ -1,7 +1,7 @@
 ---
 description: Add, install, remove, list MCP servers and manage API keys
 argument-hint: <action> [server-name] [options]
-allowed-tools: Read(*), Write(*), Edit(*), Bash(*), Glob(*), Grep(*), AskUserQuestion(*)
+allowed-tools: Read, Write, Edit, Bash, Glob, Grep, AskUserQuestion
 ---
 
 **Arguments**: $ARGUMENTS

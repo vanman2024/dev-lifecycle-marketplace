@@ -17,7 +17,7 @@ Platform detection integrates with:
 ```markdown
 <!-- /deployment:deploy command -->
 ---
-allowed-tools: Task(*), Bash(*), Read(*), Write(*)
+allowed-tools: Task, Bash, Read, Write
 description: Deploy project to recommended platform
 ---
 
@@ -94,7 +94,7 @@ esac
 ```markdown
 <!-- /deployment:validate command -->
 ---
-allowed-tools: Bash(*), Read(*)
+allowed-tools: Bash, Read
 description: Validate project for deployment
 ---
 
@@ -127,7 +127,7 @@ bash plugins/deployment/skills/platform-detection/scripts/analyze-deployment-con
 ```markdown
 <!-- /deployment:configure command -->
 ---
-allowed-tools: Task(*), Bash(*), Read(*), Write(*)
+allowed-tools: Task, Bash, Read, Write
 description: Generate platform-specific configuration
 ---
 

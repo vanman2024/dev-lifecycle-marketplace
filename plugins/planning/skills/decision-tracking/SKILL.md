@@ -1,7 +1,7 @@
 ---
 name: Decision Tracking
 description: Architecture Decision Records (ADR) templates, sequential numbering, decision documentation patterns, and decision history management. Use when creating ADRs, documenting architectural decisions, tracking decision rationale, managing decision lifecycle, superseding decisions, searching decision history, or when user mentions ADR, architecture decision, decision record, decision tracking, or decision documentation.
-allowed-tools: [Bash, Read, Write, Glob, Grep]
+allowed-tools: 
 ---
 
 # Decision Tracking Skill

@@ -1,7 +1,7 @@
 ---
 description: Rollback to previous deployment version with platform-specific rollback procedures
 argument-hint: [deployment-id-or-version]
-allowed-tools: Task(*), Read(*), Bash(*), AskUserQuestion(*)
+allowed-tools: Task, Read, Bash, AskUserQuestion
 ---
 
 **Arguments**: $ARGUMENTS

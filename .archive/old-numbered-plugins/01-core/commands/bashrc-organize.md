@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(*), Read(*)
+allowed-tools: Bash, Read
 description: Reorganize .bashrc into clean, deduplicated sections with backup
 argument-hint: none
 ---

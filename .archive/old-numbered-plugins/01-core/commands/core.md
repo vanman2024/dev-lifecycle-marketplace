@@ -1,5 +1,5 @@
 ---
-allowed-tools: Task(*), Read(*), Write(*), Edit(*), Bash(*), Grep(*), Glob(*), SlashCommand(*), AskUserQuestion(*)
+allowed-tools: Task, Read, Write, Edit, Bash, Grep, Glob, SlashCommand, AskUserQuestion
 description: Initialize complete project foundation - chains init, detect, git-setup, mcp-setup based on context
 argument-hint: [--skip-git] [--skip-mcp] [--force]
 ---

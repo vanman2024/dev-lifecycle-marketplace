@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(*), Read(*), Grep(*), Glob(*)
+allowed-tools: Bash, Read, Grep, Glob
 description: Display version information and validate configuration
 argument-hint: [status|validate|history]
 ---

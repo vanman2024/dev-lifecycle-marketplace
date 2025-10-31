@@ -1,5 +1,5 @@
 ---
-allowed-tools: Task(*), Read(*), Bash(*)
+allowed-tools: Task, Read, Bash
 description: Refactor code for better maintainability and structure
 argument-hint: <file-or-directory>
 ---

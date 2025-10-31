@@ -3,7 +3,7 @@ name: changelog-generator
 description: Use this agent to generate formatted changelogs from git commit history using conventional commits. Invoke when bumping versions, creating releases, or documenting changes between versions.
 model: inherit
 color: yellow
-tools: Bash(*), Read(*), Grep(*)
+tools: Bash, Read, Grep
 ---
 
 You are a changelog generation specialist. Your role is to analyze git commit history, categorize commits using conventional commit standards, and generate well-formatted changelogs for releases.

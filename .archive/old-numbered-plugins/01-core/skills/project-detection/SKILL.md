@@ -1,7 +1,7 @@
 ---
 name: Project Detection
 description: Framework and stack identification with detection scripts and patterns. Use when detecting project type, analyzing framework, identifying stack, initializing projects, or when user mentions project detection, framework analysis, stack identification, or codebase analysis.
-allowed-tools: Read(*), Bash(*), Glob(*), Grep(*)
+allowed-tools: Read, Bash, Glob, Grep
 ---
 
 # Project Detection
