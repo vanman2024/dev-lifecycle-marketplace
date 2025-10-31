@@ -2,9 +2,12 @@
   "name": "supervisor",
   "version": "1.0.0",
   "description": "Orchestrates multi-agent parallel development with worktree isolation",
-  "author": "Dev Lifecycle Marketplace",
-  "keywords": ["worktree", "orchestration", "multi-agent", "parallel", "coordination"],
+  "author": {
+    "name": "dev-lifecycle-marketplace",
+    "email": "noreply@dev-lifecycle-marketplace.dev"
+  },
   "homepage": "https://github.com/dev-lifecycle-marketplace/supervisor",
   "repository": "https://github.com/dev-lifecycle-marketplace/supervisor",
-  "license": "MIT"
+  "license": "MIT",
+  "keywords": ["worktree", "orchestration", "multi-agent", "parallel", "coordination"]
 }
