@@ -6,26 +6,33 @@ allowed-tools: Read(*), Write(*), Edit(*), Bash(*), Grep(*), AskUserQuestion(*)
 
 **Arguments**: $ARGUMENTS
 
-Goal: Manage environment variables for development - add, remove, list, and validate required variables for detected tech stack
+Goal: Scan codebase to detect ALL environment variables used, generate .env file, and manage environment configuration
 
 Core Principles:
+- **Scan actual codebase** to detect environment variable usage (no .claude/project.json)
 - Secure handling - never log sensitive values
 - Support .env files and system environment
-- Detect required variables from tech stack
-- Validate values before setting
+- **Launch agents for large codebases** to comprehensively search code
+- Generate complete .env template from detected variables
 
-## Phase 1: Discovery
+## Phase 1: Discovery - Detect Services
 
-Goal: Understand requested action and current environment
+Goal: Detect what services/SDKs the project uses to determine required env vars
 
 Actions:
-- Parse $ARGUMENTS for action (add, remove, list, check, template)
+- Parse $ARGUMENTS for action (scan, generate, add, remove, list, check)
 - Load .env file if exists: @.env
-- Load project configuration: @.claude/project.json
-- Determine required environment variables based on stack:
-  - AI providers: ANTHROPIC_API_KEY, OPENAI_API_KEY
-  - Databases: DATABASE_URL, SUPABASE_URL, SUPABASE_ANON_KEY
-  - Deployment: VERCEL_TOKEN, RAILWAY_TOKEN
+- **Launch env-detector agent to analyze dependencies:**
+  - Read package.json dependencies (if Node.js project)
+  - Read pyproject.toml/requirements.txt (if Python project)
+  - Detect services being used:
+    - Supabase: @supabase/supabase-js, supabase
+    - Anthropic: @anthropic-ai/sdk, anthropic
+    - OpenAI: openai
+    - Vercel AI SDK: ai, @ai-sdk/*
+    - Database: pg, prisma, mongodb, redis
+    - Auth: next-auth, @clerk/*, @auth0/*
+- Map services to their required environment variables
 
 ## Phase 2: Validation
 
@@ -47,6 +54,39 @@ Goal: Perform environment variable management
 
 Actions based on action:
 
+**For 'scan' or 'generate' action (PRIMARY USE CASE):**
+- Use detected services from Phase 1 agent analysis
+- Generate .env file based on detected services with placeholder values:
+
+  **Example Template Format:**
+  ```
+  # ============================================
+  # Anthropic Claude API (detected: @anthropic-ai/sdk)
+  # ============================================
+  ANTHROPIC_API_KEY=your_anthropic_api_key_here
+
+  # ============================================
+  # Supabase (detected: @supabase/supabase-js)
+  # ============================================
+  SUPABASE_URL=https://your-project.supabase.co
+  SUPABASE_ANON_KEY=your_supabase_anon_key_here
+
+  # ============================================
+  # OpenAI (detected: openai package)
+  # ============================================
+  OPENAI_API_KEY=your_openai_api_key_here
+
+  # ============================================
+  # Application Configuration
+  # ============================================
+  NODE_ENV=development
+  PORT=3000
+  ```
+
+- Also generate .env.example (safe to commit with same structure)
+- Report: "Created .env with {count} required variables for {services}"
+- List all services detected and their required keys
+
 **For 'add' action:**
 - Add/update variable in .env file
 - Example: Edit .env to add KEY=value
@@ -64,15 +104,10 @@ Actions based on action:
 - Format: KEY=masked_value (show *** for sensitive keys)
 
 **For 'check' action:**
-- Validate all required variables are set
-- Check against detected stack requirements
-- Report missing variables
-- Example: "Missing: SUPABASE_URL, SUPABASE_ANON_KEY"
-
-**For 'template' action:**
-- Generate .env.example from detected stack
-- Include all required variables with placeholders
-- Example: Write .env.example with template
+- Compare .env against detected variables from codebase scan
+- Report missing variables that code expects
+- Report unused variables in .env (cleanup candidates)
+- Example: "Missing: SUPABASE_URL (used in src/lib/supabase.ts:12)"
 
 ## Phase 4: Summary
 

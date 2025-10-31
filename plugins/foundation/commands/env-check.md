@@ -9,24 +9,27 @@ allowed-tools: Read(*), Write(*), Bash(*), Glob(*), Grep(*), AskUserQuestion(*)
 Goal: Check that all required tools for the detected tech stack are installed and properly configured
 
 Core Principles:
-- Detect required tools from .claude/project.json
+- Scan codebase to detect tech stack (no .claude/project.json dependency)
 - Check versions match requirements
 - Provide installation instructions for missing tools
 - Support --fix flag for automatic installation
 
 ## Phase 1: Discovery
 
-Goal: Load detected stack and determine required tools
+Goal: Scan project to detect tech stack and determine required tools
 
 Actions:
-- Load project configuration: @.claude/project.json
-- Parse detected framework, languages, and AI stack
-- Determine required tools based on stack:
-  - Node.js projects: node, npm/pnpm/yarn
-  - Python projects: python, pip/poetry/uv
-  - Go projects: go
-  - Rust projects: cargo
-  - AI projects: Additional SDK CLIs
+- Scan for manifest files to detect stack:
+  - !{bash ls package.json pyproject.toml go.mod Cargo.toml 2>/dev/null}
+  - Check package.json dependencies for frameworks (Next.js, React, etc.)
+  - Check pyproject.toml for Python frameworks (FastAPI, Django, etc.)
+  - Look for framework-specific files (next.config.js, manage.py, etc.)
+- Determine required tools based on detected files:
+  - package.json → node, npm/pnpm/yarn
+  - pyproject.toml → python, pip/poetry/uv
+  - go.mod → go
+  - Cargo.toml → cargo
+  - AI dependencies → Additional SDK CLIs
 - Check for --fix flag in $ARGUMENTS
 
 ## Phase 2: Validation
