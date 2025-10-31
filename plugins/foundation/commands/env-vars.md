@@ -50,7 +50,7 @@ Goal: Verify action and gather information if needed
 
 Actions:
 - If action unclear, use AskUserQuestion to ask:
-  - What would you like to do? (add, remove, list, check, template)
+  - What would you like to do? (scan, generate, add, remove, list, check)
   - For add: Which key and value?
   - For remove: Which key to remove?
 - For 'add' action:
@@ -64,7 +64,17 @@ Goal: Perform environment variable management
 
 Actions based on action:
 
-**For 'scan' or 'generate' action (PRIMARY USE CASE):**
+**For 'scan' action (DRY-RUN):**
+- Use detected services from Phase 1 agent analysis
+- Display what would be generated WITHOUT creating files
+- Show preview of .env structure with all detected variables
+- Report detection sources (specs, manifests, code)
+- List all services detected and their required keys
+- Format output similar to final .env but as a preview
+- Report: "Found {count} required variables for {services}"
+- Suggest: "Run '/foundation:env-vars generate' to create .env files"
+
+**For 'generate' action (CREATE FILES):**
 - Use detected services from Phase 1 agent analysis
 - Generate .env file based on detected services with placeholder values:
 
@@ -96,6 +106,7 @@ Actions based on action:
 - Also generate .env.example (safe to commit with same structure)
 - Report: "Created .env with {count} required variables for {services}"
 - List all services detected and their required keys
+- Show file locations: ".env and .env.example created"
 
 **For 'add' action:**
 - Add/update variable in .env file
@@ -125,12 +136,15 @@ Goal: Report results
 
 Actions:
 - Display summary:
+  - For scan: "Found {count} required variables for {services}" (preview only, no files created)
+  - For generate: "Created .env and .env.example with {count} variables"
   - For add: "Environment variable added: {key}"
   - For remove: "Environment variable removed: {key}"
   - For list: "{count} environment variables configured"
   - For check: "✓ All required variables present" or "Missing: {list}"
-  - For template: "Created .env.example template"
 - Show next steps:
-  - "Restart development server to apply changes"
+  - For scan: "Run '/foundation:env-vars generate' to create .env files"
+  - For generate: "Fill in your actual API keys and secrets in .env"
+  - For add/remove: "Restart development server to apply changes"
   - "Add .env to .gitignore if not already present"
-  - "For check: Fill in missing variables"
+  - For check: "Fill in missing variables"
