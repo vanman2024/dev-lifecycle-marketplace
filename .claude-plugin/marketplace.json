@@ -44,6 +44,12 @@
       "source": "./plugins/versioning",
       "description": "Semantic Versioning Automation: Automated version management with changelog generation and CI/CD integration",
       "version": "1.0.0"
+    },
+    {
+      "name": "supervisor",
+      "source": "./plugins/supervisor",
+      "description": "Multi-Agent Orchestration: Parallel development with git worktree isolation, progress monitoring, and PR coordination",
+      "version": "1.0.0"
     }
   ]
 }
