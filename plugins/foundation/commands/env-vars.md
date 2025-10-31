@@ -15,24 +15,34 @@ Core Principles:
 - **Launch agents for large codebases** to comprehensively search code
 - Generate complete .env template from detected variables
 
-## Phase 1: Discovery - Detect Services
+## Phase 1: Discovery - Multi-Source Detection
 
-Goal: Detect what services/SDKs the project uses to determine required env vars
+Goal: Detect required environment variables from ALL available sources (priority order)
 
 Actions:
 - Parse $ARGUMENTS for action (scan, generate, add, remove, list, check)
 - Load .env file if exists: @.env
-- **Launch env-detector agent to analyze dependencies:**
-  - Read package.json dependencies (if Node.js project)
-  - Read pyproject.toml/requirements.txt (if Python project)
-  - Detect services being used:
-    - Supabase: @supabase/supabase-js, supabase
-    - Anthropic: @anthropic-ai/sdk, anthropic
-    - OpenAI: openai
-    - Vercel AI SDK: ai, @ai-sdk/*
-    - Database: pg, prisma, mongodb, redis
-    - Auth: next-auth, @clerk/*, @auth0/*
-- Map services to their required environment variables
+- **Launch env-detector agent with multi-source analysis:**
+
+  **Priority 1: Check specs/ directory (HIGHEST PRIORITY)**
+  - Look for specs/*.md files
+  - Analyze specs for mentioned services, APIs, databases
+  - Extract service requirements from spec documents
+  - Example: Spec mentions "Supabase for database" → detect SUPABASE_* vars needed
+
+  **Priority 2: Check manifest files (MEDIUM PRIORITY)**
+  - Read package.json dependencies (Node.js/TypeScript)
+  - Read pyproject.toml/requirements.txt (Python)
+  - Detect installed SDKs: @anthropic-ai/sdk, @supabase/supabase-js, openai, etc.
+
+  **Priority 3: Scan codebase (FALLBACK)**
+  - Search code for environment variable usage patterns
+  - JavaScript: process.env.VAR_NAME, import.meta.env.VAR_NAME
+  - Python: os.getenv("VAR_NAME"), os.environ["VAR_NAME"]
+  - Find actual variable references in code
+
+- Merge results from all sources (deduplicate)
+- Map detected services/variables to required environment variables
 
 ## Phase 2: Validation
 
