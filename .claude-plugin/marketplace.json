@@ -38,6 +38,12 @@
       "source": "./plugins/deployment",
       "description": "Deployment Orchestration: Automated deployment with platform detection (FastMCP Cloud, DigitalOcean, Vercel, Railway, Netlify)",
       "version": "1.0.0"
+    },
+    {
+      "name": "versioning",
+      "source": "./plugins/versioning",
+      "description": "Semantic Versioning Automation: Automated version management with changelog generation and CI/CD integration",
+      "version": "1.0.0"
     }
   ]
 }

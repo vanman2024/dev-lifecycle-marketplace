@@ -1,0 +1,20 @@
+{
+  "name": "versioning",
+  "version": "1.0.0",
+  "description": "Semantic versioning automation with changelog generation and CI/CD integration",
+  "author": {
+    "name": "dev-lifecycle-marketplace",
+    "email": "noreply@dev-lifecycle-marketplace.dev"
+  },
+  "homepage": "https://github.com/dev-lifecycle-marketplace/plugins/tree/master/versioning",
+  "repository": "https://github.com/dev-lifecycle-marketplace/plugins",
+  "license": "MIT",
+  "keywords": [
+    "versioning",
+    "semantic-release",
+    "changelog",
+    "ci-cd",
+    "automation",
+    "lifecycle"
+  ]
+}
