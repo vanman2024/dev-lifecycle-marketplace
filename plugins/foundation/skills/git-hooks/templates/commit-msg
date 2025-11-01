@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+# commit-msg hook: Validate conventional commit format
+
+COMMIT_MSG_FILE=$1
+COMMIT_MSG=$(cat "$COMMIT_MSG_FILE")
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
+
+echo "📝 Validating commit message format..."
+
+# Conventional commit pattern
+# Format: type(scope): description
+# Example: feat(api): add user authentication
+PATTERN="^(feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert)(\(.+\))?: .{1,100}"
+
+if ! echo "$COMMIT_MSG" | grep -qE "$PATTERN"; then
+  echo -e "${RED}✗${NC} Invalid commit message format"
+  echo ""
+  echo "Commit message must follow conventional commits format:"
+  echo -e "${YELLOW}type(scope): description${NC}"
+  echo ""
+  echo "Valid types: feat, fix, docs, style, refactor, test, chore, perf, ci, build, revert"
+  echo ""
+  echo "Examples:"
+  echo "  feat(auth): add user login"
+  echo "  fix(api): resolve null pointer error"
+  echo "  docs(readme): update installation steps"
+  echo ""
+  echo "Your commit message:"
+  echo "  $COMMIT_MSG"
+  echo ""
+  echo "Use --no-verify to bypass this check (not recommended)"
+  exit 1
+fi
+
+echo -e "${GREEN}✓${NC} Commit message format valid"
+exit 0

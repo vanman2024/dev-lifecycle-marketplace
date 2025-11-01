@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# Install standardized git hooks
+
+set -e
+
+# Get the directory where this script is located
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TEMPLATES_DIR="$(dirname "$SCRIPT_DIR")/templates"
+
+# Target directory (default: current directory, or first argument)
+TARGET_DIR="${1:-.}"
+
+# Check if target is a git repository
+if [ ! -d "$TARGET_DIR/.git" ]; then
+  echo "Error: $TARGET_DIR is not a git repository"
+  exit 1
+fi
+
+echo "Installing git hooks to: $TARGET_DIR"
+
+# Install each hook
+for hook in pre-commit commit-msg pre-push; do
+  if [ -f "$TEMPLATES_DIR/$hook" ]; then
+    cp "$TEMPLATES_DIR/$hook" "$TARGET_DIR/.git/hooks/$hook"
+    chmod +x "$TARGET_DIR/.git/hooks/$hook"
+    echo "✓ Installed $hook"
+  else
+    echo "⚠ Template not found: $TEMPLATES_DIR/$hook"
+  fi
+done
+
+echo ""
+echo "Git hooks installed successfully!"
+echo ""
+echo "Installed hooks:"
+echo "  - pre-commit: Secret and key scanning"
+echo "  - commit-msg: Conventional commit format validation"
+echo "  - pre-push: Security scans"
+echo ""
+echo "To bypass hooks: git commit --no-verify"
