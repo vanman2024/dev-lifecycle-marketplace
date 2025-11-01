@@ -78,6 +78,28 @@ Manage environment variables for project configuration
 /foundation:env-vars template
 ```
 
+### `/foundation:hooks-setup`
+Install standardized git hooks for security and quality enforcement
+
+Installs three essential git hooks:
+- **pre-commit**: Scans for API keys, tokens, passwords, and secrets
+- **commit-msg**: Validates conventional commit message format
+- **pre-push**: Runs security scans (npm audit, safety check)
+
+**Usage:**
+```bash
+/foundation:hooks-setup
+/foundation:hooks-setup /path/to/project
+```
+
+**What it checks:**
+- AWS keys, OpenAI keys, Bearer tokens
+- Database connection strings
+- Private keys and certificates
+- Generic API keys and secrets
+- Commit message format (feat|fix|docs|style|refactor|test|chore|perf|ci|build)
+- Dependency vulnerabilities (npm audit, safety)
+
 ## Agent
 
 ### `stack-detector`
