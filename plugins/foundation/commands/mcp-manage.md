@@ -25,6 +25,10 @@ Actions:
   - Global: ~/.mcp.json
 - Load current MCP configuration if exists
 - Example: @.mcp.json
+- Check for existing API keys in common locations:
+  - !{bash grep -h "API_KEY\|API-KEY\|_KEY" ~/.bashrc ~/.zshrc ~/.profile 2>/dev/null | grep -v "^#" || echo "No keys found"}
+  - !{bash test -f .env && grep "API_KEY" .env || echo "No .env file"}
+- Report found keys to avoid duplicates
 
 ## Phase 2: Validation
 
@@ -79,11 +83,15 @@ Actions based on action type:
 - Report cleared servers
 
 **For 'keys' action:**
-- Guide user through API key configuration
-- Add keys to .env or environment
-- Update .mcp.json with environment variable references
-- Example: Edit .env to add API_KEY=value
-- Report key configured
+- Check for existing API keys first:
+  - !{bash grep "CONTEXT7_API_KEY\|OPENAI_API_KEY\|ANTHROPIC_API_KEY" ~/.bashrc ~/.zshrc ~/.profile .env 2>/dev/null}
+- If key exists, report location and value status (set/placeholder)
+- If key doesn't exist, guide user through configuration:
+  - Ask where to store: .bashrc, .zshrc, .profile, or .env
+  - Add key with placeholder value
+  - Update .mcp.json with environment variable references
+- Example: !{bash echo 'export SERVER_API_KEY="your_key_here"' >> ~/.bashrc}
+- Report key configured and remind to update placeholder
 
 ## Phase 4: Summary
 
