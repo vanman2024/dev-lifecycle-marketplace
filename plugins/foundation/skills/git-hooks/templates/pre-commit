@@ -22,6 +22,8 @@ declare -a PATTERNS=(
   "AKIA[0-9A-Z]{16}"                    # AWS Access Key
   "api[_-]?key['\"]?\s*[:=]\s*['\"]?[a-zA-Z0-9]{20,}"  # Generic API key
   "sk-[a-zA-Z0-9]{32,}"                 # OpenAI API key
+  "sk-ant-[a-zA-Z0-9\-_]{95,}"          # Anthropic API key
+  "ctx7-[a-zA-Z0-9]{32,}"               # Context7 API key
   "Bearer [a-zA-Z0-9_\-\.]{20,}"        # Bearer token
   "password['\"]?\s*[:=]\s*['\"]?[^ '\"]+" # Password
   "secret['\"]?\s*[:=]\s*['\"]?[^ '\"]+"   # Secret
