@@ -6,6 +6,158 @@ Comprehensive planning, architecture design, and decision documentation for deve
 
 The planning plugin provides tools for creating specifications, designing architecture, documenting decisions, capturing notes, and building roadmaps. It works with any tech stack and integrates seamlessly with the dev-lifecycle-marketplace ecosystem.
 
+---
+
+## 🚀 NEW: Intelligent Multi-Agent Spec Generation
+
+### The Problem: Duplicate Tables & Wrong Build Order
+
+When generating multiple feature specs in parallel **without coordination**, you get disasters:
+
+❌ **Agent 1** creates `users` table in `001-exam-system`
+❌ **Agent 2** creates `users` table in `002-voice-companion` (DUPLICATE!)
+❌ **Agent 3** tries to build `003` before `001` exists (WRONG ORDER!)
+
+### The Solution: Entity Ownership Tracking
+
+Our system uses **intelligent dependency analysis** to prevent duplicates and ensure correct build order:
+
+✅ **Agent 1** creates `users` table in `001-exam-system` (OWNS it)
+✅ **Agent 2** references `users` via FK → `001.users.id` (no duplicate)
+✅ **Build phases** ensure `001` completes before `002` starts
+
+### How It Works
+
+```
+1. /planning:init-project "massive project description..."
+   ↓
+2. feature-analyzer agent breaks into features with dependencies
+   ↓ (generates JSON with entity ownership)
+   {
+     "features": [
+       {
+         "number": "001",
+         "buildPhase": 1,
+         "sharedEntities": {
+           "owns": ["User", "Exam"],
+           "references": ["Trade"]
+         }
+       },
+       {
+         "number": "002",
+         "buildPhase": 2,
+         "sharedEntities": {
+           "owns": ["VoiceSession"],
+           "references": ["User", "Exam"]
+         }
+       }
+     ]
+   }
+   ↓
+3. Spawn N parallel spec-writer agents (all at once)
+   ↓
+4. Each agent creates spec.md/plan.md/tasks.md
+   - For OWNED entities → CREATE TABLE
+   - For REFERENCED entities → FK only, NEVER recreate
+   ↓
+5. Generate 000-project-overview with build phases
+   ↓
+6. Consolidate to .planning/project-specs.json
+```
+
+### Build Phases
+
+**Phase 1: Foundation** (build first)
+- Features with no dependencies
+- Own core data entities (User, Exam, Trade)
+- Must complete before Phase 2
+
+**Phase 2: Core** (build after Phase 1)
+- Features that depend on Phase 1
+- Reference Phase 1 entities via FK
+- Cannot start until Phase 1 done
+
+**Phase 3: Integration** (build last)
+- Connect multiple Phase 1/2 features
+- Final integration layer
+
+### Example Output
+
+```
+specs/
+├── 000-project-overview/
+│   └── README.md (build phases, dependency graph, critical path)
+├── 001-exam-system/        [Phase 1: OWNS User, Exam]
+│   ├── spec.md
+│   ├── plan.md
+│   └── tasks.md
+├── 002-voice-companion/    [Phase 2: REFERENCES User, Exam]
+│   ├── spec.md
+│   ├── plan.md
+│   └── tasks.md
+└── 003-trade-library/      [Phase 1: OWNS Trade]
+    ├── spec.md
+    ├── plan.md
+    └── tasks.md
+```
+
+### New Commands
+
+#### `/planning:init-project <project-description>`
+**Create ALL specs in one shot from massive description**
+
+Spawns N parallel agents, each creates spec/plan/tasks for one feature. Prevents duplicate tables with entity ownership tracking.
+
+**Example:**
+```bash
+/planning:init-project "Red Seal AI: Exam prep platform with voice companion, mentorship, and payments. Tech stack: Next.js 15, FastAPI, Supabase."
+```
+
+#### `/planning:add-spec <feature-description>`
+**Add single spec to existing project**
+
+Auto-detects next spec number, maintains consistency with existing specs.
+
+**Example:**
+```bash
+/planning:add-spec "Employer portal for hiring apprentices"
+```
+
+#### `/planning:analyze-project`
+**Analyze existing specs for completeness**
+
+Spawns N parallel spec-analyzer agents, generates gap analysis.
+
+**Example:**
+```bash
+/planning:analyze-project
+```
+
+### New Agents
+
+#### `feature-analyzer`
+Breaks massive project description into features with **entity ownership detection**. Assigns build phases (1=Foundation, 2=Core, 3=Integration). Outputs JSON with dependency graph.
+
+#### `spec-writer` (enhanced)
+Creates spec/plan/tasks for ONE feature. **Respects entity ownership boundaries** - never recreates tables owned by other specs. Uses FK for referenced entities.
+
+#### `spec-analyzer`
+Analyzes existing spec for completeness, quality issues, implementation gaps.
+
+### Key Files
+
+**Templates:**
+- `spec-simple-template.md` - Tech-agnostic user requirements
+- `plan-template.md` - Technical design with DB schema (OWNED vs REFERENCED sections)
+- `tasks-template.md` - Implementation tasks (5 phases, numbered)
+- `project-overview-template.md` - High-level project view with build phases
+
+**Scripts:**
+- `generate-json-output.sh` - Format spec as JSON
+- `consolidate-specs.sh` - Merge all specs into .planning/project-specs.json
+
+---
+
 ## Commands
 
 ### `/planning:spec` - Specification Management
