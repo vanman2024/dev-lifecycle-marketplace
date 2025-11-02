@@ -55,19 +55,20 @@ Goal: Create roadmap with agent
 
 Actions:
 
-Launch the roadmap-planner agent to create the project roadmap.
+Task(description="Create project roadmap", subagent_type="planning:roadmap-planner", prompt="You are the roadmap-planner agent. Create project roadmap for $ARGUMENTS.
 
-Provide the agent with:
-- Context: All specs, architecture, current progress
-- Timeframe: $ARGUMENTS
-- Requirements:
+Context: All specs, architecture, current progress
+Timeframe: $ARGUMENTS
+
+Requirements:
   - Create phased roadmap
   - Define milestones
   - Estimate timelines
   - Show dependencies
   - Include risk assessment
   - Provide visual timeline (mermaid gantt chart)
-- Expected output: docs/ROADMAP.md
+
+Deliverable: docs/ROADMAP.md with comprehensive project timeline")
 
 ## Phase 5: Review
 Goal: Verify roadmap

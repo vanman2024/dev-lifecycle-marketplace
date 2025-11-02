@@ -67,12 +67,12 @@ Goal: Execute spec operation with agent
 
 Actions:
 
-Launch the spec-writer agent to handle the specification operation.
+Task(description="Handle spec operation", subagent_type="planning:spec-writer", prompt="You are the spec-writer agent. Handle specification operation for $ARGUMENTS.
 
-Provide the agent with:
-- Context: Current specs/ directory state
-- Action: $ARGUMENTS (create, list, validate, show)
-- Requirements:
+Context: Current specs/ directory state
+Action: $ARGUMENTS (create, list, validate, show)
+
+Requirements:
   - For create: Generate complete specification with:
     - Overview and goals
     - Requirements (functional, non-functional)
@@ -83,8 +83,9 @@ Provide the agent with:
   - For list: Show all specs with status
   - For validate: Check completeness of spec sections
   - For show: Display spec in readable format
-- Template: Use spec-management skill templates
-- Expected output: Created/updated spec file or validation report
+
+Template: Use spec-management skill templates
+Deliverable: Created/updated spec file or validation report")
 
 ## Phase 5: Review
 

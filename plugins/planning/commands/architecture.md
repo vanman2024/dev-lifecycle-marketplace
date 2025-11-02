@@ -64,12 +64,12 @@ Goal: Execute architecture design with agent
 
 Actions:
 
-Launch the architecture-designer agent to create the system architecture.
+Task(description="Design system architecture", subagent_type="planning:architecture-designer", prompt="You are the architecture-designer agent. Create system architecture for $ARGUMENTS.
 
-Provide the agent with:
-- Context: Detected tech stack from .claude/project.json
-- Action: $ARGUMENTS (design, update, diagram, review)
-- Requirements:
+Context: Detected tech stack from .claude/project.json
+Action: $ARGUMENTS (design, update, diagram, review)
+
+Requirements:
   - Create comprehensive architecture documentation including:
     - System overview and goals
     - Component diagrams
@@ -82,8 +82,8 @@ Provide the agent with:
     - Integration patterns
   - Adapt to detected stack (Next.js, FastAPI, AI SDKs, etc.)
   - Use architecture-patterns skill templates
-  - Include mermaid diagrams where appropriate
-- Expected output: Architecture documentation in docs/architecture/
+
+Deliverable: Complete architecture documentation with mermaid diagrams in docs/architecture/")
 
 ## Phase 5: Review
 

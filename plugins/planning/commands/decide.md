@@ -52,18 +52,19 @@ Goal: Create ADR with agent
 
 Actions:
 
-Launch the decision-documenter agent to create the Architecture Decision Record.
+Task(description="Create ADR", subagent_type="planning:decision-documenter", prompt="You are the decision-documenter agent. Create Architecture Decision Record for $ARGUMENTS.
 
-Provide the agent with:
-- Context: Project stack and architecture
-- Decision: $ARGUMENTS
-- Requirements:
+Context: Project stack and architecture
+Decision: $ARGUMENTS
+
+Requirements:
   - Follow ADR template format
   - Number sequentially (ADR-XXXX)
   - Include all required sections
   - Link to related specs/architecture
   - Use decision-tracking skill templates
-- Expected output: docs/adr/XXXX-decision-title.md
+
+Deliverable: docs/adr/XXXX-decision-title.md")
 
 ## Phase 5: Review
 Goal: Verify ADR created
