@@ -102,7 +102,21 @@ NOTE: In actual execution, the command orchestrator will read the JSON and dynam
 
 Wait for ALL spec-writer agents to complete before proceeding.
 
-Phase 5: Consolidation
+Phase 5: Project Overview
+Goal: Create high-level project overview (000-project-overview)
+
+Actions:
+- Create overview directory: !{bash mkdir -p specs/000-project-overview}
+- Generate README.md with:
+  - Project description from feature analysis JSON
+  - Feature map table (all specs with dependencies)
+  - Tech stack list (shared context from JSON)
+  - User types (from shared context)
+  - Dependency graph (mermaid diagram)
+  - Quick links to all specs
+- Write: specs/000-project-overview/README.md
+
+Phase 6: Consolidation
 Goal: Generate consolidated project-specs.json from all specs
 
 Actions:
@@ -111,7 +125,7 @@ Actions:
 - Verify JSON was created: !{bash test -f .planning/project-specs.json && echo "Generated" || echo "Missing"}
 - Count total specs created: !{bash ls -1 specs/*/spec.md 2>/dev/null | wc -l}
 
-Phase 6: Summary
+Phase 7: Summary
 Goal: Provide comprehensive results with paths and next steps
 
 Actions:
