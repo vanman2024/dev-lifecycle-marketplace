@@ -252,6 +252,95 @@ Create safe template for git:
 - No real secrets
 - Include all comments
 
+### 8. Multi-Environment Setup (setup-multi-env action)
+
+When invoked with multi-environment setup request:
+
+**Generate environment-specific files:**
+
+Create `.env.development`:
+- Environment: development
+- Debug: enabled
+- Log level: debug
+- Placeholder format: `{project}_dev_your_key_here`
+- URLs: dev/staging URLs where applicable
+- Comments: "(Development environment)"
+
+Create `.env.staging`:
+- Environment: staging
+- Debug: disabled
+- Log level: info
+- Placeholder format: `{project}_staging_your_key_here`
+- URLs: staging URLs
+- Comments: "(Staging environment)"
+
+Create `.env.production`:
+- Environment: production
+- Debug: disabled
+- Log level: warn
+- Placeholder format: `{project}_prod_your_key_here`
+- URLs: production URLs
+- Comments: "(Production environment)"
+
+Create `.env.example`:
+- Generic placeholders
+- Safe to commit to git
+- Template only
+
+**Generate switch-env.sh script:**
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+ENVIRONMENT="${1:-}"
+if [ -z "$ENVIRONMENT" ]; then
+    echo "Usage: ./switch-env.sh [development|staging|production]"
+    echo "Current environment:"
+    if [ -L .env ]; then
+        readlink .env | sed 's/\.env\.//'
+    else
+        echo "No environment active"
+    fi
+    exit 1
+fi
+ENV_FILE=".env.$ENVIRONMENT"
+if [ ! -f "$ENV_FILE" ]; then
+    echo "Error: Environment file not found: $ENV_FILE"
+    ls -1 .env.* 2>/dev/null | sed 's/\.env\./  - /'
+    exit 1
+fi
+ln -sf "$ENV_FILE" .env
+echo "✓ Switched to $ENVIRONMENT environment"
+```
+
+**Generate ANTHROPIC_SETUP.md:**
+- Instructions for creating Anthropic Console projects
+- One project per environment (dev, staging, prod)
+- Key naming conventions
+- Usage tracking explanation
+- Step-by-step setup guide
+
+**Generate service-specific guides:**
+- SUPABASE_SETUP.md (if Supabase detected)
+- FASTMCP_SETUP.md (if FastMCP detected)
+- Instructions for multi-project setup per service
+
+**Update .gitignore:**
+```
+# Environment files (NEVER commit!)
+.env
+.env.development
+.env.staging
+.env.production
+
+# Keep template
+!.env.example
+```
+
+**Create symlink:**
+```bash
+ln -sf .env.development .env
+```
+
 ## Decision-Making Framework
 
 ### Source Priority
