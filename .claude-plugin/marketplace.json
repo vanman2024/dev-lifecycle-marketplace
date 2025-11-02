@@ -24,7 +24,7 @@
     {
       "name": "iterate",
       "source": "./plugins/iterate",
-      "description": "Iterative Development: Task management, code adjustments, refactoring, feature enhancement",
+      "description": "Task refinement, spec synchronization, and code quality improvement for development lifecycle workflows",
       "version": "1.0.0"
     },
     {

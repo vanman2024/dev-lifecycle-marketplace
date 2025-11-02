@@ -1,0 +1,13 @@
+{
+  "name": "iterate",
+  "version": "1.0.0",
+  "description": "Task refinement, spec synchronization, and code quality improvement for development lifecycle workflows",
+  "author": {
+    "name": "dev-lifecycle-marketplace",
+    "email": "noreply@dev-lifecycle-marketplace.dev"
+  },
+  "homepage": "https://github.com/dev-lifecycle-marketplace/iterate",
+  "repository": "https://github.com/dev-lifecycle-marketplace/iterate",
+  "license": "MIT",
+  "keywords": ["iteration", "refactoring", "task-management", "spec-sync", "code-quality", "development-lifecycle"]
+}
