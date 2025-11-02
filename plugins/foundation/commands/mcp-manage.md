@@ -8,11 +8,20 @@ allowed-tools: Read, Write, Edit, Bash, Glob, Grep, AskUserQuestion
 
 Goal: Comprehensive MCP ecosystem management - add, install, remove, list MCP servers, and manage API keys for the development lifecycle
 
+**RECOMMENDED WORKFLOW** (v2.1+):
+For better management across multiple formats (Claude Code, VS Code, etc.), consider using the registry-based workflow:
+1. Add servers to universal registry: `/foundation:mcp-registry add <server-name>`
+2. Sync registry to project: `/foundation:mcp-sync claude` (or vscode/both)
+3. Manage API keys: Use `plugins/foundation/skills/mcp-configuration/scripts/manage-api-keys.sh`
+
+This command continues to support direct .mcp.json management for backward compatibility and quick operations.
+
 Core Principles:
 - Detect don't assume - check existing .mcp.json configuration
 - Validate before executing - ensure server names and configurations are valid
 - Provide clear feedback - show what was added, installed, or removed
 - Support all MCP operations - add, install, remove, list, clear, keys
+- For multi-format support, use registry workflow (see above)
 
 ## Phase 1: Discovery
 
@@ -20,10 +29,10 @@ Goal: Understand the requested action and current MCP configuration
 
 Actions:
 - Parse $ARGUMENTS to determine the action (add, install, remove, list, clear, keys)
-- Detect MCP configuration file location:
-  - Project-level: ./.mcp.json
-  - Global: ~/.mcp.json
-- Load current MCP configuration if exists
+- **IMPORTANT**: Always use the .mcp.json file in the CURRENT WORKING DIRECTORY
+- Check if ./.mcp.json exists in current directory
+- If it doesn't exist, create it with empty mcpServers object
+- Load current MCP configuration from ./.mcp.json
 - Example: @.mcp.json
 - Check for existing API keys in common locations:
   - !{bash grep -h "API_KEY\|API-KEY\|_KEY" ~/.bashrc ~/.zshrc ~/.profile 2>/dev/null | grep -v "^#" || echo "No keys found"}
@@ -50,11 +59,12 @@ Goal: Perform the MCP management operation
 Actions based on action type:
 
 **For 'add' action:**
-- Add new MCP server to .mcp.json configuration
+- **CRITICAL**: Add new MCP server to ./.mcp.json in CURRENT WORKING DIRECTORY
+- Never use ~/.mcp.json or any other location
 - Use mcp-configuration skill for server templates
-- Example: !{bash cat .mcp.json}
-- Update .mcp.json with new server entry
-- Report success
+- Example: !{bash cat ./.mcp.json}
+- Update ./.mcp.json with new server entry
+- Report success with full path to modified file
 
 **For 'install' action:**
 - Install MCP server package if needed

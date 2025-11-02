@@ -29,12 +29,28 @@ for hook in pre-commit commit-msg pre-push; do
   fi
 done
 
+# Install GitHub Actions workflow
 echo ""
-echo "Git hooks installed successfully!"
+echo "Installing GitHub Actions workflow..."
+WORKFLOWS_DIR="$TARGET_DIR/.github/workflows"
+mkdir -p "$WORKFLOWS_DIR"
+
+if [ -f "$TEMPLATES_DIR/github-security-workflow.yml" ]; then
+  cp "$TEMPLATES_DIR/github-security-workflow.yml" "$WORKFLOWS_DIR/security-scan.yml"
+  echo "✓ Installed GitHub Actions security workflow"
+else
+  echo "⚠ GitHub workflow template not found"
+fi
+
 echo ""
-echo "Installed hooks:"
+echo "Git hooks and GitHub workflow installed successfully!"
+echo ""
+echo "Installed local hooks:"
 echo "  - pre-commit: Secret and key scanning"
 echo "  - commit-msg: Conventional commit format validation"
 echo "  - pre-push: Security scans"
 echo ""
-echo "To bypass hooks: git commit --no-verify"
+echo "Installed GitHub workflow:"
+echo "  - .github/workflows/security-scan.yml: Server-side security checks"
+echo ""
+echo "To bypass local hooks: git commit --no-verify"

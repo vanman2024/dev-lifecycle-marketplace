@@ -27,6 +27,66 @@ Add, install, remove, list MCP servers and manage API keys
 /foundation:mcp-manage keys openai
 ```
 
+### `/foundation:mcp-registry` (v2.1+)
+Manage universal MCP server registry (single source of truth)
+
+**NEW**: Registry-based workflow for managing MCP servers across multiple formats (Claude Code, VS Code, Gemini, Qwen, Codex).
+
+**Actions:**
+- `init` - Initialize universal registry at ~/.claude/mcp-registry/
+- `add` - Add server to registry
+- `remove` - Remove server from registry
+- `list` - List all servers in registry
+- `search` - Search for servers by keyword
+
+**Usage:**
+```bash
+# Initialize registry
+/foundation:mcp-registry init
+
+# Add servers to registry
+/foundation:mcp-registry add context7
+/foundation:mcp-registry add filesystem
+
+# List all servers
+/foundation:mcp-registry list
+
+# Search for servers
+/foundation:mcp-registry search github
+```
+
+**Registry Structure:**
+- Location: `~/.claude/mcp-registry/servers.json`
+- Single source of truth for all MCP server definitions
+- Supports 4 transport types: stdio, http-local, http-remote, http-remote-auth
+- Environment variables referenced as `${VAR}` (values in project .env)
+
+### `/foundation:mcp-sync` (v2.1+)
+Sync universal registry to target format(s)
+
+Convert registry to Claude Code (.mcp.json) or VS Code (.vscode/mcp.json) format.
+
+**Formats:**
+- `claude` - Sync to .mcp.json (Claude Code format)
+- `vscode` - Sync to .vscode/mcp.json (VS Code format)
+- `both` - Sync to both formats
+
+**Usage:**
+```bash
+# Sync all servers to Claude Code format
+/foundation:mcp-sync claude
+
+# Sync specific servers to VS Code
+/foundation:mcp-sync vscode context7 filesystem
+
+# Sync all to both formats
+/foundation:mcp-sync both
+```
+
+**Format Differences:**
+- **Claude Code (.mcp.json)**: Root key `mcpServers`, best for stdio servers
+- **VS Code (.vscode/mcp.json)**: Root key `servers`, supports all transport types including http-remote-auth
+
 ### `/foundation:detect`
 Detect project tech stack and populate .claude/project.json
 
@@ -115,12 +175,20 @@ Analyzes project structure and detects complete tech stack including frameworks,
 ## Skills
 
 ### `mcp-configuration`
-MCP server configuration templates, .mcp.json management, API key handling
+MCP server configuration templates, .mcp.json management, API key handling, and universal registry management (v2.1+)
 
 **Provides:**
-- 5 helper scripts (init, add, validate, keys, install)
+- 13 helper scripts (v2.1: added registry-init, registry-add, registry-list, registry-sync, transform-claude, transform-vscode, manage-api-keys improvements)
 - 6 configuration templates (basic, stdio, HTTP, FastMCP, TypeScript, multi-server)
+- 2 registry templates (.env.example, marketplace.json reference)
 - 5 comprehensive examples (15,000+ words of documentation)
+
+**Registry Workflow (v2.1+):**
+- Universal registry at ~/.claude/mcp-registry/servers.json
+- Single source of truth for all MCP server definitions
+- Transform to Claude Code, VS Code, or both formats on demand
+- API keys stored in project .env files (never in configs)
+- Marketplace servers tracked separately (VS Code pre-installed servers)
 
 ### `project-detection`
 Tech stack detection scripts, framework identification, dependency analysis
@@ -176,16 +244,19 @@ foundation/
 │   └── plugin.json
 ├── commands/
 │   ├── mcp-manage.md
+│   ├── mcp-registry.md (v2.1)
+│   ├── mcp-sync.md (v2.1)
 │   ├── detect.md
 │   ├── env-check.md
-│   └── env-vars.md
+│   ├── env-vars.md
+│   └── hooks-setup.md
 ├── agents/
 │   └── stack-detector.md
 ├── skills/
 │   ├── mcp-configuration/
 │   │   ├── SKILL.md
-│   │   ├── scripts/ (5 scripts)
-│   │   ├── templates/ (6 templates)
+│   │   ├── scripts/ (13 scripts - v2.1 added 7)
+│   │   ├── templates/ (8 templates - v2.1 added 2)
 │   │   └── examples/ (5 examples)
 │   ├── project-detection/
 │   │   ├── SKILL.md
@@ -200,24 +271,59 @@ foundation/
 └── README.md
 ```
 
-## Workflow Example
+**Global Registry** (v2.1):
+```
+~/.claude/mcp-registry/
+├── servers.json          # Universal server definitions
+├── marketplace.json      # VS Code marketplace reference
+├── backups/              # Automatic backups
+└── README.md             # Registry documentation
+```
+
+## Workflow Examples
+
+### Registry-Based Workflow (v2.1+ Recommended)
+
+```bash
+# 1. Initialize universal registry (one-time setup)
+/foundation:mcp-registry init
+
+# 2. Add servers to registry
+/foundation:mcp-registry add context7
+/foundation:mcp-registry add filesystem
+
+# 3. Sync registry to project
+/foundation:mcp-sync both  # Syncs to both Claude and VS Code formats
+
+# 4. Configure API keys in project .env
+bash plugins/foundation/skills/mcp-configuration/scripts/manage-api-keys.sh --action add --key-name CONTEXT7_API_KEY
+
+# 5. Detect project tech stack
+/foundation:detect
+
+# 6. Check environment
+/foundation:env-check
+
+# 7. Now ready for other lifecycle commands
+/planning:spec create my-feature
+/iterate:tasks my-feature
+```
+
+### Direct Management Workflow (Backward Compatible)
 
 ```bash
 # 1. Detect project tech stack
 /foundation:detect
-# Creates .claude/project.json with detected stack
 
 # 2. Check environment
 /foundation:env-check
-# Verifies all required tools are installed
 
-# 3. Configure MCP servers
+# 3. Configure MCP servers directly
 /foundation:mcp-manage add playwright
 /foundation:mcp-manage install supabase
 
 # 4. Setup environment variables
 /foundation:env-vars template
-# Edit .env with required values
 /foundation:env-vars check
 
 # 5. Now ready for other lifecycle commands
@@ -226,5 +332,13 @@ foundation/
 ```
 
 ## Version
+
+**2.1.0** - Universal MCP Registry, format conversion, improved API key management
+- Added /foundation:mcp-registry command for universal registry management
+- Added /foundation:mcp-sync command for format conversion (Claude Code ↔ VS Code)
+- 7 new scripts: registry-init, registry-add, registry-list, registry-sync, transform-claude, transform-vscode
+- .env.example template with all known MCP API keys
+- marketplace.json reference for VS Code pre-installed servers
+- Updated /foundation:mcp-manage with registry workflow recommendations
 
 **1.0.0** - Initial release with complete MCP management, tech stack detection, and environment validation

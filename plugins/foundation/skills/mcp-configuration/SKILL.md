@@ -10,16 +10,24 @@ This skill provides comprehensive tooling for managing MCP (Model Context Protoc
 
 ## What This Skill Provides
 
-### 1. Helper Scripts (5 scripts)
+### 1. Helper Scripts (13 scripts - v2.1 added 7)
+
+**Registry Management (v2.1+):**
+- `scripts/registry-init.sh` - Initialize universal MCP registry at ~/.claude/mcp-registry/
+- `scripts/registry-add.sh` - Add server to universal registry
+- `scripts/registry-list.sh` - List all servers in registry
+- `scripts/registry-sync.sh` - Sync registry to target format(s)
+- `scripts/transform-claude.sh` - Transform registry → .mcp.json (Claude Code format)
+- `scripts/transform-vscode.sh` - Transform registry → .vscode/mcp.json (VS Code format)
 
 **Configuration Management:**
 - `scripts/init-mcp-config.sh` - Initialize .mcp.json with proper structure
 - `scripts/add-mcp-server.sh` - Add new MCP server to existing config
 - `scripts/validate-mcp-config.sh` - Validate .mcp.json structure and server definitions
-- `scripts/manage-api-keys.sh` - Securely manage API keys in .env files
+- `scripts/manage-api-keys.sh` - Securely manage API keys in project .env files (v2.1: .env-only mode)
 - `scripts/install-mcp-server.sh` - Install and configure MCP server packages
 
-### 2. Configuration Templates (6 templates)
+### 2. Configuration Templates (8 templates - v2.1 added 2)
 
 **Server Type Templates:**
 - `templates/basic-mcp-config.json` - Basic .mcp.json structure
@@ -28,6 +36,10 @@ This skill provides comprehensive tooling for managing MCP (Model Context Protoc
 - `templates/python-fastmcp.json` - Python FastMCP server setup
 - `templates/typescript-server.json` - TypeScript MCP server setup
 - `templates/multi-server-config.json` - Multiple MCP servers configuration
+
+**Registry Templates (v2.1+):**
+- `templates/.env.example` - Complete .env template with all known MCP API keys
+- Global: `~/.claude/mcp-registry/marketplace.json` - VS Code marketplace servers reference
 
 ### 3. Usage Examples (5 examples)
 
@@ -40,7 +52,83 @@ This skill provides comprehensive tooling for managing MCP (Model Context Protoc
 
 ## Instructions
 
-### Initial MCP Configuration Setup
+### RECOMMENDED: Universal Registry Workflow (v2.1+)
+
+**Best Practice**: Use the universal registry for managing MCP servers across multiple formats (Claude Code, VS Code, Gemini, Qwen, Codex).
+
+#### Step 1: Initialize Registry (One-time)
+
+```bash
+bash plugins/foundation/skills/mcp-configuration/scripts/registry-init.sh
+```
+
+Creates:
+- `~/.claude/mcp-registry/servers.json` - Universal server definitions
+- `~/.claude/mcp-registry/marketplace.json` - VS Code marketplace reference
+- `~/.claude/mcp-registry/backups/` - Automatic backups
+- `~/.claude/mcp-registry/README.md` - Documentation
+
+#### Step 2: Add Servers to Registry
+
+```bash
+# stdio server example (most common)
+bash plugins/foundation/skills/mcp-configuration/scripts/registry-add.sh context7 \
+  --transport stdio \
+  --command npx \
+  --args "-y,@upstash/context7-mcp" \
+  --env "CONTEXT7_API_KEY=\${CONTEXT7_API_KEY}" \
+  --description "Up-to-date library documentation"
+
+# http-remote server example
+bash plugins/foundation/skills/mcp-configuration/scripts/registry-add.sh supabase \
+  --transport http-remote \
+  --url "https://mcp.supabase.com/mcp" \
+  --description "Supabase database access"
+
+# http-remote-auth server example (VS Code only)
+bash plugins/foundation/skills/mcp-configuration/scripts/registry-add.sh github \
+  --transport http-remote-auth \
+  --url "https://api.githubcopilot.com/mcp/" \
+  --header "Authorization: Bearer \${GITHUB_TOKEN}" \
+  --description "GitHub Copilot MCP API"
+```
+
+#### Step 3: Sync Registry to Project
+
+```bash
+# Sync to Claude Code format (.mcp.json)
+bash plugins/foundation/skills/mcp-configuration/scripts/registry-sync.sh claude
+
+# Sync to VS Code format (.vscode/mcp.json)
+bash plugins/foundation/skills/mcp-configuration/scripts/registry-sync.sh vscode
+
+# Sync to both formats
+bash plugins/foundation/skills/mcp-configuration/scripts/registry-sync.sh both
+```
+
+#### Step 4: Configure API Keys
+
+```bash
+# Add API keys to project .env
+bash plugins/foundation/skills/mcp-configuration/scripts/manage-api-keys.sh \
+  --action add \
+  --key-name CONTEXT7_API_KEY
+
+# Use templates/.env.example as reference
+```
+
+#### Step 5: List and Search Registry
+
+```bash
+# List all servers
+bash plugins/foundation/skills/mcp-configuration/scripts/registry-list.sh
+
+# Or use jq directly
+jq -r '.servers | to_entries[] | "\(.key) - \(.value.transport) - \(.value.description)"' \
+  ~/.claude/mcp-registry/servers.json
+```
+
+### Initial MCP Configuration Setup (Direct Mode - Backward Compatible)
 
 When user wants to set up MCP configuration:
 
@@ -256,14 +344,54 @@ Common issues and solutions:
 - Validate configuration with script
 - Test server command manually first
 
+## Registry vs Direct Management
+
+### Use Registry When:
+- Working with multiple projects that share MCP servers
+- Using multiple tools (Claude Code + VS Code)
+- Need to track marketplace servers separately
+- Want single source of truth for all configs
+- Planning to add Gemini, Qwen, or Codex support
+
+### Use Direct Management When:
+- Single project, single tool (Claude Code only)
+- Quick prototyping or testing
+- Prefer simpler workflow without registry layer
+- Backward compatibility requirements
+
+## Format Conversion Reference
+
+| Feature | Claude Code (.mcp.json) | VS Code (.vscode/mcp.json) |
+|---------|-------------------------|---------------------------|
+| Root key | `mcpServers` | `servers` |
+| stdio support | ✅ Best | ✅ Good |
+| http-local support | ⚠️ Manual start required | ✅ Full support |
+| http-remote support | ✅ Partial | ✅ Full |
+| http-remote-auth support | ❌ Not supported | ✅ Full support |
+| Environment variables | `${VAR}` required | Direct or `${VAR}` |
+| Marketplace servers | Not applicable | Pre-installed |
+
+## Known MCP Servers
+
+From `templates/.env.example`:
+- context7 - Library documentation (stdio, API key)
+- github-copilot - GitHub API (http-remote-auth, token)
+- filesystem - Local file access (stdio)
+- memory - OpenMemory/Mem0 (http-remote, API key)
+- supabase - Database access (http-remote, credentials)
+- playwright - Browser automation (marketplace, VS Code only)
+- puppeteer - Browser control (stdio/marketplace)
+- shadcn - Component library (stdio)
+
 ## Related Skills
 
 - `project-detection` - Detect project type for appropriate MCP servers
-- `mcp-development` - Develop custom MCP servers
+- `environment-setup` - Verify tools and environment variables
 - `version-management` - Manage MCP server versions
 
 ---
 
 **Plugin**: foundation
-**Skill Type**: Configuration Management + Validation
+**Skill Type**: Configuration Management + Validation + Registry
+**Version**: 2.1.0 (Registry support added)
 **Auto-invocation**: Yes (via description matching)
