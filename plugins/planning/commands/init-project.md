@@ -103,18 +103,28 @@ NOTE: In actual execution, the command orchestrator will read the JSON and dynam
 Wait for ALL spec-writer agents to complete before proceeding.
 
 Phase 5: Project Overview
-Goal: Create high-level project overview (000-project-overview)
+Goal: Create high-level project overview (000-project-overview) with build phases and dependency graph
 
 Actions:
 - Create overview directory: !{bash mkdir -p specs/000-project-overview}
-- Generate README.md with:
-  - Project description from feature analysis JSON
-  - Feature map table (all specs with dependencies)
-  - Tech stack list (shared context from JSON)
-  - User types (from shared context)
-  - Dependency graph (mermaid diagram)
-  - Quick links to all specs
+- Load template:
+  - @~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/planning/skills/spec-management/templates/project-overview-template.md
+- Parse feature analysis JSON for:
+  - Project name and description
+  - All features with buildPhase, dependencies, sharedEntities
+  - Shared context (tech stack, user types, data entities, entity ownership)
+- Generate README.md with populated template:
+  - **Features table** with build phase column, dependencies, status
+  - **Tech stack** from sharedContext
+  - **User types** from sharedContext
+  - **Data Architecture** showing entity ownership (who owns what)
+  - **Build Order & Phases** grouped by phase (1=Foundation, 2=Core, 3=Integration)
+  - **Dependency graph** (mermaid) showing all feature relationships
+  - **Critical path** (longest dependency chain)
+  - **Parallel work opportunities** (which can build simultaneously)
+  - **Integration map** (how features connect)
 - Write: specs/000-project-overview/README.md
+- This file provides the bird's-eye view of entire project
 
 Phase 6: Consolidation
 Goal: Generate consolidated project-specs.json from all specs

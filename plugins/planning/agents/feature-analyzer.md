@@ -72,13 +72,22 @@ You are a planning and feature decomposition specialist. Your role is to analyze
   - Dependent features after (004, 005, 006)
   - Integration features last (007, 008, etc.)
 
-### 4. Shared Context Extraction
+### 4. Shared Context Extraction & Entity Ownership
 - Extract shared project context:
   - **Tech stack**: All frameworks, languages, platforms mentioned
   - **User types**: All user roles and personas
   - **Data entities**: Core data objects across features
   - **Integrations**: External services and APIs
-- This shared context will be passed to ALL parallel spec-writer agents
+- **Determine entity ownership** (CRITICAL):
+  - Identify which feature OWNS each data entity (creates the table)
+  - Identify which features REFERENCE entities from other features
+  - Example: User entity → owned by 001-auth, referenced by all others
+  - Example: Exam entity → owned by 001-exam-system, referenced by 002-voice
+- **Assign build phases** based on dependencies:
+  - Phase 1 (Foundation): Features with no dependencies, own core entities
+  - Phase 2 (Core): Features that depend on Phase 1
+  - Phase 3 (Integration): Features that connect multiple Phase 1/2 features
+- This prevents duplicate table creation and ensures correct build order
 
 ### 5. JSON Output Generation
 - Generate structured JSON with:
@@ -118,7 +127,11 @@ You are a planning and feature decomposition specialist. Your role is to analyze
 ## Output Standards
 
 - JSON output with complete feature breakdown
-- Each feature has: number, name, shortName, focus, dependencies, integrations
+- Each feature has: number, name, shortName, focus, dependencies, integrations, buildPhase, sharedEntities
+- **sharedEntities** specifies:
+  - `owns`: Array of entities THIS feature creates (e.g., ["User", "Exam"])
+  - `references`: Array of entities THIS feature uses from other features
+- **buildPhase** determines order (1=Foundation, 2=Core, 3=Integration)
 - Shared context includes: techStack, userTypes, dataEntities, integrations
 - Feature names are kebab-case, 2-4 words
 - Dependencies are explicitly listed by feature number
@@ -131,9 +144,12 @@ Before outputting JSON, verify:
 - ✅ No duplicate features (related functionality grouped)
 - ✅ Each feature is independently testable
 - ✅ Dependencies are correctly identified
+- ✅ **Entity ownership assigned** (no entity owned by multiple features)
+- ✅ **Build phases assigned** (1=Foundation, 2=Core, 3=Integration)
+- ✅ **Each entity owned by exactly ONE feature**
 - ✅ Feature names are clear and concise
 - ✅ Shared context is complete (tech, users, data)
-- ✅ Numbering follows dependency order
+- ✅ Numbering follows dependency order and build phase
 - ✅ Max 10 features (forced grouping if needed)
 - ✅ JSON is valid and parseable
 
@@ -148,7 +164,12 @@ Before outputting JSON, verify:
       "shortName": "exam-system",
       "focus": "4-hour timed exams with 120 questions, scoring, and results tracking",
       "dependencies": [],
-      "integrations": ["005-trade-library", "002-voice-companion"]
+      "integrations": ["002-voice-companion", "003-mentorship"],
+      "buildPhase": 1,
+      "sharedEntities": {
+        "owns": ["User", "Exam", "Question", "ExamResult"],
+        "references": ["Trade"]
+      }
     },
     {
       "number": "002",
@@ -156,13 +177,39 @@ Before outputting JSON, verify:
       "shortName": "voice-companion",
       "focus": "Eleven Labs STT/TTS integration for AI-powered study mode",
       "dependencies": ["001-exam-system"],
-      "integrations": []
+      "integrations": [],
+      "buildPhase": 2,
+      "sharedEntities": {
+        "owns": ["VoiceSession", "AudioTranscript"],
+        "references": ["User", "Exam"]
+      }
+    },
+    {
+      "number": "003",
+      "name": "trade-library",
+      "shortName": "trade-library",
+      "focus": "57 Red Seal trades database with equipment and requirements",
+      "dependencies": [],
+      "integrations": ["001-exam-system"],
+      "buildPhase": 1,
+      "sharedEntities": {
+        "owns": ["Trade", "TradeEquipment", "TradeRequirement"],
+        "references": []
+      }
     }
   ],
   "sharedContext": {
     "techStack": ["Next.js 15", "FastAPI", "Supabase", "Eleven Labs", "Stripe"],
     "userTypes": ["Apprentice", "Mentor", "Employer", "Admin"],
-    "dataEntities": ["Trade", "Question", "Exam", "User", "Subscription"]
+    "dataEntities": ["User", "Exam", "Question", "Trade", "VoiceSession", "Mentor"],
+    "entityOwnership": {
+      "User": "001-exam-system",
+      "Exam": "001-exam-system",
+      "Question": "001-exam-system",
+      "Trade": "003-trade-library",
+      "VoiceSession": "002-voice-companion",
+      "Mentor": "004-mentorship"
+    }
   }
 }
 ```
