@@ -60,7 +60,7 @@ Goal: Run registry-sync.sh script to perform transformation
 
 Actions:
 - Execute sync script with format and optional servers:
-  - !{bash plugins/foundation/skills/mcp-configuration/scripts/registry-sync.sh $FORMAT $SERVERS}
+  - !{bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/registry-sync.sh $FORMAT $SERVERS}
 - Script will:
   - Read from ~/.claude/mcp-registry/servers.json
   - Transform to target format(s)
@@ -71,13 +71,13 @@ Actions:
 Example commands:
 ```bash
 # Sync all servers to Claude Code format
-!{bash plugins/foundation/skills/mcp-configuration/scripts/registry-sync.sh claude}
+!{bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/registry-sync.sh claude}
 
 # Sync specific servers to VS Code format
-!{bash plugins/foundation/skills/mcp-configuration/scripts/registry-sync.sh vscode context7 filesystem}
+!{bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/registry-sync.sh vscode context7 filesystem}
 
 # Sync all servers to both formats
-!{bash plugins/foundation/skills/mcp-configuration/scripts/registry-sync.sh both}
+!{bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/registry-sync.sh both}
 ```
 
 ## Phase 4: Verification

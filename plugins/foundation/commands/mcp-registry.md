@@ -52,7 +52,7 @@ Goal: Execute the appropriate registry operation
 Initialize registry if it doesn't exist
 
 ```bash
-!{bash plugins/foundation/skills/mcp-configuration/scripts/registry-init.sh}
+!{bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/registry-init.sh}
 ```
 
 Script will:
@@ -78,19 +78,19 @@ Steps:
 2. Execute add script:
 ```bash
 # stdio example
-!{bash plugins/foundation/skills/mcp-configuration/scripts/registry-add.sh context7 \
+!{bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/registry-add.sh context7 \
   --transport stdio \
   --command npx \
   --args "-y,@upstash/context7-mcp" \
   --env "CONTEXT7_API_KEY=\${CONTEXT7_API_KEY}"}
 
 # http-remote example
-!{bash plugins/foundation/skills/mcp-configuration/scripts/registry-add.sh api-server \
+!{bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/registry-add.sh api-server \
   --transport http-remote \
   --url "https://api.example.com/mcp/"}
 
 # http-remote-auth example
-!{bash plugins/foundation/skills/mcp-configuration/scripts/registry-add.sh github \
+!{bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/registry-add.sh github \
   --transport http-remote-auth \
   --url "https://api.githubcopilot.com/mcp/" \
   --header "Authorization: Bearer \${GITHUB_TOKEN}"}
@@ -106,7 +106,7 @@ Steps:
 List all servers in registry
 
 ```bash
-!{bash plugins/foundation/skills/mcp-configuration/scripts/registry-list.sh}
+!{bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/registry-list.sh}
 ```
 
 Or inline:
