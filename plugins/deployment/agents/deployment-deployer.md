@@ -82,7 +82,10 @@ Use `digitalocean-droplet-deployment` skill:
 - Use when: Full server control, custom configurations, legacy apps needed
 
 **For Vercel:**
-- Bash plugins/deployment/skills/deployment-scripts/scripts/vercel-deploy.sh
+Use `vercel-deployment` skill:
+- Validate: Bash plugins/deployment/skills/vercel-deployment/scripts/validate-app.sh <app-path>
+- Deploy: Bash plugins/deployment/skills/vercel-deployment/scripts/deploy-to-vercel.sh <app-path> [production]
+- Use when: Next.js, React, Vue apps, serverless functions, edge network needed
 
 **For Netlify:**
 - Bash plugins/deployment/skills/deployment-scripts/scripts/netlify-deploy.sh

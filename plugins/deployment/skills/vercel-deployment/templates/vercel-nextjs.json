@@ -1,0 +1,33 @@
+{
+  "version": 2,
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "installCommand": "npm install",
+  "devCommand": "npm run dev",
+  "env": {
+    "NEXT_PUBLIC_API_URL": "your_api_url_here",
+    "NEXT_PUBLIC_SITE_URL": "your_site_url_here"
+  },
+  "build": {
+    "env": {
+      "DATABASE_URL": "@database-url",
+      "API_SECRET": "@api-secret"
+    }
+  },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        }
+      ]
+    }
+  ]
+}
