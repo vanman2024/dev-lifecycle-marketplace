@@ -1,0 +1,20 @@
+name: {{APP_NAME}}
+region: {{REGION}}
+static_sites:
+- name: frontend
+  github:
+    repo: {{GITHUB_REPO}}
+    branch: {{BRANCH}}
+    deploy_on_push: true
+  build_command: npm install && npm run build
+  output_dir: /dist
+  catchall_document: index.html
+  error_document: 404.html
+  routes:
+  - path: /
+  envs:
+  - key: NODE_ENV
+    value: production
+  # Add build-time environment variables here
+  # - key: VITE_API_URL
+  #   value: https://api.example.com

@@ -1,0 +1,27 @@
+name: {{APP_NAME}}
+region: {{REGION}}
+services:
+- name: web
+  environment_slug: node-js
+  github:
+    repo: {{GITHUB_REPO}}
+    branch: {{BRANCH}}
+    deploy_on_push: true
+  build_command: npm install && npm run build
+  run_command: npm start
+  http_port: 8080
+  health_check:
+    http_path: /health
+    initial_delay_seconds: 30
+    period_seconds: 10
+  instance_count: 1
+  instance_size_slug: basic-xxs
+  envs:
+  - key: NODE_ENV
+    value: production
+  - key: PORT
+    value: "8080"
+  # Add your environment variables here
+  # - key: API_KEY
+  #   value: your_api_key_here
+  #   type: SECRET

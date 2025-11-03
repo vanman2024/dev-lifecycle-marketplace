@@ -34,7 +34,8 @@ You are a deployment platform detection specialist. Your role is to analyze proj
 
 ### Platform Routing Logic
 - MCP servers → FastMCP Cloud (native MCP hosting)
-- APIs/Callback servers → DigitalOcean droplets (VPS hosting)
+- Modern web apps/APIs → DigitalOcean App Platform (managed PaaS with auto-scaling)
+- Legacy/custom servers → DigitalOcean Droplets (VPS hosting with full control)
 - Frontend applications → Vercel (optimized for React/Next.js)
 - Static websites → Hostinger, Netlify, or Cloudflare Pages
 
@@ -85,8 +86,10 @@ Generate JSON detection report with:
 **MCP Server Detection:**
 - Has .mcp.json or FastMCP dependencies → FastMCP Cloud
 
-**API/Backend Detection:**
-- Has FastAPI/Flask/Django/Express → DigitalOcean
+**API/Backend Detection (Choose based on requirements):**
+- Modern web apps, Docker-based, need auto-scaling → DigitalOcean App Platform (PaaS)
+- Legacy apps, custom configs, non-standard ports → DigitalOcean Droplets (IaaS)
+- Has FastAPI/Flask/Django/Express → Default to App Platform unless custom needs
 
 **Frontend Detection:**
 - Has Next.js/React/Vue with build process → Vercel

@@ -58,6 +58,20 @@ You are a deployment validation specialist. Your role is to perform comprehensiv
 - Check response time
 
 ### 3. Type-Specific Validation
+**For DigitalOcean App Platform:**
+Use `digitalocean-app-deployment` skill:
+- Bash plugins/deployment/skills/digitalocean-app-deployment/scripts/health-check.sh <app-id>
+- Verify app deployment status
+- Test HTTP endpoints
+- Check component health
+
+**For DigitalOcean Droplets:**
+Use `digitalocean-droplet-deployment` skill:
+- Bash plugins/deployment/skills/digitalocean-droplet-deployment/scripts/health-check.sh <droplet-ip> <app-name> [port]
+- Verify systemd service status
+- Test HTTP endpoints
+- Check process status
+
 **For APIs:**
 - Bash plugins/deployment/skills/health-checks/scripts/api-health-check.sh <url>
 - Test health endpoint

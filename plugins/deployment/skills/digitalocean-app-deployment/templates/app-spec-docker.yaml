@@ -1,0 +1,29 @@
+name: {{APP_NAME}}
+region: {{REGION}}
+services:
+- name: web
+  dockerfile_path: {{DOCKERFILE_PATH}}
+  github:
+    repo: {{GITHUB_REPO}}
+    branch: {{BRANCH}}
+    deploy_on_push: true
+  http_port: {{HTTP_PORT}}
+  health_check:
+    http_path: {{HEALTH_PATH}}
+    initial_delay_seconds: 30
+    period_seconds: 10
+    timeout_seconds: 5
+    success_threshold: 1
+    failure_threshold: 3
+  instance_count: {{INSTANCE_COUNT}}
+  instance_size_slug: {{INSTANCE_SIZE}}
+  envs:
+  - key: PORT
+    value: "{{HTTP_PORT}}"
+  # Add your environment variables here
+  # - key: API_KEY
+  #   value: your_api_key_here
+  #   type: SECRET
+  # - key: DATABASE_URL
+  #   scope: RUN_AND_BUILD_TIME
+  #   type: SECRET

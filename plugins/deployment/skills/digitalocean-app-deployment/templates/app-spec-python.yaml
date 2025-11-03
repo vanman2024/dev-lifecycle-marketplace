@@ -1,0 +1,26 @@
+name: {{APP_NAME}}
+region: {{REGION}}
+services:
+- name: api
+  environment_slug: python
+  github:
+    repo: {{GITHUB_REPO}}
+    branch: {{BRANCH}}
+    deploy_on_push: true
+  build_command: pip install -r requirements.txt
+  run_command: gunicorn --bind :8080 --workers 4 app:app
+  http_port: 8080
+  health_check:
+    http_path: /health
+    initial_delay_seconds: 30
+  instance_count: 1
+  instance_size_slug: basic-xxs
+  envs:
+  - key: PYTHONUNBUFFERED
+    value: "1"
+  - key: PORT
+    value: "8080"
+  # Add your environment variables here
+  # - key: API_KEY
+  #   value: your_api_key_here
+  #   type: SECRET

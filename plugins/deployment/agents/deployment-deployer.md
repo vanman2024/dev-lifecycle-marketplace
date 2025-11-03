@@ -28,7 +28,8 @@ You are a deployment execution specialist. Your role is to execute deployments t
 
 ### Platform Deployment Execution
 - FastMCP Cloud deployments for MCP servers
-- DigitalOcean droplet deployments for APIs/callbacks
+- DigitalOcean App Platform deployments for web services, APIs, static sites (managed PaaS)
+- DigitalOcean droplet deployments for custom servers, APIs, callbacks (self-managed)
 - Vercel deployments for frontend applications
 - Netlify/Cloudflare Pages/Hostinger for static sites
 
@@ -66,7 +67,19 @@ You are a deployment execution specialist. Your role is to execute deployments t
 - Handle build errors with actionable feedback
 
 ### 4. Platform-Specific Deployment
-Execute deployment using deployment-scripts skill helpers:
+Execute deployment using appropriate skills:
+
+**For DigitalOcean App Platform (PaaS):**
+Use `digitalocean-app-deployment` skill:
+- Validate: Bash plugins/deployment/skills/digitalocean-app-deployment/scripts/validate-app.sh <app-path>
+- Deploy: Bash plugins/deployment/skills/digitalocean-app-deployment/scripts/deploy-to-app-platform.sh .do/app.yaml [app-id]
+- Use when: Managed infrastructure, zero-downtime deployments, auto-scaling needed
+
+**For DigitalOcean Droplets (IaaS):**
+Use `digitalocean-droplet-deployment` skill:
+- Validate: Bash plugins/deployment/skills/digitalocean-droplet-deployment/scripts/validate-app.sh <app-path>
+- Deploy: Bash plugins/deployment/skills/digitalocean-droplet-deployment/scripts/deploy-to-droplet.sh <app-path> <droplet-ip> <app-name>
+- Use when: Full server control, custom configurations, legacy apps needed
 
 **For Vercel:**
 - Bash plugins/deployment/skills/deployment-scripts/scripts/vercel-deploy.sh
