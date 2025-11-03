@@ -4,6 +4,19 @@ argument-hint: <claude|vscode|both> [server-name...]
 allowed-tools: Bash, Read, Write, Grep
 ---
 
+## Security Requirements
+
+**CRITICAL:** All generated files must follow security rules:
+
+@docs/security/SECURITY-RULES.md
+
+**Key requirements:**
+- Never hardcode API keys or secrets
+- Use placeholders: `your_service_key_here`
+- Protect `.env` files with `.gitignore`
+- Create `.env.example` with placeholders only
+- Document key acquisition for users
+
 **Arguments**: $ARGUMENTS
 
 Goal: Convert universal MCP server registry to Claude Code (.mcp.json) or VS Code (.vscode/mcp.json) format on demand

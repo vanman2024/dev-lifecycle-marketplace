@@ -4,6 +4,19 @@ argument-hint: [project-path]
 allowed-tools: Read, Write, Bash, Glob
 ---
 
+## Security Requirements
+
+**CRITICAL:** All generated files must follow security rules:
+
+@docs/security/SECURITY-RULES.md
+
+**Key requirements:**
+- Never hardcode API keys or secrets
+- Use placeholders: `your_service_key_here`
+- Protect `.env` files with `.gitignore`
+- Create `.env.example` with placeholders only
+- Document key acquisition for users
+
 **Arguments**: $ARGUMENTS
 
 Goal: Install standardized git hooks AND GitHub Actions workflow into the project to enforce security best practices both locally (git hooks) and on the server (GitHub Actions)

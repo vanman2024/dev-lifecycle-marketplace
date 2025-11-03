@@ -31,6 +31,7 @@ declare -a PATTERNS=(
   "-----BEGIN (RSA |DSA )?PRIVATE KEY-----" # Private key
   "postgres://[^ '\"]*:[^ '\"]*@"       # Database connection string
   "mongodb(\+srv)?://[^ '\"]*:[^ '\"]*@" # MongoDB connection string
+  "value:\s*['\"]?[0-9]{3}\.[a-zA-Z0-9]{20,}['\"]?" # YAML/JSON value with API key pattern (e.g., 202.R6c...)
 )
 
 FOUND_SECRETS=0

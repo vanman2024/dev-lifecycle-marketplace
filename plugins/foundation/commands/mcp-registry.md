@@ -4,6 +4,19 @@ argument-hint: <action> [server-name] [options]
 allowed-tools: Bash, Read, Write, Grep, AskUserQuestion
 ---
 
+## Security Requirements
+
+**CRITICAL:** All generated files must follow security rules:
+
+@docs/security/SECURITY-RULES.md
+
+**Key requirements:**
+- Never hardcode API keys or secrets
+- Use placeholders: `your_service_key_here`
+- Protect `.env` files with `.gitignore`
+- Create `.env.example` with placeholders only
+- Document key acquisition for users
+
 **Arguments**: $ARGUMENTS
 
 Goal: Manage the universal MCP server registry that serves as single source of truth for all MCP server configurations

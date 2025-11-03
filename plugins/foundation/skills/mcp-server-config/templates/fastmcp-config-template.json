@@ -1,0 +1,22 @@
+{
+  "source": {
+    "type": "filesystem",
+    "path": "server.py",
+    "entrypoint": "mcp"
+  },
+  "environment": {
+    "python": "3.11",
+    "dependencies": [
+      "fastmcp>=2.0,<3"
+    ]
+  },
+  "deployment": {
+    "transport": "http",
+    "host": "127.0.0.1",
+    "port": 8000,
+    "log_level": "INFO",
+    "env": {
+      "API_KEY": "${API_KEY}"
+    }
+  }
+}

@@ -4,6 +4,19 @@ argument-hint: <action> [key] [value]
 allowed-tools: Read, Write, Edit, Bash, Grep, AskUserQuestion
 ---
 
+## Security Requirements
+
+**CRITICAL:** All generated files must follow security rules:
+
+@docs/security/SECURITY-RULES.md
+
+**Key requirements:**
+- Never hardcode API keys or secrets
+- Use placeholders: `your_service_key_here`
+- Protect `.env` files with `.gitignore`
+- Create `.env.example` with placeholders only
+- Document key acquisition for users
+
 **Arguments**: $ARGUMENTS
 
 Goal: Scan codebase to detect ALL environment variables used, generate .env file, and manage environment configuration

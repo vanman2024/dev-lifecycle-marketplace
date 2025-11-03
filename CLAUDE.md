@@ -2,6 +2,40 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+
+## 🚨 CRITICAL: Security Rules - NO HARDCODED API KEYS
+
+**This is the HIGHEST PRIORITY security rule for ALL plugins in this marketplace.**
+
+### Absolute Prohibition
+
+❌ **NEVER EVER** hardcode API keys, secrets, or credentials in:
+- Agent prompts
+- Command prompts
+- Skill documentation
+- Example code
+- Scripts or configuration
+
+### Required Practice
+
+✅ **ALWAYS use placeholders:**
+```bash
+ANTHROPIC_API_KEY=your_anthropic_key_here
+OPENAI_API_KEY=your_openai_key_here
+```
+
+✅ **ALWAYS read from environment:**
+```python
+import os
+api_key = os.getenv("ANTHROPIC_API_KEY")
+```
+
+### Comprehensive Security Guidelines
+
+See `@docs/security/SECURITY-RULES.md` for full validation checklist.
+
+---
+
 ## Repository Overview
 
 This is the **dev-lifecycle-marketplace** - a collection of tech-agnostic workflow automation plugins for Claude Code that handle the complete software development lifecycle from initialization to deployment. These plugins orchestrate **HOW you develop** (process and methodology), not **WHAT you develop with** (specific SDKs or frameworks).

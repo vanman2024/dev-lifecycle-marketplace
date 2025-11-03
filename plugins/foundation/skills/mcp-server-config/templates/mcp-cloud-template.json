@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "my-fastmcp-server": {
+      "url": "https://your-project-name.fastmcp.app/mcp",
+      "transport": "http",
+      "headers": {
+        "Authorization": "Bearer ${FASTMCP_CLOUD_TOKEN}"
+      }
+    }
+  }
+}

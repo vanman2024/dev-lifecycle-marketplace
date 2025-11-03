@@ -4,6 +4,19 @@ argument-hint: [project-path]
 allowed-tools: Task, Read, Write, Bash, Glob, Grep, AskUserQuestion, TodoWrite
 ---
 
+## Security Requirements
+
+**CRITICAL:** All generated files must follow security rules:
+
+@docs/security/SECURITY-RULES.md
+
+**Key requirements:**
+- Never hardcode API keys or secrets
+- Use placeholders: `your_service_key_here`
+- Protect `.env` files with `.gitignore`
+- Create `.env.example` with placeholders only
+- Document key acquisition for users
+
 **Arguments**: $ARGUMENTS
 
 Goal: Automatically detect project type and deploy to the appropriate platform with full CI/CD automation

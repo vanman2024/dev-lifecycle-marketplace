@@ -4,6 +4,19 @@ argument-hint: [project-path]
 allowed-tools: Task, Read, Write, Bash, Glob, Grep, AskUserQuestion
 ---
 
+## Security Requirements
+
+**CRITICAL:** All generated files must follow security rules:
+
+@docs/security/SECURITY-RULES.md
+
+**Key requirements:**
+- Never hardcode API keys or secrets
+- Use placeholders: `your_service_key_here`
+- Protect `.env` files with `.gitignore`
+- Create `.env.example` with placeholders only
+- Document key acquisition for users
+
 **Arguments**: $ARGUMENTS
 
 Goal: Analyze project structure and dependencies to detect the complete tech stack, then populate .claude/project.json with framework, languages, AI SDKs, and architecture information

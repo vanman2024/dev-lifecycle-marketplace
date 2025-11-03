@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "my-fastmcp-server": {
+      "command": "python",
+      "args": ["server.py"],
+      "env": {
+        "API_KEY": "${API_KEY}"
+      }
+    }
+  }
+}
