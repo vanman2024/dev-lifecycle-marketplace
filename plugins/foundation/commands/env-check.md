@@ -27,6 +27,32 @@ Core Principles:
 - Provide installation instructions for missing tools
 - Support --fix flag for automatic installation
 
+## Available Skills
+
+This commands has access to the following skills from the foundation plugin:
+
+- **environment-setup**: Environment verification, tool checking, version validation, and path configuration. Use when checking system requirements, verifying tool installations, validating versions, checking PATH configuration, or when user mentions environment setup, system check, tool verification, version check, missing tools, or installation requirements.
+- **git-hooks**: 
+- **mcp-configuration**: Comprehensive MCP server configuration templates, .mcp.json management, API key handling, and server installation helpers. Use when configuring MCP servers, managing .mcp.json files, setting up API keys, installing MCP servers, validating MCP configs, or when user mentions MCP setup, server configuration, MCP environment, API key storage, or MCP installation.
+- **mcp-server-config**: Manage .mcp.json MCP server configurations. Use when configuring MCP servers, adding server entries, managing MCP config files, or when user mentions .mcp.json, MCP server setup, server configuration.
+- **project-detection**: Comprehensive tech stack detection, framework identification, dependency analysis, and project.json generation. Use when analyzing project structure, detecting frameworks, identifying dependencies, discovering AI stack components, detecting databases, or when user mentions project detection, tech stack analysis, framework discovery, or project.json generation.
+
+**To use a skill:**
+```
+!{skill skill-name}
+```
+
+Use skills when you need:
+- Domain-specific templates and examples
+- Validation scripts and automation
+- Best practices and patterns
+- Configuration generators
+
+Skills provide pre-built resources to accelerate your work.
+
+---
+
+
 ## Phase 1: Discovery
 
 Goal: Scan project to detect tech stack and determine required tools

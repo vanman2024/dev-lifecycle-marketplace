@@ -28,6 +28,28 @@ Core Principles:
 - Create VERSION file and sync with project manifests
 - Provide clear next steps for completion
 
+## Available Skills
+
+This commands has access to the following skills from the versioning plugin:
+
+- **version-manager**: 
+
+**To use a skill:**
+```
+!{skill skill-name}
+```
+
+Use skills when you need:
+- Domain-specific templates and examples
+- Validation scripts and automation
+- Best practices and patterns
+- Configuration generators
+
+Skills provide pre-built resources to accelerate your work.
+
+---
+
+
 ## Phase 1: Detect Project Type
 
 Determine the project type from existing files:

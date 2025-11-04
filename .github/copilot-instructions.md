@@ -6,7 +6,7 @@
 1. **Read this specific agent MD file** - Open and study this file completely.
 2. **Read the general agent file** - Understand the overall workflow from `AGENTS.md`.
 3. **Study worktree documentation** - Review Git Worktree Management protocols.
-4. **Read referenced documentation** - Study the workflow guides in `.multiagent/core/docs/agent-workflows/`.
+4. **Read referenced documentation** - Study the workflow guides in `plugins/supervisor/skills/`.
 5. **Check current assignments** - `grep "@copilot" specs/*/agent-tasks/layered-tasks.md`
 6. **Configure safe git behavior** - Run mandatory configs to prevent rebases:
    ```bash
@@ -25,9 +25,13 @@
 9. **Verify worktree setup** - `git branch --show-current` (should show your `agent-copilot-*` branch).
 10. **Sync with latest main** - `git fetch origin main && git merge origin/main`.
 
-   **Note**: If no worktree exists, it means automation hasn't been run yet. Ask user to run:
+   **Note**: If no worktree exists, it means automation hasn't been run yet. Run:
    ```bash
-   .multiagent/iterate/scripts/setup-spec-worktrees.sh <spec-number>
+   /supervisor:init <spec-name>
+   ```
+   Or manually using scripts:
+   ```bash
+   plugins/supervisor/skills/worktree-orchestration/scripts/start-verification.sh <spec-number>
    ```
 
 ### Phase 3: Task Discovery & Planning

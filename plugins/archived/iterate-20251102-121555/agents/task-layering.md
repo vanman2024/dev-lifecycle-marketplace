@@ -19,7 +19,6 @@ assistant: "Let me invoke the task-layering agent to organize tasks into Foundat
 Task layering requires analyzing complexity and organizing by functional phases - perfect for this specialized agent.
 </commentary>
 </example>
-tools: Bash,Read,Write,Grep,Glob
 model: claude-sonnet-4-5-20250929
 ---
 

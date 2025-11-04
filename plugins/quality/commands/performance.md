@@ -28,6 +28,33 @@ Core Principles:
 - Frontend performance analysis
 - Actionable optimization recommendations
 
+## Available Skills
+
+This commands has access to the following skills from the quality plugin:
+
+- **api-schema-analyzer**: Analyze OpenAPI and Postman schemas for MCP tool generation. Use when analyzing API specifications, extracting endpoint information, generating tool signatures, or when user mentions OpenAPI, Swagger, API schema, endpoint analysis.
+- **newman-runner**: Run and analyze Newman (Postman CLI) tests. Use when running API tests, validating Postman collections, testing HTTP endpoints, or when user mentions Newman, Postman tests, API validation.
+- **newman-testing**: Newman/Postman collection testing patterns for API testing with environment variables, test assertions, and reporting. Use when building API tests, running Newman collections, testing REST APIs, validating HTTP responses, creating Postman collections, configuring API test environments, generating test reports, or when user mentions Newman, Postman, API testing, collection runner, integration tests, API validation, test automation, or CI/CD API testing.
+- **playwright-e2e**: Playwright end-to-end testing patterns including page object models, test scenarios, visual regression, and CI/CD integration. Use when building E2E tests, testing web applications, automating browser interactions, implementing page objects, running Playwright tests, debugging E2E failures, or when user mentions Playwright, E2E, browser automation, page object model, POM, visual regression, or end-to-end testing.
+- **postman-collection-manager**: Import, export, and manage Postman collections. Use when working with Postman collections, importing OpenAPI specs, exporting collections, or when user mentions Postman import, collection management, API collections.
+- **security-patterns**: Security vulnerability scanning, secret detection, dependency auditing, and OWASP best practices. Use when performing security audits, scanning for vulnerabilities, detecting exposed secrets, checking dependencies, validating security headers, implementing OWASP patterns, or when user mentions security, vulnerabilities, secrets, CVE, OWASP, npm audit, security headers, or penetration testing.
+
+**To use a skill:**
+```
+!{skill skill-name}
+```
+
+Use skills when you need:
+- Domain-specific templates and examples
+- Validation scripts and automation
+- Best practices and patterns
+- Configuration generators
+
+Skills provide pre-built resources to accelerate your work.
+
+---
+
+
 ## Phase 1: Discovery
 Goal: Identify performance profiling tools and application structure
 

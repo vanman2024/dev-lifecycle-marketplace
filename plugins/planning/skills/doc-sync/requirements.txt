@@ -1,0 +1,11 @@
+# Mem0 OSS (Open Source) - Memory layer for AI applications
+mem0ai>=0.1.0
+
+# Vector database for Mem0 storage
+chromadb>=0.4.0
+
+# OpenAI for embeddings and LLM
+openai>=1.0.0
+
+# Optional: Alternative embedding providers
+# sentence-transformers>=2.2.0  # For local embeddings

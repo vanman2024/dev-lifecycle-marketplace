@@ -1,7 +1,7 @@
 ---
 description: Create development roadmap and timeline
 argument-hint: [timeframe]
-allowed-tools: Task, Read, Write, Bash, Glob, Grep, AskUserQuestion
+allowed-tools: Task, Read, Write, Bash, Glob, Grep, AskUserQuestion, Skill
 ---
 
 ## Security Requirements
@@ -26,6 +26,30 @@ Core Principles:
 - Phased - organized into logical phases
 - Flexible - can be updated as project evolves
 - Visual - clear timeline representation
+
+## Available Skills
+
+This commands has access to the following skills from the planning plugin:
+
+- **architecture-patterns**: Architecture design templates, mermaid diagrams, documentation patterns, and validation tools. Use when designing system architecture, creating architecture documentation, generating mermaid diagrams, documenting component relationships, designing data flows, planning deployments, creating API architectures, or when user mentions architecture diagrams, system design, mermaid, architecture documentation, or component design.
+- **decision-tracking**: Architecture Decision Records (ADR) templates, sequential numbering, decision documentation patterns, and decision history management. Use when creating ADRs, documenting architectural decisions, tracking decision rationale, managing decision lifecycle, superseding decisions, searching decision history, or when user mentions ADR, architecture decision, decision record, decision tracking, or decision documentation.
+- **spec-management**: Templates, scripts, and examples for managing feature specifications in specs/ directory. Use when creating feature specs, listing specifications, validating spec completeness, updating spec status, searching spec content, organizing project requirements, tracking feature development, managing technical documentation, or when user mentions spec management, feature specifications, requirements docs, spec validation, or specification organization.
+
+**To use a skill:**
+```
+!{skill skill-name}
+```
+
+Use skills when you need:
+- Domain-specific templates and examples
+- Validation scripts and automation
+- Best practices and patterns
+- Configuration generators
+
+Skills provide pre-built resources to accelerate your work.
+
+---
+
 
 ## Phase 1: Discovery
 Goal: Understand roadmap scope

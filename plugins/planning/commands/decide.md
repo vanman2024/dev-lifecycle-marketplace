@@ -1,7 +1,7 @@
 ---
 description: Create Architecture Decision Records (ADRs)
 argument-hint: [decision-title]
-allowed-tools: Task, Read, Write, Bash, Glob, Grep, AskUserQuestion
+allowed-tools: Task, Read, Write, Bash, Glob, Grep, AskUserQuestion, Skill
 ---
 
 ## Security Requirements
@@ -26,6 +26,30 @@ Core Principles:
 - Numbered sequence - automatic ADR numbering
 - Immutable - decisions are recorded, not changed
 - Searchable - easy to find past decisions
+
+## Available Skills
+
+This commands has access to the following skills from the planning plugin:
+
+- **architecture-patterns**: Architecture design templates, mermaid diagrams, documentation patterns, and validation tools. Use when designing system architecture, creating architecture documentation, generating mermaid diagrams, documenting component relationships, designing data flows, planning deployments, creating API architectures, or when user mentions architecture diagrams, system design, mermaid, architecture documentation, or component design.
+- **decision-tracking**: Architecture Decision Records (ADR) templates, sequential numbering, decision documentation patterns, and decision history management. Use when creating ADRs, documenting architectural decisions, tracking decision rationale, managing decision lifecycle, superseding decisions, searching decision history, or when user mentions ADR, architecture decision, decision record, decision tracking, or decision documentation.
+- **spec-management**: Templates, scripts, and examples for managing feature specifications in specs/ directory. Use when creating feature specs, listing specifications, validating spec completeness, updating spec status, searching spec content, organizing project requirements, tracking feature development, managing technical documentation, or when user mentions spec management, feature specifications, requirements docs, spec validation, or specification organization.
+
+**To use a skill:**
+```
+!{skill skill-name}
+```
+
+Use skills when you need:
+- Domain-specific templates and examples
+- Validation scripts and automation
+- Best practices and patterns
+- Configuration generators
+
+Skills provide pre-built resources to accelerate your work.
+
+---
+
 
 ## Phase 1: Discovery
 Goal: Understand decision to document
@@ -88,7 +112,24 @@ Actions:
 - Verify all sections present
 - Update ADR index if exists
 
-## Phase 6: Summary
+## Phase 6: Documentation Sync & Implementation Tracking
+
+Goal: Register ADR and identify implementing specs
+
+Actions:
+- Sync ADR to Mem0 documentation registry:
+  !{source /tmp/mem0-env/bin/activate && python plugins/planning/skills/doc-sync/scripts/sync-to-mem0.py --quiet 2>/dev/null && echo "✅ ADR registered in documentation system" || echo "⚠️  Doc sync unavailable (mem0 not installed)"}
+
+- Query which specs implement this ADR:
+  !{bash if [ -f /tmp/mem0-env/bin/activate ]; then ADR_NUM=$(ls -1 docs/adr/*.md 2>/dev/null | tail -1 | grep -oP '\d+' | head -1); if [ -n "$ADR_NUM" ]; then source /tmp/mem0-env/bin/activate && python plugins/planning/skills/doc-sync/scripts/query-docs.py "What specs implement ADR-$ADR_NUM?" 2>/dev/null | grep -E "Specification|implement" | head -10 || echo "ℹ️  No specs yet implement this ADR"; fi; fi}
+
+- Display implementing specs (if any)
+- This tracks:
+  - Which specs are implementing this decision
+  - Where this ADR is being applied
+  - What features are affected
+
+## Phase 7: Summary
 Goal: Report ADR creation
 
 Actions:

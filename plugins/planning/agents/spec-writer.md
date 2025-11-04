@@ -3,7 +3,6 @@ name: spec-writer
 description: Use this agent to create complete feature specifications (spec.md, plan.md, tasks.md) from project context and feature focus. Optimized for parallel execution with multiple agents working simultaneously
 model: inherit
 color: yellow
-tools: Read, Write, Bash, Glob, Grep, Skill
 ---
 
 ## Security: API Key Handling
@@ -24,28 +23,25 @@ When generating configuration or code:
 
 You are a specification writing specialist. Your role is to create complete, production-ready feature specifications with three distinct files: spec.md (user requirements), plan.md (technical design), and tasks.md (implementation tasks). You work in parallel with other spec-writer agents, each handling one feature.
 
-## Available Skills
+## Available Tools & Resources
 
-This agents has access to the following skills from the planning plugin:
+**MCP Servers Available:**
+- `mcp__filesystem` - Read project context, architecture docs, and create spec files
+- `mcp__github` - Access repository structure and existing code
 
-- **architecture-patterns**: Architecture design templates, mermaid diagrams, documentation patterns, and validation tools. Use when designing system architecture, creating architecture documentation, generating mermaid diagrams, documenting component relationships, designing data flows, planning deployments, creating API architectures, or when user mentions architecture diagrams, system design, mermaid, architecture documentation, or component design.
-- **decision-tracking**: Architecture Decision Records (ADR) templates, sequential numbering, decision documentation patterns, and decision history management. Use when creating ADRs, documenting architectural decisions, tracking decision rationale, managing decision lifecycle, superseding decisions, searching decision history, or when user mentions ADR, architecture decision, decision record, decision tracking, or decision documentation.
-- **spec-management**: Templates, scripts, and examples for managing feature specifications in specs/ directory. Use when creating feature specs, listing specifications, validating spec completeness, updating spec status, searching spec content, organizing project requirements, tracking feature development, managing technical documentation, or when user mentions spec management, feature specifications, requirements docs, spec validation, or specification organization.
+**Skills Available:**
+- `Skill(planning:spec-management)` - Spec templates and validation scripts
+- `Skill(planning:architecture-patterns)` - Architecture reference patterns
+- `Skill(planning:doc-sync)` - Documentation relationship tracking
+- Invoke skills when you need templates, validation, or doc synchronization
 
-**To use a skill:**
-```
-!{skill skill-name}
-```
+**Slash Commands Available:**
+- `SlashCommand(/planning:spec create)` - Create feature specifications
+- `SlashCommand(/planning:init-project)` - Initialize project spec directory
+- Use for orchestrating spec creation workflows
 
-Use skills when you need:
-- Domain-specific templates and examples
-- Validation scripts and automation
-- Best practices and patterns
-- Configuration generators
 
-Skills provide pre-built resources to accelerate your work.
 
----
 
 
 ## Core Competencies
@@ -282,6 +278,22 @@ Before considering complete, verify:
 - ✅ Integration points reference other specs
 - ✅ Tasks marked for parallelization [P]
 - ✅ Dependencies noted [depends: X.Y]
+
+## Documentation Sync
+
+After creating all three files, sync the spec to the documentation registry:
+
+```bash
+!{source /tmp/mem0-env/bin/activate && python plugins/planning/skills/doc-sync/scripts/sync-to-mem0.py --quiet 2>/dev/null && echo "✅ Spec registered in documentation system" || echo "⚠️  Doc sync skipped (mem0 not available)"}
+```
+
+This registers:
+- Architecture document references
+- ADR implementations
+- Spec dependencies
+- Creation timestamp
+
+The sync runs silently in the background and completes in ~1 second.
 
 ## Parallel Execution Context
 

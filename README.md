@@ -273,9 +273,21 @@ These plugins work with:
 
 ## Documentation
 
+### Core Documentation
 - [MIGRATION.md](./MIGRATION.md) - Migration guide from v1.x
 - [REBUILD-SUMMARY.md](./REBUILD-SUMMARY.md) - Detailed rebuild documentation
 - [CHANGELOG.md](./CHANGELOG.md) - Version history
+
+### Technical Documentation
+- **[docs/README.md](./docs/README.md)** - Documentation overview and organization
+- **[docs/INDEX.md](./docs/INDEX.md)** - Quick reference guide (start here!)
+
+### By Category
+- **Setup**: [docs/setup/](./docs/setup/) - Configuration and installation guides
+- **Fixes**: [docs/fixes/](./docs/fixes/) - Bug fixes and solutions
+- **Reports**: [docs/reports/](./docs/reports/) - Integration and technical analysis
+- **Verification**: [docs/verification/](./docs/verification/) - Testing procedures
+- **Security**: [docs/security/](./docs/security/) - Security rules ⚠️ **READ THIS!**
 
 ---
 
