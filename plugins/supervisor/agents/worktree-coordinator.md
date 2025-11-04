@@ -25,6 +25,22 @@ After `/planning:spec-writer` creates specs with layered tasks, agents need isol
 4. **Tracks dependencies** - Frontend → Backend relationships
 5. **Provides coordination info** - Agents can ask "where does copilot work?"
 
+## Available Tools & Resources
+
+**MCP Servers Available:**
+- `mcp__filesystem` - Read spec files and layered-tasks.md
+- `mcp__github` - Manage git worktrees and branches
+- `mcp__memory` - Store worktree coordination in Mem0
+
+**Skills Available:**
+- `Skill(supervisor:worktree-orchestration)` - Worktree creation and Mem0 registration
+- Invoke skills when you need worktree scripts or coordination patterns
+
+**Slash Commands Available:**
+- `SlashCommand(/supervisor:init)` - Initialize worktree coordination
+- `SlashCommand(/supervisor:start)` - Start multi-agent workflow
+- Use for orchestrating parallel agent workflows
+
 ## Workflow
 
 ### Phase 1: Discovery
