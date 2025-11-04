@@ -90,7 +90,7 @@ Goal: Break massive description into discrete features with dependencies
 
 Actions:
 
-Task(description="Analyze architecture and break into features", subagent_type="feature-analyzer", prompt="You are the feature-analyzer agent.
+Task(description="Analyze architecture and break into features", subagent_type="planning:feature-analyzer", prompt="You are the feature-analyzer agent.
 
 INPUT SOURCES:
 
@@ -161,7 +161,7 @@ Read feature breakdown JSON and launch one spec-writer agent per feature:
 
 For each feature in the JSON, launch a parallel Task:
 
-Task(description="Generate spec for feature 001", subagent_type="spec-writer", prompt="You are the spec-writer agent. Create complete specifications (spec.md, plan.md, tasks.md) for this feature.
+Task(description="Generate spec for feature 001", subagent_type="planning:spec-writer", prompt="You are the spec-writer agent. Create complete specifications (spec.md, plan.md, tasks.md) for this feature.
 
 Architecture Documentation (read directly from source):
 @docs/architecture/frontend.md
@@ -189,7 +189,7 @@ Deliverable: Three files in specs/{number}-{name}/ directory:
 - plan.md (technical design with database schema, API contracts)
 - tasks.md (implementation tasks, 5 phases, numbered)")
 
-Task(description="Generate spec for feature 002", subagent_type="spec-writer", prompt="You are the spec-writer agent. Create complete specifications (spec.md, plan.md, tasks.md) for this feature.
+Task(description="Generate spec for feature 002", subagent_type="planning:spec-writer", prompt="You are the spec-writer agent. Create complete specifications (spec.md, plan.md, tasks.md) for this feature.
 
 Architecture Documentation (read directly from source):
 @docs/architecture/frontend.md

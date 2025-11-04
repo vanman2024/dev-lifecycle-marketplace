@@ -75,7 +75,7 @@ Actions:
 
 For EACH spec file discovered in Phase 1, launch a spec-analyzer agent in PARALLEL.
 
-Task(description="Analyze spec completeness", subagent_type="spec-analyzer", prompt="You are the spec-analyzer agent. Analyze the specification file for completeness and quality.
+Task(description="Analyze spec completeness", subagent_type="planning:spec-analyzer", prompt="You are the spec-analyzer agent. Analyze the specification file for completeness and quality.
 
 Target: $ARGUMENTS
 

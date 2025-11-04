@@ -85,7 +85,7 @@ Goal: Create specification using spec-writer agent
 
 Actions:
 
-Task(description="Generate new spec", subagent_type="spec-writer", prompt="You are the spec-writer agent. Create a detailed specification for: $ARGUMENTS
+Task(description="Generate new spec", subagent_type="planning:spec-writer", prompt="You are the spec-writer agent. Create a detailed specification for: $ARGUMENTS
 
 Context:
 - This is spec number: [NEXT_NUMBER from Phase 2]
