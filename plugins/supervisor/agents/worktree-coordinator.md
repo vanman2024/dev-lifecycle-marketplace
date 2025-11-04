@@ -2,6 +2,29 @@
 allowed-tools: Bash, Read, Write, Grep, Glob, Task
 description: Coordinates worktree creation and registers them in Mem0 for multi-agent tracking
 ---
+## Worktree Discovery
+
+**IMPORTANT**: Before starting any work, check if you're working on a spec in an isolated worktree.
+
+**Steps:**
+1. Look at your task - is there a spec number mentioned? (e.g., "spec 001", "001-red-seal-ai", working in `specs/001-*/`)
+2. If yes, query Mem0 for the worktree:
+   ```bash
+   python plugins/planning/skills/doc-sync/scripts/register-worktree.py query --query "worktree for spec {number}"
+   ```
+3. If Mem0 returns a worktree:
+   - Parse the path (e.g., `Path: ../RedAI-001`)
+   - Change to that directory: `cd {path}`
+   - Verify branch: `git branch --show-current` (should show `spec-{number}`)
+   - Continue your work in this isolated worktree
+4. If no worktree found: work in main repository (normal flow)
+
+**Why this matters:**
+- Worktrees prevent conflicts when multiple agents work simultaneously
+- Changes are isolated until merged via PR
+- Dependencies are installed fresh per worktree
+
+
 
 # Worktree Coordinator Agent
 
@@ -47,58 +70,44 @@ After `/planning:spec-writer` creates specs with layered tasks, agents need isol
 
 Actions:
 - Read spec directory: `specs/$SPEC_NUM-*/`
-- Load `layered-tasks.md`: `specs/$SPEC_NUM-*/agent-tasks/layered-tasks.md`
-- Extract agents mentioned (look for @agent patterns)
-- Extract task assignments per agent
-- Identify dependencies between layers
+- Extract spec number (e.g., "001" from "001-red-seal-ai")
+- Extract spec name (e.g., "red-seal-ai" from "001-red-seal-ai")
+- Detect project type (Node.js, Python) for dependency installation
 
-### Phase 2: Worktree Creation
+### Phase 2: Worktree Creation (One Per Spec)
 
-For each agent found:
+**Create single shared worktree for the spec:**
 
 ```bash
 # Create branch
-git checkout -b agent-{agent-name}-{spec-num}
+git checkout -b spec-{spec-num}
 
 # Create worktree
-git worktree add ../{project}-{spec-num}-{agent-name} agent-{agent-name}-{spec-num}
+git worktree add ../{project}-{spec-num} spec-{spec-num}
 
 # Register in Mem0
 python plugins/planning/skills/doc-sync/scripts/register-worktree.py register \
   --spec {spec-num} \
-  --agent {agent-name} \
-  --path ../{project}-{spec-num}-{agent-name} \
-  --branch agent-{agent-name}-{spec-num}
+  --spec-name {spec-name} \
+  --path ../{project}-{spec-num} \
+  --branch spec-{spec-num}
 ```
 
-### Phase 3: Agent Assignment Registration
+### Phase 3: Dependency Installation
 
-For each agent:
+**CRITICAL**: Install dependencies so agents have a working environment.
 
 ```bash
-# Extract tasks for this agent from layered-tasks.md
-# Register in Mem0
-python plugins/planning/skills/doc-sync/scripts/register-worktree.py assign \
-  --spec {spec-num} \
-  --agent {agent-name} \
-  --tasks "T001 Create API endpoint" "T002 Add validation" \
-  --deps "Backend API must be deployed first"
+# Install dependencies (Node.js, Python, etc.)
+python plugins/planning/skills/doc-sync/scripts/register-worktree.py setup-deps \
+  --path ../{project}-{spec-num}
 ```
 
-### Phase 4: Dependency Registration
+**Supported project types:**
+- Node.js: Detects and uses npm, pnpm, or yarn
+- Python: Installs from requirements.txt or pyproject.toml
 
-Identify inter-agent dependencies:
-
-```bash
-# Example: Frontend depends on Backend
-python plugins/planning/skills/doc-sync/scripts/register-worktree.py depend \
-  --spec {spec-num} \
-  --agent frontend-agent \
-  --to-agent backend-agent \
-  --reason "Frontend needs /api/users endpoint deployed"
-```
-
-### Phase 5: Verification & Summary
+### Phase 4: Verification & Summary
 
 Actions:
 - Verify all worktrees created: `git worktree list`
@@ -107,28 +116,22 @@ Actions:
 
 Output:
 ```
-🎯 Worktree Coordination Complete!
+🎯 Worktree Setup Complete!
 
-Spec: 001-user-authentication
-Project: my-app
+Spec: 001-red-seal-ai
+Project: RedAI
 
-📁 Worktrees Created:
-  • ../my-app-001-claude    → agent-claude-001
-  • ../my-app-001-copilot   → agent-copilot-001
-  • ../my-app-001-qwen      → agent-qwen-001
+📁 Worktree Created:
+  • Path: ../RedAI-001
+  • Branch: spec-001
+  • Dependencies: ✅ installed (npm)
 
-🤖 Agent Assignments:
-  • @claude:   5 tasks (architecture, security)
-  • @copilot: 12 tasks (API endpoints, CRUD)
-  • @qwen:     3 tasks (optimization)
+✅ Registered in Mem0 - all agents can work in this worktree!
 
-🔗 Dependencies:
-  • @copilot → @claude (needs API design complete)
-  • @qwen    → @copilot (needs implementation complete)
+🔍 Any agent can now query:
+  python plugins/planning/skills/doc-sync/scripts/register-worktree.py get-worktree --spec 001
 
-✅ All registered in Mem0 - agents can now query their assignments!
-
-Next: Agents run /supervisor:start to begin work
+Next: Agents working on spec 001 will automatically cd into ../RedAI-001
 ```
 
 ## How Agents Query Mem0

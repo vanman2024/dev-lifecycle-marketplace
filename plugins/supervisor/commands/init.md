@@ -8,10 +8,10 @@ argument-hint: <spec-name> | --all | --bulk
 
 ## Goal
 
-Create isolated git worktrees for each agent assigned in layered-tasks.md, enabling true parallel development without conflicts.
+Create isolated git worktree for each spec, enabling parallel development without conflicts. All agents working on a spec share the same worktree.
 
 **Modes**:
-- `<spec-name>` - Single spec (e.g., `001-user-auth`)
+- `<spec-name>` - Single spec (e.g., `001-red-seal-ai`)
 - `--all` or `--bulk` - All specs at once (100+ specs supported)
 
 ## Phase 1: Discovery
@@ -22,14 +22,14 @@ Actions:
 ### Single Spec Mode
 - Parse spec name from arguments: $ARGUMENTS
 - Verify spec directory exists: specs/$ARGUMENTS
-- Check layered-tasks.md exists: specs/$ARGUMENTS/agent-tasks/layered-tasks.md
-- Extract list of agents from layered-tasks (look for @agent patterns)
+- Extract spec number (e.g., "001" from "001-red-seal-ai")
+- Extract spec name (e.g., "red-seal-ai" from "001-red-seal-ai")
 - Get current git branch and verify clean working directory
 
 ### Bulk Mode (--all or --bulk)
-- Scan all specs: `specs/*/agent-tasks/layered-tasks.md`
-- Extract agents from each spec
-- Count total worktrees to create
+- Scan all specs: `specs/*/`
+- Extract spec numbers and names
+- Count total worktrees to create (one per spec)
 - Show summary and confirm with user
 
 ## Phase 2: Worktree Creation & Mem0 Registration
@@ -37,18 +37,17 @@ Actions:
 ### Single Spec Mode
 Actions:
 - Invoke worktree-coordinator agent to:
-  - Create git worktrees for each agent
-  - Register worktrees in Mem0 for global tracking
-  - Register agent task assignments
-  - Register inter-agent dependencies
+  - Create single git worktree for the spec
+  - **Install dependencies in worktree** (Node.js, Python)
+  - Register worktree in Mem0 for global tracking
 - The agent handles:
-  - Extract spec number from spec name (e.g., "004" from "004-testing-deployment")
-  - For each agent found in layered-tasks.md:
-    - Create branch: agent-{agent-name}-{spec-number}
-    - Create worktree: git worktree add ../{project}-{spec-number}-{agent-name} -b agent-{agent-name}-{spec-number}
-    - Register in Mem0: `register-worktree.py register --spec {spec} --agent {name} --path {path} --branch {branch}`
-    - Register tasks: `register-worktree.py assign --spec {spec} --agent {name} --tasks ...`
-  - Display created worktrees with git worktree list
+  - Extract spec number (e.g., "001" from "001-red-seal-ai")
+  - Extract spec name (e.g., "red-seal-ai")
+  - Create branch: spec-{spec-number}
+  - Create worktree: git worktree add ../{project}-{spec-number} -b spec-{spec-number}
+  - Register in Mem0: `register-worktree.py register --spec {spec} --spec-name {name} --path {path} --branch {branch}`
+  - **Install dependencies**: `register-worktree.py setup-deps --path {path}` (auto-detects npm/pnpm/yarn/pip)
+  - Display created worktree with git worktree list
 
 ### Bulk Mode
 Actions:
@@ -80,8 +79,8 @@ Actions:
 
 Display:
 - Spec name and number
-- Number of worktrees created
-- List of agent worktrees with paths
-- Registered in Mem0: worktrees, assignments, dependencies
-- How agents query: `register-worktree.py query --query "where does {agent} work"`
-- Next steps: Run /supervisor:start to verify setup
+- Worktree path and branch
+- Dependencies installation status
+- Registered in Mem0 for agent discovery
+- How agents query: `register-worktree.py get-worktree --spec {number}`
+- Next steps: Any agent working on this spec will automatically use the worktree

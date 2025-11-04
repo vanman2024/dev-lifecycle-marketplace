@@ -46,20 +46,21 @@ class WorktreeRegistry:
         # Fallback to directory name
         return self.project_root.name
 
-    def register_worktree(self, spec_num: str, agent_name: str, worktree_path: str, branch: str):
-        """Register a worktree for an agent working on a spec"""
+    def register_worktree(self, spec_num: str, spec_name: str, worktree_path: str, branch: str):
+        """Register a worktree for a spec (shared by all agents)"""
 
         memory_text = f"""
-        Worktree for agent {agent_name} working on spec {spec_num}.
+        Worktree for spec {spec_num} ({spec_name}).
         Path: {worktree_path}
         Branch: {branch}
         Project: {self.project_name}
         Registered: {datetime.now().isoformat()}
         Status: active
+        Dependencies: installed
         """
 
         self.memory.add(memory_text, user_id=f"{self.project_name}-worktrees")
-        print(f"✅ Registered worktree: {agent_name} @ {worktree_path}")
+        print(f"✅ Registered worktree: spec {spec_num} @ {worktree_path}")
 
     def register_agent_assignment(self, spec_num: str, agent_name: str, tasks: list[str], dependencies: list[str] = None):
         """Register agent task assignments"""
@@ -115,6 +116,32 @@ class WorktreeRegistry:
         for result in results['results']:
             print(f"  {result['memory']}\n")
 
+    def get_worktree_for_spec(self, spec_num: str) -> dict | None:
+        """Get worktree information for a specific spec number"""
+        query = f"worktree for spec {spec_num}"
+        results = self.memory.search(query, user_id=f"{self.project_name}-worktrees", limit=5)
+
+        if not results or not results.get('results'):
+            return None
+
+        # Parse the first result
+        for result in results['results']:
+            memory = result['memory']
+            if f'spec {spec_num}' in memory.lower() and 'Status: active' in memory:
+                # Extract path and branch
+                import re
+                path_match = re.search(r'Path:\s*(.+)', memory)
+                branch_match = re.search(r'Branch:\s*(.+)', memory)
+
+                if path_match and branch_match:
+                    return {
+                        'path': path_match.group(1).strip(),
+                        'branch': branch_match.group(1).strip(),
+                        'spec': spec_num
+                    }
+
+        return None
+
     def list_active_worktrees(self):
         """List all active worktrees"""
         results = self.memory.get_all(user_id=f"{self.project_name}-worktrees")
@@ -124,6 +151,117 @@ class WorktreeRegistry:
             memory = result['memory']
             if 'Status: active' in memory:
                 print(f"  {memory}\n")
+
+    def setup_dependencies(self, worktree_path: str):
+        """Install dependencies in worktree after creation"""
+        import subprocess
+
+        worktree = Path(worktree_path)
+
+        if not worktree.exists():
+            print(f"❌ Worktree not found: {worktree_path}")
+            return False
+
+        print(f"\n📦 Setting up dependencies for {worktree.name}...")
+
+        # Node.js project
+        if (worktree / "package.json").exists():
+            print("   Detected Node.js project")
+
+            # Detect package manager
+            if (worktree / "pnpm-lock.yaml").exists():
+                print("   Using pnpm...")
+                result = subprocess.run(["pnpm", "install"], cwd=worktree, capture_output=True)
+                pkg_mgr = "pnpm"
+            elif (worktree / "yarn.lock").exists():
+                print("   Using yarn...")
+                result = subprocess.run(["yarn", "install"], cwd=worktree, capture_output=True)
+                pkg_mgr = "yarn"
+            else:
+                print("   Using npm...")
+                result = subprocess.run(["npm", "install"], cwd=worktree, capture_output=True)
+                pkg_mgr = "npm"
+
+            if result.returncode == 0:
+                print(f"   ✅ Node dependencies installed ({pkg_mgr})")
+
+                # Register in Mem0
+                memory_text = f"""
+                Dependencies installed in worktree {worktree.name}.
+                Project type: Node.js
+                Package manager: {pkg_mgr}
+                Status: ready
+                Installed: {datetime.now().isoformat()}
+                """
+                self.memory.add(memory_text, user_id=f"{self.project_name}-worktrees")
+                return True
+            else:
+                print(f"   ❌ Failed to install Node dependencies")
+                print(f"   Error: {result.stderr.decode()[:200]}")
+                return False
+
+        # Python project
+        elif (worktree / "requirements.txt").exists():
+            print("   Detected Python project")
+            print("   Using pip...")
+
+            result = subprocess.run(
+                ["pip", "install", "-r", "requirements.txt"],
+                cwd=worktree,
+                capture_output=True
+            )
+
+            if result.returncode == 0:
+                print(f"   ✅ Python dependencies installed")
+
+                # Register in Mem0
+                memory_text = f"""
+                Dependencies installed in worktree {worktree.name}.
+                Project type: Python
+                Package manager: pip
+                Status: ready
+                Installed: {datetime.now().isoformat()}
+                """
+                self.memory.add(memory_text, user_id=f"{self.project_name}-worktrees")
+                return True
+            else:
+                print(f"   ❌ Failed to install Python dependencies")
+                print(f"   Error: {result.stderr.decode()[:200]}")
+                return False
+
+        # Python project with pyproject.toml
+        elif (worktree / "pyproject.toml").exists():
+            print("   Detected Python project (pyproject.toml)")
+            print("   Using pip...")
+
+            result = subprocess.run(
+                ["pip", "install", "-e", "."],
+                cwd=worktree,
+                capture_output=True
+            )
+
+            if result.returncode == 0:
+                print(f"   ✅ Python dependencies installed")
+
+                # Register in Mem0
+                memory_text = f"""
+                Dependencies installed in worktree {worktree.name}.
+                Project type: Python
+                Package manager: pip (pyproject.toml)
+                Status: ready
+                Installed: {datetime.now().isoformat()}
+                """
+                self.memory.add(memory_text, user_id=f"{self.project_name}-worktrees")
+                return True
+            else:
+                print(f"   ❌ Failed to install Python dependencies")
+                print(f"   Error: {result.stderr.decode()[:200]}")
+                return False
+
+        else:
+            print("   ℹ️  No dependency file found (package.json, requirements.txt)")
+            print("   ✅ Worktree ready (no dependencies needed)")
+            return True
 
     def deactivate_worktree(self, agent_name: str, spec_num: str):
         """Mark worktree as inactive (after PR merge)"""
@@ -156,10 +294,11 @@ def main():
 
     parser = argparse.ArgumentParser(description="Worktree Registry with Mem0")
     parser.add_argument("action", choices=[
-        "register", "assign", "depend", "query", "list", "deactivate"
+        "register", "assign", "depend", "query", "list", "deactivate", "setup-deps", "get-worktree"
     ])
     parser.add_argument("--spec", help="Spec number (e.g., 001)")
-    parser.add_argument("--agent", help="Agent name (e.g., claude, copilot)")
+    parser.add_argument("--spec-name", help="Spec name (e.g., red-seal-ai)")
+    parser.add_argument("--agent", help="Agent name (for legacy compatibility)")
     parser.add_argument("--path", help="Worktree path")
     parser.add_argument("--branch", help="Branch name")
     parser.add_argument("--tasks", nargs="+", help="Task list")
@@ -174,10 +313,12 @@ def main():
     registry = WorktreeRegistry(args.project)
 
     if args.action == "register":
-        if not all([args.spec, args.agent, args.path, args.branch]):
-            print("❌ register requires: --spec --agent --path --branch")
+        if not all([args.spec, args.path, args.branch]):
+            print("❌ register requires: --spec --path --branch")
+            print("   Optional: --spec-name for better display")
             sys.exit(1)
-        registry.register_worktree(args.spec, args.agent, args.path, args.branch)
+        spec_name = args.spec_name or f"spec-{args.spec}"
+        registry.register_worktree(args.spec, spec_name, args.path, args.branch)
 
     elif args.action == "assign":
         if not all([args.spec, args.agent, args.tasks]):
@@ -206,6 +347,26 @@ def main():
             print("❌ deactivate requires: --spec --agent")
             sys.exit(1)
         registry.deactivate_worktree(args.agent, args.spec)
+
+    elif args.action == "setup-deps":
+        if not args.path:
+            print("❌ setup-deps requires: --path")
+            sys.exit(1)
+        success = registry.setup_dependencies(args.path)
+        sys.exit(0 if success else 1)
+
+    elif args.action == "get-worktree":
+        if not args.spec:
+            print("❌ get-worktree requires: --spec")
+            sys.exit(1)
+        worktree_info = registry.get_worktree_for_spec(args.spec)
+        if worktree_info:
+            print(f"PATH={worktree_info['path']}")
+            print(f"BRANCH={worktree_info['branch']}")
+            print(f"SPEC={worktree_info['spec']}")
+        else:
+            print(f"❌ No worktree found for spec {args.spec}")
+            sys.exit(1)
 
 
 if __name__ == "__main__":
