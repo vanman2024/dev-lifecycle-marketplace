@@ -113,14 +113,39 @@ Spawns N parallel agents, each creates spec/plan/tasks for one feature. Prevents
 /planning:init-project "Red Seal AI: Exam prep platform with voice companion, mentorship, and payments. Tech stack: Next.js 15, FastAPI, Supabase."
 ```
 
-#### `/planning:add-spec <feature-description>`
-**Add single spec to existing project**
+#### `/planning:add-feature <feature-description>` ⭐ RECOMMENDED
+**Add feature with complete planning sync**
 
-Auto-detects next spec number, maintains consistency with existing specs.
+Intelligently adds features with similarity checking to prevent duplicates. Updates roadmap, creates ADRs, updates architecture docs automatically.
+
+**Features:**
+- ✅ Similarity checking (prevents duplicate specs)
+- ✅ Updates ROADMAP.md automatically
+- ✅ Creates ADRs for architecture decisions
+- ✅ Updates architecture docs
+- ✅ Keeps all planning in sync
 
 **Example:**
 ```bash
-/planning:add-spec "Employer portal for hiring apprentices"
+/planning:add-feature "Employer portal for hiring apprentices"
+→ Checks for similar existing specs
+→ Asks priority, phase, dependencies
+→ Updates roadmap automatically
+→ Creates ADR if new tech/approach
+```
+
+#### `/planning:add-spec <feature-description>` ⚠️ DEPRECATED
+**[DEPRECATED] Use `/planning:add-feature` instead**
+
+This command is deprecated as of 2025-11-05. It created specs without similarity checking, leading to duplicates and out-of-sync planning docs.
+
+**Migration:**
+```bash
+# Old (creates duplicates, no sync)
+/planning:add-spec "email notifications"
+
+# New (smart, prevents duplicates, full sync)
+/planning:add-feature "email notifications"
 ```
 
 #### `/planning:analyze-project`
