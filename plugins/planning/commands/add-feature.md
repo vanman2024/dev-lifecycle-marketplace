@@ -30,6 +30,31 @@ Actions:
   - Check if architecture docs exist: !{bash test -d docs/architecture && echo "exists" || echo "missing"}
   - Find highest existing spec number: !{bash find specs/features -maxdepth 1 -name "[0-9][0-9][0-9]-*" -type d 2>/dev/null | sort | tail -1 | grep -oE '[0-9]{3}' | head -1}
 
+Phase 1.5: Similarity Check
+Goal: Detect if this is an enhancement to existing feature or truly new
+
+Actions:
+- List all existing specs: !{bash ls -d specs/features/[0-9][0-9][0-9]-*/ 2>/dev/null}
+- For each existing spec, read the spec.md file to extract name and description
+- Compare $ARGUMENTS against existing feature names/descriptions
+- Look for keyword matches, similar concepts, related functionality
+- If potential match found (>70% similarity):
+  - Use AskUserQuestion: "This feature sounds related to existing spec(s):
+    - [SPEC_NUMBER]: [SPEC_NAME] ([SIMILARITY]% match)
+
+    Is this:
+    1. New standalone feature (create new spec [NEXT_NUMBER])
+    2. Enhancement to spec [SPEC_NUMBER] (update existing)
+    3. Additional tasks for spec [SPEC_NUMBER] (update tasks only)"
+  - If user selects "Enhancement" or "Additional tasks":
+    - Stop this command
+    - Display: "Redirecting to /planning:update-feature [SPEC_NUMBER] with your description"
+    - Exit (user should run update-feature instead)
+  - If user selects "New standalone feature":
+    - Continue to Phase 2
+- If no similar specs found or similarity <70%:
+  - Continue to Phase 2 (create new spec)
+
 Phase 2: Feature Planning
 Goal: Determine feature details and placement
 
