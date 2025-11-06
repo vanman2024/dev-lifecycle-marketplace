@@ -347,6 +347,40 @@ MIT
 
 For issues, questions, or contributions, please visit the [GitHub repository](https://github.com/ai-dev-marketplace/plugins/tree/master/deployment).
 
+## MCP Server Integration
+
+This plugin includes pre-configured MCP servers for enhanced observability capabilities.
+
+### Sentry MCP Server
+
+The Sentry MCP server enables direct integration with Sentry error tracking:
+
+**Configuration:** `.mcp.json`
+
+**Capabilities:**
+- Query issues and error trends
+- Create and manage alerts
+- Analyze error patterns across deployments
+- Track deployment impact on error rates
+
+**Setup:**
+1. Get Sentry auth token: https://sentry.io/settings/account/api/auth-tokens/
+2. Add credentials to environment:
+   ```bash
+   export SENTRY_ORG_SLUG=your-org-slug
+   export SENTRY_PROJECT_SLUG=your-project-slug
+   export SENTRY_AUTH_TOKEN=your-sentry-auth-token
+   ```
+
+3. The MCP server is auto-loaded when deployment plugin is active
+
+**Usage:**
+- `/deployment:setup-monitoring sentry` - Configures Sentry integration
+- Query issues via MCP: "Show me the top 10 errors in production"
+- Create alerts: "Set up alert for error rate >1% in 5 minutes"
+
+**Documentation:** https://github.com/modelcontextprotocol/servers/tree/main/src/sentry
+
 ## Related Plugins
 
 - **fastmcp** - Build FastMCP servers for deployment to FastMCP Cloud
@@ -356,5 +390,5 @@ For issues, questions, or contributions, please visit the [GitHub repository](ht
 
 ---
 
-**Version**: 1.0.0
-**Last Updated**: October 29, 2025
+**Version**: 1.1.0
+**Last Updated**: November 5, 2025
