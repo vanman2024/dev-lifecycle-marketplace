@@ -365,14 +365,27 @@ The Sentry MCP server enables direct integration with Sentry error tracking:
 
 **Setup:**
 1. Get Sentry auth token: https://sentry.io/settings/account/api/auth-tokens/
-2. Add credentials to environment:
+2. Add credentials to Doppler (recommended) or environment:
+
+   **Option A: Using Doppler (Recommended)**
+   ```bash
+   # After /foundation:doppler-setup
+   doppler secrets set SENTRY_ORG_SLUG="your-org-slug" --config dev
+   doppler secrets set SENTRY_PROJECT_SLUG="your-project-slug" --config dev
+   doppler secrets set SENTRY_AUTH_TOKEN="your-sentry-auth-token" --config dev
+
+   # Repeat for staging and production configs
+   ```
+
+   **Option B: Direct Environment Variables**
    ```bash
    export SENTRY_ORG_SLUG=your-org-slug
    export SENTRY_PROJECT_SLUG=your-project-slug
    export SENTRY_AUTH_TOKEN=your-sentry-auth-token
    ```
 
-3. The MCP server is auto-loaded when deployment plugin is active
+3. The MCP server auto-loads when deployment plugin is active
+4. Variables are injected from Doppler when using `doppler run --`
 
 **Usage:**
 - `/deployment:setup-monitoring sentry` - Configures Sentry integration
