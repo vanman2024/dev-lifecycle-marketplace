@@ -74,7 +74,30 @@ Actions:
 - Set up release tracking if CI/CD configured
 - Add source map upload for Node.js projects
 
-Phase 6: Alert Configuration
+Phase 6: Sentry CLI Setup (Sentry Only)
+Goal: Install and configure Sentry CLI for release tracking
+
+Actions:
+- If platform is Sentry:
+  - Check if sentry-cli installed: !{bash which sentry-cli || echo "not-installed"}
+  - If not installed, provide installation:
+    - npm: !{bash npm install -g @sentry/cli}
+    - Or curl: curl -sL https://sentry.io/get-cli/ | bash
+  - Verify installation: !{bash sentry-cli --version}
+  - Create .sentryclirc with auth token reference:
+    ```
+    [auth]
+    token=${SENTRY_AUTH_TOKEN}
+
+    [defaults]
+    org=${SENTRY_ORG_SLUG}
+    project=${SENTRY_PROJECT_SLUG}
+    ```
+  - Add .sentryclirc to .gitignore
+  - Document Doppler variables: SENTRY_AUTH_TOKEN, SENTRY_ORG_SLUG, SENTRY_PROJECT_SLUG
+- Display: "✓ Sentry CLI configured for release tracking"
+
+Phase 7: Alert Configuration
 Goal: Set up basic alerting rules
 
 Actions:
@@ -83,30 +106,69 @@ Actions:
 - Document alert configuration in platform dashboard
 - Provide webhook setup guide for Slack/Discord/PagerDuty
 
-Phase 7: Deployment Integration
+Phase 8: Deployment Integration
 Goal: Configure monitoring for CI/CD
 
 Actions:
 - Check for workflows: !{bash ls -1 .github/workflows/*.yml 2>/dev/null}
 - Add monitoring steps: release creation, source maps upload, deployment markers
-- Document required CI/CD secrets: monitoring API keys, DSN values
+- For Sentry: Add sentry-cli release commands to CI/CD:
+  ```yaml
+  - name: Create Sentry Release
+    run: |
+      sentry-cli releases new $VERSION
+      sentry-cli releases set-commits $VERSION --auto
+      sentry-cli releases files $VERSION upload-sourcemaps ./dist
+      sentry-cli releases finalize $VERSION
+      sentry-cli releases deploys $VERSION new -e production
+  ```
+- Document required CI/CD secrets: monitoring API keys, DSN values, Sentry auth token
 - Add post-deploy health check step
 
-Phase 8: Summary
+Phase 9: Summary
 Goal: Report setup status and next steps
 
 Actions:
 - Display monitoring setup summary:
-  - Platform: Selected monitoring platform
-  - Dependencies: Installed packages
-  - Configuration: Created config files
-  - Integration: Modified application files
-  - Alerts: Configured alert rules
-  - CI/CD: Deployment tracking setup
-- List required environment variables (DSN, API keys, environment identifiers)
+  ```
+  ✅ Monitoring Setup Complete
+
+  Platform: [Sentry|DataDog|etc]
+  Dependencies: [Installed SDK packages]
+  Configuration: [Config files created]
+  Integration: [Modified entry points]
+  Alerts: [Alert rules configured]
+
+  Sentry CLI (if Sentry):
+  - ✓ sentry-cli installed
+  - ✓ .sentryclirc configured
+  - ✓ Release tracking ready
+  - ✓ CI/CD integration added
+
+  CI/CD: [Deployment tracking setup]
+  ```
+
+- List required environment variables:
+  - For Sentry: SENTRY_DSN, SENTRY_AUTH_TOKEN, SENTRY_ORG_SLUG, SENTRY_PROJECT_SLUG
+  - For DataDog: DD_API_KEY, DD_APP_KEY, DD_SITE
+  - All: MONITORING_ENVIRONMENT (production/staging)
+
 - Provide next steps:
-  - Set environment variables in deployment platform
-  - Create monitoring platform account and project
-  - Configure alert notification channels
-  - Deploy and test monitoring integration
-  - Review dashboard for errors and performance data
+  1. Add secrets to Doppler:
+     ```bash
+     doppler secrets set SENTRY_DSN="your-sentry-dsn" --config production
+     doppler secrets set SENTRY_AUTH_TOKEN="your-token" --config production
+     doppler secrets set SENTRY_ORG_SLUG="your-org" --config production
+     doppler secrets set SENTRY_PROJECT_SLUG="your-project" --config production
+     ```
+  2. Test locally with Doppler: `doppler run -- npm run dev`
+  3. Deploy application to trigger monitoring
+  4. Verify Sentry MCP: "Show me the latest errors"
+  5. Test Sentry CLI: `sentry-cli releases list`
+  6. Review monitoring dashboard for data
+
+- Display integration summary:
+  - **MCP Server**: Query issues, create alerts (via .mcp.json)
+  - **Sentry CLI**: Create releases, upload source maps, track deploys
+  - **SDK**: Capture errors and performance in application code
+  - All three use same Doppler-managed credentials ✓
