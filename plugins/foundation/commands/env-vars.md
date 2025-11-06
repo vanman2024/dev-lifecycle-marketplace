@@ -1,7 +1,7 @@
 ---
 description: Manage environment variables for project configuration
 argument-hint: <action> [key] [value]
-allowed-tools: Read, Write, Edit, Bash, Grep, AskUserQuestion
+allowed-tools: Read, Write, Bash, AskUserQuestion, Task
 ---
 
 ## Security Requirements
@@ -22,464 +22,155 @@ allowed-tools: Read, Write, Edit, Bash, Grep, AskUserQuestion
 Goal: Scan codebase to detect ALL environment variables used, generate .env file, and manage environment configuration
 
 Core Principles:
-- **Scan actual codebase** to detect environment variable usage (no .claude/project.json)
+- **Scan actual codebase** to detect environment variable usage
 - Secure handling - never log sensitive values
-- Support .env files and system environment
-- **Launch agents for large codebases** to comprehensively search code
+- Support .env files and Doppler integration
+- **Use env-detector agent** for comprehensive multi-source analysis
 - Generate complete .env template from detected variables
 
 ## Available Skills
 
-This commands has access to the following skills from the foundation plugin:
+This command has access to foundation plugin skills:
 
-- **environment-setup**: Environment verification, tool checking, version validation, and path configuration. Use when checking system requirements, verifying tool installations, validating versions, checking PATH configuration, or when user mentions environment setup, system check, tool verification, version check, missing tools, or installation requirements.
-- **git-hooks**: 
-- **mcp-configuration**: Comprehensive MCP server configuration templates, .mcp.json management, API key handling, and server installation helpers. Use when configuring MCP servers, managing .mcp.json files, setting up API keys, installing MCP servers, validating MCP configs, or when user mentions MCP setup, server configuration, MCP environment, API key storage, or MCP installation.
-- **mcp-server-config**: Manage .mcp.json MCP server configurations. Use when configuring MCP servers, adding server entries, managing MCP config files, or when user mentions .mcp.json, MCP server setup, server configuration.
-- **project-detection**: Comprehensive tech stack detection, framework identification, dependency analysis, and project.json generation. Use when analyzing project structure, detecting frameworks, identifying dependencies, discovering AI stack components, detecting databases, or when user mentions project detection, tech stack analysis, framework discovery, or project.json generation.
+- **environment-setup**: Tool verification and system checks
+- **mcp-configuration**: MCP server configuration management
+- **project-detection**: Tech stack and dependency detection
 
-**To use a skill:**
-```
-!{skill skill-name}
-```
-
-Use skills when you need:
-- Domain-specific templates and examples
-- Validation scripts and automation
-- Best practices and patterns
-- Configuration generators
-
-Skills provide pre-built resources to accelerate your work.
+To use a skill: `!{skill skill-name}`
 
 ---
 
+## Phase 1: Parse Action
 
-## Phase 1: Discovery - Multi-Source Detection
-
-Goal: Detect required environment variables from ALL available sources (priority order)
-
-Actions:
-- Parse $ARGUMENTS for action (scan, generate, setup-multi-env, add, remove, list, check, sync-from-doppler, sync-to-doppler)
-- Load .env file if exists: @.env
-- **Launch env-detector agent with multi-source analysis:**
-
-  **Priority 1: Check specs/ directory (HIGHEST PRIORITY)**
-  - Look for specs/*.md files
-  - Analyze specs for mentioned services, APIs, databases
-  - Extract service requirements from spec documents
-  - Example: Spec mentions "Supabase for database" → detect SUPABASE_* vars needed
-
-  **Priority 2: Check manifest files (MEDIUM PRIORITY)**
-  - Read package.json dependencies (Node.js/TypeScript)
-  - Read pyproject.toml/requirements.txt (Python)
-  - Detect installed SDKs: @anthropic-ai/sdk, @supabase/supabase-js, openai, etc.
-
-  **Priority 3: Scan codebase (FALLBACK)**
-  - Search code for environment variable usage patterns
-  - JavaScript: process.env.VAR_NAME, import.meta.env.VAR_NAME
-  - Python: os.getenv("VAR_NAME"), os.environ["VAR_NAME"]
-  - Find actual variable references in code
-
-- Merge results from all sources (deduplicate)
-- Map detected services/variables to required environment variables
-
-## Phase 2: Validation
-
-Goal: Verify action and gather information if needed
+Goal: Understand what the user wants to do
 
 Actions:
-- If action unclear, use AskUserQuestion to ask:
-  - What would you like to do? (scan, generate, setup-multi-env, add, remove, list, check)
-  - For add: Which key and value?
-  - For remove: Which key to remove?
-  - For setup-multi-env: Which project name and environments?
-- For 'add' action:
-  - Validate key format (UPPERCASE_SNAKE_CASE)
-  - Check if key already exists
-  - Warn if overwriting
-- For 'setup-multi-env' action:
-  - Use AskUserQuestion to gather:
-    - Project name (e.g., "staffhive")
-    - Environments needed (development, staging, production or custom)
-    - Services detected from Phase 1 agent analysis
+- Parse $ARGUMENTS for action:
+  - **scan**: Detect required environment variables (dry-run, no files created)
+  - **generate**: Create .env and .env.example files with placeholders
+  - **setup-multi-env**: Generate multi-environment configs (dev, staging, prod)
+  - **add**: Add/update a single variable
+  - **remove**: Remove a variable
+  - **list**: Show all variables (mask values)
+  - **check**: Compare .env against codebase requirements
+  - **sync-from-doppler**: Download from Doppler → .env
+  - **sync-to-doppler**: Upload from .env → Doppler
+- Extract additional parameters (key, value, environment, project name)
+- If action unclear, use AskUserQuestion:
+  - "What would you like to do?"
+  - Options: scan, generate, setup-multi-env, add, remove, list, check, sync
 
-## Phase 3: Execution
+## Phase 2: Validate Prerequisites
 
-Goal: Perform environment variable management
+Goal: Check requirements before execution
 
-Actions based on action:
+Actions:
+- Check if .env exists: @.env (ignore if missing)
+- For Doppler actions (sync-from-doppler, sync-to-doppler):
+  - Verify Doppler CLI: !{bash which doppler && doppler --version || echo "not-installed"}
+  - If not installed: "Run '/foundation:doppler-setup' to install Doppler CLI"
+  - Verify authentication: !{bash doppler me 2>&1}
+  - If not authenticated: "Run 'doppler login' or '/foundation:doppler-setup'"
+- Display prerequisites status
 
-**For 'scan' action (DRY-RUN):**
-- Use detected services from Phase 1 agent analysis
-- Display what would be generated WITHOUT creating files
-- Show preview of .env structure with all detected variables
-- Report detection sources (specs, manifests, code)
-- List all services detected and their required keys
-- Format output similar to final .env but as a preview
-- Report: "Found {count} required variables for {services}"
-- Suggest: "Run '/foundation:env-vars generate' to create .env files"
+## Phase 3: Execute Action via Agent
 
-**For 'generate' action (CREATE FILES):**
-- Use detected services from Phase 1 agent analysis
-- Generate .env file based on detected services with placeholder values:
+Goal: Delegate complex logic to specialized agent
 
-  **Example Template Format:**
-  ```
-  # ============================================
-  # Anthropic Claude API (detected: @anthropic-ai/sdk)
-  # ============================================
-  ANTHROPIC_API_KEY=your_anthropic_api_key_here
+Actions:
+- **Launch env-vars-manager agent** with action and context:
 
-  # ============================================
-  # Supabase (detected: @supabase/supabase-js)
-  # ============================================
-  SUPABASE_URL=https://your-project.supabase.co
-  SUPABASE_ANON_KEY=your_supabase_anon_key_here
+```
+Task(
+  description="Manage environment variables",
+  subagent_type="foundation:env-vars-manager",
+  prompt="You are the env-vars-manager agent.
 
-  # ============================================
-  # OpenAI (detected: openai package)
-  # ============================================
-  OPENAI_API_KEY=your_openai_api_key_here
+**Action**: $ARGUMENTS
 
-  # ============================================
-  # Application Configuration
-  # ============================================
-  NODE_ENV=development
-  PORT=3000
-  ```
+**Context**:
+- Current directory: $(pwd)
+- .env exists: yes/no
+- Doppler status: installed/not-installed
 
-- Also generate .env.example (safe to commit with same structure)
-- Report: "Created .env with {count} required variables for {services}"
-- List all services detected and their required keys
-- Show file locations: ".env and .env.example created"
+**Instructions**:
 
-**For 'add' action:**
-- Add/update variable in .env file
-- Example: Edit .env to add KEY=value
+For 'scan' action:
+- Detect environment variables from ALL sources (priority order):
+  1. specs/*.md files (analyze service requirements)
+  2. package.json/requirements.txt dependencies (detect SDKs)
+  3. Code scans (search for process.env.*, os.getenv patterns)
+- Merge and deduplicate results
+- Display detection report WITHOUT creating files
+- Show: services detected, required variables, detection sources
+- Suggest: 'Run /foundation:env-vars generate to create files'
+
+For 'generate' action:
+- Use scan results to generate .env with placeholders
+- Format with service sections and comments
+- Create .env.example (same structure, safe to commit)
+- Ensure .env in .gitignore
+- Report: files created, variable count, services detected
+
+For 'setup-multi-env' action:
+- Ask for project name and environments (dev, staging, prod)
+- Generate .env.{environment} files for each
+- Include environment-specific placeholders
+- Create Doppler project setup guide
+- Report: files created for each environment
+
+For 'add' action:
+- Validate key format (UPPERCASE_SNAKE_CASE)
+- Add/update variable in .env
 - Never log the value
-- Report: "Added {key} to .env"
+- Report: 'Added {key} to .env'
 
-**For 'remove' action:**
+For 'remove' action:
 - Remove variable from .env
-- Example: Edit .env to remove line
-- Report: "Removed {key} from .env"
-
-**For 'list' action:**
-- Display all variables (mask sensitive values)
-- Example: @.env
-- Format: KEY=masked_value (show *** for sensitive keys)
-
-**For 'check' action:**
-- Compare .env against detected variables from codebase scan
-- Report missing variables that code expects
-- Report unused variables in .env (cleanup candidates)
-- Example: "Missing: SUPABASE_URL (used in src/lib/supabase.ts:12)"
-
-**For 'sync-from-doppler' action (DOPPLER → .ENV):**
-- Check if Doppler CLI installed: `doppler --version`
-- If not installed:
-  - Display: "Doppler CLI not found. Run '/foundation:doppler-setup' to install."
-  - Exit
-- Check if authenticated: `doppler me`
-- If not authenticated:
-  - Display: "Not authenticated. Run 'doppler login' or '/foundation:doppler-setup'"
-  - Exit
-- Check if project linked (`.doppler.yaml` exists)
-- If not linked:
-  - Display: "Project not linked. Run '/foundation:doppler-setup' first"
-  - Exit
-- Parse environment from $ARGUMENTS (default: dev)
-- Download secrets: `doppler secrets download --config $ENVIRONMENT --no-file --format env > .env`
-- Count variables synced
-- Report: "✓ Synced {count} secrets from Doppler ({environment}) to .env"
-- Warn: ".env file overwritten. Backup exists at .env.backup"
-
-**For 'sync-to-doppler' action (.ENV → DOPPLER):**
-- Check if Doppler CLI installed and authenticated (same as above)
-- Check if .env file exists
-- If not exists:
-  - Display: "No .env file found. Run '/foundation:env-vars generate' first"
-  - Exit
-- Parse environment from $ARGUMENTS (default: dev)
-- Backup current Doppler secrets (optional safety)
-- Upload secrets: `doppler secrets upload .env --config $ENVIRONMENT`
-- Count variables uploaded
-- Report: "✓ Synced {count} secrets from .env to Doppler ({environment})"
-- Warn: "Doppler secrets updated. View changes at dashboard.doppler.com"
-
-**For 'setup-multi-env' action (COMPREHENSIVE MULTI-ENVIRONMENT SETUP):**
-
-This creates a production-ready multi-environment structure with proper API key organization.
-
-**Step 1: Gather Project Information**
-- Use AskUserQuestion to collect:
-  - Project name (e.g., "staffhive")
-  - Environments to create (default: development, staging, production)
-  - Confirm services detected from Phase 1 analysis
-
-**Step 2: Create Environment Files**
-
-Create separate .env files for each environment with detected services:
-
-**`.env.development`:**
-```bash
-# ============================================
-# {PROJECT_NAME} - Development Environment
-# ============================================
-
-# Anthropic Claude API (detected: {detection_source})
-# Get key: https://console.anthropic.com/settings/keys
-# Project: {project-name}-development
-ANTHROPIC_API_KEY={project-name}_dev_your_key_here
-
-# Supabase (detected: {detection_source})
-# Get keys: https://supabase.com/dashboard/project/{project}/settings/api
-SUPABASE_URL=https://{project}-dev.supabase.co
-SUPABASE_ANON_KEY={project}_dev_anon_key_here
-
-# Application Configuration
-NODE_ENV=development
-PORT=3000
-DEBUG=true
-LOG_LEVEL=debug
-```
-
-**`.env.staging`:**
-```bash
-# ============================================
-# {PROJECT_NAME} - Staging Environment
-# ============================================
-
-ANTHROPIC_API_KEY={project-name}_staging_your_key_here
-SUPABASE_URL=https://{project}-staging.supabase.co
-SUPABASE_ANON_KEY={project}_staging_anon_key_here
-
-NODE_ENV=staging
-PORT=3000
-DEBUG=false
-LOG_LEVEL=info
-```
-
-**`.env.production`:**
-```bash
-# ============================================
-# {PROJECT_NAME} - Production Environment
-# ============================================
-
-ANTHROPIC_API_KEY={project-name}_prod_your_key_here
-SUPABASE_URL=https://{project}-prod.supabase.co
-SUPABASE_ANON_KEY={project}_prod_anon_key_here
-
-NODE_ENV=production
-PORT=3000
-DEBUG=false
-LOG_LEVEL=warn
-```
-
-**`.env.example`** (safe to commit):
-```bash
-# Template - Copy to .env.development, .env.staging, or .env.production
-ANTHROPIC_API_KEY=your_key_here
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_ANON_KEY=your_anon_key_here
-NODE_ENV=development
-```
-
-**`.env`** (symlink):
-```bash
-# Create symlink to active environment
-ln -sf .env.development .env
-```
-
-**Step 3: Create Environment Switcher Script**
-
-**`switch-env.sh`:**
-```bash
-#!/usr/bin/env bash
-# Switch between environments by updating .env symlink
-
-set -euo pipefail
-
-ENVIRONMENT="${1:-}"
-
-if [ -z "$ENVIRONMENT" ]; then
-    echo "Usage: ./switch-env.sh [development|staging|production]"
-    echo ""
-    echo "Current environment:"
-    if [ -L .env ]; then
-        readlink .env | sed 's/\.env\.//'
-    else
-        echo "No environment active (symlink not found)"
-    fi
-    exit 1
-fi
-
-ENV_FILE=".env.$ENVIRONMENT"
-
-if [ ! -f "$ENV_FILE" ]; then
-    echo "Error: Environment file not found: $ENV_FILE"
-    echo "Available environments:"
-    ls -1 .env.* 2>/dev/null | sed 's/\.env\./  - /'
-    exit 1
-fi
-
-ln -sf "$ENV_FILE" .env
-echo "✓ Switched to $ENVIRONMENT environment"
-echo "Active file: $ENV_FILE"
-```
-
-Make executable:
-```bash
-chmod +x switch-env.sh
-```
-
-**Step 4: Update .gitignore**
-
-Add to .gitignore (create if doesn't exist):
-```
-# Environment files (NEVER commit these!)
-.env
-.env.development
-.env.staging
-.env.production
-
-# Keep example files
-!.env.example
-```
-
-**Step 5: Generate Anthropic Console Setup Guide**
-
-Create `ANTHROPIC_SETUP.md` with instructions:
-```markdown
-# Anthropic Console Setup for {PROJECT_NAME}
-
-## Create Projects in Anthropic Console
-
-Visit: https://console.anthropic.com
-
-### 1. Create Development Project
-
-1. Click "Create Project"
-2. Name: `{project-name}-development`
-3. Description: "Development environment for {project-name}"
-4. Click "Create API Key"
-5. Name: "{project-name} Dev - YYYY-MM-DD"
-6. Copy key → Paste into `.env.development` as `ANTHROPIC_API_KEY`
-
-### 2. Create Staging Project
-
-1. Click "Create Project"
-2. Name: `{project-name}-staging`
-3. Description: "Staging environment for {project-name}"
-4. Click "Create API Key"
-5. Name: "{project-name} Staging - YYYY-MM-DD"
-6. Copy key → Paste into `.env.staging` as `ANTHROPIC_API_KEY`
-
-### 3. Create Production Project
-
-1. Click "Create Project"
-2. Name: `{project-name}-production`
-3. Description: "Production environment for {project-name}"
-4. Click "Create API Key"
-5. Name: "{project-name} Production - YYYY-MM-DD"
-6. Copy key → Paste into `.env.production` as `ANTHROPIC_API_KEY`
-
-## Key Naming Convention
-
-Follow this pattern for all API keys:
-- **Development**: `{project-name}-dev-YYYY-MM-DD`
-- **Staging**: `{project-name}-staging-YYYY-MM-DD`
-- **Production**: `{project-name}-prod-YYYY-MM-DD`
-
-## Usage Tracking
-
-Each Anthropic project has separate usage tracking:
-- Development usage won't affect production quotas
-- Easy to rotate keys per environment
-- Clear cost attribution per environment
-
-## Next Steps
-
-1. ✓ Create Anthropic projects (instructions above)
-2. ✓ Copy API keys to respective .env files
-3. ✓ Set up Supabase projects (if detected)
-4. ✓ Run `./switch-env.sh development` to activate dev environment
-5. ✓ Validate: `/foundation:env-vars check`
-```
-
-**Step 6: Generate Service-Specific Guides**
-
-For each detected service, create setup instructions:
-
-**If Supabase detected:**
-Create `SUPABASE_SETUP.md` with multi-project setup instructions.
-
-**If FastMCP detected:**
-Create `FASTMCP_SETUP.md` with multi-environment server configuration.
-
-**Step 7: Report Created Files**
-
-Display comprehensive summary:
-```
-✓ Multi-Environment Setup Complete for {PROJECT_NAME}
-
-Files Created:
-├── .env.development (development configuration)
-├── .env.staging (staging configuration)
-├── .env.production (production configuration)
-├── .env.example (template for git)
-├── .env → .env.development (active environment symlink)
-├── switch-env.sh (environment switcher)
-├── ANTHROPIC_SETUP.md (Anthropic Console instructions)
-├── SUPABASE_SETUP.md (Supabase multi-project guide)
-└── .gitignore (updated with env file rules)
-
-Detected Services:
-- Anthropic Claude API (from {source})
-- Supabase (from {source})
-- [Additional services...]
-
-Next Steps:
-
-1. Create Anthropic Console Projects:
-   Read ANTHROPIC_SETUP.md for detailed instructions
-   https://console.anthropic.com
-
-2. Set up service accounts for each environment:
-   - Development: Testing and development
-   - Staging: Pre-production validation
-   - Production: Live application
-
-3. Fill in API keys:
-   Edit each .env.{environment} file with actual keys
-
-4. Switch to development:
-   ./switch-env.sh development
-
-5. Validate setup:
-   /foundation:env-vars check
-
-6. Start development:
-   npm run dev (or equivalent)
+- Report: 'Removed {key} from .env'
+
+For 'list' action:
+- Display all variables with masked values
+- Show KEY=*** for sensitive keys
+- Report count and file location
+
+For 'check' action:
+- Compare .env against codebase requirements
+- Report missing variables (with usage locations)
+- Report unused variables (cleanup candidates)
+- Suggest fixes
+
+For 'sync-from-doppler' action:
+- Parse environment from arguments (default: dev)
+- Download: doppler secrets download --config $ENV --no-file --format env > .env
+- Report: variables synced, environment, backup location
+
+For 'sync-to-doppler' action:
+- Parse .env file
+- Upload each variable: doppler secrets set KEY=value --config $ENV
+- Report: variables uploaded, environment
+
+**Deliverable**: Execution results with clear status messages
+"
+)
 ```
 
 ## Phase 4: Summary
 
-Goal: Report results
+Goal: Report results and next steps
 
 Actions:
-- Display summary:
-  - For scan: "Found {count} required variables for {services}" (preview only, no files created)
-  - For generate: "Created .env and .env.example with {count} variables"
-  - For setup-multi-env: "Multi-environment setup complete with {N} environments"
-  - For add: "Environment variable added: {key}"
-  - For remove: "Environment variable removed: {key}"
-  - For list: "{count} environment variables configured"
-  - For check: "✓ All required variables present" or "Missing: {list}"
-- Show next steps:
-  - For scan: "Run '/foundation:env-vars generate' to create .env files"
-  - For generate: "Fill in your actual API keys and secrets in .env"
-  - For setup-multi-env: "Read ANTHROPIC_SETUP.md and follow setup instructions"
-  - For add/remove: "Restart development server to apply changes"
-  - "Add .env to .gitignore if not already present"
-  - For check: "Fill in missing variables"
+- Display agent execution results
+- For 'scan' action:
+  - "Found {count} required variables from {sources}"
+  - "Run '/foundation:env-vars generate' to create .env files"
+- For 'generate' action:
+  - "Created .env and .env.example with {count} variables"
+  - "Update placeholder values in .env before running your app"
+- For Doppler actions:
+  - "Synced {count} variables with Doppler ({environment})"
+  - "Run 'doppler run -- <command>' to use secrets"
+- For 'check' action:
+  - "✓ All required variables present" OR
+  - "⚠️ Missing {count} variables (see above)"
+- Provide context-appropriate next steps

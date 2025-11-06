@@ -1,7 +1,7 @@
 ---
 description: Sync universal MCP registry to target format (.mcp.json or .vscode/mcp.json)
 argument-hint: <claude|vscode|both> [server-name...]
-allowed-tools: Bash, Read, Write, Grep
+allowed-tools: Bash, Read, Write, Grep, AskUserQuestion
 ---
 
 ## Security Requirements
@@ -12,9 +12,7 @@ allowed-tools: Bash, Read, Write, Grep
 
 **Key requirements:**
 - Never hardcode API keys or secrets
-- Use placeholders: `your_service_key_here`
-- Protect `.env` files with `.gitignore`
-- Create `.env.example` with placeholders only
+- Use placeholders or environment variable references: `${ENV_VAR}`
 - Document key acquisition for users
 
 **Arguments**: $ARGUMENTS
@@ -29,45 +27,29 @@ Core Principles:
 
 ## Available Skills
 
-This commands has access to the following skills from the foundation plugin:
+This command has access to foundation plugin skills:
 
-- **environment-setup**: Environment verification, tool checking, version validation, and path configuration. Use when checking system requirements, verifying tool installations, validating versions, checking PATH configuration, or when user mentions environment setup, system check, tool verification, version check, missing tools, or installation requirements.
-- **git-hooks**: 
-- **mcp-configuration**: Comprehensive MCP server configuration templates, .mcp.json management, API key handling, and server installation helpers. Use when configuring MCP servers, managing .mcp.json files, setting up API keys, installing MCP servers, validating MCP configs, or when user mentions MCP setup, server configuration, MCP environment, API key storage, or MCP installation.
-- **mcp-server-config**: Manage .mcp.json MCP server configurations. Use when configuring MCP servers, adding server entries, managing MCP config files, or when user mentions .mcp.json, MCP server setup, server configuration.
-- **project-detection**: Comprehensive tech stack detection, framework identification, dependency analysis, and project.json generation. Use when analyzing project structure, detecting frameworks, identifying dependencies, discovering AI stack components, detecting databases, or when user mentions project detection, tech stack analysis, framework discovery, or project.json generation.
+- **mcp-configuration**: MCP server configuration templates, registry sync scripts
+- **mcp-server-config**: .mcp.json management
 
-**To use a skill:**
-```
-!{skill skill-name}
-```
-
-Use skills when you need:
-- Domain-specific templates and examples
-- Validation scripts and automation
-- Best practices and patterns
-- Configuration generators
-
-Skills provide pre-built resources to accelerate your work.
+To use a skill: `!{skill skill-name}`
 
 ---
 
-
-## Phase 1: Discovery
+## Phase 1: Validate Registry
 
 Goal: Parse arguments and validate registry exists
 
 Actions:
 - Parse $ARGUMENTS for format: claude, vscode, or both
 - Extract optional server names for selective sync
-- Check if registry exists at ~/.claude/mcp-registry/servers.json
+- Check if registry exists: `!{bash test -f ~/.claude/mcp-registry/servers.json && echo "exists" || echo "not found"}`
 - If registry doesn't exist:
-  - Inform user they need to initialize it first
-  - Provide command: /foundation:mcp-registry init
+  - Display: "Registry not found. Run '/foundation:mcp-registry init' first."
   - Exit with helpful message
-- Display current registry contents: !{jq '.servers | keys' ~/.claude/mcp-registry/servers.json}
+- Display current registry contents: `!{bash jq '.servers | keys' ~/.claude/mcp-registry/servers.json}`
 
-## Phase 2: Validation
+## Phase 2: Validate Format
 
 Goal: Verify format and server names are valid
 
@@ -77,120 +59,71 @@ Actions:
   - "Which format would you like to sync to?"
   - Options: Claude Code (.mcp.json), VS Code (.vscode/mcp.json), Both formats
 - If specific servers provided, verify they exist in registry:
-  - !{jq -r ".servers | has(\"$SERVER_NAME\")" ~/.claude/mcp-registry/servers.json}
+  - `!{bash jq -r ".servers | has(\"$SERVER_NAME\")" ~/.claude/mcp-registry/servers.json}`
   - Warn if server not found
 
-## Phase 3: Execution
+## Phase 3: Execute Sync
 
 Goal: Run registry-sync.sh script to perform transformation
 
 Actions:
 - Execute sync script with format and optional servers:
-  - !{bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/registry-sync.sh $FORMAT $SERVERS}
-- Script will:
-  - Read from ~/.claude/mcp-registry/servers.json
-  - Transform to target format(s)
-  - Create backups of existing configs
-  - Update .mcp.json and/or .vscode/mcp.json
-- Capture output and display to user
 
-Example commands:
+**Sync all servers:**
 ```bash
-# Sync all servers to Claude Code format
-!{bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/registry-sync.sh claude}
-
-# Sync specific servers to VS Code format
-!{bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/registry-sync.sh vscode context7 filesystem}
-
-# Sync all servers to both formats
-!{bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/registry-sync.sh both}
+!{bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/registry-sync.sh $FORMAT}
 ```
 
-## Phase 4: Verification
+**Sync specific servers:**
+```bash
+!{bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/registry-sync.sh $FORMAT $SERVER1 $SERVER2 $SERVER3}
+```
 
-Goal: Confirm sync completed successfully and show results
+Script will:
+- Read from ~/.claude/mcp-registry/servers.json
+- Transform to target format (Claude Code or VS Code)
+- Create backups of existing configs
+- Update .mcp.json and/or .vscode/mcp.json with selected servers
+
+## Phase 4: Verify Sync
+
+Goal: Confirm sync completed successfully
 
 Actions:
-- Check if target files were created/updated:
-  - For claude: Check .mcp.json exists and is valid JSON
-  - For vscode: Check .vscode/mcp.json exists and is valid JSON
-- Display synced server count
-- Show which servers were added
-- Display file locations
+- For Claude Code format:
+  - Check .mcp.json was updated: `!{bash test -f .mcp.json && echo "✓ Updated" || echo "✗ Missing"}`
+  - Display server count: `!{bash jq '.mcpServers | keys | length' .mcp.json`}
+  - List synced servers: `!{bash jq -r '.mcpServers | keys[]' .mcp.json}`
 
-For claude format:
-```bash
-!{jq '.mcpServers | keys' .mcp.json 2>/dev/null || echo "Failed to sync"}
-```
+- For VS Code format:
+  - Check .vscode/mcp.json was updated: `!{bash test -f .vscode/mcp.json && echo "✓ Updated" || echo "✗ Missing"}`
+  - Display server count: `!{bash jq '.mcpServers | keys | length' .vscode/mcp.json}`
+  - List synced servers: `!{bash jq -r '.mcpServers | keys[]' .vscode/mcp.json}`
 
-For vscode format:
-```bash
-!{jq '.servers | keys' .vscode/mcp.json 2>/dev/null || echo "Failed to sync"}
-```
+- Confirm backup created: `!{bash ls -lt ~/.claude/mcp-registry/backups/ | head -5}`
 
 ## Phase 5: Summary
 
-Goal: Provide clear feedback on sync operation
+Goal: Report sync results and next steps
 
 Actions:
-- Report success or failure
-- Show sync details:
-  - Format(s) synced to
-  - Number of servers synced
-  - Target file locations
-  - Backup file locations
-- Provide next steps:
-  - "Claude Code config updated at: .mcp.json"
-  - "VS Code config updated at: .vscode/mcp.json"
-  - "Restart Claude Code or VS Code to load new servers"
-- If sync failed, provide troubleshooting:
-  - Check registry file exists
-  - Validate JSON format
-  - Check file permissions
-  - Review error messages from script
+- Display sync summary:
+  - Format(s) updated: Claude Code, VS Code, or both
+  - Server count: Total servers synced
+  - Selective sync: If specific servers, list them
+  - Backup location: ~/.claude/mcp-registry/backups/
 
-## Error Handling
+- Provide next steps based on format:
+  - **Claude Code**: Restart Claude Code to load new MCP servers
+  - **VS Code**: Reload VS Code window (Cmd/Ctrl+Shift+P → "Reload Window")
+  - **Both**: Restart both editors
 
-Common issues:
-1. Registry not initialized
-   - Solution: Run /foundation:mcp-registry init
+- Document environment variables:
+  - List all ${ENV_VAR} references found in synced servers
+  - Provide Doppler setup command if variables detected:
+    - "Add to Doppler: doppler secrets set VAR_NAME=value --config dev"
 
-2. Invalid format specified
-   - Solution: Use claude, vscode, or both
-
-3. Server not found in registry
-   - Solution: Run /foundation:mcp-registry list to see available servers
-   - Add missing server: /foundation:mcp-registry add <server-name>
-
-4. Permission denied
-   - Solution: Check file permissions on .mcp.json or .vscode/mcp.json
-   - Run: chmod 644 .mcp.json
-
-5. Invalid JSON in registry
-   - Solution: Validate registry with: jq . ~/.claude/mcp-registry/servers.json
-   - Fix JSON syntax errors
-
-## Technical Notes
-
-**Format Differences**:
-- Claude Code (.mcp.json):
-  - Root key: `mcpServers`
-  - Supports: stdio, http-local, http-remote
-  - Environment variables: `${VAR}`
-
-- VS Code (.vscode/mcp.json):
-  - Root key: `servers`
-  - Supports: stdio, http-local, http-remote, http-remote-auth
-  - Can use direct values or `${VAR}`
-  - Supports `httpUrl` with `trust: true`
-
-**Marketplace Servers**:
-- Servers with `"marketplace": true` are skipped for Claude sync
-- These are pre-installed in VS Code (github-copilot, playwright, etc.)
-- Listed in ~/.claude/mcp-registry/marketplace.json for reference
-
-**Transport Types**:
-1. stdio - Local subprocess (most common)
-2. http-local - HTTP server you start manually
-3. http-remote - Remote HTTP API
-4. http-remote-auth - Remote HTTP with authentication (VS Code only)
+- Success indicators:
+  - "✓ Synced {count} servers to {format}"
+  - "✓ Backups created"
+  - "✓ Configuration files updated"

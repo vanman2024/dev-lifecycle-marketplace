@@ -12,9 +12,8 @@ allowed-tools: Bash, Read, Write, Grep, AskUserQuestion
 
 **Key requirements:**
 - Never hardcode API keys or secrets
-- Use placeholders: `your_service_key_here`
-- Protect `.env` files with `.gitignore`
-- Create `.env.example` with placeholders only
+- Use placeholders: `your_service_key_here` or `${ENV_VAR}` format
+- Environment variables for all sensitive values
 - Document key acquisition for users
 
 **Arguments**: $ARGUMENTS
@@ -29,115 +28,88 @@ Core Principles:
 
 ## Available Skills
 
-This commands has access to the following skills from the foundation plugin:
+This command has access to foundation plugin skills:
 
-- **environment-setup**: Environment verification, tool checking, version validation, and path configuration. Use when checking system requirements, verifying tool installations, validating versions, checking PATH configuration, or when user mentions environment setup, system check, tool verification, version check, missing tools, or installation requirements.
-- **git-hooks**: 
-- **mcp-configuration**: Comprehensive MCP server configuration templates, .mcp.json management, API key handling, and server installation helpers. Use when configuring MCP servers, managing .mcp.json files, setting up API keys, installing MCP servers, validating MCP configs, or when user mentions MCP setup, server configuration, MCP environment, API key storage, or MCP installation.
-- **mcp-server-config**: Manage .mcp.json MCP server configurations. Use when configuring MCP servers, adding server entries, managing MCP config files, or when user mentions .mcp.json, MCP server setup, server configuration.
-- **project-detection**: Comprehensive tech stack detection, framework identification, dependency analysis, and project.json generation. Use when analyzing project structure, detecting frameworks, identifying dependencies, discovering AI stack components, detecting databases, or when user mentions project detection, tech stack analysis, framework discovery, or project.json generation.
+- **mcp-configuration**: MCP server configuration templates, API key handling, registry management scripts
+- **mcp-server-config**: .mcp.json management and server configuration
 
-**To use a skill:**
-```
-!{skill skill-name}
-```
-
-Use skills when you need:
-- Domain-specific templates and examples
-- Validation scripts and automation
-- Best practices and patterns
-- Configuration generators
-
-Skills provide pre-built resources to accelerate your work.
+To use a skill: `!{skill skill-name}`
 
 ---
 
-
-## Phase 1: Discovery
+## Phase 1: Parse Action
 
 Goal: Parse action and check registry state
 
 Actions:
 - Parse $ARGUMENTS for action: init, add, remove, list, search
-- Check if registry exists: !{test -f ~/.claude/mcp-registry/servers.json && echo "exists" || echo "not found"}
-- If action is missing or unclear, use AskUserQuestion:
-  - "What would you like to do with the MCP registry?"
-  - Options:
-    - init: Initialize new registry
-    - add: Add server to registry
-    - list: List all servers
-    - search: Search for servers
-    - remove: Remove server from registry
+- Extract server name and options if provided
+- Check if registry exists: `!{bash test -f ~/.claude/mcp-registry/servers.json && echo "exists" || echo "not found"}`
+- If action missing, use AskUserQuestion:
+  - "What would you like to do?"
+  - Options: init, add, list, search, remove
 
-## Phase 2: Action Routing
+## Phase 2: Execute Action
 
 Goal: Execute the appropriate registry operation
 
-### ACTION: init
+### For 'init' action:
 
-Initialize registry if it doesn't exist
+Create new MCP server registry:
 
 ```bash
 !{bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/registry-init.sh}
 ```
 
-Script will:
-- Create ~/.claude/mcp-registry/ directory
-- Create servers.json with empty structure
-- Create README.md with documentation
-- Create backups/ directory
-- Provide next steps
+Report:
+- Registry location: ~/.claude/mcp-registry/servers.json
+- Next steps: Use 'add' to register servers
 
-### ACTION: add
+### For 'add' action:
 
-Add new server to registry
+Gather server details via AskUserQuestion if not in $ARGUMENTS:
+- Server name (e.g., "context7", "github")
+- Transport type: stdio, http-local, http-remote, http-remote-auth
+- Command (stdio): e.g., "npx", "python"
+- Args (stdio): comma-separated
+- URL (http): endpoint URL
+- Environment variables: KEY=${ENV_VAR} format
+- Description: what the server provides
 
-Steps:
-1. Ask user for server details via AskUserQuestion:
-   - Server name (e.g., "context7", "filesystem")
-   - Transport type: stdio, http-local, http-remote, http-remote-auth
-   - Command (for stdio): e.g., "npx", "python"
-   - Args (for stdio): comma-separated, e.g., "-y,@upstash/context7-mcp"
-   - URL (for http): e.g., "https://api.example.com/mcp/"
-   - Environment variables (optional): KEY=value format
+Execute add script based on transport:
 
-2. Execute add script:
+**STDIO Transport:**
 ```bash
-# stdio example
-!{bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/registry-add.sh context7 \
+!{bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/registry-add.sh $SERVER_NAME \
   --transport stdio \
-  --command npx \
-  --args "-y,@upstash/context7-mcp" \
-  --env "CONTEXT7_API_KEY=\${CONTEXT7_API_KEY}"}
-
-# http-remote example
-!{bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/registry-add.sh api-server \
-  --transport http-remote \
-  --url "https://api.example.com/mcp/"}
-
-# http-remote-auth example
-!{bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/registry-add.sh github \
-  --transport http-remote-auth \
-  --url "https://api.githubcopilot.com/mcp/" \
-  --header "Authorization: Bearer \${GITHUB_TOKEN}"}
+  --command $COMMAND \
+  --args "$ARGS" \
+  --env "$ENV_VARS"}
 ```
 
-3. Confirm server was added:
+**HTTP Remote Transport:**
 ```bash
-!{jq ".servers[\"$SERVER_NAME\"]" ~/.claude/mcp-registry/servers.json}
+!{bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/registry-add.sh $SERVER_NAME \
+  --transport http-remote \
+  --url "$URL"}
 ```
 
-### ACTION: list
+**HTTP Remote Auth:**
+```bash
+!{bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/registry-add.sh $SERVER_NAME \
+  --transport http-remote-auth \
+  --url "$URL" \
+  --header "Authorization: Bearer \${TOKEN_VAR}"}
+```
 
-List all servers in registry
+Confirm server added: `!{bash jq ".servers[\"$SERVER_NAME\"]" ~/.claude/mcp-registry/servers.json}`
+
+### For 'list' action:
+
+List all servers in registry:
 
 ```bash
 !{bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/registry-list.sh}
-```
-
-Or inline:
-```bash
-!{jq -r '.servers | to_entries[] | "\(.key) - \(.value.transport) - \(.value.description)"' ~/.claude/mcp-registry/servers.json}
 ```
 
 Display format:
@@ -145,169 +117,45 @@ Display format:
 - Transport type
 - Description
 - Scope (global/project)
-- Marketplace status
 
-### ACTION: search
+### For 'search' action:
 
-Search for servers by keyword
+Search for servers by keyword:
 
-Steps:
-1. Get search query from $ARGUMENTS or ask user
-2. Search in server names and descriptions:
 ```bash
-!{jq -r --arg query "$SEARCH_TERM" '.servers | to_entries[] | select(.key | contains($query) or .value.description | contains($query)) | "\(.key) - \(.value.description)"' ~/.claude/mcp-registry/servers.json}
+!{bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/registry-search.sh "$SEARCH_QUERY"}
 ```
 
-### ACTION: remove
+Searches in:
+- Server name
+- Description
+- Transport type
 
-Remove server from registry
+### For 'remove' action:
 
-Steps:
-1. Confirm server exists:
+Confirm server name from $ARGUMENTS or AskUserQuestion
+
+Remove server:
+
 ```bash
-!{jq ".servers | has(\"$SERVER_NAME\")" ~/.claude/mcp-registry/servers.json}
+!{bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/registry-remove.sh "$SERVER_NAME"}
 ```
 
-2. Ask for confirmation via AskUserQuestion:
-   - "Are you sure you want to remove $SERVER_NAME from the registry?"
-   - Options: Yes, No
+Confirm removal: "Removed $SERVER_NAME from registry"
 
-3. If confirmed, remove server:
-```bash
-!{jq "del(.servers[\"$SERVER_NAME\"])" ~/.claude/mcp-registry/servers.json > /tmp/registry.json && mv /tmp/registry.json ~/.claude/mcp-registry/servers.json}
-```
+## Phase 3: Summary
 
-4. Create backup:
-```bash
-!{cp ~/.claude/mcp-registry/servers.json ~/.claude/mcp-registry/backups/servers-$(date +%Y%m%d_%H%M%S).json}
-```
-
-## Phase 3: Verification
-
-Goal: Confirm operation completed successfully
-
-Actions based on action:
-
-**For init**:
-- Verify registry directory exists
-- Verify servers.json has valid structure
-- Display registry location
-
-**For add**:
-- Verify server appears in registry: !{jq ".servers | has(\"$SERVER_NAME\")" ~/.claude/mcp-registry/servers.json}
-- Display server definition
-- Provide next step: Use /foundation:mcp-sync to add to project
-
-**For list**:
-- Count servers: !{jq '.servers | length' ~/.claude/mcp-registry/servers.json}
-- Display formatted list
-- Show registry location
-
-**For search**:
-- Display matching servers
-- Show count of matches
-- Suggest using /foundation:mcp-registry list for all servers
-
-**For remove**:
-- Verify server no longer in registry
-- Display backup location
-- Confirm removal
-
-## Phase 4: Summary
-
-Goal: Provide clear feedback and next steps
+Goal: Report results and next steps
 
 Actions:
-- Report operation success/failure
-- Provide relevant next steps:
+- Display action completion status
+- For 'init': "Registry initialized. Add servers with '/foundation:mcp-registry add'"
+- For 'add': "Added $SERVER_NAME. Sync to format with '/foundation:mcp-sync'"
+- For 'list': Display server count and suggest sync
+- For 'search': Display results count
+- For 'remove': "Removed $SERVER_NAME. Sync to update active configs."
 
-**After init**:
-- "Registry initialized at ~/.claude/mcp-registry/"
-- "Add servers with: /foundation:mcp-registry add <server-name>"
-- "List servers with: /foundation:mcp-registry list"
-
-**After add**:
-- "Server added to registry: $SERVER_NAME"
-- "Sync to project with: /foundation:mcp-sync claude" (or vscode/both)
-- "View all servers: /foundation:mcp-registry list"
-
-**After list**:
-- "Found X servers in registry"
-- "Add to project with: /foundation:mcp-sync <format>"
-- "Search servers with: /foundation:mcp-registry search <keyword>"
-
-**After search**:
-- "Found X matching servers"
-- "Add to project with: /foundation:mcp-sync <format> <server-name>"
-
-**After remove**:
-- "Server removed from registry: $SERVER_NAME"
-- "Backup created at: ~/.claude/mcp-registry/backups/"
-- "Update project configs with: /foundation:mcp-sync <format>"
-
-## Error Handling
-
-Common issues:
-
-1. **Registry not initialized**
-   - Solution: Run /foundation:mcp-registry init
-
-2. **Server already exists (for add)**
-   - Ask if user wants to overwrite
-   - Create backup before overwriting
-
-3. **Server not found (for remove/search)**
-   - List available servers
-   - Suggest /foundation:mcp-registry list
-
-4. **Invalid transport type**
-   - Valid types: stdio, http-local, http-remote, http-remote-auth
-   - Provide examples for each
-
-5. **Missing required fields**
-   - For stdio: command and args required
-   - For http: url required
-   - For http-remote-auth: url and headers required
-
-6. **Invalid JSON in registry**
-   - Restore from backup: ~/.claude/mcp-registry/backups/
-   - Validate with: jq . ~/.claude/mcp-registry/servers.json
-
-## Technical Notes
-
-**Registry Structure**:
-```json
-{
-  "_meta": {
-    "version": "1.0.0",
-    "description": "Universal MCP Server Registry",
-    "transport_types": ["stdio", "http-local", "http-remote", "http-remote-auth"]
-  },
-  "servers": {
-    "server-name": {
-      "name": "Display Name",
-      "description": "What this server does",
-      "transport": "stdio|http-local|http-remote|http-remote-auth",
-      "scope": "global|project",
-      "marketplace": false,
-      "command": "...",
-      "args": [...],
-      "env": {...}
-    }
-  }
-}
-```
-
-**Scope Guidance**:
-- **global**: Utility servers used across all projects (filesystem, memory, sequential-thinking)
-- **project**: Project-specific servers (custom APIs, project-specific tools)
-
-**Marketplace Servers**:
-- Mark with `"marketplace": true` if pre-installed in VS Code
-- These are skipped during Claude sync
-- Reference only - no need to install manually
-
-**Environment Variables**:
-- Always use `${VAR}` syntax in registry
-- Actual values stored in project .env files
-- Use plugins/foundation/skills/mcp-configuration/templates/.env.example as reference
+Next steps:
+- Use /foundation:mcp-sync to convert registry to target format (.mcp.json or .vscode/mcp.json)
+- Verify sync: Check active configuration file
+- Test server: Use server tools in Claude Code or VS Code
