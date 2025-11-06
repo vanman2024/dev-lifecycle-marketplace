@@ -19,29 +19,79 @@ Core Principles:
 - Support multiple monitoring platforms
 
 Phase 1: Discovery
-Goal: Understand project structure and monitoring needs
+Goal: Understand project structure and detect framework
 
 Actions:
-- Detect project type:
+- Get project name from directory or package.json:
+  - !{bash basename $(pwd)}
+  - @package.json (extract name field if exists)
+- Detect project type and framework:
   - !{bash ls -1 package.json requirements.txt pyproject.toml go.mod 2>/dev/null}
-- Check if monitoring is already configured:
-  - !{bash grep -r "sentry\|datadog\|newrelic" . --include="*.json" --include="*.py" --include="*.js" --include="*.ts" 2>/dev/null | head -5}
-- Load existing configuration files:
-  - @package.json (if exists)
-  - @requirements.txt (if exists)
-- Determine project language and framework
+  - Check for Next.js: !{bash grep -q "next" package.json && echo "nextjs" || echo ""}
+  - Check for React: !{bash grep -q "react" package.json && echo "react" || echo ""}
+  - Check for Python: !{bash test -f requirements.txt && echo "python" || echo ""}
+  - Check for FastAPI: !{bash grep -q "fastapi" requirements.txt && echo "fastapi" || echo ""}
+  - Check for Django: !{bash grep -q "django" requirements.txt && echo "django" || echo ""}
+- Store detected platform for later use
+- Display: "Detected platform: [Next.js|React|Python|etc]"
 
 Phase 2: Platform Selection
-Goal: Choose appropriate monitoring platform
+Goal: Choose monitoring platform and verify setup
 
 Actions:
-- If $ARGUMENTS provided, use specified platform
-- Otherwise, use AskUserQuestion to gather:
-  - Which monitoring platform? (Sentry, DataDog, New Relic, Custom)
-  - What to monitor? (Errors, Performance, Logs, All)
-  - Environment to monitor? (Production, Staging, All)
-- Verify platform CLI is available:
-  - !{bash which sentry-cli datadog-ci 2>/dev/null}
+- If $ARGUMENTS is "sentry", proceed with Sentry setup
+- If $ARGUMENTS is "datadog", proceed with DataDog setup
+- Otherwise, use AskUserQuestion:
+  - Which platform? (Sentry recommended, DataDog, New Relic)
+  - Note: Sentry has MCP integration for automatic setup
+- For Sentry: Verify MCP is available (should be global)
+- For others: Check CLI availability
+
+Phase 2.5: Sentry Project Setup via MCP (Sentry Only)
+Goal: Use Sentry MCP to find or create project
+
+Actions:
+**CRITICAL: Use MCP tools to automate Sentry setup**
+
+1. List Sentry organizations via MCP:
+   - Use mcp__plugin_deployment_sentry__find_organizations
+   - Store available organizations
+   - If multiple orgs, ask user to select one
+   - If only one org, use it automatically
+
+2. Check if project already exists via MCP:
+   - Use mcp__plugin_deployment_sentry__find_projects with org slug
+   - Search for project matching current project name
+   - If found: Display "✓ Project exists: [project-name]"
+   - If not found: Proceed to create project
+
+3. Map detected framework to Sentry platform:
+   - Next.js → "javascript-nextjs"
+   - React → "javascript-react"
+   - Python + FastAPI → "python-fastapi"
+   - Python + Django → "python-django"
+   - Python (generic) → "python"
+   - Node.js → "node"
+   - Go → "go"
+   - Default → Ask user for platform
+
+4. Create Sentry project via MCP (if doesn't exist):
+   - Use mcp__plugin_deployment_sentry__create_project
+   - Parameters:
+     * organizationSlug: from step 1
+     * name: project name from Phase 1
+     * platform: mapped platform from step 3
+   - Wait for project creation
+   - Display: "✓ Sentry project created: [project-name]"
+
+5. Get project DSN via MCP:
+   - Use mcp__plugin_deployment_sentry__find_dsns
+   - Parameters:
+     * organizationSlug: from step 1
+     * projectSlug: project name
+   - Extract DSN from response
+   - Store DSN for Phase 4 (configuration)
+   - Display: "✓ DSN retrieved: [dsn-value]"
 
 Phase 3: Install Dependencies
 Goal: Add monitoring SDK to project
@@ -54,15 +104,33 @@ Actions:
   - DataDog + Python: !{bash pip install ddtrace}
 - Report installation status
 
-Phase 4: Configuration
-Goal: Create monitoring configuration files
+Phase 4: Store DSN in Doppler (Sentry Only)
+Goal: Save Sentry DSN to Doppler for secure management
 
 Actions:
-- Create .env.example with placeholders (SENTRY_DSN, DD_API_KEY, MONITORING_ENVIRONMENT)
-- Ensure .env in .gitignore: !{bash grep -q "^.env$" .gitignore || echo ".env" >> .gitignore}
-- Create platform-specific config files with placeholders only
-- Add initialization code to application entry point
-- Document required environment variables in README
+**Use Doppler to store DSN (never commit to git)**
+
+1. Check if Doppler is set up:
+   - !{bash which doppler && echo "installed" || echo "not-installed"}
+   - If not installed, display: "Install Doppler: curl -Ls https://cli.doppler.com/install.sh | sh"
+
+2. Store DSN in Doppler dev config:
+   - !{bash doppler secrets set SENTRY_DSN="$DSN_FROM_PHASE_2.5" --config dev}
+   - Display: "✓ SENTRY_DSN stored in Doppler (dev)"
+
+3. Optionally set for other environments:
+   - Ask user: "Set for staging/production too?"
+   - If yes: !{bash doppler secrets set SENTRY_DSN="$DSN" --config staging}
+   - If yes: !{bash doppler secrets set SENTRY_DSN="$DSN" --config production}
+
+4. Create .env.example (placeholders only - never actual values):
+   - Add: SENTRY_DSN=your_sentry_dsn_here
+   - Add: SENTRY_ENVIRONMENT=development
+   - Ensure .env in .gitignore: !{bash grep -q "^.env$" .gitignore || echo ".env" >> .gitignore}
+
+5. Document Doppler usage:
+   - Display: "Run with Doppler: doppler run -- npm run dev"
+   - Display: "Or: doppler run -- python main.py"
 
 Phase 5: Integration
 Goal: Integrate monitoring into application code
