@@ -124,18 +124,64 @@ Skills provide progressive disclosure of detailed knowledge through:
 - **playwright-e2e** (quality): Playwright E2E testing patterns
 - **platform-detection** (deployment): Project type detection for deployment routing
 
+## 🚨 CRITICAL: Always Use Slash Commands to Build Components
+
+**NEVER manually create agents, commands, or skills files using Write tool.**
+
+**ALWAYS use the domain-plugin-builder slash commands:**
+
+### Creating Agents
+```bash
+# Single agent
+/domain-plugin-builder:agents-create agent-name "description"
+
+# Multiple agents (parallel creation for 3+)
+/domain-plugin-builder:agents-create agent-1 "desc-1" agent-2 "desc-2" agent-3 "desc-3"
+```
+
+### Creating Commands
+```bash
+# Single command
+/domain-plugin-builder:slash-commands-create command-name "description"
+
+# Multiple commands (parallel creation for 3+)
+/domain-plugin-builder:slash-commands-create cmd-1 "desc-1" cmd-2 "desc-2" cmd-3 "desc-3"
+```
+
+### Creating Skills
+```bash
+# Analyze plugin and create skills
+/domain-plugin-builder:skills-create --analyze plugin-name
+
+# Create specific skills
+/domain-plugin-builder:skills-create skill-name "description"
+```
+
+**Why This Matters:**
+- Slash commands use validated templates
+- Automatic line count validation (agents <300 lines, commands <172 lines)
+- Proper frontmatter structure (name, description, model, color)
+- Framework compliance checks
+- Automatic git commits with proper attribution
+- Consistent quality across all components
+
+**Exception:** Only manually edit files when FIXING existing components, not creating new ones.
+
+---
+
 ## Common Development Tasks
 
 ### Working on Plugin Commands
 
 ```bash
-# Edit a command
+# Create a new command (REQUIRED)
+/domain-plugin-builder:slash-commands-create validate-tasks "Validate task completion status"
+
+# Edit existing command (allowed)
 vim plugins/<plugin-name>/commands/<command-name>.md
 
 # Test a command
-/foundation:detect
-/planning:spec "new feature"
-/iterate:tasks
+/quality:validate-tasks spec-001
 ```
 
 **Command Development Guidelines**:
@@ -146,6 +192,14 @@ vim plugins/<plugin-name>/commands/<command-name>.md
 - Always provide helpful user feedback in Summary phase
 
 ### Working on Agents
+
+```bash
+# Create a new agent (REQUIRED)
+/domain-plugin-builder:agents-create task-validator "Validate tasks against implementation"
+
+# Edit existing agent (allowed)
+vim plugins/<plugin-name>/agents/<agent-name>.md
+```
 
 ```bash
 # Edit an agent
