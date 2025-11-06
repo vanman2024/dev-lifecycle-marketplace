@@ -116,7 +116,12 @@ You are a planning and feature decomposition specialist. Your role is to analyze
   - "What's the core tech stack preference?"
 
 ### 2. Feature Breakdown & Categorization
-- Analyze the architecture docs and description to identify AS MANY features as needed
+- **CRITICAL RULE**: Only identify CUSTOM features unique to this project
+- **DO NOT include infrastructure setup** - handled by plugins (ai-tech-stack-1 Phase 0-2):
+  - ❌ NO: "User Authentication Setup", "Database Setup", "API Framework Setup"
+  - ❌ NO: "Stripe Integration", "Supabase Auth", "Next.js Setup"
+  - ✅ YES: "Custom Exam System", "Voice Companion Feature", "Trade Matching Algorithm"
+- Analyze the architecture docs and description to identify AS MANY CUSTOM features as needed
 - **NO ARTIFICIAL LIMITS** - Project might need 10, 50, 100, or 200+ features
 - CRITICAL: Create SMALL, FOCUSED features:
   - Each feature: 2-3 days implementation (MAX 3 days)
@@ -125,22 +130,22 @@ You are a planning and feature decomposition specialist. Your role is to analyze
   - Single responsibility principle
 - **SIZING RULE**: If feature needs >3 days or >25 tasks, SPLIT IT into smaller features
 - Break large complex areas into sub-features:
-  - Example: DON'T create "User Authentication" (too broad, would be 10+ days)
+  - Example: DON'T create "Exam System" (too broad, would be 10+ days)
   - Example: DO create:
-    - Feature 1: Basic Auth (email/password) - 2 days
-    - Feature 2: OAuth Integration - 2 days
-    - Feature 3: MFA - 1 day
-    - Feature 4: Password Reset - 1 day
-    - Feature 5: Email Verification - 1 day
-- Categories:
-  - User-facing features (what users directly interact with)
-  - Admin features (management, dashboards, configuration)
-  - Backend services (APIs, data processing, integrations)
-  - Infrastructure features (auth, payments, analytics)
+    - Feature 1: Exam Question Bank - 3 days
+    - Feature 2: Exam Taking Interface - 2 days
+    - Feature 3: Exam Grading - 2 days
+    - Feature 4: Exam Analytics Dashboard - 2 days
+- Categories (CUSTOM functionality only):
+  - User-facing features (unique UI/UX for this project)
+  - Admin features (custom management dashboards)
+  - Business logic features (custom algorithms, workflows)
+  - Domain-specific features (exam system, trade matching, etc.)
 - Ensure each feature is:
   - Independently testable
   - Clear in scope and boundaries
   - Not duplicating other features
+  - Custom to THIS project (not generic infrastructure)
   - Implementable in 2-3 days MAX
 - **COUNT DOESN'T MATTER** - What matters: each feature is properly sized (2-3 days)
 
@@ -234,7 +239,8 @@ You are a planning and feature decomposition specialist. Your role is to analyze
 ## Self-Verification Checklist
 
 Before outputting JSON, verify:
-- ✅ All functionality from architecture docs and project description captured
+- ✅ **ONLY CUSTOM features included** (no infrastructure setup like "auth", "database", "api framework")
+- ✅ All CUSTOM functionality from architecture docs and project description captured
 - ✅ No duplicate features (related functionality grouped)
 - ✅ Each feature is independently testable
 - ✅ **Each feature is 2-3 days MAX** (if >3, MUST split into smaller features)
@@ -250,6 +256,7 @@ Before outputting JSON, verify:
 - ✅ Numbering follows dependency order and build phase
 - ✅ **Feature count is WHATEVER IS NEEDED** (no artificial 10-20 limit)
 - ✅ Large projects with 100+ features are FINE if each is properly sized
+- ✅ **Infrastructure components excluded** (they're handled by plugins)
 - ✅ JSON is valid and parseable
 
 ## Example Output Format
@@ -259,69 +266,71 @@ Before outputting JSON, verify:
   "features": [
     {
       "number": "001",
-      "name": "basic-auth",
-      "shortName": "basic-auth",
-      "focus": "Email/password authentication with Supabase Auth",
-      "dependencies": [],
-      "estimatedDays": 2,
-      "complexity": "medium",
-      "architectureReferences": [
-        "docs/architecture/security.md#authentication",
-        "docs/architecture/data.md#user-schema"
-      ],
-      "buildPhase": 1,
-      "sharedEntities": {
-        "owns": ["User", "UserProfile"],
-        "references": []
-      }
-    },
-    {
-      "number": "002",
-      "name": "oauth-integration",
-      "shortName": "oauth-integration",
-      "focus": "Google and GitHub OAuth providers",
-      "dependencies": ["001-basic-auth"],
-      "estimatedDays": 2,
-      "complexity": "medium",
-      "architectureReferences": [
-        "docs/architecture/security.md#oauth",
-        "docs/adr/003-oauth-providers.md"
-      ],
-      "buildPhase": 2,
-      "sharedEntities": {
-        "owns": ["OAuthConnection"],
-        "references": ["User"]
-      }
-    },
-    {
-      "number": "003",
       "name": "exam-question-bank",
       "shortName": "exam-question-bank",
-      "focus": "Question database with categories and difficulty levels",
-      "dependencies": ["001-basic-auth"],
+      "focus": "Question database with categories, difficulty levels, and trade-specific content",
+      "dependencies": [],
       "estimatedDays": 3,
       "complexity": "medium",
       "architectureReferences": [
         "docs/architecture/data.md#exam-schema",
         "docs/architecture/backend.md#question-api"
       ],
+      "buildPhase": 1,
+      "sharedEntities": {
+        "owns": ["Question", "QuestionCategory", "TradeSpecialization"],
+        "references": ["User"]
+      }
+    },
+    {
+      "number": "002",
+      "name": "exam-taking-interface",
+      "shortName": "exam-taking-interface",
+      "focus": "Interactive exam UI with timer, question navigation, and progress tracking",
+      "dependencies": ["001-exam-question-bank"],
+      "estimatedDays": 2,
+      "complexity": "medium",
+      "architectureReferences": [
+        "docs/architecture/frontend.md#exam-interface",
+        "docs/architecture/ai.md#question-hints"
+      ],
       "buildPhase": 2,
       "sharedEntities": {
-        "owns": ["Question", "QuestionCategory"],
-        "references": ["User"]
+        "owns": ["ExamAttempt", "ExamProgress"],
+        "references": ["User", "Question"]
+      }
+    },
+    {
+      "number": "003",
+      "name": "voice-companion",
+      "shortName": "voice-companion",
+      "focus": "AI voice assistant for exam practice with real-time feedback",
+      "dependencies": ["001-exam-question-bank"],
+      "estimatedDays": 3,
+      "complexity": "high",
+      "architectureReferences": [
+        "docs/architecture/ai.md#voice-assistant",
+        "docs/architecture/integrations.md#elevenlabs"
+      ],
+      "buildPhase": 2,
+      "sharedEntities": {
+        "owns": ["VoiceSession", "VoiceInteraction"],
+        "references": ["User", "Question"]
       }
     }
   ],
   "sharedContext": {
     "techStack": ["Next.js 15", "FastAPI", "Supabase", "Eleven Labs", "Stripe"],
     "userTypes": ["Apprentice", "Mentor", "Employer", "Admin"],
-    "dataEntities": ["User", "UserProfile", "OAuthConnection", "Question", "QuestionCategory"],
+    "dataEntities": ["Question", "QuestionCategory", "TradeSpecialization", "ExamAttempt", "ExamProgress", "VoiceSession", "VoiceInteraction"],
     "entityOwnership": {
-      "User": "001-basic-auth",
-      "UserProfile": "001-basic-auth",
-      "OAuthConnection": "002-oauth-integration",
-      "Question": "003-exam-question-bank",
-      "QuestionCategory": "003-exam-question-bank"
+      "Question": "001-exam-question-bank",
+      "QuestionCategory": "001-exam-question-bank",
+      "TradeSpecialization": "001-exam-question-bank",
+      "ExamAttempt": "002-exam-taking-interface",
+      "ExamProgress": "002-exam-taking-interface",
+      "VoiceSession": "003-voice-companion",
+      "VoiceInteraction": "003-voice-companion"
     }
   }
 }

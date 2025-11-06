@@ -1,7 +1,7 @@
 ---
 description: Observability integration (Sentry, DataDog, alerts)
 argument-hint: [monitoring-platform]
-allowed-tools: Read, Write, Bash, Glob, AskUserQuestion
+allowed-tools: Read, Write, Bash, Glob, AskUserQuestion, Task
 ---
 ## Security Requirements
 
@@ -18,7 +18,8 @@ Core Principles:
 - Set up alerts for critical issues
 - Support multiple monitoring platforms
 
-Phase 1: Discovery
+## Phase 1: Discovery
+
 Goal: Understand project structure and detect framework
 
 Actions:
@@ -27,15 +28,16 @@ Actions:
   - @package.json (extract name field if exists)
 - Detect project type and framework:
   - !{bash ls -1 package.json requirements.txt pyproject.toml go.mod 2>/dev/null}
-  - Check for Next.js: !{bash grep -q "next" package.json && echo "nextjs" || echo ""}
-  - Check for React: !{bash grep -q "react" package.json && echo "react" || echo ""}
+  - Check for Next.js: !{bash grep -q "next" package.json 2>/dev/null && echo "nextjs" || echo ""}
+  - Check for React: !{bash grep -q "react" package.json 2>/dev/null && echo "react" || echo ""}
   - Check for Python: !{bash test -f requirements.txt && echo "python" || echo ""}
-  - Check for FastAPI: !{bash grep -q "fastapi" requirements.txt && echo "fastapi" || echo ""}
-  - Check for Django: !{bash grep -q "django" requirements.txt && echo "django" || echo ""}
+  - Check for FastAPI: !{bash grep -q "fastapi" requirements.txt 2>/dev/null && echo "fastapi" || echo ""}
+  - Check for Django: !{bash grep -q "django" requirements.txt 2>/dev/null && echo "django" || echo ""}
 - Store detected platform for later use
 - Display: "Detected platform: [Next.js|React|Python|etc]"
 
-Phase 2: Platform Selection
+## Phase 2: Platform Selection
+
 Goal: Choose monitoring platform and verify setup
 
 Actions:
@@ -44,10 +46,9 @@ Actions:
 - Otherwise, use AskUserQuestion:
   - Which platform? (Sentry recommended, DataDog, New Relic)
   - Note: Sentry has MCP integration for automatic setup
-- For Sentry: Verify MCP is available (should be global)
-- For others: Check CLI availability
 
-Phase 2.5: Sentry Project Setup via MCP (Sentry Only)
+## Phase 3: Sentry Project Setup via MCP (Sentry Only)
+
 Goal: Use Sentry MCP to find or create project
 
 Actions:
@@ -55,7 +56,6 @@ Actions:
 
 1. List Sentry organizations via MCP:
    - Use mcp__plugin_deployment_sentry__find_organizations
-   - Store available organizations
    - If multiple orgs, ask user to select one
    - If only one org, use it automatically
 
@@ -77,143 +77,64 @@ Actions:
 
 4. Create Sentry project via MCP (if doesn't exist):
    - Use mcp__plugin_deployment_sentry__create_project
-   - Parameters:
-     * organizationSlug: from step 1
-     * name: project name from Phase 1
-     * platform: mapped platform from step 3
-   - Wait for project creation
+   - Parameters: organizationSlug, name, platform
    - Display: "✓ Sentry project created: [project-name]"
 
 5. Get project DSN via MCP:
    - Use mcp__plugin_deployment_sentry__find_dsns
-   - Parameters:
-     * organizationSlug: from step 1
-     * projectSlug: project name
-   - Extract DSN from response
-   - Store DSN for Phase 4 (configuration)
-   - Display: "✓ DSN retrieved: [dsn-value]"
+   - Parameters: organizationSlug, projectSlug
+   - Store DSN for Phase 4
+   - Display: "✓ DSN retrieved"
 
-Phase 3: Install Dependencies
-Goal: Add monitoring SDK to project
+## Phase 4: Execute Monitoring Setup via Agent
+
+Goal: Install dependencies, configure Doppler, integrate code, setup Sentry CLI
 
 Actions:
-- Install based on platform and language:
-  - Sentry + Node.js: !{bash npm install --save @sentry/node @sentry/profiling-node}
-  - Sentry + Python: !{bash pip install sentry-sdk}
-  - DataDog + Node.js: !{bash npm install --save dd-trace}
-  - DataDog + Python: !{bash pip install ddtrace}
-- Report installation status
+- Invoke monitoring-setup-executor agent with parameters:
+  - project_name: from Phase 1
+  - project_platform: from Phase 1
+  - monitoring_platform: from Phase 2
+  - sentry_org_slug: from Phase 3 (if Sentry)
+  - sentry_project_slug: from Phase 3 (if Sentry)
+  - sentry_dsn: from Phase 3 (if Sentry)
+- Agent will:
+  - Install monitoring SDK dependencies
+  - Configure Doppler storage for secrets
+  - Create .env.example with placeholders
+  - Integrate monitoring into application code
+  - Install and configure Sentry CLI
+  - Create alert configuration
+  - Add CI/CD integration steps
 
-Phase 4: Store DSN in Doppler (Sentry Only)
-Goal: Save Sentry DSN to Doppler for secure management
+Use Task() to invoke agent:
+```
+Task(agent="monitoring-setup-executor", parameters={
+  "project_name": "<project_name>",
+  "project_platform": "<platform>",
+  "monitoring_platform": "<sentry|datadog>",
+  "sentry_org_slug": "<org_slug>",
+  "sentry_project_slug": "<project_slug>",
+  "sentry_dsn": "<dsn>"
+})
+```
 
-Actions:
-**Use Doppler to store DSN (never commit to git)**
+## Phase 5: Summary
 
-1. Check if Doppler is set up:
-   - !{bash which doppler && echo "installed" || echo "not-installed"}
-   - If not installed, display: "Install Doppler: curl -Ls https://cli.doppler.com/install.sh | sh"
-
-2. Store DSN in Doppler dev config:
-   - !{bash doppler secrets set SENTRY_DSN="$DSN_FROM_PHASE_2.5" --config dev}
-   - Display: "✓ SENTRY_DSN stored in Doppler (dev)"
-
-3. Optionally set for other environments:
-   - Ask user: "Set for staging/production too?"
-   - If yes: !{bash doppler secrets set SENTRY_DSN="$DSN" --config staging}
-   - If yes: !{bash doppler secrets set SENTRY_DSN="$DSN" --config production}
-
-4. Create .env.example (placeholders only - never actual values):
-   - Add: SENTRY_DSN=your_sentry_dsn_here
-   - Add: SENTRY_ENVIRONMENT=development
-   - Ensure .env in .gitignore: !{bash grep -q "^.env$" .gitignore || echo ".env" >> .gitignore}
-
-5. Document Doppler usage:
-   - Display: "Run with Doppler: doppler run -- npm run dev"
-   - Display: "Or: doppler run -- python main.py"
-
-Phase 5: Integration
-Goal: Integrate monitoring into application code
-
-Actions:
-- Detect entry point: !{bash ls -1 index.js server.js app.js main.py app.py 2>/dev/null | head -1}
-- Add monitoring initialization at application startup
-- Configure error handlers and performance tracking
-- Set up release tracking if CI/CD configured
-- Add source map upload for Node.js projects
-
-Phase 6: Sentry CLI Setup (Sentry Only)
-Goal: Install and configure Sentry CLI for release tracking
-
-Actions:
-- If platform is Sentry:
-  - Check if sentry-cli installed: !{bash which sentry-cli || echo "not-installed"}
-  - If not installed, provide installation:
-    - npm: !{bash npm install -g @sentry/cli}
-    - Or curl: curl -sL https://sentry.io/get-cli/ | bash
-  - Verify installation: !{bash sentry-cli --version}
-  - Create .sentryclirc with auth token reference:
-    ```
-    [auth]
-    token=${SENTRY_AUTH_TOKEN}
-
-    [defaults]
-    org=${SENTRY_ORG_SLUG}
-    project=${SENTRY_PROJECT_SLUG}
-    ```
-  - Add .sentryclirc to .gitignore
-  - Document Doppler variables: SENTRY_AUTH_TOKEN, SENTRY_ORG_SLUG, SENTRY_PROJECT_SLUG
-- Display: "✓ Sentry CLI configured for release tracking"
-
-Phase 7: Alert Configuration
-Goal: Set up basic alerting rules
-
-Actions:
-- Create monitoring-alerts.yml with basic alert rules
-- Define thresholds: error rate, response time, availability, resource usage
-- Document alert configuration in platform dashboard
-- Provide webhook setup guide for Slack/Discord/PagerDuty
-
-Phase 8: Deployment Integration
-Goal: Configure monitoring for CI/CD
-
-Actions:
-- Check for workflows: !{bash ls -1 .github/workflows/*.yml 2>/dev/null}
-- Add monitoring steps: release creation, source maps upload, deployment markers
-- For Sentry: Add sentry-cli release commands to CI/CD:
-  ```yaml
-  - name: Create Sentry Release
-    run: |
-      sentry-cli releases new $VERSION
-      sentry-cli releases set-commits $VERSION --auto
-      sentry-cli releases files $VERSION upload-sourcemaps ./dist
-      sentry-cli releases finalize $VERSION
-      sentry-cli releases deploys $VERSION new -e production
-  ```
-- Document required CI/CD secrets: monitoring API keys, DSN values, Sentry auth token
-- Add post-deploy health check step
-
-Phase 9: Summary
 Goal: Report setup status and next steps
 
 Actions:
+- Parse agent response JSON
 - Display monitoring setup summary:
   ```
   ✅ Monitoring Setup Complete
 
-  Platform: [Sentry|DataDog|etc]
-  Dependencies: [Installed SDK packages]
-  Configuration: [Config files created]
-  Integration: [Modified entry points]
-  Alerts: [Alert rules configured]
-
-  Sentry CLI (if Sentry):
-  - ✓ sentry-cli installed
-  - ✓ .sentryclirc configured
-  - ✓ Release tracking ready
-  - ✓ CI/CD integration added
-
-  CI/CD: [Deployment tracking setup]
+  Platform: <Sentry|DataDog|etc>
+  Dependencies: <Installed SDK packages>
+  Doppler Secrets: <List of secrets configured>
+  Integration: <Modified entry points>
+  Sentry CLI: <Installed|Not applicable>
+  CI/CD: <Integration added|Not configured>
   ```
 
 - List required environment variables:
@@ -222,21 +143,33 @@ Actions:
   - All: MONITORING_ENVIRONMENT (production/staging)
 
 - Provide next steps:
-  1. Add secrets to Doppler:
+  1. Generate auth token (if Sentry):
+     - Visit: https://sentry.io/settings/account/api/auth-tokens/
+     - Create token with: project:releases, project:write
+
+  2. Add secrets to Doppler:
      ```bash
-     doppler secrets set SENTRY_DSN="your-sentry-dsn" --config production
-     doppler secrets set SENTRY_AUTH_TOKEN="your-token" --config production
-     doppler secrets set SENTRY_ORG_SLUG="your-org" --config production
-     doppler secrets set SENTRY_PROJECT_SLUG="your-project" --config production
+     doppler secrets set SENTRY_AUTH_TOKEN="<your-token>" --config production
+     doppler secrets set SENTRY_DSN="<dsn>" --config production
+     doppler secrets set SENTRY_ORG_SLUG="<org>" --config production
+     doppler secrets set SENTRY_PROJECT_SLUG="<project>" --config production
      ```
-  2. Test locally with Doppler: `doppler run -- npm run dev`
-  3. Deploy application to trigger monitoring
-  4. Verify Sentry MCP: "Show me the latest errors"
-  5. Test Sentry CLI: `sentry-cli releases list`
-  6. Review monitoring dashboard for data
+
+  3. Test locally with Doppler: `doppler run -- npm run dev`
+
+  4. Deploy application to trigger monitoring
+
+  5. Verify Sentry MCP: "Show me the latest errors"
+
+  6. Test Sentry CLI: `sentry-cli releases list`
 
 - Display integration summary:
   - **MCP Server**: Query issues, create alerts (via .mcp.json)
   - **Sentry CLI**: Create releases, upload source maps, track deploys
   - **SDK**: Capture errors and performance in application code
   - All three use same Doppler-managed credentials ✓
+
+- If agent returned errors:
+  - Display error details
+  - Provide troubleshooting steps
+  - Suggest manual setup if automation failed

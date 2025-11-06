@@ -65,6 +65,11 @@ Actions:
 Goal: Gather decision context
 
 Actions:
+- Check for wizard requirements (if /planning:wizard was run):
+  - Load: @docs/requirements/*/01-initial-request.md
+  - Load: @docs/requirements/*/.wizard/extracted-requirements.json
+  - Load: @docs/requirements/*/02-wizard-qa.md
+  - These may identify architectural decisions to document
 - If decision unclear, use AskUserQuestion to ask:
   - What decision was made?
   - What were the alternatives considered?
@@ -91,10 +96,14 @@ Actions:
 
 Task(description="Create ADR", subagent_type="planning:decision-documenter", prompt="You are the decision-documenter agent. Create Architecture Decision Record for $ARGUMENTS.
 
-Context: Project stack and architecture
-Decision: $ARGUMENTS
+Context:
+- Project stack: .claude/project.json
+- Architecture docs: docs/architecture/
+- Wizard requirements (if available): docs/requirements/*/01-initial-request.md, docs/requirements/*/.wizard/extracted-requirements.json, docs/requirements/*/02-wizard-qa.md
+- Decision: $ARGUMENTS
 
 Requirements:
+  - Read wizard requirements first (if they exist) to understand project context
   - Follow ADR template format
   - Number sequentially (ADR-XXXX)
   - Include all required sections

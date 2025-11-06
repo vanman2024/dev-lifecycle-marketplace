@@ -6,9 +6,9 @@
         "-y",
         "@sentry/mcp-server",
         "--access-token",
-        "${SENTRY_AUTH_TOKEN}"
+        "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"
       ],
-      "description": "Official Sentry MCP server (v0.21.0) - inspect issues, AI-powered triage, docs search, project management. Global setup: agents select org/project dynamically. Auth token from Doppler: SENTRY_AUTH_TOKEN. Skills: inspect, seer (AI triage), docs, triage, project-management"
+      "description": "Official Sentry MCP server (v0.21.0) - inspect issues, AI-powered triage, docs search, project management. Global setup: agents select org/project dynamically. Skills: inspect, seer (AI triage), docs, triage, project-management"
     }
   }
 }

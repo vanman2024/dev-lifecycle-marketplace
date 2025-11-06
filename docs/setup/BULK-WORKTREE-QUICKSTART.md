@@ -1,4 +1,4 @@
-# Bulk Worktree Creation - Quick Start
+# Worktree System - Quick Start
 
 ## TL;DR
 
@@ -6,16 +6,28 @@
 # Create worktrees for ALL specs at once (100+)
 /supervisor:init --all
 
-# Or run script directly
-python plugins/planning/skills/doc-sync/scripts/bulk-register-worktrees.py
+# Takes ~30 seconds, installs dependencies automatically
 ```
 
-**What it does**:
-- ✅ Scans all `specs/*/agent-tasks/layered-tasks.md`
-- ✅ Extracts all `@agent` mentions
-- ✅ Creates worktrees in parallel (10 concurrent)
-- ✅ Registers everything in Mem0
-- ✅ Takes ~30 seconds for 100 specs
+**Architecture**: **One worktree per spec** (all agents share it)
+
+---
+
+## Key Concept
+
+**One worktree per spec** - All agents working on spec 001 share `../RedAI-001/`
+
+```
+OLD (deprecated): One per agent
+../RedAI-001-claude/
+../RedAI-001-copilot/     ❌ Complex!
+../RedAI-001-qwen/
+
+NEW (current): One per spec
+../RedAI-001/             ✅ Simple!
+  - All agents work here
+  - Dependencies installed once
+```
 
 ---
 
@@ -24,13 +36,12 @@ python plugins/planning/skills/doc-sync/scripts/bulk-register-worktrees.py
 ### Single Spec
 
 ```bash
-# Create worktrees for one spec
+# Create worktree for one spec
 /supervisor:init 001-user-auth
 
 # Creates:
-# - ../my-app-001-claude
-# - ../my-app-001-copilot
-# - ../my-app-001-qwen
+# - ../RedAI-001/ (spec-001 branch)
+# - Dependencies installed (npm/pnpm/yarn/pip)
 ```
 
 ### All Specs (Bulk Mode)
@@ -39,166 +50,90 @@ python plugins/planning/skills/doc-sync/scripts/bulk-register-worktrees.py
 # Create worktrees for ALL specs
 /supervisor:init --all
 
-# Or
-/supervisor:init --bulk
-
 # Example output:
 # 🚀 Bulk Worktree Creation
 # 📊 Specs: 127
-# 🤖 Total Worktrees: 384
-# ⚙️  Mode: Parallel
+# 🤖 Total Worktrees: 127 (one per spec)
 #
-# ✅ 001-user-auth/claude → ../my-app-001-claude
-# ✅ 001-user-auth/copilot → ../my-app-001-copilot
+# ✅ 001-user-auth → ../RedAI-001 📦
+# ✅ 002-admin-panel → ../RedAI-002 📦
 # ...
-# ✅ Created: 384
+# ✅ Created: 127
+# 📦 Dependencies: 127 installed
 ```
 
-### Dry Run (Preview)
+### Find Worktree for Spec
 
 ```bash
-# See what would be created without creating
-python plugins/planning/skills/doc-sync/scripts/bulk-register-worktrees.py --dry-run
+# Get worktree path
+register-worktree.py get-worktree --spec 001
 
-# Shows all specs and agents
-# No worktrees created
+# Output:
+# PATH=../RedAI-001
+# BRANCH=spec-001
+# SPEC=001
 ```
 
 ---
 
-## Agent Identification
+## Agent Workflow
 
-### Finding Your Work
-
-**As @copilot**:
+### Before Starting Work
 
 ```bash
-# Method 1: Query Mem0
-register-worktree.py query --query "what specs are assigned to copilot"
+# Agent receives task: "Build user auth for spec 001"
 
-# Method 2: Search files
-grep -r "@copilot" specs/*/agent-tasks/layered-tasks.md
+# Step 1: Check for worktree
+register-worktree.py get-worktree --spec 001
 
-# Method 3: List worktrees
-register-worktree.py list | grep copilot
+# Step 2: cd to worktree
+cd ../RedAI-001
+
+# Step 3: Verify setup
+git branch --show-current  # spec-001
+npm test                   # Dependencies already installed!
+
+# Step 4: Start work
+# All agents working on spec 001 use this same worktree
 ```
-
-### Adding Your Name to Specs
-
-In `specs/XXX-feature/agent-tasks/layered-tasks.md`:
-
-```markdown
-## Layer 2: Implementation
-**Agents**: @copilot, @codex
-**Dependencies**: Layer 1 complete
-
-- [ ] T030 @copilot Create users API
-- [ ] T040 @copilot Add validation
-- [ ] T050 @codex Build UI components
-```
-
-**Supported agents**:
-- @claude, @copilot, @qwen, @gemini
-- @codex, @gpt4, @sonnet
-- ANY custom name! Just use @agent-name
 
 ---
 
-## Workflow Example
+## Dependency Management
 
-### 1. Spec Writer Creates 100 Specs
+**Automatic dependency installation!**
 
-```bash
-# After running spec-writer 100 times...
-ls specs/
-# 001-user-auth/
-# 002-admin-panel/
-# ...
-# 100-payment-gateway/
-```
+### Supported
 
-### 2. Bulk Create Worktrees
+- **Node.js**: npm, pnpm, yarn (auto-detected)
+- **Python**: requirements.txt, pyproject.toml
+
+### What Happens
 
 ```bash
-/supervisor:init --all
+/supervisor:init 001-user-auth
 
-# Creates 300+ worktrees in ~30 seconds
-```
+# Creates worktree
+git worktree add ../RedAI-001 -b spec-001
 
-### 3. Agents Find Their Work
+# Detects package.json → runs npm install
+# OR detects requirements.txt → runs pip install
 
-**@copilot queries**:
-```bash
-register-worktree.py query --query "copilot assignments"
-# Output: 42 specs with 287 tasks
-```
-
-**@claude queries**:
-```bash
-register-worktree.py query --query "claude assignments"
-# Output: 38 specs with 156 architecture tasks
-```
-
-### 4. Agents Work in Parallel
-
-```bash
-# @copilot works here
-cd ../my-app-001-copilot
-cd ../my-app-005-copilot
-# ... 42 worktrees total
-
-# @claude works here
-cd ../my-app-001-claude
-cd ../my-app-002-claude
-# ... 38 worktrees total
-
-# NO CONFLICTS! ✅
+# ✅ Ready to work immediately!
 ```
 
 ---
 
 ## Performance
 
-| Specs | Agents/Spec | Total Worktrees | Time (Parallel) | Time (Sequential) |
-|-------|-------------|-----------------|-----------------|-------------------|
-| 10    | 3-4         | 35              | ~5 sec          | ~15 sec          |
-| 50    | 3-4         | 175             | ~15 sec         | ~90 sec          |
-| 100   | 3-4         | 350             | ~30 sec         | ~3 min           |
-| 200   | 3-4         | 700             | ~60 sec         | ~6 min           |
+| Specs | Worktrees | Time (Parallel) | Dependencies |
+|-------|-----------|-----------------|--------------|
+| 10    | 10        | ~5 sec          | All installed |
+| 50    | 50        | ~15 sec         | All installed |
+| 100   | 100       | ~30 sec         | All installed |
+| 200   | 200       | ~60 sec         | All installed |
 
-**Parallel mode is 10x faster!** 🚀
-
----
-
-## Troubleshooting
-
-### "Worktree already exists"
-
-```bash
-# Remove and recreate
-git worktree remove ../my-app-001-copilot --force
-/supervisor:init 001-user-auth
-```
-
-### "Branch already exists"
-
-```bash
-# Delete old branch
-git branch -D agent-copilot-001
-
-# Recreate
-/supervisor:init 001-user-auth
-```
-
-### Mem0 Not Registering
-
-```bash
-# Check Mem0 working
-register-worktree.py list
-
-# If empty, re-register
-python plugins/planning/skills/doc-sync/scripts/bulk-register-worktrees.py
-```
+**Parallel mode** (default) is 10x faster than sequential!
 
 ---
 
@@ -206,36 +141,68 @@ python plugins/planning/skills/doc-sync/scripts/bulk-register-worktrees.py
 
 ### ✅ DO
 
-- Use bulk mode for 10+ specs
-- Add agent names to layered-tasks.md
-- Query Mem0 to find your work
-- Create worktrees in parallel (default)
-- Register immediately after creation
+- Use `/supervisor:init --all` for 10+ specs
+- Query worktree before starting work
+- Work in the spec's worktree
+- Let dependency installer handle setup
 
 ### ❌ DON'T
 
 - Create worktrees manually
-- Skip Mem0 registration
-- Use sequential mode (unless debugging)
-- Create without checking existing worktrees
-- Forget to specify @agent in layered-tasks
+- Work in main branch for spec work
+- Skip worktree query
+- Manually install dependencies
+
+---
+
+## Troubleshooting
+
+### "No worktree found"
+
+```bash
+# Create it
+/supervisor:init 001-user-auth
+```
+
+### "Dependencies not installed"
+
+```bash
+# Install manually
+cd ../RedAI-001
+npm install
+# OR
+pip install -r requirements.txt
+```
+
+### "Wrong branch"
+
+```bash
+cd ../RedAI-001
+git checkout spec-001
+```
 
 ---
 
 ## Summary
 
-**100 specs?** No problem!
+**Architecture**: One shared worktree per spec
 
-1. **Spec writer** creates specs with `@agent` assignments
-2. **Bulk create**: `/supervisor:init --all` (30 seconds)
-3. **Agents query**: "what's assigned to me?" (via Mem0)
-4. **Work in parallel**: Each agent in isolated worktrees
-5. **Zero conflicts**: Complete isolation ✅
+**Benefits**:
+- ✅ Simple (1 worktree = 1 spec)
+- ✅ Fast (dependencies installed once)
+- ✅ Scalable (100+ specs supported)
+- ✅ Automatic (dependency detection)
+
+**Commands**:
+```bash
+/supervisor:init --all                     # Bulk create
+register-worktree.py get-worktree --spec 001   # Find
+cd ../RedAI-001                            # Use
+```
 
 **Result**: Parallel development at scale! 🚀
 
 ---
 
-**Last Updated**: November 3, 2025
-**Performance**: 100 specs in 30 seconds
-**Supported**: Unlimited specs, unlimited agents
+**Last Updated**: November 4, 2025
+**Architecture**: One worktree per spec (shared)

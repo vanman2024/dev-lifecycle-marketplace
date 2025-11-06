@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash, Read, Write, Edit
+allowed-tools: Bash, Read, Write, Edit, Task
 description: Rollback to previous version by removing tag and resetting files
 argument-hint: [version]
 ---
@@ -24,15 +24,14 @@ Goal: Safely rollback a version release by removing git tag and restoring previo
 Core Principles:
 - Verify version tag exists
 - Check if version was pushed to remote
-- Remove local tag
-- Reset version files to previous state
+- Delegate rollback execution to agent
 - Provide guidance for remote cleanup
 
 ## Available Skills
 
 This commands has access to the following skills from the versioning plugin:
 
-- **version-manager**: 
+- **version-manager**:
 
 **To use a skill:**
 ```
@@ -57,129 +56,115 @@ Parse target version:
 Actions:
 - Extract version from $ARGUMENTS
 - Add 'v' prefix if not present: v1.2.3
-- Verify git repository: `git rev-parse --git-dir`
-- Check if tag exists: `git tag -l <version_tag>`
+- Verify git repository: !{bash git rev-parse --git-dir}
+- Check if tag exists locally: !{bash git tag -l <version_tag>}
   - If not found, exit with error: "Tag <version_tag> does not exist"
-
-## Phase 2: Check Remote Status
-
-Determine if version was pushed:
-
-Actions:
-- Check if tag exists on remote: `git ls-remote --tags origin <version_tag>`
-- Check if release commit was pushed: `git branch -r --contains <version_tag>`
+- Check if tag exists on remote: !{bash git ls-remote --tags origin <version_tag>}
 - Display status:
-  - "⚠️  Tag exists on remote - will require force push"
+  - "⚠️  Tag exists on remote - will require manual cleanup"
   - "✓ Tag only exists locally - safe to remove"
 
-## Phase 3: Find Previous Version
+## Phase 2: Check Working Tree
 
-Locate the version to restore:
-
-Actions:
-- List all version tags: `git tag -l "v*" --sort=-version:refname`
-- Find tag before target version
-- If no previous version exists, use initial state (0.1.0 or from manifest)
-- Display: "Will rollback from <current> to <previous>"
-
-## Phase 4: Remove Git Tag
-
-Delete the version tag:
+Verify clean state:
 
 Actions:
-- Remove local tag: `git tag -d <version_tag>`
-- Verify tag removed: `git tag -l <version_tag>` should return empty
-- Display: "Removed local tag: <version_tag>"
+- Check working tree: !{bash git status --porcelain}
+- If dirty, exit with error: "Uncommitted changes detected. Commit or stash first."
 
-If tag exists on remote:
-- Display remote removal command:
-  ```
-  ⚠️  To remove from remote (DESTRUCTIVE):
-  git push origin --delete <version_tag>
-  ```
-- Do not auto-execute (requires manual confirmation)
+## Phase 3: Execute Rollback via Agent
 
-## Phase 5: Reset Version Files
-
-Restore previous version in files:
+Delegate to version-rollback-executor agent:
 
 Actions:
-- Get previous version number
-- Update VERSION file:
-  ```json
-  {
-    "version": "<previous_version>",
-    "commit": "<current_git_sha>",
-    "build_date": "<current_iso_timestamp>",
-    "build_type": "development"
-  }
-  ```
-- If pyproject.toml exists:
-  - Update: `version = "<previous_version>"`
-- If package.json exists:
-  - Update: `"version": "<previous_version>"`
-- Verify all files updated
+- Invoke version-rollback-executor agent with parameters:
+  - version_tag: from Phase 1
+  - version_tag_exists: true (verified in Phase 1)
+  - tag_on_remote: true|false (from Phase 1)
+- Agent will:
+  - Find previous version to restore
+  - Remove local git tag
+  - Reset VERSION, pyproject.toml, package.json to previous version
+  - Handle release commit (reset if local, return instructions if pushed)
+  - Stage changes for commit
 
-## Phase 6: Reset Release Commit
+Use Task() to invoke agent:
+```
+Task(agent="version-rollback-executor", parameters={
+  "version_tag": "<version_tag>",
+  "version_tag_exists": true,
+  "tag_on_remote": <true|false>
+})
+```
 
-Handle the release commit:
+## Phase 4: Create Rollback Commit
+
+Commit the rollback:
 
 Actions:
-- Find the release commit: `git log --grep="chore(release): bump version to <version>" --format="%H" -1`
-- Check if commit was pushed to remote
-- If commit exists and is local only:
-  - Reset commit: `git reset --soft HEAD~1`
-  - Display: "Reset release commit (changes staged)"
-- If commit was pushed:
-  - Display: "⚠️  Release commit was pushed - requires git revert or force push"
-  - Provide revert command:
-    ```
-    git revert <commit_hash>
-    git push origin main
-    ```
+- Parse agent response JSON
+- If agent status is "success":
+  - Create commit with previous version:
+    !{bash git commit -m "chore: rollback to version <previous_version>"}
+  - Display commit hash
 
-## Phase 7: Display Rollback Summary
+## Phase 5: Display Rollback Summary
 
 Show results and next steps:
 
 Actions:
 - Display summary:
-  ```
-  ✅ Rollback Complete
-  
-  Rolled back from: <target_version>
-  Restored to: <previous_version>
-  
-  📝 Changes:
-    - Tag <version_tag> removed locally
-    - VERSION file updated
-    - pyproject.toml updated (if exists)
-    - package.json updated (if exists)
-  
-  ⚠️  If version was published:
-  
-  1. Remote tag cleanup (if pushed):
-     git push origin --delete <version_tag>
-  
-  2. PyPI/npm packages cannot be deleted
-     - PyPI: Yanked versions remain visible
-     - npm: Use `npm unpublish <package>@<version>` (24hr window only)
-  
-  3. GitHub release cleanup:
-     gh release delete <version_tag> --yes
-  
-  🚀 Next Steps:
-  
-  1. Commit rollback:
-     git add VERSION pyproject.toml package.json
-     git commit -m "chore: rollback to version <previous_version>"
-  
-  2. Push changes:
-     git push origin main
-  
-  3. Verify version:
-     /versioning:info status
-  ```
+```
+✅ Rollback Complete
+
+Rolled back from: <target_version>
+Restored to: <previous_version>
+
+📝 Changes:
+  - Tag <version_tag> removed locally
+  - VERSION file updated
+  - pyproject.toml updated (if exists)
+  - package.json updated (if exists)
+  - Commit created: <commit_hash>
+```
+
+If tag was on remote:
+```
+⚠️  Remote Cleanup Required
+
+1. Remove remote tag:
+   git push origin --delete <version_tag>
+
+2. GitHub release cleanup:
+   gh release delete <version_tag> --yes
+
+3. PyPI/npm packages cannot be deleted
+   - PyPI: Yanked versions remain visible
+   - npm: Use `npm unpublish <package>@<version>` (24hr window only)
+```
+
+If release commit was pushed:
+```
+⚠️  Release Commit Pushed
+
+Revert the release commit:
+   git revert <commit_hash>
+   git push origin main
+```
+
+Display next steps:
+```
+🚀 Next Steps:
+
+1. Push rollback commit:
+   git push origin main
+
+2. Verify version:
+   /versioning:info status
+
+3. If needed, create new release:
+   /versioning:bump patch
+```
 
 ## Error Handling
 
@@ -188,6 +173,6 @@ Handle edge cases:
 - Tag doesn't exist → Exit with "Tag not found" error
 - No previous version → Exit with "Cannot rollback from initial version"
 - Working tree dirty → Exit with "Uncommitted changes detected"
-- Published to registry → Display warning about permanent packages
+- Agent error → Display error message with details
 
 Provide clear guidance for each error scenario.

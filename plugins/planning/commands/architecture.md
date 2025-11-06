@@ -67,6 +67,11 @@ Actions:
 Goal: Analyze project structure and determine architectural needs
 
 Actions:
+- Check for wizard requirements (if /planning:wizard was run):
+  - Load: @docs/requirements/*/01-initial-request.md
+  - Load: @docs/requirements/*/.wizard/extracted-requirements.json
+  - Load: @docs/requirements/*/02-wizard-qa.md
+  - These contain: project description, multimodal inputs, structured Q&A
 - Review project structure and components
 - Example: !{bash find . -type d -name "src" -o -name "app" -o -name "api" | head -10}
 - Identify key architectural areas:
@@ -103,10 +108,13 @@ Actions:
 
 Task(description="Design system architecture", subagent_type="planning:architecture-designer", prompt="You are the architecture-designer agent. Create system architecture for $ARGUMENTS.
 
-Context: Detected tech stack from .claude/project.json
-Action: $ARGUMENTS (design, update, diagram, review)
+Context:
+- Detected tech stack: .claude/project.json
+- Wizard requirements (if available): docs/requirements/*/01-initial-request.md, docs/requirements/*/.wizard/extracted-requirements.json, docs/requirements/*/02-wizard-qa.md
+- Action: $ARGUMENTS (design, update, diagram, review)
 
 Requirements:
+  - Read wizard requirements first (if they exist) to understand project goals
   - Create comprehensive architecture documentation including:
     - System overview and goals
     - Component diagrams

@@ -67,6 +67,11 @@ Actions:
 Goal: Analyze project scope
 
 Actions:
+- Check for wizard requirements (if /planning:wizard was run):
+  - Load: @docs/requirements/*/01-initial-request.md
+  - Load: @docs/requirements/*/.wizard/extracted-requirements.json
+  - Load: @docs/requirements/*/02-wizard-qa.md
+  - These contain: features, constraints, timeline, priorities
 - Review all specs for estimation
 - Identify dependencies between specs
 - Determine phases and milestones
@@ -94,10 +99,14 @@ Actions:
 
 Task(description="Create project roadmap", subagent_type="planning:roadmap-planner", prompt="You are the roadmap-planner agent. Create project roadmap for $ARGUMENTS.
 
-Context: All specs, architecture, current progress
-Timeframe: $ARGUMENTS
+Context:
+- Wizard requirements (if available): docs/requirements/*/01-initial-request.md, docs/requirements/*/.wizard/extracted-requirements.json, docs/requirements/*/02-wizard-qa.md
+- All specs: specs/*/
+- Architecture: docs/architecture/
+- Timeframe: $ARGUMENTS
 
 Requirements:
+  - Read wizard requirements first (if they exist) to understand features, priorities, constraints
   - Create phased roadmap
   - Define milestones
   - Estimate timelines

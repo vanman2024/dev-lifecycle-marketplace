@@ -62,7 +62,7 @@ class WorktreeRegistry:
         self.memory.add(memory_text, user_id=f"{self.project_name}-worktrees")
         print(f"✅ Registered worktree: spec {spec_num} @ {worktree_path}")
 
-    def register_agent_assignment(self, spec_num: str, agent_name: str, tasks: list[str], dependencies: list[str] = None):
+    def register_agent_assignment(self, spec_num: str, agent_name: str, tasks: list[str], dependencies: list[str] = None): # type: ignore
         """Register agent task assignments"""
 
         deps_text = f"Dependencies: {', '.join(dependencies)}" if dependencies else "No dependencies"

@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash, Read, Write, Edit
+allowed-tools: Bash, Read, Write, Edit, Task
 description: Increment semantic version and create git tag with changelog
 argument-hint: [major|minor|patch] [--dry-run] [--force]
 ---
@@ -24,17 +24,14 @@ Goal: Increment semantic version (major/minor/patch), update version files, gene
 Core Principles:
 - Parse bump type from arguments
 - Validate git repository state
-- Calculate new version
-- Generate changelog from commits
-- Update all version files
-- Create git tag with changelog
-- Provide push instructions
+- Delegate version bump execution to agent
+- Provide push instructions or auto-push
 
 ## Available Skills
 
 This commands has access to the following skills from the versioning plugin:
 
-- **version-manager**: 
+- **version-manager**:
 
 **To use a skill:**
 ```
@@ -64,156 +61,116 @@ Actions:
 - Validate bump type is one of: major, minor, patch
 
 Validate prerequisites:
-- Verify git repository: `git rev-parse --git-dir`
-- Check working tree is clean: `git status --porcelain`
+- Verify git repository: !{bash git rev-parse --git-dir}
+- Check working tree is clean: !{bash git status --porcelain}
   - If dirty, exit with error: "Uncommitted changes detected. Commit or stash first."
-- Verify VERSION file exists
+- Verify VERSION file exists: !{bash test -f VERSION && echo "exists" || echo "missing"}
   - If not found, exit with error: "Run /versioning:setup first"
-- Verify git user configured: `git config user.name` and `git config user.email`
+- Verify git user configured: !{bash git config user.name && git config user.email}
 
 ## Phase 2: Read Current Version
 
-Load and parse current version:
+Load current version:
 
 Actions:
-- Read VERSION file
+- Read VERSION file: @VERSION
 - Parse JSON to extract current version string
 - Validate version format matches semantic versioning: `MAJOR.MINOR.PATCH`
-- Split into components: major, minor, patch numbers
 - Display current version: "Current version: X.Y.Z"
 
-## Phase 3: Calculate New Version
+## Phase 3: Execute Version Bump via Agent
 
-Compute new version based on bump type:
-
-Actions:
-- **major**: Increment MAJOR, reset MINOR and PATCH to 0
-  - Example: 1.4.2 → 2.0.0
-- **minor**: Increment MINOR, reset PATCH to 0
-  - Example: 1.4.2 → 1.5.0  
-- **patch**: Increment PATCH only
-  - Example: 1.4.2 → 1.4.3
-- Construct new version string: `{major}.{minor}.{patch}`
-- Display: "New version: X.Y.Z"
-
-## Phase 4: Generate Changelog
-
-Extract commits since last version tag:
+Delegate to version-bumper agent:
 
 Actions:
-- Find last version tag: `git describe --tags --abbrev=0 --match "v*" 2>/dev/null`
-  - If no tags exist, use initial commit: `git rev-list --max-parents=0 HEAD`
-- Get commit range: `git log <last_tag>..HEAD --pretty=format:"%h|%s|%an|%ae"`
-- Categorize commits by type:
-  - **Features**: Commits starting with `feat:` or `feat(`
-  - **Bug Fixes**: Commits starting with `fix:` or `fix(`
-  - **Breaking Changes**: Commits with `BREAKING CHANGE:` or `!:`
-  - **Chores**: Commits starting with `chore:`, `docs:`, `ci:`, `test:`
-- Format changelog:
-  ```
-  ## [X.Y.Z] - YYYY-MM-DD
-  
-  ### Features
-  - feat: description (commit_hash)
-  
-  ### Bug Fixes
-  - fix: description (commit_hash)
-  
-  ### Breaking Changes
-  - BREAKING: description (commit_hash)
-  ```
+- Invoke version-bumper agent with parameters:
+  - bump_type: major|minor|patch
+  - current_version: from Phase 2
+  - dry_run: true|false
+  - force_push: true|false
+- Agent will:
+  - Calculate new version
+  - Generate changelog from commits
+  - Update VERSION, pyproject.toml, package.json
+  - Create git commit and tag
+  - Handle push (if --force) or return status
 
-## Phase 5: Update Version Files
+Use Task() to invoke agent:
+```
+Task(agent="version-bumper", parameters={
+  "bump_type": "<major|minor|patch>",
+  "current_version": "<current_version>",
+  "dry_run": <true|false>,
+  "force_push": <true|false>
+})
+```
 
-Update all version references (skip if --dry-run):
+## Phase 4: Display Results
 
-Actions:
-- Update VERSION file:
-  ```json
-  {
-    "version": "<new_version>",
-    "commit": "<current_git_sha>",
-    "build_date": "<current_iso_timestamp>",
-    "build_type": "release"
-  }
-  ```
-- Check for pyproject.toml:
-  - If exists, update: `version = "<new_version>"`
-- Check for package.json:
-  - If exists, update: `"version": "<new_version>"`
-- Verify all files updated successfully
-
-## Phase 6: Commit Version Bump
-
-Create commit with version changes (skip if --dry-run):
+Show results based on agent status:
 
 Actions:
-- Stage version files: `git add VERSION pyproject.toml package.json CHANGELOG.md`
-- Create commit: `git commit -m "chore(release): bump version to <new_version>"`
-- Get commit hash for reference
-- Display: "Committed: <commit_hash>"
+- Parse agent response JSON
+- Display results based on status:
 
-## Phase 7: Create Git Tag
+**If status is "dry_run_complete":**
+```
+DRY RUN - No changes made
 
-Create annotated tag with changelog (skip if --dry-run):
+Would bump: <old_version> → <new_version>
 
-Actions:
-- Create annotated tag with full changelog:
-  ```bash
-  git tag -a v<new_version> -m "<changelog_content>"
-  ```
-- Verify tag created: `git tag -l v<new_version>`
-- Display tag details: `git show v<new_version> --no-patch`
+Changelog Preview:
+<changelog>
+```
 
-## Phase 8: Confirm Push or Auto-Push
+**If status is "pushed":**
+```
+✅ Version bumped and pushed: <old_version> → <new_version>
 
-Handle push confirmation:
+Tag: <tag_name>
+Commit: <commit_hash>
 
-Actions:
-- If `--dry-run` flag:
-  - Display: "DRY RUN - No changes made"
-  - Show what would be pushed
-  - Exit
-  
-- If `--force` flag:
-  - Auto-push: `git push && git push --tags`
-  - Display: "Pushed to remote"
-  - Exit
+Monitor release: gh run list --workflow=version-management.yml
+```
 
-- Otherwise, display push instructions:
-  ```
-  ✅ Version bumped: <old_version> → <new_version>
-  
-  📝 Changes:
-    - VERSION: ✓
-    - pyproject.toml: ✓ (if exists)
-    - package.json: ✓ (if exists)
-    - Commit: <commit_hash>
-    - Tag: v<new_version>
-  
-  📋 Changelog Preview:
-  <formatted_changelog>
-  
-  🚀 To complete the release:
-  
-  1. Push changes and tags:
-     git push && git push --tags
-  
-  2. GitHub Actions will:
-     - Create GitHub release
-     - Publish to PyPI/npm (if configured)
-     - Update CHANGELOG.md
-  
-  3. Monitor release:
-     gh run list --workflow=version-management.yml
-  
-  📌 Rollback (if needed):
-     /versioning:rollback <new_version>
-  ```
+**If status is "ready_to_push":**
+```
+✅ Version bumped: <old_version> → <new_version>
+
+📝 Changes:
+  - VERSION: ✓
+  - pyproject.toml: ✓ (if exists)
+  - package.json: ✓ (if exists)
+  - Commit: <commit_hash>
+  - Tag: <tag_name>
+
+📋 Changelog:
+<changelog>
+
+🚀 To complete the release:
+
+1. Push changes and tags:
+   git push && git push --tags
+
+2. GitHub Actions will:
+   - Create GitHub release
+   - Publish to PyPI/npm (if configured)
+   - Update CHANGELOG.md
+
+3. Monitor release:
+   gh run list --workflow=version-management.yml
+
+📌 Rollback (if needed):
+   /versioning:rollback <new_version>
+```
+
+**If status is "error":**
+- Display error message
+- Provide suggested fixes based on error type
 
 ## Error Handling
 
-Handle failures gracefully:
+Handle failures from agent:
 
 - Working tree dirty → Exit with uncommitted changes error
 - VERSION file missing → Exit with "run /versioning:setup" error

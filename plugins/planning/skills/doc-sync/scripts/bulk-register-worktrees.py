@@ -108,7 +108,8 @@ class BulkWorktreeRegistry:
             "branch": branch,
             "path": worktree_path,
             "success": False,
-            "error": None
+            "error": None,
+            "deps_installed": False
         }
 
         try:
@@ -123,12 +124,71 @@ class BulkWorktreeRegistry:
             cmd = ["git", "worktree", "add", worktree_path, "-b", branch]
             subprocess.run(cmd, cwd=self.project_root, check=True, capture_output=True)
 
+            # Install dependencies
+            deps_success = self.setup_dependencies(worktree_path)
+            result["deps_installed"] = deps_success
+
             result["success"] = True
             return result
 
         except subprocess.CalledProcessError as e:
             result["error"] = e.stderr.decode() if e.stderr else str(e)
             return result
+
+    def setup_dependencies(self, worktree_path: str) -> bool:
+        """Install dependencies in worktree"""
+        worktree = Path(self.project_root.parent / worktree_path.replace("../", ""))
+
+        if not worktree.exists():
+            return False
+
+        # Node.js project
+        if (worktree / "package.json").exists():
+            # Detect package manager
+            if (worktree / "pnpm-lock.yaml").exists():
+                result = subprocess.run(["pnpm", "install"], cwd=worktree, capture_output=True)
+                pkg_mgr = "pnpm"
+            elif (worktree / "yarn.lock").exists():
+                result = subprocess.run(["yarn", "install"], cwd=worktree, capture_output=True)
+                pkg_mgr = "yarn"
+            else:
+                result = subprocess.run(["npm", "install"], cwd=worktree, capture_output=True)
+                pkg_mgr = "npm"
+
+            if result.returncode == 0:
+                # Register in Mem0
+                memory_text = f"""
+                Dependencies installed in worktree {worktree.name}.
+                Project type: Node.js
+                Package manager: {pkg_mgr}
+                Status: ready
+                Installed: {datetime.now().isoformat()}
+                """
+                self.memory.add(memory_text, user_id=f"{self.project_name}-worktrees")
+                return True
+            return False
+
+        # Python project
+        elif (worktree / "requirements.txt").exists():
+            result = subprocess.run(
+                ["pip", "install", "-r", "requirements.txt"],
+                cwd=worktree,
+                capture_output=True
+            )
+            if result.returncode == 0:
+                memory_text = f"""
+                Dependencies installed in worktree {worktree.name}.
+                Project type: Python
+                Package manager: pip
+                Status: ready
+                Installed: {datetime.now().isoformat()}
+                """
+                self.memory.add(memory_text, user_id=f"{self.project_name}-worktrees")
+                return True
+            return False
+
+        # No dependencies needed
+        return True
 
     def register_in_mem0(self, spec_num: str, spec_name: str, agent: str, worktree_path: str, branch: str):
         """Register worktree in Mem0"""
@@ -184,7 +244,8 @@ class BulkWorktreeRegistry:
                             result["branch"]
                         )
                         results["success"].append(result)
-                        print(f"✅ {spec['name']}/{agent} → {result['path']}")
+                        deps_marker = "📦" if result.get("deps_installed") else ""
+                        print(f"✅ {spec['name']}/{agent} → {result['path']} {deps_marker}")
                     elif "already exists" in result.get("error", ""):
                         results["skipped"].append(result)
                         print(f"⏭️  {spec['name']}/{agent} (already exists)")
