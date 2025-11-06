@@ -1,16 +1,14 @@
 {
-  "$schema": "https://modelcontextprotocol.io/schema/mcp.json",
   "mcpServers": {
     "sentry": {
       "command": "npx",
       "args": [
         "-y",
-        "@modelcontextprotocol/server-sentry"
+        "@sentry/mcp-server",
+        "--access-token",
+        "${SENTRY_AUTH_TOKEN}"
       ],
-      "env": {
-        "SENTRY_AUTH_TOKEN": "${SENTRY_AUTH_TOKEN}"
-      },
-      "description": "Global Sentry MCP server - list organizations, list projects, create projects, query issues, create alerts. Agents select project dynamically. Auth token from Doppler: SENTRY_AUTH_TOKEN"
+      "description": "Official Sentry MCP server (v0.21.0) - inspect issues, AI-powered triage, docs search, project management. Global setup: agents select org/project dynamically. Auth token from Doppler: SENTRY_AUTH_TOKEN. Skills: inspect, seer (AI triage), docs, triage, project-management"
     }
   }
 }
