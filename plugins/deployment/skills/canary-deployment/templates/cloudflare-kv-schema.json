@@ -1,0 +1,222 @@
+{
+  "schema": {
+    "version": "1.0.0",
+    "description": "Cloudflare KV schema for canary deployment state management",
+    "keys": {
+      "canary-state": {
+        "type": "object",
+        "required": true,
+        "description": "Current canary deployment configuration and state",
+        "fields": {
+          "enabled": {
+            "type": "boolean",
+            "required": true,
+            "description": "Whether canary deployment is active"
+          },
+          "percentage": {
+            "type": "number",
+            "required": true,
+            "min": 0,
+            "max": 100,
+            "description": "Traffic percentage routed to canary"
+          },
+          "canaryWorker": {
+            "type": "string",
+            "required": true,
+            "description": "Name of canary Worker"
+          },
+          "stableWorker": {
+            "type": "string",
+            "required": true,
+            "description": "Name of stable Worker"
+          },
+          "canaryUrl": {
+            "type": "string",
+            "format": "url",
+            "description": "Canary Worker URL"
+          },
+          "stableUrl": {
+            "type": "string",
+            "format": "url",
+            "description": "Stable Worker URL"
+          },
+          "deployedAt": {
+            "type": "string",
+            "format": "iso8601",
+            "description": "Timestamp of canary deployment"
+          },
+          "stage": {
+            "type": "string",
+            "enum": ["initial", "progressive", "final", "rolled-back"],
+            "description": "Current rollout stage"
+          }
+        }
+      },
+      "canary-health": {
+        "type": "object",
+        "required": false,
+        "description": "Real-time health metrics for canary deployment",
+        "fields": {
+          "lastCheck": {
+            "type": "string",
+            "format": "iso8601",
+            "description": "Last health check timestamp"
+          },
+          "errorRate": {
+            "type": "number",
+            "min": 0,
+            "max": 100,
+            "description": "Current error rate percentage"
+          },
+          "latencyP95": {
+            "type": "number",
+            "description": "95th percentile latency in milliseconds"
+          },
+          "latencyP99": {
+            "type": "number",
+            "description": "99th percentile latency in milliseconds"
+          },
+          "requestCount": {
+            "type": "number",
+            "description": "Total requests in current window"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["healthy", "degraded", "unhealthy"],
+            "description": "Overall health status"
+          }
+        }
+      },
+      "rollout-history": {
+        "type": "array",
+        "required": false,
+        "description": "Historical rollout events",
+        "items": {
+          "type": "object",
+          "fields": {
+            "timestamp": {
+              "type": "string",
+              "format": "iso8601"
+            },
+            "event": {
+              "type": "string",
+              "enum": ["deployed", "traffic-updated", "rolled-back", "completed"]
+            },
+            "percentage": {
+              "type": "number"
+            },
+            "metadata": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "feature-flags": {
+        "type": "object",
+        "required": false,
+        "description": "Feature flags for canary behavior",
+        "fields": {
+          "stickySession": {
+            "type": "boolean",
+            "default": true,
+            "description": "Enable sticky sessions via cookies"
+          },
+          "geoRouting": {
+            "type": "boolean",
+            "default": false,
+            "description": "Enable geographic routing rules"
+          },
+          "abTesting": {
+            "type": "boolean",
+            "default": false,
+            "description": "Enable A/B testing mode"
+          },
+          "autoRollback": {
+            "type": "boolean",
+            "default": true,
+            "description": "Enable automatic rollback on health failures"
+          }
+        }
+      }
+    }
+  },
+  "examples": {
+    "canary-state-active": {
+      "enabled": true,
+      "percentage": 25,
+      "canaryWorker": "my-app-canary",
+      "stableWorker": "my-app-stable",
+      "canaryUrl": "https://my-app-canary.workers.dev",
+      "stableUrl": "https://my-app-stable.workers.dev",
+      "deployedAt": "2025-11-05T18:30:00Z",
+      "stage": "progressive"
+    },
+    "canary-state-disabled": {
+      "enabled": false,
+      "percentage": 0,
+      "canaryWorker": "my-app-canary",
+      "stableWorker": "my-app-stable",
+      "canaryUrl": "https://my-app-canary.workers.dev",
+      "stableUrl": "https://my-app-stable.workers.dev",
+      "deployedAt": "2025-11-05T18:00:00Z",
+      "stage": "rolled-back"
+    },
+    "canary-health": {
+      "lastCheck": "2025-11-05T18:35:00Z",
+      "errorRate": 2.3,
+      "latencyP95": 450,
+      "latencyP99": 890,
+      "requestCount": 1543,
+      "status": "healthy"
+    },
+    "rollout-history": [
+      {
+        "timestamp": "2025-11-05T18:00:00Z",
+        "event": "deployed",
+        "percentage": 5,
+        "metadata": {
+          "deploymentId": "dpl_abc123",
+          "version": "1.2.0"
+        }
+      },
+      {
+        "timestamp": "2025-11-05T18:15:00Z",
+        "event": "traffic-updated",
+        "percentage": 25,
+        "metadata": {
+          "previousPercentage": 5,
+          "reason": "gradual-rollout"
+        }
+      },
+      {
+        "timestamp": "2025-11-05T18:30:00Z",
+        "event": "traffic-updated",
+        "percentage": 50,
+        "metadata": {
+          "previousPercentage": 25,
+          "reason": "gradual-rollout"
+        }
+      }
+    ],
+    "feature-flags": {
+      "stickySession": true,
+      "geoRouting": false,
+      "abTesting": false,
+      "autoRollback": true
+    }
+  },
+  "wranglerToml": {
+    "description": "Add this to wrangler.toml to bind KV namespace",
+    "example": "[[kv_namespaces]]\nbinding = \"CANARY_STATE\"\nid = \"your_kv_namespace_id_here\"\npreview_id = \"your_preview_kv_namespace_id_here\""
+  },
+  "cli": {
+    "description": "Wrangler CLI commands for managing KV",
+    "commands": {
+      "createNamespace": "wrangler kv:namespace create CANARY_STATE",
+      "putCanaryState": "wrangler kv:key put --namespace-id=<namespace-id> canary-state '{...json}'",
+      "getCanaryState": "wrangler kv:key get --namespace-id=<namespace-id> canary-state",
+      "deleteCanaryState": "wrangler kv:key delete --namespace-id=<namespace-id> canary-state",
+      "listKeys": "wrangler kv:key list --namespace-id=<namespace-id>"
+    }
+  }
+}

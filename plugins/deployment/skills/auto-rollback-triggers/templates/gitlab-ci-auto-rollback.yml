@@ -1,0 +1,152 @@
+# GitLab CI/CD Auto-Rollback Pipeline
+# Monitors deployments and triggers rollback on error rate or SLO violations
+
+variables:
+  ERROR_THRESHOLD: "5.0"
+  SLO_TARGET: "99.9"
+  MONITORING_DURATION: "300"
+  CHECK_INTERVAL: "30"
+  SLACK_WEBHOOK_URL: "https://hooks.slack.com/services/your_webhook_url_here"
+
+stages:
+  - deploy
+  - monitor
+  - rollback
+  - notify
+
+# Deployment job (placeholder - replace with your actual deployment)
+deploy:
+  stage: deploy
+  script:
+    - echo "Deploying application..."
+    - echo "DEPLOYMENT_ID=$(date +%s)" >> deploy.env
+    - echo "DEPLOYMENT_URL=https://api.example.com" >> deploy.env
+  artifacts:
+    reports:
+      dotenv: deploy.env
+  only:
+    - main
+
+# Monitor deployment
+monitor_deployment:
+  stage: monitor
+  dependencies:
+    - deploy
+  script:
+    - echo "Monitoring deployment..."
+    - echo "Deployment URL $DEPLOYMENT_URL"
+    - |
+      # Wait for deployment to stabilize
+      sleep 60
+
+      # Monitor error rate
+      bash scripts/monitor-error-rate.sh \
+        "$DEPLOYMENT_URL/metrics" \
+        "$ERROR_THRESHOLD" \
+        "$MONITORING_DURATION" || echo "MONITOR_FAILED=true" >> monitor.env
+
+      # Check SLO
+      bash scripts/check-slo.sh \
+        "$DEPLOYMENT_URL/health" \
+        "$SLO_TARGET" || echo "SLO_FAILED=true" >> monitor.env
+
+      # Determine if rollback needed
+      if grep -q "MONITOR_FAILED=true\|SLO_FAILED=true" monitor.env; then
+        echo "ROLLBACK_REQUIRED=true" >> monitor.env
+        exit 1
+      else
+        echo "ROLLBACK_REQUIRED=false" >> monitor.env
+        exit 0
+      fi
+  artifacts:
+    reports:
+      dotenv: monitor.env
+    when: always
+  allow_failure: true
+  only:
+    - main
+
+# Trigger rollback if monitoring failed
+trigger_rollback:
+  stage: rollback
+  dependencies:
+    - deploy
+    - monitor_deployment
+  script:
+    - echo "Triggering rollback..."
+    - |
+      # Determine platform
+      PLATFORM="${DEPLOYMENT_PLATFORM:-vercel}"
+
+      # Get previous deployment ID
+      PREVIOUS_DEPLOYMENT_ID="${PREVIOUS_DEPLOYMENT_ID:-}"
+
+      if [ -z "$PREVIOUS_DEPLOYMENT_ID" ]; then
+        echo "Error: No previous deployment ID available for rollback"
+        exit 1
+      fi
+
+      # Execute rollback
+      bash scripts/trigger-rollback.sh \
+        "$PLATFORM" \
+        "$CI_PROJECT_NAME" \
+        "$PREVIOUS_DEPLOYMENT_ID" \
+        "$PLATFORM_API_TOKEN"
+  rules:
+    - if: '$ROLLBACK_REQUIRED == "true"'
+  only:
+    - main
+
+# Notify team
+notify_success:
+  stage: notify
+  dependencies:
+    - monitor_deployment
+  script:
+    - |
+      bash scripts/notify-webhook.sh \
+        "$SLACK_WEBHOOK_URL" \
+        "Deployment monitoring passed - No rollback needed for $DEPLOYMENT_ID" \
+        --slack
+  rules:
+    - if: '$ROLLBACK_REQUIRED == "false"'
+  only:
+    - main
+
+notify_rollback:
+  stage: notify
+  dependencies:
+    - trigger_rollback
+  script:
+    - |
+      bash scripts/notify-webhook.sh \
+        "$SLACK_WEBHOOK_URL" \
+        "Auto-rollback completed for deployment $DEPLOYMENT_ID" \
+        --slack
+  rules:
+    - if: '$ROLLBACK_REQUIRED == "true"'
+  when: on_success
+  only:
+    - main
+
+notify_rollback_failed:
+  stage: notify
+  dependencies:
+    - trigger_rollback
+  script:
+    - |
+      bash scripts/notify-webhook.sh \
+        "$SLACK_WEBHOOK_URL" \
+        "CRITICAL: Rollback failed for deployment $DEPLOYMENT_ID - Manual intervention required" \
+        --slack
+  rules:
+    - if: '$ROLLBACK_REQUIRED == "true"'
+  when: on_failure
+  only:
+    - main
+
+# Required GitLab CI/CD Variables:
+# - DEPLOYMENT_PLATFORM: vercel, digitalocean, railway
+# - PLATFORM_API_TOKEN: API token for the deployment platform
+# - PREVIOUS_DEPLOYMENT_ID: Previous deployment ID for rollback
+# - SLACK_WEBHOOK_URL: Slack webhook URL (optional, can use variable above)

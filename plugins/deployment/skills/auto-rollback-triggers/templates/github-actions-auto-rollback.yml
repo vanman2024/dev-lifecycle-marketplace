@@ -1,0 +1,214 @@
+name: Auto-Rollback on Error Rate
+
+# Complete auto-rollback workflow with monitoring and triggers
+# Monitors error rates and SLO compliance after deployment
+# Automatically triggers rollback if thresholds are exceeded
+
+on:
+  deployment_status:
+  workflow_dispatch:
+    inputs:
+      deployment_url:
+        description: 'Deployment URL to monitor'
+        required: true
+      deployment_id:
+        description: 'Current deployment ID'
+        required: true
+      previous_deployment_id:
+        description: 'Previous deployment ID (for rollback)'
+        required: true
+
+env:
+  # Error monitoring configuration
+  ERROR_THRESHOLD: '5.0'           # 5% error rate threshold
+  MONITORING_DURATION: '300'        # Monitor for 5 minutes (300 seconds)
+  CHECK_INTERVAL: '30'              # Check every 30 seconds
+
+  # SLO configuration
+  SLO_TARGET: '99.9'                # 99.9% uptime target
+  LATENCY_TARGET: '500'             # 500ms P95 latency target
+
+  # Webhook configuration (REPLACE WITH YOUR ACTUAL WEBHOOK URL)
+  SLACK_WEBHOOK_URL: 'https://hooks.slack.com/services/your_webhook_url_here'
+
+jobs:
+  monitor-and-rollback:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set deployment URL
+        id: set-url
+        run: |
+          if [ -n "${{ github.event.deployment_status.target_url }}" ]; then
+            echo "DEPLOYMENT_URL=${{ github.event.deployment_status.target_url }}" >> $GITHUB_ENV
+          elif [ -n "${{ inputs.deployment_url }}" ]; then
+            echo "DEPLOYMENT_URL=${{ inputs.deployment_url }}" >> $GITHUB_ENV
+          else
+            echo "Error: No deployment URL provided"
+            exit 1
+          fi
+
+      - name: Wait for deployment to stabilize
+        run: |
+          echo "Waiting 60 seconds for deployment to stabilize..."
+          sleep 60
+
+      - name: Monitor error rate
+        id: monitor
+        continue-on-error: true
+        run: |
+          echo "Starting error rate monitoring..."
+          echo "Metrics URL: ${DEPLOYMENT_URL}/metrics"
+          echo "Error threshold: ${ERROR_THRESHOLD}%"
+          echo "Duration: ${MONITORING_DURATION}s"
+
+          bash scripts/monitor-error-rate.sh \
+            "${DEPLOYMENT_URL}/metrics" \
+            "${ERROR_THRESHOLD}" \
+            "${MONITORING_DURATION}"
+
+          echo "MONITOR_EXIT_CODE=$?" >> $GITHUB_OUTPUT
+
+      - name: Check SLO compliance
+        id: slo-check
+        continue-on-error: true
+        run: |
+          echo "Checking SLO compliance..."
+          echo "Health URL: ${DEPLOYMENT_URL}/health"
+          echo "SLO target: ${SLO_TARGET}%"
+
+          bash scripts/check-slo.sh \
+            "${DEPLOYMENT_URL}/health" \
+            "${SLO_TARGET}"
+
+          echo "SLO_EXIT_CODE=$?" >> $GITHUB_OUTPUT
+
+      - name: Determine rollback necessity
+        id: decision
+        run: |
+          MONITOR_FAILED=${{ steps.monitor.outputs.MONITOR_EXIT_CODE }}
+          SLO_FAILED=${{ steps.slo-check.outputs.SLO_EXIT_CODE }}
+
+          echo "Monitor exit code: $MONITOR_FAILED"
+          echo "SLO exit code: $SLO_FAILED"
+
+          if [ "$MONITOR_FAILED" != "0" ] || [ "$SLO_FAILED" != "0" ]; then
+            echo "ROLLBACK_REQUIRED=true" >> $GITHUB_OUTPUT
+            echo "Rollback required: Error rate or SLO violation detected"
+          else
+            echo "ROLLBACK_REQUIRED=false" >> $GITHUB_OUTPUT
+            echo "Deployment is healthy, no rollback needed"
+          fi
+
+      - name: Notify Slack - Pre-Rollback
+        if: steps.decision.outputs.ROLLBACK_REQUIRED == 'true'
+        run: |
+          bash scripts/notify-webhook.sh \
+            "${SLACK_WEBHOOK_URL}" \
+            "Auto-rollback triggered for deployment ${{ inputs.deployment_id || github.event.deployment.id }}" \
+            --slack
+
+      - name: Trigger rollback
+        if: steps.decision.outputs.ROLLBACK_REQUIRED == 'true'
+        id: rollback
+        run: |
+          # Determine platform from environment or repository
+          PLATFORM="${{ secrets.DEPLOYMENT_PLATFORM }}"
+
+          if [ -z "$PLATFORM" ]; then
+            # Try to detect platform from deployment URL
+            if [[ "$DEPLOYMENT_URL" =~ vercel\.app ]]; then
+              PLATFORM="vercel"
+            elif [[ "$DEPLOYMENT_URL" =~ ondigitalocean\.app ]]; then
+              PLATFORM="digitalocean"
+            elif [[ "$DEPLOYMENT_URL" =~ railway\.app ]]; then
+              PLATFORM="railway"
+            else
+              echo "Could not detect platform, defaulting to vercel"
+              PLATFORM="vercel"
+            fi
+          fi
+
+          echo "Platform: $PLATFORM"
+
+          PROJECT_ID="${{ secrets.PROJECT_ID }}"
+          DEPLOYMENT_ID="${{ inputs.previous_deployment_id }}"
+
+          # Select appropriate token based on platform
+          case "$PLATFORM" in
+            vercel)
+              API_TOKEN="${{ secrets.VERCEL_TOKEN }}"
+              ;;
+            digitalocean)
+              API_TOKEN="${{ secrets.DIGITALOCEAN_TOKEN }}"
+              ;;
+            railway)
+              API_TOKEN="${{ secrets.RAILWAY_TOKEN }}"
+              ;;
+            *)
+              echo "Unsupported platform: $PLATFORM"
+              exit 1
+              ;;
+          esac
+
+          bash scripts/trigger-rollback.sh \
+            "$PLATFORM" \
+            "$PROJECT_ID" \
+            "$DEPLOYMENT_ID" \
+            "$API_TOKEN"
+
+      - name: Notify Slack - Success
+        if: steps.decision.outputs.ROLLBACK_REQUIRED == 'false'
+        run: |
+          bash scripts/notify-webhook.sh \
+            "${SLACK_WEBHOOK_URL}" \
+            "Deployment monitoring passed - No rollback needed for ${{ inputs.deployment_id || github.event.deployment.id }}" \
+            --slack
+
+      - name: Notify Slack - Rollback Complete
+        if: steps.decision.outputs.ROLLBACK_REQUIRED == 'true' && steps.rollback.outcome == 'success'
+        run: |
+          bash scripts/notify-webhook.sh \
+            "${SLACK_WEBHOOK_URL}" \
+            "Rollback completed successfully for deployment ${{ inputs.deployment_id || github.event.deployment.id }}" \
+            --slack
+
+      - name: Notify Slack - Rollback Failed
+        if: steps.decision.outputs.ROLLBACK_REQUIRED == 'true' && steps.rollback.outcome == 'failure'
+        run: |
+          bash scripts/notify-webhook.sh \
+            "${SLACK_WEBHOOK_URL}" \
+            "CRITICAL: Rollback failed for deployment ${{ inputs.deployment_id || github.event.deployment.id }} - Manual intervention required" \
+            --slack
+
+      - name: Fail workflow if rollback was required
+        if: steps.decision.outputs.ROLLBACK_REQUIRED == 'true'
+        run: |
+          echo "Deployment failed monitoring checks and was rolled back"
+          exit 1
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "=== Deployment Monitoring Summary ==="
+          echo "Deployment URL: $DEPLOYMENT_URL"
+          echo "Error Threshold: ${ERROR_THRESHOLD}%"
+          echo "SLO Target: ${SLO_TARGET}%"
+          echo "Rollback Required: ${{ steps.decision.outputs.ROLLBACK_REQUIRED }}"
+          echo "Monitor Status: ${{ steps.monitor.outcome }}"
+          echo "SLO Status: ${{ steps.slo-check.outcome }}"
+          if [ "${{ steps.decision.outputs.ROLLBACK_REQUIRED }}" = "true" ]; then
+            echo "Rollback Status: ${{ steps.rollback.outcome }}"
+          fi
+
+# Required GitHub Secrets:
+# - DEPLOYMENT_PLATFORM: vercel, digitalocean, railway (optional, will auto-detect)
+# - PROJECT_ID: Platform project identifier
+# - VERCEL_TOKEN: Vercel API token (if using Vercel)
+# - DIGITALOCEAN_TOKEN: DigitalOcean API token (if using DigitalOcean)
+# - RAILWAY_TOKEN: Railway API token (if using Railway)
+# - SLACK_WEBHOOK_URL: Slack webhook URL for notifications (optional, configure in env)

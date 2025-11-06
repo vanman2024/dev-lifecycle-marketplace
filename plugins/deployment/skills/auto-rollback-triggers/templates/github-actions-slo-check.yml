@@ -1,0 +1,113 @@
+name: SLO Validation
+
+# Post-deployment SLO validation workflow
+# Validates Service Level Objectives after deployment
+
+on:
+  deployment_status:
+  workflow_dispatch:
+    inputs:
+      health_url:
+        description: 'Health check endpoint URL'
+        required: true
+      slo_target:
+        description: 'SLO target percentage (e.g., 99.9)'
+        required: false
+        default: '99.9'
+
+env:
+  SLO_TARGET: '99.9'              # 99.9% uptime target
+  LATENCY_TARGET: '500'           # 500ms P95 latency target
+  ERROR_RATE_TARGET: '1.0'        # 1% maximum error rate
+  MONITORING_DURATION: '300'      # Monitor for 5 minutes
+  SLACK_WEBHOOK_URL: 'https://hooks.slack.com/services/your_webhook_url_here'
+
+jobs:
+  validate-slo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set health URL
+        run: |
+          if [ -n "${{ github.event.deployment_status.target_url }}" ]; then
+            echo "HEALTH_URL=${{ github.event.deployment_status.target_url }}/health" >> $GITHUB_ENV
+          elif [ -n "${{ inputs.health_url }}" ]; then
+            echo "HEALTH_URL=${{ inputs.health_url }}" >> $GITHUB_ENV
+          else
+            echo "HEALTH_URL=${{ secrets.PRODUCTION_HEALTH_URL }}" >> $GITHUB_ENV
+          fi
+
+      - name: Set SLO target
+        run: |
+          if [ -n "${{ inputs.slo_target }}" ]; then
+            echo "SLO_TARGET=${{ inputs.slo_target }}" >> $GITHUB_ENV
+          fi
+
+      - name: Wait for deployment stabilization
+        run: |
+          echo "Waiting 30 seconds for deployment to stabilize..."
+          sleep 30
+
+      - name: Check SLO compliance
+        id: slo-check
+        run: |
+          bash scripts/check-slo.sh \
+            "$HEALTH_URL" \
+            "$SLO_TARGET"
+
+      - name: Collect metrics
+        if: always()
+        id: metrics
+        run: |
+          bash scripts/collect-metrics.sh \
+            "${HEALTH_URL%/health}/metrics" \
+            json > metrics.json
+
+          cat metrics.json
+
+      - name: Upload metrics artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: slo-metrics
+          path: metrics.json
+
+      - name: Notify Slack - SLO Met
+        if: steps.slo-check.outcome == 'success'
+        run: |
+          bash scripts/notify-webhook.sh \
+            "$SLACK_WEBHOOK_URL" \
+            "SLO validation passed for deployment" \
+            --slack
+
+      - name: Notify Slack - SLO Violated
+        if: steps.slo-check.outcome == 'failure'
+        run: |
+          bash scripts/notify-webhook.sh \
+            "$SLACK_WEBHOOK_URL" \
+            "ALERT: SLO validation failed - deployment violates SLO targets" \
+            --slack
+
+      - name: Fail workflow on SLO violation
+        if: steps.slo-check.outcome == 'failure'
+        run: |
+          echo "SLO validation failed - deployment violates service level objectives"
+          exit 1
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "=== SLO Validation Summary ==="
+          echo "Health URL: $HEALTH_URL"
+          echo "SLO Target: ${SLO_TARGET}%"
+          echo "Latency Target: ${LATENCY_TARGET}ms"
+          echo "Error Rate Target: ${ERROR_RATE_TARGET}%"
+          echo "Status: ${{ steps.slo-check.outcome }}"
+
+# Required GitHub Secrets:
+# - PRODUCTION_HEALTH_URL: Production health check endpoint (optional, can use deployment URL)
+# - SLACK_WEBHOOK_URL: Slack webhook for notifications (optional, configure in env)

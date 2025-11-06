@@ -1,0 +1,75 @@
+{
+  "vercel_deployment_protection": {
+    "description": "Vercel Deployment Protection Rules configuration",
+    "version": "1.0.0",
+    "protection": {
+      "enabled": true,
+      "deployment_checks": {
+        "health_check": {
+          "enabled": true,
+          "endpoint": "/health",
+          "expected_status": 200,
+          "timeout_seconds": 30
+        },
+        "performance_check": {
+          "enabled": true,
+          "max_response_time_ms": 500,
+          "threshold_violations": 3
+        },
+        "custom_checks": [
+          {
+            "name": "Error Rate Check",
+            "endpoint": "/metrics",
+            "validation": "error_rate < 5.0",
+            "timeout_seconds": 10
+          },
+          {
+            "name": "SLO Check",
+            "endpoint": "/health",
+            "validation": "availability >= 99.9",
+            "timeout_seconds": 10
+          }
+        ]
+      },
+      "rollback_triggers": {
+        "failed_health_check": true,
+        "performance_degradation": true,
+        "custom_check_failure": true
+      }
+    },
+    "monitoring": {
+      "post_deployment_window_seconds": 300,
+      "check_interval_seconds": 30,
+      "continuous_monitoring": true
+    },
+    "integration": {
+      "github_integration": {
+        "enabled": true,
+        "block_pr_on_failure": true,
+        "create_issue_on_rollback": true
+      },
+      "slack_integration": {
+        "enabled": true,
+        "webhook_url": "https://hooks.slack.com/services/your_webhook_url_here",
+        "notify_on_deployment": true,
+        "notify_on_rollback": true
+      }
+    },
+    "api_configuration": {
+      "api_token": "your_vercel_api_token_here",
+      "team_id": "your_vercel_team_id_here",
+      "project_name": "your_project_name"
+    }
+  },
+  "environment_specific": {
+    "production": {
+      "stricter_checks": true,
+      "manual_promotion": false,
+      "automatic_rollback": true
+    },
+    "preview": {
+      "checks_enabled": true,
+      "automatic_rollback": false
+    }
+  }
+}

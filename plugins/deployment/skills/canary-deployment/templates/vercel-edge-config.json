@@ -1,0 +1,26 @@
+{
+  "canary": {
+    "enabled": true,
+    "percentage": 10,
+    "canaryUrl": "https://your-app-canary-xyz123.vercel.app",
+    "productionUrl": "https://your-app.vercel.app",
+    "deployedAt": "2025-11-05T18:00:00Z",
+    "stage": "initial",
+    "rolloutSchedule": "standard",
+    "healthCheck": {
+      "errorThreshold": 5,
+      "latencyThreshold": 2000,
+      "minRequests": 100
+    }
+  },
+  "features": {
+    "stickySession": true,
+    "geoRouting": false,
+    "abTesting": false
+  },
+  "metadata": {
+    "deploymentId": "dpl_your_deployment_id_here",
+    "version": "1.2.0",
+    "environment": "production"
+  }
+}

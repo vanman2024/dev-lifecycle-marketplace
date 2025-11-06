@@ -1,0 +1,124 @@
+{
+  "healthCheck": {
+    "enabled": true,
+    "interval": 60,
+    "thresholds": {
+      "errorRate": {
+        "warning": 3,
+        "critical": 5,
+        "unit": "percent",
+        "description": "Maximum acceptable error rate above baseline"
+      },
+      "latencyP95": {
+        "warning": 1000,
+        "critical": 2000,
+        "unit": "milliseconds",
+        "description": "95th percentile latency threshold"
+      },
+      "latencyP99": {
+        "warning": 2000,
+        "critical": 5000,
+        "unit": "milliseconds",
+        "description": "99th percentile latency threshold"
+      },
+      "requestVolume": {
+        "minimum": 100,
+        "unit": "requests",
+        "description": "Minimum requests required before validation"
+      }
+    },
+    "comparison": {
+      "window": "5m",
+      "baselineWindow": "15m",
+      "description": "Compare last 5 min canary vs last 15 min stable"
+    },
+    "rollback": {
+      "automatic": true,
+      "consecutiveFailures": 3,
+      "cooldown": 300,
+      "description": "Auto-rollback after 3 consecutive failures, 5 min cooldown"
+    }
+  },
+  "monitoring": {
+    "metrics": [
+      {
+        "name": "http_requests_total",
+        "type": "counter",
+        "labels": ["version", "status_code", "method"]
+      },
+      {
+        "name": "http_request_duration_seconds",
+        "type": "histogram",
+        "labels": ["version", "route"],
+        "buckets": [0.01, 0.05, 0.1, 0.5, 1, 2, 5]
+      },
+      {
+        "name": "http_errors_total",
+        "type": "counter",
+        "labels": ["version", "error_type"]
+      }
+    ],
+    "dashboards": {
+      "vercel": "https://vercel.com/dashboard/analytics",
+      "cloudflare": "https://dash.cloudflare.com/analytics"
+    }
+  },
+  "alerts": {
+    "channels": [
+      {
+        "type": "slack",
+        "webhook": "your_slack_webhook_url_here",
+        "events": ["health_check_failed", "rollback_triggered", "rollout_complete"]
+      },
+      {
+        "type": "email",
+        "recipients": ["devops@example.com"],
+        "events": ["rollback_triggered"]
+      },
+      {
+        "type": "pagerduty",
+        "integrationKey": "your_pagerduty_key_here",
+        "events": ["rollback_triggered"],
+        "severity": "critical"
+      }
+    ],
+    "templates": {
+      "health_check_failed": {
+        "title": "🔴 Canary Health Check Failed",
+        "message": "Project: {{project_name}}\nVersion: {{canary_version}}\nError Rate: {{error_rate}}%\nThreshold: {{threshold}}%"
+      },
+      "rollback_triggered": {
+        "title": "↩️ Automatic Rollback Triggered",
+        "message": "Project: {{project_name}}\nReason: {{rollback_reason}}\nFailed Checks: {{failed_checks}}"
+      },
+      "rollout_complete": {
+        "title": "✅ Canary Rollout Complete",
+        "message": "Project: {{project_name}}\nVersion: {{canary_version}}\nTraffic: 100% canary"
+      }
+    }
+  },
+  "logging": {
+    "level": "info",
+    "format": "json",
+    "outputs": [
+      {
+        "type": "stdout",
+        "enabled": true
+      },
+      {
+        "type": "file",
+        "path": "/tmp/canary-health-checks.log",
+        "enabled": true,
+        "rotation": {
+          "maxSize": "10MB",
+          "maxFiles": 5
+        }
+      },
+      {
+        "type": "datadog",
+        "apiKey": "your_datadog_api_key_here",
+        "enabled": false
+      }
+    ]
+  }
+}

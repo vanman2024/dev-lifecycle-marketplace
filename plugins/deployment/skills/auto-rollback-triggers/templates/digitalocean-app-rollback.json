@@ -1,0 +1,73 @@
+{
+  "digitalocean_app_rollback": {
+    "description": "DigitalOcean App Platform rollback configuration",
+    "version": "1.0.0",
+    "app": {
+      "app_id": "your_app_id_here",
+      "name": "your_app_name"
+    },
+    "health_checks": {
+      "http_health_check": {
+        "enabled": true,
+        "path": "/health",
+        "port": 8080,
+        "success_threshold": 3,
+        "failure_threshold": 3,
+        "timeout_seconds": 5,
+        "period_seconds": 10
+      },
+      "custom_health_checks": [
+        {
+          "name": "Error Rate Check",
+          "path": "/metrics",
+          "validation_script": "bash scripts/monitor-error-rate.sh",
+          "threshold": 5.0
+        },
+        {
+          "name": "SLO Check",
+          "path": "/health",
+          "validation_script": "bash scripts/check-slo.sh",
+          "target": 99.9
+        }
+      ]
+    },
+    "rollback": {
+      "automatic_rollback_enabled": true,
+      "rollback_triggers": {
+        "health_check_failure": true,
+        "deployment_failure": true,
+        "custom_check_failure": true
+      },
+      "rollback_strategy": {
+        "method": "previous_deployment",
+        "preserve_environment_variables": true,
+        "timeout_minutes": 10
+      }
+    },
+    "monitoring": {
+      "post_deployment_monitoring_seconds": 300,
+      "check_interval_seconds": 30,
+      "log_monitoring_enabled": true,
+      "alert_on_anomalies": true
+    },
+    "api_configuration": {
+      "api_token": "your_digitalocean_api_token_here",
+      "api_endpoint": "https://api.digitalocean.com/v2"
+    },
+    "notifications": {
+      "webhook_url": "https://hooks.slack.com/services/your_webhook_url_here",
+      "notify_on_deployment": true,
+      "notify_on_health_check_failure": true,
+      "notify_on_rollback": true,
+      "email_notifications": {
+        "enabled": true,
+        "recipients": ["devops@example.com"]
+      }
+    }
+  },
+  "deployment_metadata": {
+    "save_deployment_history": true,
+    "max_deployment_history": 10,
+    "include_deployment_logs": true
+  }
+}

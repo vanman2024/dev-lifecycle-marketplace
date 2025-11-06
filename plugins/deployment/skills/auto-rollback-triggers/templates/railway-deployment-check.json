@@ -1,0 +1,109 @@
+{
+  "railway_deployment_check": {
+    "description": "Railway deployment health check and rollback configuration",
+    "version": "1.0.0",
+    "project": {
+      "project_id": "your_project_id_here",
+      "service_name": "your_service_name",
+      "environment": "production"
+    },
+    "health_checks": {
+      "startup_probe": {
+        "enabled": true,
+        "path": "/health",
+        "timeout_seconds": 30,
+        "failure_threshold": 3,
+        "period_seconds": 10
+      },
+      "liveness_probe": {
+        "enabled": true,
+        "path": "/health",
+        "timeout_seconds": 5,
+        "failure_threshold": 3,
+        "period_seconds": 30
+      },
+      "readiness_probe": {
+        "enabled": true,
+        "path": "/ready",
+        "timeout_seconds": 5,
+        "success_threshold": 1,
+        "failure_threshold": 3,
+        "period_seconds": 10
+      },
+      "custom_checks": [
+        {
+          "name": "Error Rate Monitoring",
+          "script": "bash scripts/monitor-error-rate.sh $SERVICE_URL/metrics 5.0 300",
+          "failure_action": "rollback"
+        },
+        {
+          "name": "SLO Validation",
+          "script": "bash scripts/check-slo.sh $SERVICE_URL/health 99.9",
+          "failure_action": "rollback"
+        }
+      ]
+    },
+    "deployment_strategy": {
+      "strategy": "rolling",
+      "health_check_grace_period_seconds": 60,
+      "automatic_rollback_on_failure": true
+    },
+    "rollback_configuration": {
+      "triggers": {
+        "health_check_failure": true,
+        "deployment_timeout": true,
+        "custom_check_failure": true,
+        "manual_trigger": true
+      },
+      "rollback_method": "redeploy_previous",
+      "max_rollback_attempts": 3,
+      "rollback_timeout_minutes": 10
+    },
+    "monitoring": {
+      "post_deployment_monitoring_enabled": true,
+      "monitoring_duration_seconds": 300,
+      "check_interval_seconds": 30,
+      "metrics_collection": {
+        "enabled": true,
+        "metrics": [
+          "request_count",
+          "error_rate",
+          "response_time_p95",
+          "cpu_usage",
+          "memory_usage"
+        ]
+      }
+    },
+    "api_configuration": {
+      "api_token": "your_railway_api_token_here",
+      "graphql_endpoint": "https://backboard.railway.app/graphql/v2"
+    },
+    "notifications": {
+      "webhook": {
+        "enabled": true,
+        "url": "https://hooks.slack.com/services/your_webhook_url_here",
+        "events": [
+          "deployment_started",
+          "deployment_success",
+          "deployment_failed",
+          "health_check_failed",
+          "rollback_triggered",
+          "rollback_completed"
+        ]
+      },
+      "discord": {
+        "enabled": false,
+        "webhook_url": "https://discord.com/api/webhooks/your_webhook_url_here"
+      }
+    }
+  },
+  "environment_variables": {
+    "preserve_on_rollback": true,
+    "variables": {
+      "HEALTH_CHECK_ENABLED": "true",
+      "AUTO_ROLLBACK_ENABLED": "true",
+      "ERROR_THRESHOLD": "5.0",
+      "SLO_TARGET": "99.9"
+    }
+  }
+}

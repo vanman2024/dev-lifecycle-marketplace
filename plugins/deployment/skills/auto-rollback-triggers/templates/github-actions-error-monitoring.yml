@@ -1,0 +1,83 @@
+name: Error Rate Monitoring
+
+# Continuous error rate monitoring workflow
+# Runs periodically to monitor production error rates
+
+on:
+  schedule:
+    # Run every 5 minutes during deployment windows
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+    inputs:
+      metrics_url:
+        description: 'Metrics endpoint URL'
+        required: true
+        default: 'https://api.example.com/metrics'
+
+env:
+  ERROR_THRESHOLD: '5.0'        # 5% error rate threshold
+  MONITORING_DURATION: '60'     # Monitor for 1 minute
+  SLACK_WEBHOOK_URL: 'https://hooks.slack.com/services/your_webhook_url_here'
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set metrics URL
+        run: |
+          if [ -n "${{ inputs.metrics_url }}" ]; then
+            echo "METRICS_URL=${{ inputs.metrics_url }}" >> $GITHUB_ENV
+          else
+            echo "METRICS_URL=${{ secrets.PRODUCTION_METRICS_URL }}" >> $GITHUB_ENV
+          fi
+
+      - name: Monitor error rate
+        id: monitor
+        continue-on-error: true
+        run: |
+          bash scripts/monitor-error-rate.sh \
+            "$METRICS_URL" \
+            "$ERROR_THRESHOLD" \
+            "$MONITORING_DURATION"
+
+      - name: Alert on threshold exceeded
+        if: steps.monitor.outcome == 'failure'
+        run: |
+          bash scripts/notify-webhook.sh \
+            "$SLACK_WEBHOOK_URL" \
+            "Warning: Error rate exceeded ${ERROR_THRESHOLD}% threshold in production" \
+            --slack
+
+      - name: Create GitHub Issue on repeated failures
+        if: steps.monitor.outcome == 'failure'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = 'High Error Rate Detected in Production';
+            const body = `Error rate monitoring detected threshold violation.
+
+            **Details:**
+            - Threshold: ${process.env.ERROR_THRESHOLD}%
+            - Metrics URL: ${process.env.METRICS_URL}
+            - Time: ${new Date().toISOString()}
+
+            **Action Required:**
+            - Investigate error logs
+            - Consider manual rollback if issue persists`;
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: body,
+              labels: ['production', 'high-priority']
+            });
+
+# Required GitHub Secrets:
+# - PRODUCTION_METRICS_URL: Production metrics endpoint
+# - SLACK_WEBHOOK_URL: Slack webhook for notifications (optional, configure in env)

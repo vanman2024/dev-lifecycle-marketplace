@@ -1,0 +1,103 @@
+{
+  "webhooks": {
+    "description": "Webhook endpoint configuration with retry policies",
+    "version": "1.0.0",
+    "endpoints": {
+      "slack": {
+        "url": "https://hooks.slack.com/services/your_webhook_url_here",
+        "enabled": true,
+        "format": "slack",
+        "retry_policy": {
+          "max_retries": 3,
+          "backoff_strategy": "exponential",
+          "initial_delay_seconds": 2,
+          "max_delay_seconds": 30
+        },
+        "timeout_seconds": 10,
+        "description": "Slack webhook for team notifications"
+      },
+      "discord": {
+        "url": "https://discord.com/api/webhooks/your_webhook_url_here",
+        "enabled": false,
+        "format": "discord",
+        "retry_policy": {
+          "max_retries": 3,
+          "backoff_strategy": "exponential",
+          "initial_delay_seconds": 2,
+          "max_delay_seconds": 30
+        },
+        "timeout_seconds": 10,
+        "description": "Discord webhook for team notifications"
+      },
+      "pagerduty": {
+        "url": "https://events.pagerduty.com/v2/enqueue",
+        "enabled": false,
+        "format": "pagerduty",
+        "api_key": "your_pagerduty_api_key_here",
+        "routing_key": "your_routing_key_here",
+        "retry_policy": {
+          "max_retries": 5,
+          "backoff_strategy": "exponential",
+          "initial_delay_seconds": 1,
+          "max_delay_seconds": 60
+        },
+        "timeout_seconds": 15,
+        "description": "PagerDuty webhook for critical alerts"
+      },
+      "custom": {
+        "url": "https://monitoring.example.com/webhook",
+        "enabled": false,
+        "format": "json",
+        "headers": {
+          "Authorization": "Bearer your_api_token_here",
+          "Content-Type": "application/json"
+        },
+        "retry_policy": {
+          "max_retries": 3,
+          "backoff_strategy": "linear",
+          "initial_delay_seconds": 5,
+          "max_delay_seconds": 15
+        },
+        "timeout_seconds": 10,
+        "description": "Custom webhook endpoint"
+      }
+    },
+    "notification_rules": {
+      "error_rate_threshold_exceeded": {
+        "channels": ["slack", "pagerduty"],
+        "severity": "high",
+        "message_template": "Error rate {error_rate}% exceeded threshold {threshold}%"
+      },
+      "slo_violation": {
+        "channels": ["slack"],
+        "severity": "medium",
+        "message_template": "SLO violation detected: {slo_name} at {current_value}"
+      },
+      "rollback_triggered": {
+        "channels": ["slack", "pagerduty", "discord"],
+        "severity": "critical",
+        "message_template": "Auto-rollback triggered for deployment {deployment_id}"
+      },
+      "rollback_complete": {
+        "channels": ["slack"],
+        "severity": "info",
+        "message_template": "Rollback completed successfully for deployment {deployment_id}"
+      },
+      "rollback_failed": {
+        "channels": ["slack", "pagerduty"],
+        "severity": "critical",
+        "message_template": "CRITICAL: Rollback failed for deployment {deployment_id} - Manual intervention required"
+      }
+    },
+    "rate_limiting": {
+      "max_notifications_per_minute": 10,
+      "duplicate_suppression_seconds": 300,
+      "description": "Prevent webhook spam and duplicate notifications"
+    },
+    "fallback": {
+      "enabled": true,
+      "email_addresses": ["oncall@example.com", "devops@example.com"],
+      "description": "Email fallback if all webhooks fail"
+    }
+  }
+}

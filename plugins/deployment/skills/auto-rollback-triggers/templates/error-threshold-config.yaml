@@ -1,0 +1,62 @@
+error_thresholds:
+  description: "Error rate threshold configuration for auto-rollback triggers"
+  version: "1.0.0"
+
+  thresholds:
+    critical:
+      error_rate_percent: 10.0
+      time_window_seconds: 60
+      action: immediate_rollback
+      description: "Critical error rate - immediate rollback required"
+
+    high:
+      error_rate_percent: 5.0
+      time_window_seconds: 300
+      action: rollback_after_monitoring
+      description: "High error rate - monitor and rollback if sustained"
+
+    medium:
+      error_rate_percent: 2.0
+      time_window_seconds: 600
+      action: alert_team
+      description: "Elevated error rate - alert team for investigation"
+
+    baseline:
+      error_rate_percent: 0.5
+      time_window_seconds: 3600
+      action: monitor
+      description: "Normal baseline error rate - continue monitoring"
+
+  monitoring:
+    check_interval_seconds: 30
+    continuous_monitoring_enabled: true
+    post_deployment_monitoring_duration_seconds: 900
+
+  rollback_policy:
+    require_multiple_violations: true
+    violation_threshold_percent: 50
+    minimum_checks_before_rollback: 3
+    cooldown_period_seconds: 300
+
+  notifications:
+    webhook_url: "https://hooks.slack.com/services/your_webhook_url_here"
+    notification_channels:
+      - slack
+      - email
+    notify_on_threshold_exceeded: true
+    notify_on_rollback_triggered: true
+    notify_on_rollback_complete: true
+
+error_types:
+  include:
+    - 5xx
+    - 4xx
+  exclude:
+    - 404
+    - 429
+  description: "Error types to consider in error rate calculations"
+
+metrics_sources:
+  primary: "https://api.example.com/metrics"
+  fallback: "https://monitoring.example.com/metrics"
+  format: json

@@ -1,0 +1,80 @@
+{
+  "slo": {
+    "description": "Service Level Objectives configuration",
+    "version": "1.0.0",
+    "objectives": {
+      "availability": {
+        "target_percent": 99.9,
+        "measurement_window_hours": 24,
+        "description": "99.9% uptime over 24 hours (43.2 seconds downtime allowed)",
+        "violation_action": "trigger_rollback"
+      },
+      "latency_p95": {
+        "target_ms": 500,
+        "measurement_window_minutes": 15,
+        "description": "95th percentile response time under 500ms",
+        "violation_action": "alert_team"
+      },
+      "latency_p99": {
+        "target_ms": 1000,
+        "measurement_window_minutes": 15,
+        "description": "99th percentile response time under 1000ms",
+        "violation_action": "monitor"
+      },
+      "error_rate": {
+        "max_percent": 1.0,
+        "measurement_window_minutes": 10,
+        "description": "Error rate below 1%",
+        "violation_action": "trigger_rollback"
+      },
+      "success_rate": {
+        "min_percent": 99.0,
+        "measurement_window_minutes": 10,
+        "description": "Success rate above 99%",
+        "violation_action": "trigger_rollback"
+      }
+    },
+    "monitoring": {
+      "check_interval_seconds": 30,
+      "monitoring_duration_seconds": 300,
+      "grace_period_seconds": 60,
+      "description": "Wait 60s after deployment before starting SLO checks"
+    },
+    "violation_policy": {
+      "require_consecutive_violations": true,
+      "consecutive_violations_threshold": 3,
+      "violation_window_seconds": 180,
+      "description": "Require 3 consecutive violations within 3 minutes to trigger action"
+    },
+    "rollback_triggers": {
+      "availability_below": 99.0,
+      "error_rate_above": 5.0,
+      "latency_p95_above": 2000,
+      "multiple_slo_violations": 2,
+      "description": "Automatic rollback triggers based on SLO violations"
+    },
+    "notifications": {
+      "webhook_url": "https://hooks.slack.com/services/your_webhook_url_here",
+      "notify_on_slo_violation": true,
+      "notify_on_slo_recovery": true,
+      "notify_on_rollback": true,
+      "escalation_after_minutes": 10
+    }
+  },
+  "health_endpoints": {
+    "primary": "https://api.example.com/health",
+    "metrics": "https://api.example.com/metrics",
+    "detailed_metrics": "https://api.example.com/metrics/detailed"
+  },
+  "environment": {
+    "production": {
+      "stricter_thresholds": true,
+      "availability_target": 99.95,
+      "latency_target_ms": 300
+    },
+    "staging": {
+      "availability_target": 99.5,
+      "latency_target_ms": 1000
+    }
+  }
+}

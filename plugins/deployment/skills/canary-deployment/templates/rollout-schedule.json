@@ -1,0 +1,200 @@
+{
+  "schedules": {
+    "fast": {
+      "name": "Fast Rollout",
+      "description": "Quick rollout for low-risk changes",
+      "stages": [
+        {
+          "percentage": 10,
+          "waitTime": 300,
+          "waitUnit": "seconds",
+          "description": "10% for 5 minutes"
+        },
+        {
+          "percentage": 50,
+          "waitTime": 300,
+          "waitUnit": "seconds",
+          "description": "50% for 5 minutes"
+        },
+        {
+          "percentage": 100,
+          "waitTime": 0,
+          "waitUnit": "seconds",
+          "description": "100% (complete)"
+        }
+      ],
+      "totalDuration": "10 minutes",
+      "useCase": "Bug fixes, minor updates, low-risk changes"
+    },
+    "standard": {
+      "name": "Standard Rollout",
+      "description": "Balanced rollout for most deployments",
+      "stages": [
+        {
+          "percentage": 5,
+          "waitTime": 900,
+          "waitUnit": "seconds",
+          "description": "5% for 15 minutes"
+        },
+        {
+          "percentage": 25,
+          "waitTime": 900,
+          "waitUnit": "seconds",
+          "description": "25% for 15 minutes"
+        },
+        {
+          "percentage": 50,
+          "waitTime": 900,
+          "waitUnit": "seconds",
+          "description": "50% for 15 minutes"
+        },
+        {
+          "percentage": 100,
+          "waitTime": 0,
+          "waitUnit": "seconds",
+          "description": "100% (complete)"
+        }
+      ],
+      "totalDuration": "45 minutes",
+      "useCase": "Feature releases, API changes, standard deployments"
+    },
+    "safe": {
+      "name": "Safe Rollout",
+      "description": "Conservative rollout for high-risk changes",
+      "stages": [
+        {
+          "percentage": 5,
+          "waitTime": 1800,
+          "waitUnit": "seconds",
+          "description": "5% for 30 minutes"
+        },
+        {
+          "percentage": 10,
+          "waitTime": 1800,
+          "waitUnit": "seconds",
+          "description": "10% for 30 minutes"
+        },
+        {
+          "percentage": 25,
+          "waitTime": 1800,
+          "waitUnit": "seconds",
+          "description": "25% for 30 minutes"
+        },
+        {
+          "percentage": 50,
+          "waitTime": 1800,
+          "waitUnit": "seconds",
+          "description": "50% for 30 minutes"
+        },
+        {
+          "percentage": 75,
+          "waitTime": 1800,
+          "waitUnit": "seconds",
+          "description": "75% for 30 minutes"
+        },
+        {
+          "percentage": 100,
+          "waitTime": 0,
+          "waitUnit": "seconds",
+          "description": "100% (complete)"
+        }
+      ],
+      "totalDuration": "2.5 hours",
+      "useCase": "Major refactors, breaking changes, critical infrastructure updates"
+    },
+    "custom": {
+      "name": "Custom Rollout",
+      "description": "User-defined rollout schedule",
+      "stages": [],
+      "instructions": "Define custom stages via ROLLOUT_STAGES environment variable (e.g., '5,15,35,65,100')"
+    }
+  },
+  "recommendations": {
+    "byRiskLevel": {
+      "low": "fast",
+      "medium": "standard",
+      "high": "safe"
+    },
+    "byChangeType": {
+      "hotfix": "fast",
+      "feature": "standard",
+      "refactor": "safe",
+      "infrastructure": "safe",
+      "configuration": "standard"
+    },
+    "byTraffic": {
+      "lowTraffic": "fast",
+      "mediumTraffic": "standard",
+      "highTraffic": "safe"
+    }
+  },
+  "validation": {
+    "minStages": 2,
+    "maxStages": 10,
+    "minWaitTime": 60,
+    "maxWaitTime": 3600,
+    "firstStageMaxPercentage": 25,
+    "rules": [
+      "Stages must be in ascending order",
+      "First stage should be <= 25% traffic",
+      "Final stage must be 100%",
+      "Wait time between stages recommended >= 5 minutes"
+    ]
+  },
+  "examples": {
+    "regionalRollout": {
+      "name": "Geographic Staged Rollout",
+      "description": "Roll out to regions sequentially",
+      "stages": [
+        {
+          "percentage": 100,
+          "region": "us-west",
+          "waitTime": 900,
+          "description": "US West only for 15 minutes"
+        },
+        {
+          "percentage": 100,
+          "region": "us-east",
+          "waitTime": 900,
+          "description": "US regions for 15 minutes"
+        },
+        {
+          "percentage": 100,
+          "region": "eu",
+          "waitTime": 900,
+          "description": "EU regions for 15 minutes"
+        },
+        {
+          "percentage": 100,
+          "region": "all",
+          "waitTime": 0,
+          "description": "Global rollout complete"
+        }
+      ]
+    },
+    "userSegmentRollout": {
+      "name": "User Segment Rollout",
+      "description": "Roll out to user segments",
+      "stages": [
+        {
+          "percentage": 100,
+          "segment": "beta-users",
+          "waitTime": 3600,
+          "description": "Beta users for 1 hour"
+        },
+        {
+          "percentage": 100,
+          "segment": "premium-users",
+          "waitTime": 3600,
+          "description": "Premium users for 1 hour"
+        },
+        {
+          "percentage": 100,
+          "segment": "all-users",
+          "waitTime": 0,
+          "description": "All users"
+        }
+      ]
+    }
+  }
+}

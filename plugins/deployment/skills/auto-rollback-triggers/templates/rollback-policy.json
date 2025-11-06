@@ -1,0 +1,122 @@
+{
+  "rollback_policy": {
+    "description": "Automated rollback decision policy configuration",
+    "version": "1.0.0",
+    "triggers": {
+      "error_rate": {
+        "enabled": true,
+        "threshold_percent": 5.0,
+        "time_window_seconds": 300,
+        "minimum_samples": 10,
+        "description": "Trigger rollback if error rate exceeds 5% for 5 minutes"
+      },
+      "availability": {
+        "enabled": true,
+        "min_percent": 99.0,
+        "time_window_seconds": 300,
+        "consecutive_failures": 3,
+        "description": "Trigger rollback if availability drops below 99%"
+      },
+      "latency": {
+        "enabled": true,
+        "p95_threshold_ms": 2000,
+        "p99_threshold_ms": 5000,
+        "time_window_seconds": 180,
+        "description": "Trigger rollback if latency exceeds thresholds"
+      },
+      "crash_rate": {
+        "enabled": true,
+        "threshold_percent": 1.0,
+        "time_window_seconds": 60,
+        "description": "Trigger rollback if crash rate exceeds 1% in 1 minute"
+      },
+      "manual": {
+        "enabled": true,
+        "require_approval": false,
+        "approval_timeout_minutes": 5,
+        "description": "Allow manual rollback trigger via API or webhook"
+      }
+    },
+    "decision_logic": {
+      "require_multiple_triggers": false,
+      "minimum_triggers_for_rollback": 1,
+      "trigger_priority": [
+        "crash_rate",
+        "availability",
+        "error_rate",
+        "latency"
+      ],
+      "description": "Rollback decision logic and trigger prioritization"
+    },
+    "guardrails": {
+      "minimum_deployment_age_seconds": 60,
+      "maximum_rollbacks_per_hour": 3,
+      "cooldown_between_rollbacks_seconds": 300,
+      "require_different_version": true,
+      "description": "Safety guardrails to prevent rollback loops"
+    },
+    "canary_protection": {
+      "enabled": false,
+      "canary_traffic_percent": 10,
+      "canary_duration_seconds": 600,
+      "promote_on_success": true,
+      "rollback_on_failure": true,
+      "description": "Canary deployment protection (if applicable)"
+    },
+    "blue_green_protection": {
+      "enabled": false,
+      "health_check_duration_seconds": 300,
+      "automatic_promotion": false,
+      "description": "Blue-green deployment protection (if applicable)"
+    },
+    "rollback_execution": {
+      "method": "platform_api",
+      "platform": "auto_detect",
+      "timeout_seconds": 600,
+      "verify_rollback_success": true,
+      "post_rollback_monitoring_seconds": 300,
+      "description": "Rollback execution configuration"
+    },
+    "notifications": {
+      "pre_rollback": {
+        "enabled": true,
+        "channels": ["slack", "pagerduty"],
+        "delay_seconds": 0
+      },
+      "during_rollback": {
+        "enabled": true,
+        "channels": ["slack"],
+        "update_interval_seconds": 30
+      },
+      "post_rollback": {
+        "enabled": true,
+        "channels": ["slack", "pagerduty", "email"],
+        "include_metrics": true
+      }
+    },
+    "logging": {
+      "log_all_decisions": true,
+      "log_level": "info",
+      "retention_days": 90,
+      "audit_trail": true,
+      "description": "Rollback decision logging and audit trail"
+    }
+  },
+  "environments": {
+    "production": {
+      "stricter_thresholds": true,
+      "require_approval": false,
+      "error_rate_threshold": 5.0,
+      "availability_threshold": 99.0
+    },
+    "staging": {
+      "error_rate_threshold": 10.0,
+      "availability_threshold": 95.0,
+      "require_approval": false
+    },
+    "development": {
+      "enabled": false,
+      "description": "Auto-rollback disabled for development"
+    }
+  }
+}
