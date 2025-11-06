@@ -1,5 +1,5 @@
 #!/bin/bash
-# Register ALL active commands (excludes .archive, test marketplaces, templates)
+# Register ALL active commands (preserves existing Skills, MCP servers, tools)
 
 set -e
 
@@ -17,7 +17,6 @@ ALL_COMMANDS=$(mktemp)
 find "$HOME/.claude/plugins/marketplaces" -path "*/commands/*.md" -type f 2>/dev/null | \
   grep -v -E '(\.archive|/archived/|dev-lifecycle-test-agent-001|/templates/|/docs/frameworks/)' | \
   sort | while read -r cmd_file; do
-    # Extract plugin name (handle both direct plugins/ and nested structures)
     plugin=$(echo "$cmd_file" | grep -oP 'plugins/\K[^/]+(?=/commands)')
     command=$(basename "$cmd_file" .md)
     echo "SlashCommand(/$plugin:$command)"
@@ -26,128 +25,74 @@ done > "$ALL_COMMANDS"
 TOTAL_FOUND=$(wc -l < "$ALL_COMMANDS")
 echo "📊 Found $TOTAL_FOUND active commands"
 
-# Read current settings
-CURRENT_COMMANDS=$(grep -o 'SlashCommand([^)]*' "$SETTINGS_FILE" | wc -l)
+# Extract EXISTING permissions from settings.json
+EXISTING_ALLOW=$(mktemp)
+jq -r '.permissions.allow[]' "$SETTINGS_FILE" > "$EXISTING_ALLOW"
+
+# Count current commands
+CURRENT_COMMANDS=$(grep -c '^SlashCommand(' "$EXISTING_ALLOW" || true)
 echo "📊 Currently registered: $CURRENT_COMMANDS commands"
 
-# Find what's missing
+# Find missing commands
 echo ""
 echo "➕ Missing commands (first 20):"
-comm -13 <(grep -o 'SlashCommand([^)]*)' "$SETTINGS_FILE" | sed 's/SlashCommand(//; s/)//' | sort) \
-         <(sed 's/SlashCommand(//; s/)//' "$ALL_COMMANDS" | sort) | head -20
+MISSING_COMMANDS=$(mktemp)
+comm -13 \
+  <(grep '^SlashCommand(' "$EXISTING_ALLOW" | sort) \
+  <(cat "$ALL_COMMANDS" | sort) > "$MISSING_COMMANDS"
 
-# Extract existing sections from settings.json
-TEMP_SETTINGS=$(mktemp)
-TEMP_ALLOW_ARRAY=$(mktemp)
+head -20 "$MISSING_COMMANDS"
 
-# Get everything before "allow": [
-sed -n '1,/"allow": \[/p' "$SETTINGS_FILE" > "$TEMP_SETTINGS"
+MISSING_COUNT=$(wc -l < "$MISSING_COMMANDS")
+if [ "$MISSING_COUNT" -eq 0 ]; then
+  echo "✅ All commands already registered!"
+  rm "$ALL_COMMANDS" "$EXISTING_ALLOW" "$MISSING_COMMANDS"
+  exit 0
+fi
 
-# Build new allow array
+echo ""
+echo "📝 Adding $MISSING_COUNT missing commands..."
+
+# Build updated allow array
+UPDATED_ALLOW=$(mktemp)
+
+# Add ALL existing entries FIRST (preserves Skills, MCP, tools)
+cat "$EXISTING_ALLOW" > "$UPDATED_ALLOW"
+
+# Remove the generic "SlashCommand" wildcard if it exists
+sed -i '/^SlashCommand$/d' "$UPDATED_ALLOW"
+
+# Add missing commands
+cat "$MISSING_COMMANDS" >> "$UPDATED_ALLOW"
+
+# Re-add the generic wildcard at the end
+echo "SlashCommand" >> "$UPDATED_ALLOW"
+
+# Sort allow array for readability (keeps related items together)
+SORTED_ALLOW=$(mktemp)
 {
-  # Add all commands (sorted, unique)
-  sed 's/^/      "/; s/$/",/' "$ALL_COMMANDS" | sort -u
+  # Commands first (sorted)
+  grep '^SlashCommand(' "$UPDATED_ALLOW" | sort -u
 
-  # Add core tools
-  echo '      "Bash",'
-  echo '      "Read",'
-  echo '      "Write",'
-  echo '      "Edit",'
-  echo '      "MultiEdit",'
-  echo '      "LS",'
-  echo '      "Grep",'
-  echo '      "Glob",'
-  echo '      "Task",'
-  echo '      "TodoWrite",'
-  echo '      "TodoRead",'
-  echo '      "WebFetch",'
-  echo '      "WebSearch",'
-  echo '      "NotebookRead",'
-  echo '      "NotebookEdit",'
-  echo '      "ExitPlanMode",'
-  echo '      "ListMcpResourcesTool",'
-  echo '      "ReadMcpResourceTool",'
-  echo '      "BashOutput",'
-  echo '      "KillShell",'
-  echo '      "AskUserQuestion",'
-  echo '      "Skill",'
-  echo '      "SlashCommand",'
+  # Then non-command entries (preserve original order)
+  grep -v '^SlashCommand' "$UPDATED_ALLOW"
+} > "$SORTED_ALLOW"
 
-  # Add MCP servers
-  echo '      "mcp__github",'
-  echo '      "mcp__supabase",'
-  echo '      "mcp__shadcn",'
-  echo '      "mcp__puppeteer",'
-  echo '      "mcp__vercel-v0-enhanced",'
-  echo '      "mcp__docker",'
-  echo '      "mcp__memory",'
-  echo '      "mcp__filesystem",'
-  echo '      "mcp__sequential-thinking",'
-  echo '      "mcp__ide",'
-  echo '      "mcp__figma-mcp-application",'
-  echo '      "mcp__ngrok",'
-  echo '      "mcp__everything",'
-  echo '      "mcp__postman",'
-  echo '      "mcp__fetch",'
-  echo '      "mcp__browserbase",'
-  echo '      "mcp__vercel-deploy",'
-  echo '      "mcp__uiux-design",'
-  echo '      "mcp__gemini",'
-  echo '      "mcp__slack",'
-  echo '      "mcp__redis",'
-  echo '      "mcp__notion",'
-  echo '      "mcp__playwright",'
-  echo '      "mcp__google-drive",'
-  echo '      "mcp__google-sheets",'
-  echo '      "mcp__google-docs",'
-  echo '      "mcp__google-tasks",'
-  echo '      "mcp__google-gmail",'
-  echo '      "mcp__google-calendar",'
-  echo '      "mcp__google-apps-script",'
-  echo '      "mcp__context7",'
-  echo '      "mcp__plugin_supabase_supabase",'
-  echo '      "mcp__plugin_deployment_sentry",'
-  echo '      "mcp__plugin_nextjs-frontend_shadcn",'
-  echo '      "mcp__plugin_nextjs-frontend_design-system"'
-} > "$TEMP_ALLOW_ARRAY"
+# Update settings.json using jq (preserves structure perfectly)
+jq --arg allow "$(cat "$SORTED_ALLOW" | jq -R . | jq -s .)" \
+   '.permissions.allow = ($allow | fromjson)' \
+   "$SETTINGS_FILE" > "$SETTINGS_FILE.tmp"
 
-# Remove trailing comma from last line
-sed -i '$ s/,$//' "$TEMP_ALLOW_ARRAY"
-
-# Append allow array
-cat "$TEMP_ALLOW_ARRAY" >> "$TEMP_SETTINGS"
-
-# Close allow array
-echo '    ],' >> "$TEMP_SETTINGS"
-echo '    "deny": [],' >> "$TEMP_SETTINGS"
-echo '    "defaultMode": "acceptEdits",' >> "$TEMP_SETTINGS"
-echo '    "additionalDirectories": [' >> "$TEMP_SETTINGS"
-echo '      "/tmp"' >> "$TEMP_SETTINGS"
-echo '    ]' >> "$TEMP_SETTINGS"
-echo '  },' >> "$TEMP_SETTINGS"
-
-# Copy hooks section from original
-sed -n '/"hooks": {/,/^  },$/p' "$SETTINGS_FILE" >> "$TEMP_SETTINGS"
-
-# Copy enabledPlugins section
-sed -n '/"enabledPlugins": {/,/^  },$/p' "$SETTINGS_FILE" >> "$TEMP_SETTINGS"
-
-# Copy alwaysThinkingEnabled
-sed -n '/"alwaysThinkingEnabled":/p' "$SETTINGS_FILE" >> "$TEMP_SETTINGS"
-
-# Close main object
-echo '}' >> "$TEMP_SETTINGS"
-
-# Replace original
-mv "$TEMP_SETTINGS" "$SETTINGS_FILE"
+mv "$SETTINGS_FILE.tmp" "$SETTINGS_FILE"
 
 # Cleanup
-rm "$ALL_COMMANDS" "$TEMP_ALLOW_ARRAY"
+rm "$ALL_COMMANDS" "$EXISTING_ALLOW" "$MISSING_COMMANDS" "$UPDATED_ALLOW" "$SORTED_ALLOW"
 
 echo ""
 echo "✅ Registration complete!"
-echo "📊 Now registered: $(grep -c 'SlashCommand' "$SETTINGS_FILE") commands"
+echo "📊 Now registered: $(jq '.permissions.allow | map(select(startswith("SlashCommand("))) | length' "$SETTINGS_FILE") commands"
+echo "📊 Skills preserved: $(jq '.permissions.allow | map(select(startswith("Skill("))) | length' "$SETTINGS_FILE") skills"
 echo "💾 Backup saved: $BACKUP_FILE"
 echo ""
 echo "🔍 Sample registered commands:"
-grep 'SlashCommand' "$SETTINGS_FILE" | head -10
+jq -r '.permissions.allow | map(select(startswith("SlashCommand("))) | .[0:10] | .[]' "$SETTINGS_FILE"
