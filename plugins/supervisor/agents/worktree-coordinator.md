@@ -107,6 +107,8 @@ python plugins/planning/skills/doc-sync/scripts/register-worktree.py setup-deps 
 - Node.js: Detects and uses npm, pnpm, or yarn
 - Python: Installs from requirements.txt or pyproject.toml
 
+**Performance Tip**: If project uses **pnpm**, subsequent worktrees install 80-90% faster via global cache (~/.pnpm-store/). Auto-detected by setup-deps. Use `/foundation:use-pnpm` to convert npm projects to pnpm.
+
 ### Phase 4: Verification & Summary
 
 Actions:

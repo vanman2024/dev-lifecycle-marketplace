@@ -14,6 +14,36 @@ Create isolated git worktree for each spec, enabling parallel development withou
 - `<spec-name>` - Single spec (e.g., `001-red-seal-ai`)
 - `--all` or `--bulk` - All specs at once (100+ specs supported)
 
+## Performance Optimization: Use pnpm for Multi-Worktree Development
+
+**Recommended for projects creating multiple worktrees:**
+
+If your project uses Node.js/npm, consider converting to **pnpm** for dramatic performance improvements:
+
+```bash
+# Convert your project (one-time setup)
+/foundation:use-pnpm
+
+# Or manually:
+npm install -g pnpm
+cd /path/to/your/project
+rm -rf node_modules package-lock.json
+pnpm install  # Creates pnpm-lock.yaml
+```
+
+**Benefits for Worktree Workflows:**
+- ⚡ **80-90% faster installs** - 5-10s instead of 30-60s per worktree
+- 💾 **75% less disk space** - 600MB instead of 2GB for 4 worktrees
+- 🔒 **Still isolated** - Each worktree gets correct dependency versions
+- 🤖 **Auto-detected** - Worktree system automatically uses pnpm if available
+
+**How it works:**
+- First worktree: Downloads to global cache (`~/.pnpm-store/`)
+- Subsequent worktrees: Create hardlinks from cache (near-instant)
+- Each worktree still has isolated `node_modules/` with correct versions
+
+**System automatically detects and uses pnpm** - no changes to workflow needed!
+
 ## Phase 1: Discovery
 
 Actions:
