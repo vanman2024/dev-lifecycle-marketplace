@@ -6,7 +6,7 @@ allowed-tools: Task, Read, Bash, Glob
 
 **Arguments**: $ARGUMENTS
 
-Goal: Validate that tasks marked complete in layered-tasks.md have corresponding implementation work
+Goal: Validate that tasks marked complete in tasks.md have corresponding implementation work
 
 Core Principles:
 - Verify don't assume - check actual files and git history
