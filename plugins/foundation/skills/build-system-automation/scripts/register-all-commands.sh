@@ -4,7 +4,7 @@
 set -e
 
 SETTINGS_FILE="$HOME/.claude/settings.json"
-BACKUP_FILE="$SETTINGS_FILE.backup.$(date +%Y%m%d-%H%M%S)"
+BACKUP_FILE="$SETTINGS_FILE.backup"
 
 echo "🔍 Registering all active commands in $SETTINGS_FILE"
 echo "📦 Creating backup: $BACKUP_FILE"
