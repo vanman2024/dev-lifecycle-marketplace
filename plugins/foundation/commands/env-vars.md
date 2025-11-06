@@ -59,7 +59,7 @@ Skills provide pre-built resources to accelerate your work.
 Goal: Detect required environment variables from ALL available sources (priority order)
 
 Actions:
-- Parse $ARGUMENTS for action (scan, generate, setup-multi-env, add, remove, list, check)
+- Parse $ARGUMENTS for action (scan, generate, setup-multi-env, add, remove, list, check, sync-from-doppler, sync-to-doppler)
 - Load .env file if exists: @.env
 - **Launch env-detector agent with multi-source analysis:**
 
@@ -174,6 +174,38 @@ Actions based on action:
 - Report missing variables that code expects
 - Report unused variables in .env (cleanup candidates)
 - Example: "Missing: SUPABASE_URL (used in src/lib/supabase.ts:12)"
+
+**For 'sync-from-doppler' action (DOPPLER → .ENV):**
+- Check if Doppler CLI installed: `doppler --version`
+- If not installed:
+  - Display: "Doppler CLI not found. Run '/foundation:doppler-setup' to install."
+  - Exit
+- Check if authenticated: `doppler me`
+- If not authenticated:
+  - Display: "Not authenticated. Run 'doppler login' or '/foundation:doppler-setup'"
+  - Exit
+- Check if project linked (`.doppler.yaml` exists)
+- If not linked:
+  - Display: "Project not linked. Run '/foundation:doppler-setup' first"
+  - Exit
+- Parse environment from $ARGUMENTS (default: dev)
+- Download secrets: `doppler secrets download --config $ENVIRONMENT --no-file --format env > .env`
+- Count variables synced
+- Report: "✓ Synced {count} secrets from Doppler ({environment}) to .env"
+- Warn: ".env file overwritten. Backup exists at .env.backup"
+
+**For 'sync-to-doppler' action (.ENV → DOPPLER):**
+- Check if Doppler CLI installed and authenticated (same as above)
+- Check if .env file exists
+- If not exists:
+  - Display: "No .env file found. Run '/foundation:env-vars generate' first"
+  - Exit
+- Parse environment from $ARGUMENTS (default: dev)
+- Backup current Doppler secrets (optional safety)
+- Upload secrets: `doppler secrets upload .env --config $ENVIRONMENT`
+- Count variables uploaded
+- Report: "✓ Synced {count} secrets from .env to Doppler ({environment})"
+- Warn: "Doppler secrets updated. View changes at dashboard.doppler.com"
 
 **For 'setup-multi-env' action (COMPREHENSIVE MULTI-ENVIRONMENT SETUP):**
 
