@@ -1,0 +1,82 @@
+Release Candidate v{VERSION}
+
+✅ PRODUCTION READY (pending final validation)
+
+This release candidate is considered stable and ready for production
+unless critical issues are discovered during final testing.
+
+## Changes
+
+{CHANGELOG}
+
+## Validation Status
+
+- [x] All tests passing (unit, integration, E2E)
+- [x] Performance validated against benchmarks
+- [x] Documentation complete and reviewed
+- [x] Security audit completed
+- [x] Accessibility compliance verified
+- [ ] Production deployment tested
+- [ ] Stakeholder approval obtained
+
+## Critical Fixes
+
+{CRITICAL_FIXES}
+
+## Improvements
+
+{IMPROVEMENTS}
+
+## Breaking Changes
+
+{BREAKING_CHANGES}
+
+## Migration Guide
+
+{MIGRATION_GUIDE}
+
+## Documentation
+
+Full documentation: {DOCS_URL}
+Release notes: {RELEASE_NOTES_URL}
+Migration guide: {MIGRATION_URL}
+
+## Installation
+
+### npm
+```bash
+npm install your-package@{VERSION}
+```
+
+### pip
+```bash
+pip install your-package=={VERSION}
+```
+
+## Testing in Production
+
+This RC is ready for production testing. Please test in your staging
+or production-like environments and report any critical issues.
+
+Critical issues: {ISSUES_URL}
+
+## Timeline
+
+- **RC Release**: {RELEASE_DATE}
+- **Testing Period**: {TESTING_PERIOD}
+- **Expected Stable Release**: {EXPECTED_STABLE_DATE}
+
+## Next Steps
+
+- Final production environment testing
+- Stakeholder approval
+- Promote to stable release if no critical issues found
+
+---
+
+✅ This release candidate is production ready
+
+Release Date: {RELEASE_DATE}
+Built by: {AUTHOR}
+Commit: {COMMIT_HASH}
+Previous RC: {PREVIOUS_RC}

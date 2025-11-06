@@ -1,0 +1,109 @@
+# Release Approval Gates Configuration
+# Define stakeholder groups and approval requirements for releases
+
+approval_gates:
+  - stage: development
+    description: Technical validation and code review
+    approvers:
+      - "@tech-lead"
+      - "@senior-dev"
+    required: 2
+    optional: []
+    timeout_hours: 24
+    notify_channels:
+      - "dev-team-slack-channel-id-here"
+
+  - stage: qa
+    description: Quality assurance and testing validation
+    approvers:
+      - "@qa-lead"
+    required: 1
+    optional:
+      - "@qa-engineer"
+    timeout_hours: 12
+    depends_on:
+      - development
+    notify_channels:
+      - "qa-team-slack-channel-id-here"
+
+  - stage: security
+    description: Security review and vulnerability assessment
+    approvers:
+      - "@security-team-lead"
+    required: 1
+    optional: []
+    timeout_hours: 48
+    veto_power: true
+    notify_channels:
+      - "security-team-slack-channel-id-here"
+    auto_approve_conditions:
+      - patch_release: true
+      - no_breaking_changes: true
+      - all_tests_passing: true
+
+  - stage: release
+    description: Final release sign-off and deployment approval
+    approvers:
+      - "@release-manager"
+      - "@product-owner"
+    required: 2
+    optional: []
+    timeout_hours: 12
+    depends_on:
+      - development
+      - qa
+      - security
+    notify_channels:
+      - "release-team-slack-channel-id-here"
+
+# Approval policies
+policies:
+  # Auto-approve conditions for low-risk changes
+  auto_approve:
+    enabled: false
+    conditions:
+      - docs_only: true
+      - patch_version: true
+      - no_code_changes: true
+
+  # Escalation settings
+  escalation:
+    enabled: true
+    grace_period_hours: 12
+    escalate_to:
+      - "@engineering-manager"
+      - "@cto"
+
+  # Emergency release overrides
+  emergency_override:
+    enabled: true
+    requires_justification: true
+    approvers:
+      - "@cto"
+      - "@engineering-manager"
+    audit_required: true
+
+# Notification settings
+notifications:
+  slack:
+    enabled: true
+    webhook_url_secret: "SLACK_WEBHOOK_URL"
+    channels:
+      default: "releases-slack-channel-id-here"
+      urgent: "urgent-releases-slack-channel-id-here"
+
+  github:
+    enabled: true
+    create_issue: true
+    issue_labels:
+      - "release"
+      - "approval-required"
+    mention_approvers: true
+
+# Audit settings
+audit:
+  enabled: true
+  store_in_git: true
+  approval_records_dir: ".github/releases/approvals"
+  include_timestamps: true
+  include_comments: true

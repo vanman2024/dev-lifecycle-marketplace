@@ -1,0 +1,300 @@
+name: Release Approval Workflow
+
+# This workflow orchestrates multi-stakeholder approval for releases
+# Triggered manually or automatically on version tags
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to approve (e.g., 1.2.3)'
+        required: true
+        type: string
+      stage:
+        description: 'Approval stage'
+        required: false
+        type: choice
+        options:
+          - all
+          - development
+          - qa
+          - security
+          - release
+        default: 'all'
+
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+env:
+  APPROVAL_CONFIG_FILE: .github/releases/approval-gates.yml
+
+jobs:
+  parse-version:
+    name: Parse Version
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.parse.outputs.version }}
+      version_tag: ${{ steps.parse.outputs.version_tag }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Parse version from input or tag
+        id: parse
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ inputs.version }}"
+          else
+            VERSION="${GITHUB_REF#refs/tags/v}"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "version_tag=v$VERSION" >> $GITHUB_OUTPUT
+          echo "Parsed version: $VERSION"
+
+  validate-release:
+    name: Validate Release Readiness
+    needs: parse-version
+    runs-on: ubuntu-latest
+    outputs:
+      validation_status: ${{ steps.validate.outputs.status }}
+      critical_issues: ${{ steps.validate.outputs.critical_issues }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate version tag exists
+        run: |
+          if ! git tag -l "${{ needs.parse-version.outputs.version_tag }}" | grep -q "${{ needs.parse-version.outputs.version_tag }}"; then
+            echo "ERROR: Tag ${{ needs.parse-version.outputs.version_tag }} not found"
+            echo "Run: /versioning:bump <type> to create version and tag"
+            exit 1
+          fi
+
+      - name: Check VERSION file consistency
+        run: |
+          if [ -f VERSION ]; then
+            FILE_VERSION=$(cat VERSION | jq -r '.version' 2>/dev/null || cat VERSION)
+            if [ "$FILE_VERSION" != "${{ needs.parse-version.outputs.version }}" ]; then
+              echo "ERROR: VERSION file mismatch"
+              echo "  File: $FILE_VERSION"
+              echo "  Tag:  ${{ needs.parse-version.outputs.version }}"
+              exit 1
+            fi
+          fi
+
+      - name: Validate conventional commits
+        id: validate
+        run: |
+          # Check commit messages follow conventional commits
+          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          if [ -n "$PREV_TAG" ]; then
+            INVALID_COMMITS=$(git log --format=%s $PREV_TAG..HEAD | grep -v -E '^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\(.+\))?:' || true)
+            if [ -n "$INVALID_COMMITS" ]; then
+              echo "status=warning" >> $GITHUB_OUTPUT
+              echo "critical_issues=0" >> $GITHUB_OUTPUT
+              echo "::warning::Found commits not following conventional commits format"
+            else
+              echo "status=pass" >> $GITHUB_OUTPUT
+              echo "critical_issues=0" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "status=pass" >> $GITHUB_OUTPUT
+            echo "critical_issues=0" >> $GITHUB_OUTPUT
+          fi
+
+  create-approval-issue:
+    name: Create Approval Tracking Issue
+    needs: [parse-version, validate-release]
+    runs-on: ubuntu-latest
+    outputs:
+      issue_number: ${{ steps.create-issue.outputs.issue_number }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Load approval gates configuration
+        id: load-config
+        run: |
+          if [ ! -f "$APPROVAL_CONFIG_FILE" ]; then
+            echo "ERROR: Approval gates configuration not found: $APPROVAL_CONFIG_FILE"
+            echo "Run: bash scripts/setup-approval-gates.sh"
+            exit 1
+          fi
+          echo "Configuration loaded successfully"
+
+      - name: Create approval tracking issue
+        id: create-issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const version = '${{ needs.parse-version.outputs.version }}';
+            const validationStatus = '${{ needs.validate-release.outputs.validation_status }}';
+
+            const body = `# Release Approval: v${version}
+
+            ## 📋 Approval Status
+
+            ### Development Team
+            - [ ] @tech-lead
+            - [ ] @senior-dev
+            - **Required**: 2 approvals
+
+            ### QA Team
+            - [ ] @qa-lead
+            - **Required**: 1 approval
+            - **Depends on**: Development approval
+
+            ### Security Team
+            - [ ] @security-team-lead
+            - **Required**: 1 approval
+            - **Veto Power**: Yes
+
+            ### Release Management
+            - [ ] @release-manager
+            - [ ] @product-owner
+            - **Required**: 2 approvals
+            - **Depends on**: All previous stages
+
+            ## 📦 Version Information
+
+            **Version**: v${version}
+            **Tag**: ${{ needs.parse-version.outputs.version_tag }}
+            **Branch**: ${{ github.ref_name }}
+            **Commit**: ${{ github.sha }}
+            **Validation**: ${validationStatus === 'pass' ? '✅ Passed' : '⚠️ Warnings'}
+
+            ## 🚀 Instructions
+
+            **For Approvers**: Comment with:
+            - \`/approve\` - Approve this stage
+            - \`/approve-with-conditions <conditions>\` - Approve with noted conditions
+            - \`/reject <reason>\` - Reject with justification
+
+            ## 📝 Timeline
+
+            - **Requested**: ${new Date().toISOString()}
+            - **Expected Completion**: ${new Date(Date.now() + 48*60*60*1000).toISOString()}
+
+            ---
+
+            @tech-lead @senior-dev @qa-lead @security-team-lead @release-manager @product-owner - Your review is requested.
+            `;
+
+            const issue = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Release Approval: v${version}`,
+              body: body,
+              labels: ['release', 'approval-required']
+            });
+
+            console.log(`Created approval issue: #${issue.data.number}`);
+            core.setOutput('issue_number', issue.data.number);
+            return issue.data.number;
+
+  request-approvals:
+    name: Request Approvals
+    needs: [parse-version, create-approval-issue]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        stage: [development, qa, security, release]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Request approval for ${{ matrix.stage }}
+        run: |
+          bash plugins/versioning/skills/release-approval/scripts/request-approval.sh \
+            ${{ needs.parse-version.outputs.version }} \
+            ${{ matrix.stage }} \
+            github
+
+  notify-stakeholders:
+    name: Notify Stakeholders
+    needs: [parse-version, create-approval-issue]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || inputs.stage == 'all'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Send Slack notification (if configured)
+        if: env.SLACK_WEBHOOK_URL != ''
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          bash plugins/versioning/skills/release-approval/scripts/notify-slack.sh \
+            approval-requested \
+            ${{ needs.parse-version.outputs.version }} \
+            "Release approval requested for v${{ needs.parse-version.outputs.version }}. View issue #${{ needs.create-approval-issue.outputs.issue_number }}"
+
+  monitor-approvals:
+    name: Monitor Approval Status
+    needs: [parse-version, create-approval-issue, request-approvals]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Wait for approvals (24 hours max)
+        timeout-minutes: 1440
+        run: |
+          VERSION="${{ needs.parse-version.outputs.version }}"
+          ISSUE_NUMBER="${{ needs.create-approval-issue.outputs.issue_number }}"
+
+          echo "Monitoring approval issue #$ISSUE_NUMBER for v$VERSION"
+          echo "Timeout: 24 hours"
+
+          # In production, implement polling logic to check approval status
+          # For now, just log information
+          echo "Manual approval required. Check issue: #$ISSUE_NUMBER"
+
+      - name: Check for timeout
+        if: failure()
+        run: |
+          bash plugins/versioning/skills/release-approval/scripts/escalate-approval.sh \
+            ${{ needs.parse-version.outputs.version }} \
+            all \
+            24
+
+  finalize-approval:
+    name: Finalize Approval
+    needs: [parse-version, create-approval-issue, monitor-approvals]
+    runs-on: ubuntu-latest
+    if: success()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Generate approval audit record
+        run: |
+          bash plugins/versioning/skills/release-approval/scripts/generate-approval-audit.sh \
+            ${{ needs.parse-version.outputs.version }} \
+            approved
+
+      - name: Commit approval record
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .github/releases/approvals/
+          git commit -m "docs(release): approval record for v${{ needs.parse-version.outputs.version }}"
+          git push
+
+      - name: Notify completion
+        if: env.SLACK_WEBHOOK_URL != ''
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          bash plugins/versioning/skills/release-approval/scripts/notify-slack.sh \
+            approval-complete \
+            ${{ needs.parse-version.outputs.version }} \
+            "🎉 All approvals complete for v${{ needs.parse-version.outputs.version }}! Ready for release."

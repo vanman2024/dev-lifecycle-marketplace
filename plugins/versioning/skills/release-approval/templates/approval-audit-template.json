@@ -1,0 +1,108 @@
+{
+  "version": "1.0.0",
+  "requested_at": "2025-01-15T10:00:00Z",
+  "completed_at": "2025-01-15T14:30:00Z",
+  "final_decision": "approved",
+  "metadata": {
+    "git_commit": "abc123def456",
+    "git_branch": "main",
+    "generated_by": "generate-approval-audit.sh",
+    "generated_at": "2025-01-15T14:30:00Z"
+  },
+  "approvals": [
+    {
+      "stage": "development",
+      "approver": "tech-lead",
+      "decision": "approved",
+      "timestamp": "2025-01-15T11:00:00Z",
+      "comments": "All tests passing. Code review complete. Ready for QA.",
+      "metadata": {
+        "github_username": "tech-lead",
+        "approval_method": "github_issue_comment"
+      }
+    },
+    {
+      "stage": "development",
+      "approver": "senior-dev",
+      "decision": "approved",
+      "timestamp": "2025-01-15T11:15:00Z",
+      "comments": "Reviewed changes. No concerns. LGTM.",
+      "metadata": {
+        "github_username": "senior-dev",
+        "approval_method": "github_issue_comment"
+      }
+    },
+    {
+      "stage": "qa",
+      "approver": "qa-lead",
+      "decision": "approved_with_conditions",
+      "timestamp": "2025-01-15T13:00:00Z",
+      "comments": "All test suites passing. Minor UI issue #1234 logged but non-blocking. Approved with condition to monitor post-release.",
+      "conditions": [
+        "Monitor UI issue #1234 in production",
+        "Verify performance metrics meet SLA"
+      ],
+      "metadata": {
+        "github_username": "qa-lead",
+        "approval_method": "github_issue_comment",
+        "test_results": {
+          "unit_tests": "pass",
+          "integration_tests": "pass",
+          "e2e_tests": "pass",
+          "known_issues": ["#1234"]
+        }
+      }
+    },
+    {
+      "stage": "security",
+      "approver": "security-team-lead",
+      "decision": "approved",
+      "timestamp": "2025-01-15T14:00:00Z",
+      "comments": "Security review complete. No vulnerabilities detected. Dependencies up to date.",
+      "metadata": {
+        "github_username": "security-team-lead",
+        "approval_method": "github_issue_comment",
+        "security_scans": {
+          "dependency_audit": "pass",
+          "secret_detection": "pass",
+          "sast_scan": "pass",
+          "vulnerabilities_found": 0
+        }
+      }
+    },
+    {
+      "stage": "release",
+      "approver": "release-manager",
+      "decision": "approved",
+      "timestamp": "2025-01-15T14:20:00Z",
+      "comments": "All approvals obtained. Release checklist complete. Approved for production.",
+      "metadata": {
+        "github_username": "release-manager",
+        "approval_method": "github_issue_comment"
+      }
+    },
+    {
+      "stage": "release",
+      "approver": "product-owner",
+      "decision": "approved",
+      "timestamp": "2025-01-15T14:25:00Z",
+      "comments": "Feature requirements met. Documentation updated. Ready for release.",
+      "metadata": {
+        "github_username": "product-owner",
+        "approval_method": "github_issue_comment"
+      }
+    }
+  ],
+  "conditions": [
+    "Monitor UI issue #1234 post-release",
+    "Verify performance metrics meet SLA"
+  ],
+  "summary": {
+    "total_approvals_required": 6,
+    "total_approvals_received": 6,
+    "approval_rate": "100%",
+    "time_to_complete_hours": 4.5,
+    "stages_completed": ["development", "qa", "security", "release"],
+    "conditions_count": 2
+  }
+}

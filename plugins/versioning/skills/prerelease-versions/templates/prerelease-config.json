@@ -1,0 +1,132 @@
+{
+  "prerelease": {
+    "alpha": {
+      "branch_pattern": "alpha/*",
+      "auto_increment": true,
+      "testing_required": [
+        "unit",
+        "integration"
+      ],
+      "notification_channels": [
+        "slack-dev"
+      ],
+      "retention_days": 30,
+      "allowed_breaking_changes": true,
+      "docs_required": false,
+      "review_required": false,
+      "release_notes": {
+        "template": "alpha-version-tag.template",
+        "include_known_issues": true,
+        "include_breaking_changes": true
+      }
+    },
+    "beta": {
+      "branch_pattern": "beta/*",
+      "auto_increment": true,
+      "testing_required": [
+        "unit",
+        "integration",
+        "e2e"
+      ],
+      "notification_channels": [
+        "slack-qa",
+        "slack-dev"
+      ],
+      "retention_days": 90,
+      "allowed_breaking_changes": false,
+      "docs_required": true,
+      "review_required": true,
+      "feature_freeze": true,
+      "release_notes": {
+        "template": "beta-version-tag.template",
+        "include_known_issues": true,
+        "include_fixes": true,
+        "include_migration_guide": true
+      }
+    },
+    "rc": {
+      "branch_pattern": "release/*",
+      "auto_increment": true,
+      "testing_required": [
+        "unit",
+        "integration",
+        "e2e",
+        "performance",
+        "security"
+      ],
+      "notification_channels": [
+        "slack-releases",
+        "slack-qa",
+        "slack-leadership"
+      ],
+      "retention_days": 180,
+      "allowed_breaking_changes": false,
+      "docs_required": true,
+      "review_required": true,
+      "feature_freeze": true,
+      "code_freeze": true,
+      "stakeholder_approval_required": true,
+      "release_notes": {
+        "template": "rc-version-tag.template",
+        "include_critical_fixes": true,
+        "include_improvements": true,
+        "include_migration_guide": true,
+        "include_timeline": true
+      }
+    }
+  },
+  "automation": {
+    "github_actions": {
+      "enabled": true,
+      "workflow_file": ".github/workflows/prerelease.yml"
+    },
+    "notifications": {
+      "slack": {
+        "enabled": true,
+        "webhook_url_secret": "SLACK_WEBHOOK_URL"
+      },
+      "email": {
+        "enabled": false,
+        "recipients": []
+      }
+    },
+    "testing": {
+      "parallel": true,
+      "fail_fast": false,
+      "coverage_threshold": 80
+    }
+  },
+  "version_management": {
+    "files_to_update": [
+      "VERSION",
+      "package.json",
+      "pyproject.toml"
+    ],
+    "changelog_file": "CHANGELOG.md",
+    "tag_prefix": "v",
+    "create_annotated_tags": true
+  },
+  "promotion_rules": {
+    "alpha_to_beta": {
+      "min_alpha_releases": 3,
+      "days_since_last_alpha": 7,
+      "all_tests_passing": true,
+      "feature_complete": true
+    },
+    "beta_to_rc": {
+      "min_beta_releases": 2,
+      "days_since_last_beta": 14,
+      "all_tests_passing": true,
+      "no_critical_bugs": true,
+      "docs_complete": true
+    },
+    "rc_to_stable": {
+      "min_rc_releases": 1,
+      "days_since_last_rc": 7,
+      "all_tests_passing": true,
+      "no_critical_bugs": true,
+      "stakeholder_approval": true,
+      "production_tested": true
+    }
+  }
+}

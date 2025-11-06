@@ -1,0 +1,245 @@
+name: Release Approval with Slack Integration
+
+# Enhanced approval workflow with Slack notifications
+# Sends real-time updates to Slack channels for approval events
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to approve (e.g., 1.2.3)'
+        required: true
+        type: string
+
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+env:
+  APPROVAL_CONFIG_FILE: .github/releases/approval-gates.yml
+
+jobs:
+  initialize:
+    name: Initialize Approval Workflow
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.parse.outputs.version }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Parse version
+        id: parse
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ inputs.version }}"
+          else
+            VERSION="${GITHUB_REF#refs/tags/v}"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Notify Slack - Workflow Started
+        if: env.SLACK_WEBHOOK_URL != ''
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          curl -X POST "$SLACK_WEBHOOK_URL" \
+            -H 'Content-Type: application/json' \
+            -d '{
+              "text": "🚀 Release Approval Workflow Started",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "🚀 Release Approval Workflow Started"
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Version:*\nv${{ steps.parse.outputs.version }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Status:*\nInitializing..."
+                    }
+                  ]
+                },
+                {
+                  "type": "context",
+                  "elements": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "Triggered by: ${{ github.actor }} | <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Workflow>"
+                    }
+                  ]
+                }
+              ]
+            }'
+
+  request-development-approval:
+    name: Request Development Approval
+    needs: initialize
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Request development approval
+        run: |
+          bash plugins/versioning/skills/release-approval/scripts/request-approval.sh \
+            ${{ needs.initialize.outputs.version }} \
+            development \
+            both
+
+      - name: Notify Slack - Development Stage
+        if: env.SLACK_WEBHOOK_URL != ''
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          bash plugins/versioning/skills/release-approval/scripts/notify-slack.sh \
+            approval-requested \
+            ${{ needs.initialize.outputs.version }} \
+            "🔔 *Development Team Review Requested*\n\nApprovers: @tech-lead @senior-dev\nRequired: 2 approvals\n\nPlease review and approve in GitHub."
+
+  request-qa-approval:
+    name: Request QA Approval
+    needs: [initialize, request-development-approval]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Request QA approval
+        run: |
+          bash plugins/versioning/skills/release-approval/scripts/request-approval.sh \
+            ${{ needs.initialize.outputs.version }} \
+            qa \
+            both
+
+      - name: Notify Slack - QA Stage
+        if: env.SLACK_WEBHOOK_URL != ''
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          bash plugins/versioning/skills/release-approval/scripts/notify-slack.sh \
+            approval-requested \
+            ${{ needs.initialize.outputs.version }} \
+            "🔔 *QA Team Review Requested*\n\nApprover: @qa-lead\nRequired: 1 approval\nDepends on: Development approval\n\nPlease review and approve in GitHub."
+
+  request-security-approval:
+    name: Request Security Approval
+    needs: [initialize, request-development-approval]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Request security approval
+        run: |
+          bash plugins/versioning/skills/release-approval/scripts/request-approval.sh \
+            ${{ needs.initialize.outputs.version }} \
+            security \
+            both
+
+      - name: Notify Slack - Security Stage
+        if: env.SLACK_WEBHOOK_URL != ''
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          bash plugins/versioning/skills/release-approval/scripts/notify-slack.sh \
+            approval-requested \
+            ${{ needs.initialize.outputs.version }} \
+            "🔔 *Security Team Review Requested*\n\nApprover: @security-team-lead\nRequired: 1 approval\nVeto Power: Yes\n\nPlease review and approve in GitHub."
+
+  request-release-approval:
+    name: Request Release Approval
+    needs: [initialize, request-development-approval, request-qa-approval, request-security-approval]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Request release approval
+        run: |
+          bash plugins/versioning/skills/release-approval/scripts/request-approval.sh \
+            ${{ needs.initialize.outputs.version }} \
+            release \
+            both
+
+      - name: Notify Slack - Release Stage
+        if: env.SLACK_WEBHOOK_URL != ''
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          bash plugins/versioning/skills/release-approval/scripts/notify-slack.sh \
+            approval-requested \
+            ${{ needs.initialize.outputs.version }} \
+            "🔔 *Release Management Review Requested*\n\nApprovers: @release-manager @product-owner\nRequired: 2 approvals\nDepends on: All previous stages\n\nPlease review and approve in GitHub."
+
+  check-timeout:
+    name: Check for Timeout (24 hours)
+    needs: [initialize, request-development-approval]
+    runs-on: ubuntu-latest
+    if: failure()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Handle timeout escalation
+        run: |
+          bash plugins/versioning/skills/release-approval/scripts/escalate-approval.sh \
+            ${{ needs.initialize.outputs.version }} \
+            all \
+            24
+
+      - name: Notify Slack - Timeout
+        if: env.SLACK_WEBHOOK_URL != ''
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          bash plugins/versioning/skills/release-approval/scripts/notify-slack.sh \
+            approval-timeout \
+            ${{ needs.initialize.outputs.version }} \
+            "⏰ *APPROVAL TIMEOUT*\n\nRelease approval has exceeded 24-hour threshold.\nEscalated to: @engineering-manager @cto\n\nImmediate action required."
+
+  finalize:
+    name: Finalize Approval
+    needs: [initialize, request-release-approval]
+    runs-on: ubuntu-latest
+    if: success()
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Generate approval audit
+        run: |
+          bash plugins/versioning/skills/release-approval/scripts/generate-approval-audit.sh \
+            ${{ needs.initialize.outputs.version }} \
+            approved
+
+      - name: Commit approval record
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .github/releases/approvals/
+          git commit -m "docs(release): approval record for v${{ needs.initialize.outputs.version }}" || echo "No changes to commit"
+          git push || echo "No changes to push"
+
+      - name: Notify Slack - Approval Complete
+        if: env.SLACK_WEBHOOK_URL != ''
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          bash plugins/versioning/skills/release-approval/scripts/notify-slack.sh \
+            approval-complete \
+            ${{ needs.initialize.outputs.version }} \
+            "🎉 *All Approvals Complete!*\n\nRelease v${{ needs.initialize.outputs.version }} has been approved by all stakeholders.\n\nReady for production deployment! 🚀"

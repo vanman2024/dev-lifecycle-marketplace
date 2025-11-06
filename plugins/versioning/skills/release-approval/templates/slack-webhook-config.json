@@ -1,0 +1,51 @@
+{
+  "webhook_url": "https://hooks.slack.com/services/YOUR/WEBHOOK/HERE",
+  "notification_config": {
+    "approval_requested": {
+      "enabled": true,
+      "channel": "releases-channel-id-here",
+      "mentions": ["@channel"],
+      "priority": "high"
+    },
+    "approval_granted": {
+      "enabled": true,
+      "channel": "releases-channel-id-here",
+      "mentions": [],
+      "priority": "normal"
+    },
+    "approval_denied": {
+      "enabled": true,
+      "channel": "releases-channel-id-here",
+      "mentions": ["@release-manager"],
+      "priority": "high"
+    },
+    "approval_timeout": {
+      "enabled": true,
+      "channel": "urgent-releases-channel-id-here",
+      "mentions": ["@engineering-manager", "@cto"],
+      "priority": "urgent"
+    },
+    "approval_complete": {
+      "enabled": true,
+      "channel": "releases-channel-id-here",
+      "mentions": ["@channel"],
+      "priority": "normal"
+    }
+  },
+  "formatting": {
+    "use_blocks": true,
+    "include_buttons": true,
+    "include_metadata": true,
+    "color_coding": {
+      "success": "#2eb886",
+      "warning": "#ffc107",
+      "error": "#dc3545",
+      "info": "#17a2b8"
+    }
+  },
+  "security": {
+    "store_url_in_github_secrets": true,
+    "secret_name": "SLACK_WEBHOOK_URL",
+    "never_commit_real_webhook": true
+  }
+}

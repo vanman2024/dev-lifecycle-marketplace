@@ -1,0 +1,282 @@
+# GitHub Actions / GitLab CI workflow for automated breaking change detection
+
+# ============================================
+# GitHub Actions Version
+# ============================================
+# File: .github/workflows/breaking-change-detection.yml
+
+name: Breaking Change Detection
+
+on:
+  pull_request:
+    branches: [main, master, develop]
+    paths:
+      - 'api/**'
+      - 'schema/**'
+      - 'migrations/**'
+      - '*.proto'
+      - '*.graphql'
+  push:
+    branches: [main, master]
+
+jobs:
+  detect-breaking-changes:
+    name: Detect Breaking Changes
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for comparison
+
+      - name: Setup dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq diffutils
+          pip install yq
+
+      - name: Detect base branch
+        id: base
+        run: |
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            echo "ref=${{ github.base_ref }}" >> $GITHUB_OUTPUT
+            echo "sha=${{ github.event.pull_request.base.sha }}" >> $GITHUB_OUTPUT
+          else
+            echo "ref=HEAD~1" >> $GITHUB_OUTPUT
+            echo "sha=$(git rev-parse HEAD~1)" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Extract old specs
+        run: |
+          git checkout ${{ steps.base.outputs.sha }}
+          mkdir -p /tmp/old
+          cp -r api/* /tmp/old/ || true
+          cp -r schema/* /tmp/old/ || true
+          git checkout -
+
+      - name: Extract new specs
+        run: |
+          mkdir -p /tmp/new
+          cp -r api/* /tmp/new/ || true
+          cp -r schema/* /tmp/new/ || true
+
+      - name: Run OpenAPI diff
+        id: api-diff
+        continue-on-error: true
+        run: |
+          if [ -f "/tmp/old/openapi.yaml" ] && [ -f "/tmp/new/openapi.yaml" ]; then
+            bash plugins/versioning/skills/breaking-change-detection/scripts/openapi-diff.sh \
+              /tmp/old/openapi.yaml \
+              /tmp/new/openapi.yaml \
+              --output /tmp/api-breaking-changes.md
+            echo "api_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "api_changes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run schema diff
+        id: schema-diff
+        continue-on-error: true
+        run: |
+          if [ -f "/tmp/old/schema.sql" ] && [ -f "/tmp/new/schema.sql" ]; then
+            bash plugins/versioning/skills/breaking-change-detection/scripts/schema-compare.sh \
+              /tmp/old/schema.sql \
+              /tmp/new/schema.sql \
+              --output /tmp/schema-breaking-changes.md
+            echo "schema_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "schema_changes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run comprehensive analysis
+        id: analyze
+        run: |
+          bash plugins/versioning/skills/breaking-change-detection/scripts/analyze-breaking.sh \
+            --old-api /tmp/old/openapi.yaml \
+            --new-api /tmp/new/openapi.yaml \
+            --old-schema /tmp/old/schema.sql \
+            --new-schema /tmp/new/schema.sql \
+            --output /tmp/breaking-changes-report.md || echo "exit_code=$?" >> $GITHUB_OUTPUT
+
+      - name: Upload breaking changes report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: breaking-changes-report
+          path: /tmp/breaking-changes-report.md
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request' && steps.analyze.outputs.exit_code == '1'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('/tmp/breaking-changes-report.md', 'utf8');
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## ⚠️ Breaking Changes Detected\n\n${report}\n\n**Action Required:** This PR introduces breaking changes that require a MAJOR version bump.`
+            });
+
+      - name: Check version bump
+        if: github.event_name == 'pull_request' && steps.analyze.outputs.exit_code == '1'
+        run: |
+          # Extract old and new versions
+          OLD_VERSION=$(git show ${{ steps.base.outputs.sha }}:VERSION | jq -r '.version')
+          NEW_VERSION=$(cat VERSION | jq -r '.version')
+
+          # Parse semantic versions
+          OLD_MAJOR=$(echo $OLD_VERSION | cut -d. -f1)
+          NEW_MAJOR=$(echo $NEW_VERSION | cut -d. -f1)
+
+          echo "Old version: $OLD_VERSION"
+          echo "New version: $NEW_VERSION"
+
+          # Verify major version was bumped
+          if [ "$NEW_MAJOR" -le "$OLD_MAJOR" ]; then
+            echo "❌ ERROR: Breaking changes detected but major version not bumped!"
+            echo "Expected: $((OLD_MAJOR + 1)).0.0"
+            echo "Got: $NEW_VERSION"
+            exit 1
+          else
+            echo "✅ Major version correctly bumped: $OLD_VERSION → $NEW_VERSION"
+          fi
+
+      - name: Fail if breaking changes without major bump
+        if: steps.analyze.outputs.exit_code == '1'
+        run: exit 1
+
+# ============================================
+# GitLab CI Version
+# ============================================
+# File: .gitlab-ci.yml
+
+breaking-change-detection:
+  stage: test
+  image: ubuntu:latest
+
+  before_script:
+    - apt-get update
+    - apt-get install -y git jq python3-pip
+    - pip3 install yq
+
+  script:
+    # Detect base branch
+    - |
+      if [ -n "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" ]; then
+        BASE_BRANCH="origin/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
+      else
+        BASE_BRANCH="HEAD~1"
+      fi
+
+    # Extract old specs
+    - git fetch origin $BASE_BRANCH
+    - git checkout $BASE_BRANCH
+    - mkdir -p /tmp/old
+    - cp -r api/* /tmp/old/ || true
+    - cp -r schema/* /tmp/old/ || true
+    - git checkout -
+
+    # Extract new specs
+    - mkdir -p /tmp/new
+    - cp -r api/* /tmp/new/ || true
+    - cp -r schema/* /tmp/new/ || true
+
+    # Run analysis
+    - |
+      bash plugins/versioning/skills/breaking-change-detection/scripts/analyze-breaking.sh \
+        --old-api /tmp/old/openapi.yaml \
+        --new-api /tmp/new/openapi.yaml \
+        --old-schema /tmp/old/schema.sql \
+        --new-schema /tmp/new/schema.sql \
+        --output /tmp/breaking-changes-report.md || EXIT_CODE=$?
+
+    # Post to merge request
+    - |
+      if [ -n "$CI_MERGE_REQUEST_IID" ] && [ "$EXIT_CODE" == "1" ]; then
+        REPORT=$(cat /tmp/breaking-changes-report.md)
+        curl --request POST \
+          --header "PRIVATE-TOKEN: $CI_JOB_TOKEN" \
+          --data "body=## ⚠️ Breaking Changes Detected\n\n$REPORT" \
+          "$CI_API_V4_URL/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID/notes"
+      fi
+
+    # Check version bump
+    - |
+      if [ "$EXIT_CODE" == "1" ]; then
+        OLD_VERSION=$(git show $BASE_BRANCH:VERSION | jq -r '.version')
+        NEW_VERSION=$(cat VERSION | jq -r '.version')
+        OLD_MAJOR=$(echo $OLD_VERSION | cut -d. -f1)
+        NEW_MAJOR=$(echo $NEW_VERSION | cut -d. -f1)
+
+        if [ "$NEW_MAJOR" -le "$OLD_MAJOR" ]; then
+          echo "❌ Breaking changes detected but major version not bumped!"
+          exit 1
+        fi
+      fi
+
+  artifacts:
+    paths:
+      - /tmp/breaking-changes-report.md
+    when: always
+    expire_in: 30 days
+
+  only:
+    - merge_requests
+    - main
+    - master
+
+# ============================================
+# CircleCI Version
+# ============================================
+# File: .circleci/config.yml
+
+version: 2.1
+
+jobs:
+  breaking-change-detection:
+    docker:
+      - image: cimg/base:stable
+
+    steps:
+      - checkout
+
+      - run:
+          name: Install dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y jq
+            pip install yq
+
+      - run:
+          name: Detect breaking changes
+          command: |
+            # Get base branch
+            BASE_BRANCH=${CIRCLE_BRANCH:-main}
+
+            # Extract specs
+            git checkout origin/$BASE_BRANCH
+            mkdir -p /tmp/old
+            cp -r api/* /tmp/old/ || true
+            git checkout -
+
+            mkdir -p /tmp/new
+            cp -r api/* /tmp/new/ || true
+
+            # Run analysis
+            bash plugins/versioning/skills/breaking-change-detection/scripts/analyze-breaking.sh \
+              --old-api /tmp/old/openapi.yaml \
+              --new-api /tmp/new/openapi.yaml \
+              --output /tmp/breaking-changes-report.md
+
+      - store_artifacts:
+          path: /tmp/breaking-changes-report.md
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - breaking-change-detection
