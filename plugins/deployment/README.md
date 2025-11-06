@@ -353,7 +353,11 @@ This plugin includes pre-configured MCP servers for enhanced observability capab
 
 ### Sentry MCP Server
 
-The Sentry MCP server enables direct integration with Sentry error tracking:
+The Sentry MCP server enables direct integration with Sentry error tracking.
+
+**Two Options:**
+- **Sentry Cloud** (Paid) - Hosted by Sentry, starts free then $26+/month
+- **Self-Hosted Sentry** (Free) - Run on your own infrastructure, unlimited
 
 **Configuration:** `.mcp.json`
 
@@ -363,9 +367,10 @@ The Sentry MCP server enables direct integration with Sentry error tracking:
 - Analyze error patterns across deployments
 - Track deployment impact on error rates
 
-**Setup:**
-1. Get Sentry auth token: https://sentry.io/settings/account/api/auth-tokens/
-2. Add credentials to Doppler (recommended) or environment:
+**Setup Option A: Sentry Cloud (Paid)**
+1. Create account: https://sentry.io/signup/
+2. Get auth token: https://sentry.io/settings/account/api/auth-tokens/
+3. Add credentials to Doppler:
 
    **Option A: Using Doppler (Recommended)**
    ```bash
@@ -386,6 +391,50 @@ The Sentry MCP server enables direct integration with Sentry error tracking:
 
 3. The MCP server auto-loads when deployment plugin is active
 4. Variables are injected from Doppler when using `doppler run --`
+
+**Setup Option B: Self-Hosted Sentry (Free, Unlimited)**
+1. Run setup script:
+   ```bash
+   ./plugins/deployment/skills/health-checks/scripts/setup-sentry-self-hosted.sh
+   ```
+2. This will:
+   - Install Sentry via Docker (~20GB disk, 4GB RAM minimum)
+   - Start Sentry on http://localhost:9000
+   - Create admin user during installation
+3. Access Sentry UI: http://localhost:9000
+4. Create organization and project
+5. Get DSN from project settings
+6. Add to Doppler:
+   ```bash
+   doppler secrets set SENTRY_DSN="http://public@localhost:9000/1" --config dev
+   doppler secrets set SENTRY_URL="http://localhost:9000" --config dev
+   doppler secrets set SENTRY_ORG_SLUG="your-org" --config dev
+   doppler secrets set SENTRY_PROJECT_SLUG="your-project" --config dev
+   doppler secrets set SENTRY_AUTH_TOKEN="your-token" --config dev
+   ```
+7. Update `.sentryclirc` to point to self-hosted:
+   ```ini
+   [auth]
+   token=${SENTRY_AUTH_TOKEN}
+
+   [defaults]
+   url=http://localhost:9000
+   org=your-org-slug
+   project=your-project-slug
+   ```
+
+**Self-Hosted Benefits:**
+- ✅ 100% Free, unlimited events
+- ✅ Full control over data (privacy)
+- ✅ No quotas or seat limits
+- ✅ Works with same MCP server, CLI, and SDK
+- ✅ Can expose via ngrok or deploy to VPS for production
+
+**Production Self-Hosted:**
+- Deploy to DigitalOcean droplet ($6/month)
+- Or use existing server/VPS
+- Expose via reverse proxy (nginx)
+- Use real domain: https://sentry.yourdomain.com
 
 **Usage:**
 - `/deployment:setup-monitoring sentry` - Configures Sentry integration
