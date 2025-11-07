@@ -1,5 +1,8 @@
 ---
-allowed-tools: Bash, Read, Write, Edit
+name: version-bumper
+description: Calculate new versions, generate changelogs, update version files, create git commits and tags
+model: inherit
+color: blue
 ---
 
 # version-bumper Agent

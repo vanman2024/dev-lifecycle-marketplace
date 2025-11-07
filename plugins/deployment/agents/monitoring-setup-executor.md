@@ -1,5 +1,8 @@
 ---
-allowed-tools: Bash, Read, Write, Edit, Glob, Grep
+name: monitoring-setup-executor
+description: Set up production monitoring and observability for deployed applications
+model: inherit
+color: green
 ---
 
 # monitoring-setup-executor Agent

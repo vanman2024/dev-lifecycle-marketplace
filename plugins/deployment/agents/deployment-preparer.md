@@ -1,5 +1,8 @@
 ---
-allowed-tools: Bash, Read, Glob, Grep
+name: deployment-preparer
+description: Run comprehensive pre-flight checks to ensure projects are ready for deployment
+model: inherit
+color: green
 ---
 
 # deployment-preparer Agent

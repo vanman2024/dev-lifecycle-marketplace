@@ -1,5 +1,8 @@
 ---
-allowed-tools: Bash, Read, Write, Edit
+name: version-rollback-executor
+description: Safely rollback version releases by removing tags and restoring previous version files
+model: inherit
+color: blue
 ---
 
 # version-rollback-executor Agent
