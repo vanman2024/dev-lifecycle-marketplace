@@ -80,6 +80,18 @@ Read: ~/.claude/plugins/marketplaces/domain-plugin-builder/plugins/domain-plugin
     - Agent just analyzes, validates, or processes with basic tools
     - Agent does one thing (scan files, report findings)
     - Example: Validator that reads files and writes report
+- **Detect parallelization opportunities**:
+  - Count sequential SlashCommand() invocations in agent body
+  - If agent chains 3+ slash commands sequentially, analyze dependencies:
+    - **Independent operations** (can run in parallel):
+      - Example: /nextjs:build + /fastapi:init + /supabase:init
+      - No dependencies between operations
+      - Flag: "⚡ Chains 3+ independent commands - should use Task(agents) for parallel execution (faster)"
+    - **Dependent operations** (must run sequentially):
+      - Example: /create → /configure → /validate (each needs previous result)
+      - Operations depend on previous step completion
+      - Note: "✅ Sequential chaining appropriate - operations are dependent"
+  - **Why this matters**: Sequential chaining is SLOW (18 min), parallel agents are FAST (10 min)
 - **Check Airtable**: Do referenced commands exist in Commands table?
 - **Verify section flag**: Is "Has Slash Commands Section" checkbox accurate?
 
@@ -218,13 +230,14 @@ Before completing audit:
 - ✅ Loaded Dan's Composition Pattern for reference
 - ✅ Checked frontmatter for prohibited `tools:` field (agents inherit tools)
 - ✅ Analyzed slash commands (actual usage + should use based on multi-step workflow)
+- ✅ Detected parallelization opportunities (3+ independent commands → should use Task(agents))
 - ✅ Validated skills against Dan's Pattern (3+ operations managing domain)
 - ✅ Checked if skills compose commands (not replace them)
 - ✅ Validated skill completeness on filesystem (SKILL.md + scripts/ + templates/ + examples/)
 - ✅ Analyzed MCP servers (actual usage + should use)
 - ✅ Considered applicable hooks
 - ✅ Verified section flags accuracy
-- ✅ Flagged architectural violations (skills for 1 operation, missing composition)
+- ✅ Flagged architectural violations (skills for 1 operation, missing composition, command chaining)
 - ✅ Written findings to Airtable Notes field
 - ✅ Findings are concise and actionable
 
@@ -268,5 +281,10 @@ MCP SERVER (External Integration) ← External APIs/data
 - ❌ Agent with `tools:` field in frontmatter (agents inherit tools)
 - ❌ Multi-step agent without slash commands section
 - ❌ Skills missing scripts/, templates/, or examples/ directories
+- ⚡ Agent chains 3+ independent slash commands (should use Task(agents) for parallel execution)
+
+**Parallelization Pattern:**
+- Sequential chaining (slow): cmd1 → WAIT → cmd2 → WAIT → cmd3 (18 min)
+- Parallel agents (fast): Task(agent1), Task(agent2), Task(agent3) → all report back (10 min)
 
 **Remember:** Start simple. Add complexity only when needed.
