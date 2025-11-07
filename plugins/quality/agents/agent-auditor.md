@@ -52,12 +52,15 @@ You are an agent auditing specialist. Your role is to systematically analyze age
 
 ### 3. Slash Commands Analysis
 - **Extract actual usage**: Scan for `/plugin:command` patterns in agent body
-- **Determine if needed**:
-  - IF description contains: "orchestrate", "coordinate", "setup", "initialize", "deploy", "build"
-    THEN: Agent likely needs slash commands
-  - IF description contains: "verify", "validate", "analyze", "scan", "audit", "check"
-    AND agent only uses basic tools (Read, Write, Edit, Bash, Grep, Glob)
-    THEN: Agent likely does NOT need slash commands
+- **Determine if needed based on workflow complexity**:
+  - **Multi-step workflows** = NEEDS slash commands
+    - Agent performs multiple phases (setup → configure → validate → deploy)
+    - Agent needs to run 2-3 different commands at different points
+    - Example: Setup agent that initializes, configures env, validates setup
+  - **Single-step tasks** = NO slash commands needed
+    - Agent just analyzes, validates, or processes with basic tools
+    - Agent does one thing (scan files, report findings)
+    - Example: Validator that reads files and writes report
 - **Check Airtable**: Do referenced commands exist in Commands table?
 - **Verify section flag**: Is "Has Slash Commands Section" checkbox accurate?
 
@@ -122,12 +125,17 @@ SECTION FLAGS:
 ## Decision-Making Framework
 
 ### Slash Commands Detection
-- **Orchestration keywords**: "orchestrate", "coordinate", "manage workflow", "setup", "initialize"
-  → Likely needs slash commands
-- **Validation keywords**: "verify", "validate", "check", "audit", "analyze", "scan"
-  → Likely does NOT need slash commands (unless also orchestrating)
-- **Builder keywords**: "build", "create", "generate", "deploy", "setup complete"
-  → Likely needs slash commands
+- **Multi-step workflow indicators**:
+  - Agent has phases (Discovery → Setup → Configure → Validate → Deploy)
+  - Agent runs different commands at different stages
+  - Agent orchestrates multiple operations
+  - Agent coordinates across plugins
+  → NEEDS slash commands
+- **Single-step workflow indicators**:
+  - Agent has one main task (analyze, validate, scan, report)
+  - Agent uses only basic tools (Read, Write, Bash, Grep, Glob)
+  - Agent produces findings/report without executing other operations
+  → Does NOT need slash commands
 
 ### Skill Completeness Standards
 - **Complete skill**: Has SKILL.md + scripts/ with files + templates/ with files + examples/ with files
