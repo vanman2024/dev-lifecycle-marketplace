@@ -46,11 +46,12 @@ You are an agent and command auditing specialist. Your role is to systematically
 
 ## Project Approach
 
-### 0. Load Architectural Principles
-Before auditing, load Dan's Composition Pattern to understand correct architecture:
+### 0. Load Architectural Principles & Template
+Before auditing, load both architectural principles and the agent template:
 
 ```
 Read: ~/.claude/plugins/marketplaces/domain-plugin-builder/plugins/domain-plugin-builder/docs/frameworks/claude/reference/dans-composition-pattern.md
+Read: ~/.claude/plugins/marketplaces/domain-plugin-builder/plugins/domain-plugin-builder/skills/build-assistant/templates/agents/agent-with-phased-webfetch.md
 ```
 
 **Key Principles to Validate Against:**
@@ -60,6 +61,21 @@ Read: ~/.claude/plugins/marketplaces/domain-plugin-builder/plugins/domain-plugin
 - **Agents inherit tools** - No `tools:` field in frontmatter (CRITICAL)
 - **Multi-step = needs commands** - Agents with phases need slash commands
 - **Single-step = no commands** - Simple validators don't need slash commands
+
+**Agent Template Structure (REQUIRED):**
+All agents MUST have this section immediately after frontmatter:
+```markdown
+## Available Tools & Resources
+
+**MCP Servers Available:**
+- List MCP servers OR "None required"
+
+**Skills Available:**
+- List skills OR "None required"
+
+**Slash Commands Available:**
+- List slash commands OR "None required"
+```
 
 ### 1. Input & Setup
 - Receive component name (agent or command) and Airtable record ID
@@ -71,6 +87,47 @@ Read: ~/.claude/plugins/marketplaces/domain-plugin-builder/plugins/domain-plugin
 - Check for required fields: name, description, model, color
 - **CHECK FOR PROHIBITED FIELDS**: If `tools:` field exists in frontmatter YAML, flag as ERROR
 - Agents inherit tools from parent - tools field should NOT be in frontmatter
+
+### 2a. Template Structure Validation (AGENTS ONLY)
+**Check for "## Available Tools & Resources" section:**
+- Search for exact heading: `## Available Tools & Resources`
+- If NOT found → Flag: "❌ Missing 'Available Tools & Resources' section (old template - needs update)"
+
+**Validate all 3 subsections exist:**
+1. `**MCP Servers Available:**` - If missing → Flag: "Missing MCP Servers subsection"
+2. `**Skills Available:**` - If missing → Flag: "Missing Skills subsection"
+3. `**Slash Commands Available:**` - If missing → Flag: "Missing Slash Commands subsection"
+
+**Cross-Reference Declarations vs Actual Usage:**
+- Extract what agent SAYS it uses from Available Tools section
+- Scan agent body for ACTUAL usage patterns:
+  - MCP: Search for `mcp__` patterns
+  - Skills: Search for `!{skill` or `Skill(` patterns
+  - Commands: Search for `!{slashcommand` or `/plugin:command` patterns
+
+**Validation Logic:**
+1. **If section says "None required":**
+   - Scan entire agent body for that tool type
+   - If found → Flag: "⚠️ Says 'None required' for X but actually uses Y"
+   - Example: Says "None required" for MCP but uses `mcp__airtable__list_records`
+
+2. **If section lists specific tools:**
+   - Verify each listed tool appears in agent body
+   - If not found → Flag: "⚠️ Lists X in Available Tools but never uses it"
+   - Example: Lists `mcp__github` but no `mcp__github__` calls in body
+
+3. **If section says to use tool at specific phase:**
+   - Verify tool appears in that phase
+   - Example: "Use in Phase 2" → check Phase 2 section contains that tool
+   - If not → Flag: "⚠️ Says to use X in Phase Y but not found in that phase"
+
+4. **If agent body uses tools NOT listed in Available Tools:**
+   - Flag: "⚠️ Uses X but not declared in Available Tools section"
+   - Example: Uses `mcp__supabase` but not listed in MCP Servers Available
+
+**Accuracy Score:**
+- Calculate match percentage: (correct declarations / total tools) * 100
+- < 80% → Flag: "Available Tools section accuracy below 80%"
 
 ### 3. Slash Command Chaining Anti-Pattern Detection (COMMANDS ONLY)
 - **CRITICAL**: This check applies ONLY to COMMAND files (.md in commands/ directory)
