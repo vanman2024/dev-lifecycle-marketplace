@@ -1,7 +1,6 @@
 ---
 description: Enhance existing features - add improvements and optimizations to existing features
 argument-hint: feature-name
-allowed-tools: Task, Read, Write, Edit, Bash, Glob, Grep, AskUserQuestion
 ---
 ## Available Skills
 

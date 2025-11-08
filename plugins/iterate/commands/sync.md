@@ -1,7 +1,6 @@
 ---
 description: Sync specs with implementation - update specs, tasks, and docs to match current code state
 argument-hint: [feature-area]
-allowed-tools: Task, Read, Write, Edit, Bash, Glob, Grep, TodoWrite
 ---
 ## Available Skills
 

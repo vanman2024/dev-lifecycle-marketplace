@@ -1,7 +1,6 @@
 ---
 description: Install standardized git hooks (secret scanning, commit message validation, security checks) and GitHub Actions security workflow
 argument-hint: [project-path]
-allowed-tools: Read, Write, Bash, Glob
 ---
 
 ## Security Requirements

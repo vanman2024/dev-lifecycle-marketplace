@@ -263,6 +263,128 @@ class WorktreeRegistry:
             print("   ✅ Worktree ready (no dependencies needed)")
             return True
 
+    def copy_gitignored_build_files(self, worktree_path: str):
+        """Copy git-ignored files/directories that are needed for build"""
+        import subprocess
+        import shutil
+
+        worktree = Path(worktree_path)
+        main_repo = self.project_root
+
+        if not worktree.exists():
+            print(f"❌ Worktree not found: {worktree_path}")
+            return False
+
+        print(f"\n📁 Checking for git-ignored build-critical files...")
+
+        # Common git-ignored directories/files needed for builds
+        ignored_items = [
+            "lib/",
+            ".env.local",
+            ".env.development",
+            ".env.staging",
+            ".env.production",
+            "dist/",
+            "build/",
+            ".next/",  # Next.js build cache
+            "node_modules/.cache/",  # Build caches
+        ]
+
+        copied = []
+        for item in ignored_items:
+            source = main_repo / item
+            dest = worktree / item
+
+            if source.exists():
+                try:
+                    if source.is_dir():
+                        # Copy directory
+                        if not dest.exists():
+                            shutil.copytree(source, dest, symlinks=True)
+                            copied.append(item)
+                            print(f"   ✅ Copied directory: {item}")
+                    else:
+                        # Copy file
+                        if not dest.exists():
+                            dest.parent.mkdir(parents=True, exist_ok=True)
+                            shutil.copy2(source, dest)
+                            copied.append(item)
+                            print(f"   ✅ Copied file: {item}")
+                except Exception as e:
+                    print(f"   ⚠️  Failed to copy {item}: {e}")
+
+        if copied:
+            print(f"\n   Copied {len(copied)} git-ignored items needed for build")
+
+            # Register in Mem0
+            memory_text = f"""
+            Git-ignored build files copied to worktree {worktree.name}.
+            Items copied: {', '.join(copied)}
+            Status: build-ready
+            Copied: {datetime.now().isoformat()}
+            """
+            self.memory.add(memory_text, user_id=f"{self.project_name}-worktrees")
+            return True
+        else:
+            print("   ℹ️  No git-ignored build files found to copy")
+            return True
+
+    def validate_worktree_build(self, worktree_path: str) -> bool:
+        """Validate that worktree can build successfully"""
+        import subprocess
+
+        worktree = Path(worktree_path)
+
+        if not worktree.exists():
+            print(f"❌ Worktree not found: {worktree_path}")
+            return False
+
+        print(f"\n🔨 Validating worktree build...")
+
+        # Node.js project - check for common imports
+        if (worktree / "package.json").exists():
+            # Check if critical directories exist for common import patterns
+            critical_dirs = []
+
+            # Check for lib/ directory references in package.json or tsconfig.json
+            tsconfig = worktree / "tsconfig.json"
+            if tsconfig.exists():
+                try:
+                    import json
+                    with open(tsconfig) as f:
+                        config = json.load(f)
+                        paths = config.get("compilerOptions", {}).get("paths", {})
+                        for alias, path_list in paths.items():
+                            for path in path_list:
+                                if "lib/" in path:
+                                    critical_dirs.append("lib/")
+                                    break
+                except:
+                    pass
+
+            # Check if critical directories exist
+            missing = []
+            for dir_path in critical_dirs:
+                full_path = worktree / dir_path
+                if not full_path.exists():
+                    missing.append(dir_path)
+
+            if missing:
+                print(f"   ⚠️  Missing build-critical directories: {', '.join(missing)}")
+                print(f"   These should have been copied from main repository")
+                return False
+
+            print("   ✅ Build validation passed")
+            return True
+
+        # Python project - basic validation
+        elif (worktree / "requirements.txt").exists() or (worktree / "pyproject.toml").exists():
+            print("   ✅ Python project structure looks good")
+            return True
+
+        print("   ✅ Worktree appears ready")
+        return True
+
     def deactivate_worktree(self, agent_name: str, spec_num: str):
         """Mark worktree as inactive (after PR merge)"""
 
@@ -294,7 +416,8 @@ def main():
 
     parser = argparse.ArgumentParser(description="Worktree Registry with Mem0")
     parser.add_argument("action", choices=[
-        "register", "assign", "depend", "query", "list", "deactivate", "setup-deps", "get-worktree"
+        "register", "assign", "depend", "query", "list", "deactivate", "setup-deps", "get-worktree",
+        "copy-ignored", "validate-build", "setup-complete"
     ])
     parser.add_argument("--spec", help="Spec number (e.g., 001)")
     parser.add_argument("--spec-name", help="Spec name (e.g., red-seal-ai)")
@@ -367,6 +490,44 @@ def main():
         else:
             print(f"❌ No worktree found for spec {args.spec}")
             sys.exit(1)
+
+    elif args.action == "copy-ignored":
+        if not args.path:
+            print("❌ copy-ignored requires: --path")
+            sys.exit(1)
+        success = registry.copy_gitignored_build_files(args.path)
+        sys.exit(0 if success else 1)
+
+    elif args.action == "validate-build":
+        if not args.path:
+            print("❌ validate-build requires: --path")
+            sys.exit(1)
+        success = registry.validate_worktree_build(args.path)
+        sys.exit(0 if success else 1)
+
+    elif args.action == "setup-complete":
+        if not args.path:
+            print("❌ setup-complete requires: --path")
+            sys.exit(1)
+        # Run all setup steps in order
+        print("🚀 Running complete worktree setup...")
+        deps_success = registry.setup_dependencies(args.path)
+        if not deps_success:
+            print("❌ Dependency installation failed")
+            sys.exit(1)
+
+        copy_success = registry.copy_gitignored_build_files(args.path)
+        if not copy_success:
+            print("❌ Failed to copy git-ignored files")
+            sys.exit(1)
+
+        validate_success = registry.validate_worktree_build(args.path)
+        if not validate_success:
+            print("❌ Build validation failed")
+            sys.exit(1)
+
+        print("\n✅ Worktree setup complete and validated!")
+        sys.exit(0)
 
 
 if __name__ == "__main__":

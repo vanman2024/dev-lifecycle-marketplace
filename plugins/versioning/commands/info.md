@@ -1,5 +1,4 @@
 ---
-allowed-tools: Bash, Read, Grep, Glob, Task
 description: Display version information and validate configuration
 argument-hint: [status|validate|history]
 ---

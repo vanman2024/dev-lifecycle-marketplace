@@ -1,7 +1,6 @@
 ---
 description: Analyze existing project specs for completeness and identify gaps
 argument-hint: (optional)
-allowed-tools: Task, Read, Write, Bash, Glob, Grep, TodoWrite, Skill
 ---
 ## Available Skills
 

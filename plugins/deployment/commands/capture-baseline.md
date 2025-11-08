@@ -1,7 +1,6 @@
 ---
 description: Capture performance baselines (Lighthouse, API latency) for deployment monitoring
 argument-hint: <deployment-url>
-allowed-tools: Task, Read, Write, Bash, Grep, AskUserQuestion
 ---
 ## Available Skills
 

@@ -1,7 +1,6 @@
 ---
 description: Capture technical notes and development journal
 argument-hint: [note-topic]
-allowed-tools: Read, Write, Edit, Bash, Glob, Grep
 ---
 
 ## Security Requirements

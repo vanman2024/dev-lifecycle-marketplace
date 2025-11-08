@@ -1,5 +1,4 @@
 ---
-allowed-tools: Bash, Read, AskUserQuestion, Task
 description: Multi-stakeholder approval workflow before release
 argument-hint: [version]
 ---

@@ -1,7 +1,6 @@
 ---
 description: Update existing feature across roadmap, specs, and architecture docs when requirements change
 argument-hint: <spec-number> [changes]
-allowed-tools: Task, Read, Write, Edit, Bash, Glob, Grep, AskUserQuestion, TodoWrite
 ---
 
 **Arguments**: $ARGUMENTS

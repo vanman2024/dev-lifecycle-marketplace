@@ -1,5 +1,4 @@
 ---
-allowed-tools: Bash, Read, Write, Edit, Grep, Glob, AskUserQuestion, Task
 description: Setup semantic versioning with validation and templates for Python and TypeScript projects
 argument-hint: [python|typescript|javascript]
 ---
@@ -58,9 +57,7 @@ Launch version-setup-orchestrator agent to handle complex setup:
 
 ```
 Task(
-  description="Setup semantic versioning",
-  subagent_type="versioning:version-setup-orchestrator",
-  prompt="You are the version-setup-orchestrator agent.
+  description="Setup semantic versioning", subagent_type="versioning:version-setup-orchestrator", prompt="You are the version-setup-orchestrator agent.
 
 **Project Type**: $PROJECT_TYPE (python/typescript/javascript)
 
@@ -71,10 +68,7 @@ Task(
    - Default to 0.1.0 if not found
    - Create VERSION file with JSON structure:
      {
-       \"version\": \"<current_version>\",
-       \"commit\": \"initial\",
-       \"build_date\": \"<iso_timestamp>\",
-       \"build_type\": \"development\"
+       \"version\": \"<current_version>\", \"commit\": \"initial\", \"build_date\": \"<iso_timestamp>\", \"build_type\": \"development\"
      }
 
 2. Install GitHub Actions workflow:

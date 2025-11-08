@@ -1,7 +1,6 @@
 ---
 description: Setup automated rollback triggers on error thresholds
 argument-hint: $ARGUMENTS
-allowed-tools: Task, Read, Write, Bash, AskUserQuestion
 ---
 
 **Arguments**: $ARGUMENTS

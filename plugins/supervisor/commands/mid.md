@@ -1,5 +1,4 @@
 ---
-allowed-tools: Bash, Read, Write
 description: Monitor agent progress and task completion during development
 argument-hint: <spec-name> [--test]
 ---

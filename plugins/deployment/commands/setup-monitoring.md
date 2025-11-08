@@ -1,7 +1,6 @@
 ---
 description: Observability integration (Sentry, DataDog, alerts)
 argument-hint: [monitoring-platform]
-allowed-tools: Read, Write, Bash, Glob, AskUserQuestion, Task
 ---
 ## Security Requirements
 
@@ -110,12 +109,7 @@ Actions:
 Use Task() to invoke agent:
 ```
 Task(agent="monitoring-setup-executor", parameters={
-  "project_name": "<project_name>",
-  "project_platform": "<platform>",
-  "monitoring_platform": "<sentry|datadog>",
-  "sentry_org_slug": "<org_slug>",
-  "sentry_project_slug": "<project_slug>",
-  "sentry_dsn": "<dsn>"
+  "project_name": "<project_name>", "project_platform": "<platform>", "monitoring_platform": "<sentry|datadog>", "sentry_org_slug": "<org_slug>", "sentry_project_slug": "<project_slug>", "sentry_dsn": "<dsn>"
 })
 ```
 

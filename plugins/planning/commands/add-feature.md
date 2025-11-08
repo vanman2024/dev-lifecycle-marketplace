@@ -1,7 +1,6 @@
 ---
 description: Add complete feature with roadmap, spec, ADR, and architecture updates - keeps all planning docs in sync
 argument-hint: <feature-description>
-allowed-tools: Task, Read, Write, Edit, Bash, Glob, Grep, AskUserQuestion, TodoWrite
 ---
 
 **Arguments**: $ARGUMENTS

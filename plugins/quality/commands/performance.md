@@ -1,7 +1,6 @@
 ---
 description: Analyze performance and identify bottlenecks
 argument-hint: [analysis-type]
-allowed-tools: Task, Read, Bash, Glob, Grep
 ---
 
 ## Security Requirements

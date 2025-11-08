@@ -1,10 +1,17 @@
 name: Security Scan Pipeline
 
+# This workflow uses security scanning scripts installed by /foundation:hooks-setup
+# Scripts source: dev-lifecycle-marketplace/plugins/quality/skills/security-patterns/scripts/
+# - scan-secrets.sh: Detects API keys (Airtable, Anthropic, OpenAI, AWS, GitHub, etc.)
+# - scan-dependencies.sh: npm/pip vulnerability scanning
+# - scan-owasp.sh: OWASP security pattern detection
+# - generate-security-report.sh: Creates comprehensive security reports
+
 on:
   push:
-    branches: [main, develop]
+    branches: [main, develop, master]
   pull_request:
-    branches: [main]
+    branches: [main, master]
   schedule:
     - cron: '0 2 * * 1'  # Weekly Monday 2 AM
 

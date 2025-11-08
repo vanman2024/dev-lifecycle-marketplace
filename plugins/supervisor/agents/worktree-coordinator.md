@@ -45,10 +45,38 @@ After `/planning:spec-writer` creates specs with layered tasks, agents need isol
 ## What This Agent Does
 
 1. **Reads layered-tasks.md** - Extracts agent assignments
-2. **Creates git worktrees** - One per agent
-3. **Registers in Mem0** - So agents can query their assignments
-4. **Tracks dependencies** - Frontend → Backend relationships
-5. **Provides coordination info** - Agents can ask "where does copilot work?"
+2. **Creates git worktrees** - One per spec
+3. **Copies git-ignored build files** - Ensures worktree can build
+4. **Installs dependencies** - npm/pnpm/pip automatically
+5. **Validates build readiness** - Checks all requirements satisfied
+6. **Registers in Mem0** - So agents can query their assignments
+7. **Tracks dependencies** - Frontend → Backend relationships
+8. **Provides coordination info** - Agents can ask "where does copilot work?"
+
+## Critical Fix: Git-Ignored Files Problem
+
+**Problem**: Git worktrees only copy tracked files, not git-ignored directories.
+
+**Impact**: Worktrees fail to build with errors like:
+```
+Module not found: Can't resolve '@/lib/ai/openrouter'
+```
+
+**Root Cause**:
+- `lib/` directory is in `.gitignore`
+- Application requires `lib/api/`, `lib/ai/`, `lib/supabase/` to build
+- Worktrees don't automatically get these directories
+
+**Solution**: This agent now automatically:
+1. Detects git-ignored directories needed for build (`lib/`, `.env.local`, etc.)
+2. Copies them from main repository to worktree
+3. Validates worktree can build before reporting success
+
+**Files Automatically Copied**:
+- `lib/` - Application utilities (API, AI, database)
+- `.env.local`, `.env.development` - Environment configs
+- `.next/`, `dist/`, `build/` - Build caches (if exist)
+- `node_modules/.cache/` - Dependency caches
 
 ## Available Tools & Resources
 
@@ -95,21 +123,46 @@ python plugins/planning/skills/doc-sync/scripts/register-worktree.py register \
   --branch spec-{spec-num}
 ```
 
-### Phase 3: Dependency Installation
+### Phase 3: Complete Worktree Setup
 
-**CRITICAL**: Install dependencies so agents have a working environment.
+**CRITICAL**: Run complete setup to ensure worktree is build-ready.
 
 ```bash
-# Install dependencies (Node.js, Python, etc.)
-python plugins/planning/skills/doc-sync/scripts/register-worktree.py setup-deps \
+# Complete setup: dependencies + git-ignored files + validation
+python plugins/planning/skills/doc-sync/scripts/register-worktree.py setup-complete \
   --path ../{project}-{spec-num}
 ```
 
-**Supported project types:**
-- Node.js: Detects and uses npm, pnpm, or yarn
-- Python: Installs from requirements.txt or pyproject.toml
+**What setup-complete does:**
 
-**Performance Tip**: If project uses **pnpm**, subsequent worktrees install 80-90% faster via global cache (~/.pnpm-store/). Auto-detected by setup-deps. Use `/foundation:use-pnpm` to convert npm projects to pnpm.
+1. **Install Dependencies**
+   - Node.js: Detects and uses npm, pnpm, or yarn
+   - Python: Installs from requirements.txt or pyproject.toml
+
+2. **Copy Git-Ignored Build Files**
+   - `lib/` directory (API, AI, database utilities)
+   - `.env.local`, `.env.development` (environment configs)
+   - `.next/`, `dist/`, `build/` (build caches)
+   - Any other git-ignored directories needed for build
+
+3. **Validate Build Readiness**
+   - Checks tsconfig.json paths are satisfied
+   - Verifies critical directories exist
+   - Ensures worktree can build successfully
+
+**Performance Tip**: If project uses **pnpm**, subsequent worktrees install 80-90% faster via global cache (~/.pnpm-store/). Auto-detected. Use `/foundation:use-pnpm` to convert npm projects to pnpm.
+
+**Individual Actions** (if you need granular control):
+```bash
+# Just install dependencies
+python plugins/planning/skills/doc-sync/scripts/register-worktree.py setup-deps --path ...
+
+# Just copy git-ignored files
+python plugins/planning/skills/doc-sync/scripts/register-worktree.py copy-ignored --path ...
+
+# Just validate build
+python plugins/planning/skills/doc-sync/scripts/register-worktree.py validate-build --path ...
+```
 
 ### Phase 4: Verification & Summary
 
@@ -129,6 +182,8 @@ Project: RedAI
   • Path: ../RedAI-001
   • Branch: spec-001
   • Dependencies: ✅ installed (npm)
+  • Git-ignored files: ✅ copied (lib/, .env.local)
+  • Build validation: ✅ passed
 
 ✅ Registered in Mem0 - all agents can work in this worktree!
 

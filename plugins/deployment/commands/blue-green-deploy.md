@@ -1,7 +1,6 @@
 ---
 description: Zero-downtime parallel environment swap deployment
 argument-hint: [project-path]
-allowed-tools: Task, Read, Write, Bash, Glob, Grep, TodoWrite
 ---
 
 **Arguments**: $ARGUMENTS

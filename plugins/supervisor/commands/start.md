@@ -1,5 +1,4 @@
 ---
-allowed-tools: Bash, Read, Write
 description: Verify agent setup and worktree readiness before work begins
 argument-hint: <spec-name>
 ---

@@ -1,7 +1,6 @@
 ---
 description: Progressive traffic rollout with auto-rollback monitoring
 argument-hint: [deployment-target]
-allowed-tools: Bash, Read, Write, Glob, Grep, TodoWrite, Task, AskUserQuestion
 ---
 
 **Arguments**: $ARGUMENTS

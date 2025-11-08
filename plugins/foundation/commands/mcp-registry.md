@@ -1,7 +1,6 @@
 ---
 description: Manage universal MCP server registry (init, add, list, search, remove)
 argument-hint: <action> [server-name] [options]
-allowed-tools: Bash, Read, Write, Grep, AskUserQuestion
 ---
 
 ## Security Requirements

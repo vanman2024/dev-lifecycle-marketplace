@@ -1,7 +1,6 @@
 ---
 description: "[DEPRECATED] Use /planning:add-feature instead - adds spec with similarity checking and complete planning sync"
 argument-hint: <feature-description>
-allowed-tools: Bash, AskUserQuestion
 ---
 
 **Arguments**: $ARGUMENTS

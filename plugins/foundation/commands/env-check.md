@@ -1,7 +1,6 @@
 ---
 description: Verify required tools are installed for detected tech stack
 argument-hint: [--fix]
-allowed-tools: Read, Write, Bash, Glob, Grep, AskUserQuestion
 ---
 
 ## Security Requirements

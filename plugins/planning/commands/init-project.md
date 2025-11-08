@@ -1,7 +1,6 @@
 ---
 description: Create ALL project specs in one shot from massive description using parallel agents
 argument-hint: <project-description>
-allowed-tools: Task, Read, Write, Bash, Grep, Glob, Skill
 ---
 ## Available Skills
 

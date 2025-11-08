@@ -1,7 +1,6 @@
 ---
 description: Manage environment variables for project configuration
 argument-hint: <action> [key] [value]
-allowed-tools: Read, Write, Bash, AskUserQuestion, Task
 ---
 
 ## Security Requirements
@@ -82,9 +81,7 @@ Actions:
 
 ```
 Task(
-  description="Manage environment variables",
-  subagent_type="foundation:env-vars-manager",
-  prompt="You are the env-vars-manager agent.
+  description="Manage environment variables", subagent_type="foundation:env-vars-manager", prompt="You are the env-vars-manager agent.
 
 **Action**: $ARGUMENTS
 

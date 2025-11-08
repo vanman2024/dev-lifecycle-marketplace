@@ -1,7 +1,6 @@
 ---
 description: Create, list, and validate specifications in specs/ directory
 argument-hint: <action> [spec-name]
-allowed-tools: Task, Read, Write, Bash, Glob, Grep, AskUserQuestion, Skill
 ---
 
 ## Security Requirements

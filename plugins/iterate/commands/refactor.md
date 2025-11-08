@@ -1,7 +1,6 @@
 ---
 description: Refactor code for quality - improve code structure and maintainability without changing functionality
 argument-hint: file-or-directory
-allowed-tools: Task, Read, Write, Edit, Bash, Glob, Grep, AskUserQuestion
 ---
 ## Available Skills
 

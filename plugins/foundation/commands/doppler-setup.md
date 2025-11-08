@@ -1,7 +1,6 @@
 ---
 description: Setup Doppler secret management for scalable environment variable handling
 argument-hint: [project-name]
-allowed-tools: Read, Write, Bash, Glob, Grep, AskUserQuestion
 ---
 
 **Arguments**: $ARGUMENTS

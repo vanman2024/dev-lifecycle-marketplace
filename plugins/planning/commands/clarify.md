@@ -1,7 +1,6 @@
 ---
 description: Gather clarification on ambiguous requirements, specs, or tasks through structured questions. Helps resolve uncertainty before implementation.
 argument-hint: [spec-name or topic]
-allowed-tools: Read, AskUserQuestion, Write, Bash, Grep, Glob
 ---
 ## Available Skills
 

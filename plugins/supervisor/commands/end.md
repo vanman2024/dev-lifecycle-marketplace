@@ -1,5 +1,4 @@
 ---
-allowed-tools: Bash, Read, Write
 description: Validate completion and generate PR commands before creating pull requests
 argument-hint: <spec-name>
 ---

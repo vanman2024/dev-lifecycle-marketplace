@@ -1,7 +1,6 @@
 ---
 description: Track deployment history (version → environment → URL)
 argument-hint: <environment> <url> [--version=X.Y.Z]
-allowed-tools: Bash(*), Read, Write, Edit, Grep
 ---
 
 **Arguments**: $ARGUMENTS

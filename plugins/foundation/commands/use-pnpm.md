@@ -1,7 +1,6 @@
 ---
 description: Convert Node.js project from npm to pnpm for faster worktree dependency installs
 argument-hint: none
-allowed-tools: Read, Write, Edit, Bash, Glob, Grep
 ---
 
 **Arguments**: $ARGUMENTS

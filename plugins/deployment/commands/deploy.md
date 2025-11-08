@@ -1,7 +1,6 @@
 ---
 description: Complete deployment orchestrator - prepares project, configures CI/CD with GitHub Actions and secrets, deploys, and validates. Runs prepare → setup-cicd → deploy → validate in sequence for full automation.
 argument-hint: [project-path]
-allowed-tools: Bash, Read, Write, Glob, Grep, TodoWrite
 ---
 ## Available Skills
 

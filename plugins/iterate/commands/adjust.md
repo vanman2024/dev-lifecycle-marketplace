@@ -1,7 +1,6 @@
 ---
 description: Adjust implementation based on feedback - make targeted changes based on user feedback or requirements
 argument-hint: feedback-or-requirements
-allowed-tools: Task, Read, Write, Edit, Bash, Glob, Grep, AskUserQuestion
 ---
 ## Available Skills
 

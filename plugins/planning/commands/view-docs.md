@@ -1,7 +1,6 @@
 ---
 description: Launch visual documentation registry viewer
 argument-hint: none
-allowed-tools: Bash
 ---
 
 **Arguments**: $ARGUMENTS

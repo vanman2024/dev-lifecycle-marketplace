@@ -1,7 +1,6 @@
 ---
 description: Sync universal MCP registry to target format (.mcp.json or .vscode/mcp.json)
 argument-hint: <claude|vscode|both> [server-name...]
-allowed-tools: Bash, Read, Write, Grep, AskUserQuestion
 ---
 
 ## Security Requirements

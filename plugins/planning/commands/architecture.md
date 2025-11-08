@@ -1,7 +1,6 @@
 ---
 description: Design and document system architecture
 argument-hint: <action> [architecture-name]
-allowed-tools: Task, Read, Write, Bash, Glob, Grep, AskUserQuestion, Skill
 ---
 
 ## Security Requirements

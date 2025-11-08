@@ -1,5 +1,4 @@
 ---
-allowed-tools: Bash, Read, Write, Grep, Glob
 description: Initialize git worktrees for parallel agent execution based on layered tasks
 argument-hint: <spec-name> | --all | --bulk
 ---

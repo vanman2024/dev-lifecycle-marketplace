@@ -1,7 +1,6 @@
 ---
 description: Validate task completion status against actual implementation
 argument-hint: <spec-number>
-allowed-tools: Task, Read, Bash, Glob
 ---
 
 **Arguments**: $ARGUMENTS

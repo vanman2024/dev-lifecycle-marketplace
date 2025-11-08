@@ -1,7 +1,6 @@
 ---
 description: Review implementation code quality, security, and test coverage
 argument-hint: <spec-number> [--generate-tests]
-allowed-tools: Task, Read, Bash, Glob, SlashCommand
 ---
 
 **Arguments**: $ARGUMENTS

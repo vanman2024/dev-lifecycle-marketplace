@@ -1,5 +1,4 @@
 ---
-allowed-tools: Bash, Read, Write, Edit, Task
 description: Rollback to previous version by removing tag and resetting files
 argument-hint: [version]
 ---

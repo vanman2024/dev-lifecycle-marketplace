@@ -1,7 +1,6 @@
 ---
 description: Sync documentation relationships to Mem0 for intelligent tracking
 argument-hint: [project-name]
-allowed-tools: Bash, Read, Glob, Grep, Skill
 ---
 
 ## Security Requirements

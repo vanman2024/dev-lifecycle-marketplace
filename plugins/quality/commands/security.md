@@ -1,7 +1,6 @@
 ---
 description: Run security scans and vulnerability checks
 argument-hint: [scan-type]
-allowed-tools: Task, Read, Bash, Glob, Grep
 ---
 
 ## Security Requirements

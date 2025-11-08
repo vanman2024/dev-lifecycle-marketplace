@@ -1,7 +1,6 @@
 ---
 description: Initialize feature flag infrastructure (LaunchDarkly/Flagsmith)
 argument-hint: [launchdarkly|flagsmith|split]
-allowed-tools: Read, Write, Bash, Glob, Grep, AskUserQuestion
 ---
 ## Available Skills
 

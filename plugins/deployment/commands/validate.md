@@ -1,7 +1,6 @@
 ---
 description: Validate deployment health with comprehensive checks (URL accessibility, health endpoints, environment variables)
 argument-hint: <deployment-url>
-allowed-tools: Task, Read, Bash, AskUserQuestion
 ---
 ## Available Skills
 

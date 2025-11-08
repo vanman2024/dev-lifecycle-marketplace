@@ -1,7 +1,6 @@
 ---
 description: Pre-deployment feature flag validation and verification
 argument-hint: [project-path]
-allowed-tools: Read, Bash, Glob, Grep, AskUserQuestion
 ---
 
 ## Security Requirements

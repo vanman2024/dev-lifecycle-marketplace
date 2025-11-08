@@ -1,7 +1,6 @@
 ---
 description: Interactive multimodal wizard for comprehensive requirements gathering and spec generation
 argument-hint: [--auto-continue]
-allowed-tools: Task, Read, Write, Bash(*), AskUserQuestion, TodoWrite
 ---
 
 **Arguments**: $ARGUMENTS
