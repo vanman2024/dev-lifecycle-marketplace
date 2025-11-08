@@ -133,7 +133,7 @@ def populate_mcp_servers():
         batch_size = 10
         for i in range(0, len(to_create), batch_size):
             batch = to_create[i:i+batch_size]
-            mcp_servers_table.batch_create(batch)
+            mcp_servers_table.batch_create(batch) # type: ignore
             print(f"  ✓ Created {min(i+batch_size, len(to_create))}/{len(to_create)} MCP servers")
     else:
         print("✓ All MCP servers already exist")

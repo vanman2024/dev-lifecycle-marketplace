@@ -1,7 +1,6 @@
 ---
 description: Automatically configure CI/CD pipeline with GitHub Actions and secrets for any deployment platform (Vercel, DigitalOcean, Railway). Uses gh CLI to auto-configure repository secrets and generates platform-specific workflows.
-argument-hint: [platform] [project-path]
-allowed-tools: Bash, Read, Write, Grep, Glob, AskUserQuestion, TodoWrite
+argument-hint: "[platform] [project-path]"
 ---
 ## Available Skills
 

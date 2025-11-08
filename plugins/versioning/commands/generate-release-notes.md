@@ -1,7 +1,6 @@
 ---
-allowed-tools: Bash, Read, Write, Task, Grep, Glob
 description: AI-powered release notes with migration guides and breaking change analysis
-argument-hint: [version] [--output=FILE]
+argument-hint: "[version] [--output=FILE]"
 ---
 
 ## Security Requirements

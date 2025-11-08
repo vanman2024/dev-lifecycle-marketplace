@@ -1,7 +1,6 @@
 ---
-allowed-tools: Bash, Read, Grep, Task
 description: Detect breaking changes and recommend version bump
-argument-hint: [--from=tag] [--detailed]
+argument-hint: "[--from=tag] [--detailed]"
 ---
 
 ## Security Requirements

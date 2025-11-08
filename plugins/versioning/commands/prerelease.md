@@ -1,7 +1,6 @@
 ---
-allowed-tools: Bash, Read, Write, Edit
 description: Create pre-release versions (alpha, beta, RC)
-argument-hint: [alpha|beta|rc] [--dry-run]
+argument-hint: "[alpha|beta|rc] [--dry-run]"
 ---
 
 **Arguments**: $ARGUMENTS

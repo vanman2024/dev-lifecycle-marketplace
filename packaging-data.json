@@ -1,0 +1,2622 @@
+{
+  "mcp_servers": {
+    "rec0gQ3kzXsHKE8ut": {
+      "MCP Server Name": "mcp__filesystem",
+      "Description": "File system operations - read, write, search",
+      "Purpose": "File operations, directory navigation, search",
+      "Source Marketplace": "built-in",
+      "Agents": [
+        "rec17IJsBNDEtHgEb",
+        "rec9w2g5KFxpQkYRD",
+        "recAYAIsSqzeU6rDB",
+        "recH429kYvZ9OQb1X",
+        "recHe54datvAdjwgI",
+        "recKMeICGF6a5monc",
+        "recNYbLYG0SEwgDHX",
+        "recOcwPaozZmS2U5X",
+        "recQiZrEvh6vystCE",
+        "recRk5k6iv5vMgW6r",
+        "recTeLBPWPq68GjuM",
+        "recU25fW6mq27ri62",
+        "recYTsRtF9mkkP7jX",
+        "recYbqNskizC4TMeM",
+        "recYpPbSRQLljTyPM",
+        "reccw2XPQhtTlKJlg",
+        "recdk5O80bLeyVfms",
+        "recehuS4vKlomNzf4",
+        "recfuP0vkChLm2uhF",
+        "recfx5dOtnW0Z66Iq",
+        "recg1iba26Fk1ODND",
+        "reciMookvcjhXK2Wx",
+        "recnEvuDCiLQyhkxs",
+        "recnVsgYvBEBRR7OV",
+        "recrUhvQhJqOFOhWX",
+        "recsEOM7oQ6h0SPrK",
+        "recsOptp13xBsB0rx",
+        "recuxJJbhSPPD6vUp"
+      ]
+    },
+    "rec1EnNfCdYBydCKD": {
+      "MCP Server Name": "mcp__supabase",
+      "Description": "Supabase database operations - execute SQL, migrations, table management",
+      "Purpose": "Database queries, schema management, RLS testing",
+      "Source Marketplace": "plugin:supabase"
+    },
+    "rec4mmF9kv8NFG8O8": {
+      "MCP Server Name": "mcp__playwright",
+      "Description": "Browser automation and E2E testing",
+      "Purpose": "E2E tests, browser automation, visual regression",
+      "Source Marketplace": "built-in",
+      "Agents": [
+        "recHe54datvAdjwgI"
+      ]
+    },
+    "rec5XropPRbNWNhC6": {
+      "MCP Server Name": "mcp__fetch",
+      "Description": "HTTP requests and web content fetching",
+      "Purpose": "API calls, web scraping, HTTP operations",
+      "Source Marketplace": "built-in"
+    },
+    "rec70yp8ailpSfdHq": {
+      "MCP Server Name": "mcp__memory",
+      "Description": "OpenMemory MCP for persistent AI memory",
+      "Purpose": "Conversation memory, context persistence, user preferences",
+      "Source Marketplace": "plugin:mem0",
+      "Agents": [
+        "recsOptp13xBsB0rx"
+      ]
+    },
+    "recCY4H8sYgurMAxZ": {
+      "MCP Server Name": "mcp__docker",
+      "Description": "Docker container management",
+      "Purpose": "Container operations, image management, deployment",
+      "Source Marketplace": "built-in"
+    },
+    "recGLsUJ1rxeznrKL": {
+      "MCP Server Name": "mcp__plugin_supabase_supabase",
+      "Description": "Plugin-specific Supabase MCP server",
+      "Purpose": "Supabase plugin operations, migrations, queries",
+      "Source Marketplace": "plugin:supabase"
+    },
+    "recH785I67ieidGhK": {
+      "MCP Server Name": "mcp__plugin_nextjs-frontend_design-system",
+      "Description": "Design system operations for Next.js",
+      "Purpose": "Design tokens, component patterns, style management",
+      "Source Marketplace": "plugin:nextjs-frontend"
+    },
+    "recLAdRqTtlbIkzty": {
+      "MCP Server Name": "mcp__github",
+      "Description": "GitHub operations - repos, PRs, issues, commits",
+      "Purpose": "Git history, PR creation, code review, repository management",
+      "Source Marketplace": "built-in",
+      "Agents": [
+        "rec17IJsBNDEtHgEb",
+        "rec9s7YV6EGmdl90L",
+        "rec9w2g5KFxpQkYRD",
+        "recAYAIsSqzeU6rDB",
+        "recH429kYvZ9OQb1X",
+        "recHe54datvAdjwgI",
+        "recKMeICGF6a5monc",
+        "recNYbLYG0SEwgDHX",
+        "recOcwPaozZmS2U5X",
+        "recQiZrEvh6vystCE",
+        "recU25fW6mq27ri62",
+        "recYPwcBROB12CqCM",
+        "recYTsRtF9mkkP7jX",
+        "recYbqNskizC4TMeM",
+        "recYpPbSRQLljTyPM",
+        "reccw2XPQhtTlKJlg",
+        "recdk5O80bLeyVfms",
+        "recehuS4vKlomNzf4",
+        "recfuP0vkChLm2uhF",
+        "recfx5dOtnW0Z66Iq",
+        "recg1iba26Fk1ODND",
+        "reciMookvcjhXK2Wx",
+        "recju6tMpbcAJ0moW",
+        "recmXftGmyEZFjyVd",
+        "recnVsgYvBEBRR7OV",
+        "recsEOM7oQ6h0SPrK",
+        "recsOptp13xBsB0rx",
+        "recsT0XQOowQ9ku33",
+        "recuxJJbhSPPD6vUp"
+      ]
+    },
+    "recNw8OPyAKPTfllB": {
+      "MCP Server Name": "mcp__vercel-deploy",
+      "Description": "Vercel deployment operations",
+      "Purpose": "Deploy Next.js apps, manage deployments",
+      "Source Marketplace": "plugin:deployment"
+    },
+    "recPAFZK3UW5jT6ts": {
+      "MCP Server Name": "mcp__plugin_nextjs-frontend_shadcn",
+      "Description": "Shadcn UI component operations",
+      "Purpose": "Component search, installation, examples",
+      "Source Marketplace": "plugin:nextjs-frontend"
+    },
+    "recSJLUXGrI9fQNkf": {
+      "MCP Server Name": "mcp__content-image-generation",
+      "Description": "AI content and image generation (Google Imagen, Gemini)",
+      "Purpose": "Generate images, text, video with AI models",
+      "Source Marketplace": "plugin:website-builder"
+    },
+    "recT1KGTsguC3ZPyf": {
+      "MCP Server Name": "mcp__postman",
+      "Description": "Postman collection management and Newman testing",
+      "Purpose": "API testing, collection management, test execution",
+      "Source Marketplace": "built-in",
+      "Agents": [
+        "recHe54datvAdjwgI"
+      ]
+    },
+    "recV82KYJClm9jsgW": {
+      "MCP Server Name": "mcp__airtable",
+      "Description": "Airtable operations - tables, records, fields",
+      "Purpose": "Database management, record creation, field updates",
+      "Source Marketplace": "built-in"
+    },
+    "recVv5pEWam0a7G6Y": {
+      "MCP Server Name": "mcp__slack",
+      "Description": "Slack messaging and workspace operations",
+      "Purpose": "Notifications, messaging, team communication",
+      "Source Marketplace": "built-in"
+    },
+    "recZh56XVeGrdeVXP": {
+      "MCP Server Name": "mcp__context7",
+      "Description": "Documentation lookup from Context7",
+      "Purpose": "Library documentation, code examples, API reference",
+      "Source Marketplace": "built-in",
+      "Agents": [
+        "rec17IJsBNDEtHgEb"
+      ]
+    }
+  },
+  "skills": {
+    "rec2GgaBbBdthnuFi": {
+      "Skill Name": "build-system-automation",
+      "Plugin": [
+        "recKhXJjImbjvszyk"
+      ],
+      "Description": "Provides scripts and templates for automated build system management, command registration, and plugin maintenance. These are battle-tested scripts that automate repetitive infrastructure tasks.",
+      "Directory Path": "plugins/foundation/skills/build-system-automation",
+      "Has SKILL.md": true,
+      "Has Scripts": true,
+      "Has Templates": true,
+      "Has Examples": true
+    },
+    "rec4j00MkbHQixrtT": {
+      "Skill Name": "vercel-deployment",
+      "Plugin": [
+        "recyOkR1IcrPmrCJL"
+      ],
+      "Description": "---",
+      "Directory Path": "plugins/deployment/skills/vercel-deployment",
+      "Has SKILL.md": true,
+      "Has Scripts": true,
+      "Has Templates": true,
+      "Used By Agents": [
+        "recYPwcBROB12CqCM",
+        "reciMookvcjhXK2Wx"
+      ]
+    },
+    "rec6tnYB4OJrYbs30": {
+      "Skill Name": "platform-detection",
+      "Plugin": [
+        "recyOkR1IcrPmrCJL"
+      ],
+      "Description": "---",
+      "Directory Path": "plugins/deployment/skills/platform-detection",
+      "Has SKILL.md": true,
+      "Has Scripts": true,
+      "Has Templates": true,
+      "Has Examples": true,
+      "Used By Agents": [
+        "recYpPbSRQLljTyPM",
+        "recju6tMpbcAJ0moW",
+        "recYPwcBROB12CqCM",
+        "recuxJJbhSPPD6vUp"
+      ]
+    },
+    "rec7GmdMs28odT0ri": {
+      "Skill Name": "digitalocean-droplet-deployment",
+      "Plugin": [
+        "recyOkR1IcrPmrCJL"
+      ],
+      "Description": "---",
+      "Directory Path": "plugins/deployment/skills/digitalocean-droplet-deployment",
+      "Has SKILL.md": true,
+      "Has Scripts": true,
+      "Has Templates": true,
+      "Has Examples": true,
+      "Used By Agents": [
+        "reciMookvcjhXK2Wx"
+      ]
+    },
+    "rec8zuF6V7qyBCndm": {
+      "Skill Name": "spec-management",
+      "Plugin": [
+        "recdYoKmuKiAuuwhd"
+      ],
+      "Description": "---",
+      "Directory Path": "plugins/planning/skills/spec-management",
+      "Has SKILL.md": true,
+      "Has Scripts": true,
+      "Has Templates": true,
+      "Has Examples": true,
+      "Used By Agents": [
+        "recAYAIsSqzeU6rDB",
+        "recYTsRtF9mkkP7jX",
+        "recnVsgYvBEBRR7OV",
+        "recsEOM7oQ6h0SPrK"
+      ]
+    },
+    "recAxSRHAQb5y6Gxq": {
+      "Skill Name": "canary-deployment",
+      "Plugin": [
+        "recyOkR1IcrPmrCJL"
+      ],
+      "Description": "---",
+      "Directory Path": "plugins/deployment/skills/canary-deployment",
+      "Has SKILL.md": true,
+      "Has Scripts": true,
+      "Has Templates": true,
+      "Has Examples": true
+    },
+    "recFKn5gTrIrFU9Bo": {
+      "Skill Name": "security-patterns",
+      "Plugin": [
+        "recAAZT8HmERi0B1s"
+      ],
+      "Description": "---",
+      "Directory Path": "plugins/quality/skills/security-patterns",
+      "Has SKILL.md": true,
+      "Has Scripts": true,
+      "Has Templates": true,
+      "Has Examples": true,
+      "Used By Agents": [
+        "recDuQjXFmvGQMyXX",
+        "recKMeICGF6a5monc",
+        "recOcwPaozZmS2U5X",
+        "recsT0XQOowQ9ku33"
+      ]
+    },
+    "recFyXtga1E20hLQx": {
+      "Skill Name": "api-schema-analyzer",
+      "Plugin": [
+        "recAAZT8HmERi0B1s"
+      ],
+      "Description": "---",
+      "Directory Path": "plugins/quality/skills/api-schema-analyzer",
+      "Has SKILL.md": true,
+      "Has Scripts": true,
+      "Has Templates": true,
+      "Has Examples": true
+    },
+    "recLWKDthaAJmt0iR": {
+      "Skill Name": "release-approval",
+      "Plugin": [
+        "rec6h21K3lGHHhSLA"
+      ],
+      "Description": "---",
+      "Directory Path": "plugins/versioning/skills/release-approval",
+      "Has SKILL.md": true,
+      "Has Scripts": true,
+      "Has Templates": true,
+      "Has Examples": true
+    },
+    "recPaPMAiHoFl08kk": {
+      "Skill Name": "health-checks",
+      "Plugin": [
+        "recyOkR1IcrPmrCJL"
+      ],
+      "Description": "---",
+      "Directory Path": "plugins/deployment/skills/health-checks",
+      "Has SKILL.md": true,
+      "Has Scripts": true,
+      "Has Templates": true,
+      "Has Examples": true,
+      "Used By Agents": [
+        "recYPwcBROB12CqCM",
+        "recju6tMpbcAJ0moW",
+        "recrUhvQhJqOFOhWX",
+        "recuxJJbhSPPD6vUp"
+      ]
+    },
+    "recQBqL6idEffLkvp": {
+      "Skill Name": "git-hooks",
+      "Plugin": [
+        "recKhXJjImbjvszyk"
+      ],
+      "Description": "Standardized git hooks for security and quality enforcement across all projects.",
+      "Directory Path": "plugins/foundation/skills/git-hooks",
+      "Has SKILL.md": true,
+      "Has Scripts": true,
+      "Has Templates": true,
+      "Has Examples": true
+    },
+    "recQnQ1Psd7EOKHu6": {
+      "Skill Name": "digitalocean-app-deployment",
+      "Plugin": [
+        "recyOkR1IcrPmrCJL"
+      ],
+      "Description": "---",
+      "Directory Path": "plugins/deployment/skills/digitalocean-app-deployment",
+      "Has SKILL.md": true,
+      "Has Scripts": true,
+      "Has Templates": true,
+      "Has Examples": true,
+      "Used By Agents": [
+        "recYPwcBROB12CqCM",
+        "reciMookvcjhXK2Wx"
+      ]
+    },
+    "recRRFjVRB3uLvyEY": {
+      "Skill Name": "prerelease-versions",
+      "Plugin": [
+        "rec6h21K3lGHHhSLA"
+      ],
+      "Description": "---",
+      "Directory Path": "plugins/versioning/skills/prerelease-versions",
+      "Has SKILL.md": true,
+      "Has Scripts": true,
+      "Has Templates": true,
+      "Has Examples": true
+    },
+    "recSr0cXqzMO1BOXr": {
+      "Skill Name": "architecture-patterns",
+      "Plugin": [
+        "recdYoKmuKiAuuwhd"
+      ],
+      "Description": "---",
+      "Directory Path": "plugins/planning/skills/architecture-patterns",
+      "Has SKILL.md": true,
+      "Has Scripts": true,
+      "Has Templates": true,
+      "Has Examples": true,
+      "Used By Agents": [
+        "recTeLBPWPq68GjuM",
+        "recAYAIsSqzeU6rDB",
+        "recYTsRtF9mkkP7jX",
+        "recnVsgYvBEBRR7OV"
+      ]
+    },
+    "recT9ZkBScUAzPxTj": {
+      "Skill Name": "doc-sync",
+      "Plugin": [
+        "recdYoKmuKiAuuwhd"
+      ],
+      "Description": "---",
+      "Directory Path": "plugins/planning/skills/doc-sync",
+      "Has SKILL.md": true,
+      "Has Scripts": true,
+      "Has Templates": true,
+      "Has Examples": true
+    },
+    "recUvSw9ynrCHsenN": {
+      "Skill Name": "sync-patterns",
+      "Plugin": [
+        "rece6fN8rGNcWgjgB"
+      ],
+      "Description": "---",
+      "Directory Path": "plugins/iterate/skills/sync-patterns",
+      "Has SKILL.md": true,
+      "Has Scripts": true,
+      "Has Templates": true,
+      "Has Examples": true,
+      "Used By Agents": [
+        "rec9s7YV6EGmdl90L",
+        "rec9w2g5KFxpQkYRD",
+        "recB0UVsrefJ9d8LB",
+        "reccw2XPQhtTlKJlg",
+        "recehuS4vKlomNzf4",
+        "recg1iba26Fk1ODND"
+      ]
+    },
+    "recV4RXRw3meAEdJ3": {
+      "Skill Name": "playwright-e2e",
+      "Plugin": [
+        "recAAZT8HmERi0B1s"
+      ],
+      "Description": "---",
+      "Directory Path": "plugins/quality/skills/playwright-e2e",
+      "Has SKILL.md": true,
+      "Has Scripts": true,
+      "Has Templates": true,
+      "Has Examples": true,
+      "Used By Agents": [
+        "recDuQjXFmvGQMyXX",
+        "recsT0XQOowQ9ku33",
+        "recH429kYvZ9OQb1X",
+        "recHe54datvAdjwgI"
+      ]
+    },
+    "recZYMx8UoFpxOwpP": {
+      "Skill Name": "newman-runner",
+      "Plugin": [
+        "recAAZT8HmERi0B1s"
+      ],
+      "Description": "---",
+      "Directory Path": "plugins/quality/skills/newman-runner",
+      "Has SKILL.md": true,
+      "Has Scripts": true,
+      "Has Templates": true,
+      "Has Examples": true
+    },
+    "recbSoqDm5Ez81iKH": {
+      "Skill Name": "environment-setup",
+      "Plugin": [
+        "recKhXJjImbjvszyk"
+      ],
+      "Description": "---",
+      "Directory Path": "plugins/foundation/skills/environment-setup",
+      "Has SKILL.md": true,
+      "Has Scripts": true,
+      "Has Templates": true,
+      "Has Examples": true,
+      "Used By Agents": [
+        "recU25fW6mq27ri62",
+        "recdk5O80bLeyVfms",
+        "recnEvuDCiLQyhkxs"
+      ]
+    },
+    "receTSX9biwwDR1ge": {
+      "Skill Name": "mcp-server-config",
+      "Plugin": [
+        "recKhXJjImbjvszyk"
+      ],
+      "Description": "---",
+      "Directory Path": "plugins/foundation/skills/mcp-server-config",
+      "Has SKILL.md": true,
+      "Has Scripts": true,
+      "Has Templates": true,
+      "Has Examples": true
+    },
+    "rechygh4rtCidBh05": {
+      "Skill Name": "postman-collection-manager",
+      "Plugin": [
+        "recAAZT8HmERi0B1s"
+      ],
+      "Description": "---",
+      "Directory Path": "plugins/quality/skills/postman-collection-manager",
+      "Has SKILL.md": true,
+      "Has Scripts": true,
+      "Has Templates": true,
+      "Has Examples": true
+    },
+    "recnkZLOmJI5Xq63r": {
+      "Skill Name": "breaking-change-detection",
+      "Plugin": [
+        "rec6h21K3lGHHhSLA"
+      ],
+      "Description": "---",
+      "Directory Path": "plugins/versioning/skills/breaking-change-detection",
+      "Has SKILL.md": true,
+      "Has Scripts": true,
+      "Has Templates": true,
+      "Has Examples": true
+    },
+    "recpQiEpByJ7uX0K6": {
+      "Skill Name": "cicd-setup",
+      "Plugin": [
+        "recyOkR1IcrPmrCJL"
+      ],
+      "Description": "---",
+      "Directory Path": "plugins/deployment/skills/cicd-setup",
+      "Has SKILL.md": true,
+      "Has Scripts": true,
+      "Has Templates": true,
+      "Has Examples": true,
+      "Used By Agents": [
+        "recju6tMpbcAJ0moW"
+      ]
+    },
+    "recqQChCLG1AEa8uf": {
+      "Skill Name": "auto-rollback-triggers",
+      "Plugin": [
+        "recyOkR1IcrPmrCJL"
+      ],
+      "Description": "---",
+      "Directory Path": "plugins/deployment/skills/auto-rollback-triggers",
+      "Has SKILL.md": true,
+      "Has Scripts": true,
+      "Has Templates": true,
+      "Has Examples": true
+    },
+    "recqZCOhpDZoZ3h8e": {
+      "Skill Name": "deployment-scripts",
+      "Plugin": [
+        "recyOkR1IcrPmrCJL"
+      ],
+      "Description": "---",
+      "Directory Path": "plugins/deployment/skills/deployment-scripts",
+      "Has SKILL.md": true,
+      "Has Scripts": true,
+      "Has Templates": true,
+      "Has Examples": true,
+      "Used By Agents": [
+        "recQiZrEvh6vystCE",
+        "recYpPbSRQLljTyPM",
+        "reciMookvcjhXK2Wx",
+        "recrUhvQhJqOFOhWX",
+        "recuxJJbhSPPD6vUp",
+        "recju6tMpbcAJ0moW"
+      ]
+    },
+    "recrGKvVkCj0zyzrm": {
+      "Skill Name": "decision-tracking",
+      "Plugin": [
+        "recdYoKmuKiAuuwhd"
+      ],
+      "Description": "---",
+      "Directory Path": "plugins/planning/skills/decision-tracking",
+      "Has SKILL.md": true,
+      "Has Scripts": true,
+      "Has Templates": true,
+      "Has Examples": true,
+      "Used By Agents": [
+        "recAYAIsSqzeU6rDB",
+        "recYTsRtF9mkkP7jX",
+        "recnVsgYvBEBRR7OV"
+      ]
+    },
+    "recrk7d6wx3yz53BO": {
+      "Skill Name": "project-detection",
+      "Plugin": [
+        "recKhXJjImbjvszyk"
+      ],
+      "Description": "---",
+      "Directory Path": "plugins/foundation/skills/project-detection",
+      "Has SKILL.md": true,
+      "Has Scripts": true,
+      "Has Templates": true,
+      "Has Examples": true,
+      "Used By Agents": [
+        "recQiZrEvh6vystCE",
+        "recU25fW6mq27ri62",
+        "recdk5O80bLeyVfms",
+        "recnEvuDCiLQyhkxs"
+      ]
+    },
+    "recslToLOiKVBYCc8": {
+      "Skill Name": "version-manager",
+      "Plugin": [
+        "rec6h21K3lGHHhSLA"
+      ],
+      "Description": "Comprehensive version management utilities for semantic versioning automation.",
+      "Directory Path": "plugins/versioning/skills/version-manager",
+      "Has SKILL.md": true,
+      "Has Scripts": true,
+      "Has Templates": true,
+      "Has Examples": true,
+      "Used By Agents": [
+        "rec17IJsBNDEtHgEb",
+        "recYbqNskizC4TMeM",
+        "recfuP0vkChLm2uhF",
+        "recfx5dOtnW0Z66Iq",
+        "recmXftGmyEZFjyVd"
+      ]
+    },
+    "recvb2Z22HuYfw9Lc": {
+      "Skill Name": "worktree-orchestration",
+      "Plugin": [
+        "recgPtkm7T722xWmt"
+      ],
+      "Description": "Provides scripts, templates, and documentation for managing git worktrees in multi-agent parallel development workflows.",
+      "Directory Path": "plugins/supervisor/skills/worktree-orchestration",
+      "Has SKILL.md": true,
+      "Has Scripts": true,
+      "Has Templates": true
+    },
+    "recx5ZoRceblBivCn": {
+      "Skill Name": "mcp-configuration",
+      "Plugin": [
+        "recKhXJjImbjvszyk"
+      ],
+      "Description": "---",
+      "Directory Path": "plugins/foundation/skills/mcp-configuration",
+      "Has SKILL.md": true,
+      "Has Scripts": true,
+      "Has Templates": true,
+      "Has Examples": true,
+      "Used By Agents": [
+        "recU25fW6mq27ri62"
+      ]
+    },
+    "recyKHUcQ2YzeHSIF": {
+      "Skill Name": "worktree-orchestration",
+      "Plugin": [
+        "rece6fN8rGNcWgjgB"
+      ],
+      "Directory Path": "plugins/iterate/skills/worktree-orchestration",
+      "Has Scripts": true,
+      "Has Templates": true,
+      "Used By Agents": [
+        "recsOptp13xBsB0rx"
+      ]
+    },
+    "reczWUpvAnglwGlTY": {
+      "Skill Name": "newman-testing",
+      "Plugin": [
+        "recAAZT8HmERi0B1s"
+      ],
+      "Description": "---",
+      "Directory Path": "plugins/quality/skills/newman-testing",
+      "Has SKILL.md": true,
+      "Used By Agents": [
+        "recH429kYvZ9OQb1X",
+        "recHe54datvAdjwgI",
+        "recDuQjXFmvGQMyXX",
+        "recsT0XQOowQ9ku33"
+      ]
+    }
+  },
+  "commands": {
+    "rec01uAMQUzDEEV6Y": {
+      "Command Name": "/versioning:setup",
+      "Plugin": [
+        "rec6h21K3lGHHhSLA"
+      ],
+      "Description": "Setup semantic versioning with validation and templates for Python and TypeScript projects",
+      "File Path": "plugins/versioning/commands/setup.md",
+      "Argument Hint": "[python|typescript|javascript]",
+      "Registered in Settings": true
+    },
+    "rec33UXG7PKnmzmxQ": {
+      "Command Name": "/supervisor:end",
+      "Plugin": [
+        "recgPtkm7T722xWmt"
+      ],
+      "Description": "Validate completion and generate PR commands before creating pull requests",
+      "File Path": "plugins/supervisor/commands/end.md",
+      "Argument Hint": "<spec-name>",
+      "Registered in Settings": true
+    },
+    "rec38IU71JfBjpDEs": {
+      "Command Name": "/planning:notes",
+      "Plugin": [
+        "recdYoKmuKiAuuwhd"
+      ],
+      "Description": "Capture technical notes and development journal",
+      "File Path": "plugins/planning/commands/notes.md",
+      "Argument Hint": "[note-topic]",
+      "Registered in Settings": true
+    },
+    "rec3ftt9uJZZOLQ4U": {
+      "Command Name": "/deployment:deploy",
+      "Plugin": [
+        "recyOkR1IcrPmrCJL"
+      ],
+      "Description": "Complete deployment orchestrator - prepares project, configures CI/CD with GitHub Actions and secrets, deploys, and validates. Runs prepare \u2192 setup-cicd \u2192 deploy \u2192 validate in sequence for full automation.",
+      "File Path": "plugins/deployment/commands/deploy.md",
+      "Argument Hint": "[project-path]",
+      "Registered in Settings": true,
+      "Agents": [
+        "reciMookvcjhXK2Wx"
+      ]
+    },
+    "rec4qs0bR4OKjgDrW": {
+      "Command Name": "/versioning:bump",
+      "Plugin": [
+        "rec6h21K3lGHHhSLA"
+      ],
+      "Description": "Increment semantic version and create git tag with changelog",
+      "File Path": "plugins/versioning/commands/bump.md",
+      "Argument Hint": "[major|minor|patch] [--dry-run] [--force]",
+      "Registered in Settings": true,
+      "Agents": [
+        "recYbqNskizC4TMeM",
+        "recfx5dOtnW0Z66Iq",
+        "recmXftGmyEZFjyVd"
+      ]
+    },
+    "rec5pfGDH1r81CCTd": {
+      "Command Name": "/foundation:env-check",
+      "Plugin": [
+        "recKhXJjImbjvszyk"
+      ],
+      "Description": "Verify required tools are installed for detected tech stack",
+      "File Path": "plugins/foundation/commands/env-check.md",
+      "Argument Hint": "[--fix]",
+      "Registered in Settings": true
+    },
+    "rec6fhj14GSm5caiG": {
+      "Command Name": "/planning:wizard",
+      "Plugin": [
+        "recdYoKmuKiAuuwhd"
+      ],
+      "Description": "Interactive multimodal wizard for comprehensive requirements gathering and spec generation",
+      "File Path": "plugins/planning/commands/wizard.md",
+      "Argument Hint": "[--auto-continue]",
+      "Registered in Settings": true
+    },
+    "rec70nIGLljCXhS5e": {
+      "Command Name": "/deployment:verify-feature-flags",
+      "Plugin": [
+        "recyOkR1IcrPmrCJL"
+      ],
+      "Description": "Pre-deployment feature flag validation and verification",
+      "File Path": "plugins/deployment/commands/verify-feature-flags.md",
+      "Argument Hint": "[project-path]",
+      "Registered in Settings": true
+    },
+    "rec7dnQFVAffSbAvw": {
+      "Command Name": "/foundation:mcp-registry",
+      "Plugin": [
+        "recKhXJjImbjvszyk"
+      ],
+      "Description": "Manage universal MCP server registry (init, add, list, search, remove)",
+      "File Path": "plugins/foundation/commands/mcp-registry.md",
+      "Argument Hint": "<action> [server-name] [options]",
+      "Registered in Settings": true
+    },
+    "rec8QFZ4LWZwerVdd": {
+      "Command Name": "/foundation:github-init",
+      "Plugin": [
+        "recKhXJjImbjvszyk"
+      ],
+      "Description": "Complete GitHub repository initialization with gh CLI - creates repo, configures settings, branch protection, templates, and integrates with hooks-setup and CI/CD",
+      "File Path": "plugins/foundation/commands/github-init.md",
+      "Argument Hint": "[repo-name] [--public|--private] [--org=org-name]",
+      "Registered in Settings": true
+    },
+    "recADAs6tPSV9QWeY": {
+      "Command Name": "/planning:doc-sync",
+      "Plugin": [
+        "recdYoKmuKiAuuwhd"
+      ],
+      "Description": "Sync documentation relationships to Mem0 for intelligent tracking",
+      "File Path": "plugins/planning/commands/doc-sync.md",
+      "Argument Hint": "[project-name]",
+      "Registered in Settings": true
+    },
+    "recAJNZszhesO36JN": {
+      "Command Name": "/foundation:mcp-manage",
+      "Plugin": [
+        "recKhXJjImbjvszyk"
+      ],
+      "Description": "Add, install, remove, list MCP servers and manage API keys",
+      "File Path": "plugins/foundation/commands/mcp-manage.md",
+      "Argument Hint": "<action> [server-name] [options]",
+      "Registered in Settings": true
+    },
+    "recAc7kabuopxBdIX": {
+      "Command Name": "/planning:architecture",
+      "Plugin": [
+        "recdYoKmuKiAuuwhd"
+      ],
+      "Description": "Design and document system architecture",
+      "File Path": "plugins/planning/commands/architecture.md",
+      "Argument Hint": "<action> [architecture-name]",
+      "Registered in Settings": true,
+      "Agents": [
+        "recYTsRtF9mkkP7jX",
+        "recnVsgYvBEBRR7OV"
+      ]
+    },
+    "recAfcZzA2YqBPvIj": {
+      "Command Name": "/versioning:record-deployment",
+      "Plugin": [
+        "rec6h21K3lGHHhSLA"
+      ],
+      "Description": "Track deployment history (version \u2192 environment \u2192 URL)",
+      "File Path": "plugins/versioning/commands/record-deployment.md",
+      "Argument Hint": "<environment> <url> [--version=X.Y.Z]",
+      "Registered in Settings": true
+    },
+    "recAi3lJmycHkFNKy": {
+      "Command Name": "/planning:roadmap",
+      "Plugin": [
+        "recdYoKmuKiAuuwhd"
+      ],
+      "Description": "Create development roadmap and timeline",
+      "File Path": "plugins/planning/commands/roadmap.md",
+      "Argument Hint": "[timeframe]",
+      "Registered in Settings": true,
+      "Agents": [
+        "recTeLBPWPq68GjuM"
+      ]
+    },
+    "recApVLQ7ulWi0SmC": {
+      "Command Name": "/foundation:env-vars",
+      "Plugin": [
+        "recKhXJjImbjvszyk"
+      ],
+      "Description": "Manage environment variables for project configuration",
+      "File Path": "plugins/foundation/commands/env-vars.md",
+      "Argument Hint": "<action> [key] [value]",
+      "Registered in Settings": true,
+      "Agents": [
+        "recQiZrEvh6vystCE",
+        "recU25fW6mq27ri62"
+      ]
+    },
+    "recBHOQioLoJGan7e": {
+      "Command Name": "/deployment:setup-cicd",
+      "Plugin": [
+        "recyOkR1IcrPmrCJL"
+      ],
+      "Description": "Automatically configure CI/CD pipeline with GitHub Actions and secrets for any deployment platform (Vercel, DigitalOcean, Railway). Uses gh CLI to auto-configure repository secrets and generates platform-specific workflows.",
+      "File Path": "plugins/deployment/commands/setup-cicd.md",
+      "Argument Hint": "[platform] [project-path]",
+      "Registered in Settings": true,
+      "Agents": [
+        "recLJxwGk2LdQ37y1"
+      ]
+    },
+    "recBohNYcWU4Oyt5l": {
+      "Command Name": "/deployment:capture-baseline",
+      "Plugin": [
+        "recyOkR1IcrPmrCJL"
+      ],
+      "Description": "Capture performance baselines (Lighthouse, API latency) for deployment monitoring",
+      "File Path": "plugins/deployment/commands/capture-baseline.md",
+      "Argument Hint": "<deployment-url>",
+      "Registered in Settings": true
+    },
+    "recEV1dgMpsnEcOTL": {
+      "Command Name": "/supervisor:init",
+      "Plugin": [
+        "recgPtkm7T722xWmt"
+      ],
+      "Description": "Initialize git worktrees for parallel agent execution based on layered tasks",
+      "File Path": "plugins/supervisor/commands/init.md",
+      "Argument Hint": "<spec-name> | --all | --bulk",
+      "Registered in Settings": true,
+      "Agents": [
+        "recsOptp13xBsB0rx"
+      ]
+    },
+    "recGDzKHYN6H5h7Gf": {
+      "Command Name": "/supervisor:mid",
+      "Plugin": [
+        "recgPtkm7T722xWmt"
+      ],
+      "Description": "Monitor agent progress and task completion during development",
+      "File Path": "plugins/supervisor/commands/mid.md",
+      "Argument Hint": "<spec-name> [--test]",
+      "Registered in Settings": true
+    },
+    "recKNHltQlIIMi5bl": {
+      "Command Name": "/deployment:blue-green-deploy",
+      "Plugin": [
+        "recyOkR1IcrPmrCJL"
+      ],
+      "Description": "Zero-downtime parallel environment swap deployment",
+      "File Path": "plugins/deployment/commands/blue-green-deploy.md",
+      "Argument Hint": "[project-path]",
+      "Registered in Settings": true
+    },
+    "recL5qSaUrNTdhbaj": {
+      "Command Name": "/foundation:doppler-setup",
+      "Plugin": [
+        "recKhXJjImbjvszyk"
+      ],
+      "Description": "Setup Doppler secret management for scalable environment variable handling",
+      "File Path": "plugins/foundation/commands/doppler-setup.md",
+      "Argument Hint": "[project-name]",
+      "Registered in Settings": true
+    },
+    "recL6pOuuDG0w9CxY": {
+      "Command Name": "/iterate:adjust",
+      "Plugin": [
+        "rece6fN8rGNcWgjgB"
+      ],
+      "Description": "Adjust implementation based on feedback - make targeted changes based on user feedback or requirements",
+      "File Path": "plugins/iterate/commands/adjust.md",
+      "Argument Hint": "feedback-or-requirements",
+      "Registered in Settings": true,
+      "Agents": [
+        "recehuS4vKlomNzf4"
+      ]
+    },
+    "recLkjIPJSMjZfuyw": {
+      "Command Name": "/foundation:hooks-setup",
+      "Plugin": [
+        "recKhXJjImbjvszyk"
+      ],
+      "Description": "Install standardized git hooks (secret scanning, commit message validation, security checks) and GitHub Actions security workflow",
+      "File Path": "plugins/foundation/commands/hooks-setup.md",
+      "Argument Hint": "[project-path]",
+      "Registered in Settings": true
+    },
+    "recLyruHQnWJ3M782": {
+      "Command Name": "/quality:security",
+      "Plugin": [
+        "recAAZT8HmERi0B1s"
+      ],
+      "Description": "Run security scans and vulnerability checks",
+      "File Path": "plugins/quality/commands/security.md",
+      "Argument Hint": "[scan-type]",
+      "Registered in Settings": true,
+      "Agents": [
+        "recKMeICGF6a5monc",
+        "recDuQjXFmvGQMyXX",
+        "recsT0XQOowQ9ku33"
+      ]
+    },
+    "recNBCyuFFLDA9HXe": {
+      "Command Name": "/deployment:rollback-automated",
+      "Plugin": [
+        "recyOkR1IcrPmrCJL"
+      ],
+      "Description": "Setup automated rollback triggers on error thresholds",
+      "File Path": "plugins/deployment/commands/rollback-automated.md",
+      "Argument Hint": "$ARGUMENTS",
+      "Registered in Settings": true
+    },
+    "recO9XiCDeSBDHda8": {
+      "Command Name": "/planning:decide",
+      "Plugin": [
+        "recdYoKmuKiAuuwhd"
+      ],
+      "Description": "Create Architecture Decision Records (ADRs)",
+      "File Path": "plugins/planning/commands/decide.md",
+      "Argument Hint": "[decision-title]",
+      "Registered in Settings": true,
+      "Agents": [
+        "recYTsRtF9mkkP7jX",
+        "recnVsgYvBEBRR7OV"
+      ]
+    },
+    "recOLATsP2tR3PgBu": {
+      "Command Name": "/foundation:detect",
+      "Plugin": [
+        "recKhXJjImbjvszyk"
+      ],
+      "Description": "Detect project tech stack and populate .claude/project.json",
+      "File Path": "plugins/foundation/commands/detect.md",
+      "Argument Hint": "[project-path]",
+      "Registered in Settings": true,
+      "Agents": [
+        "recDuQjXFmvGQMyXX",
+        "recU25fW6mq27ri62",
+        "recdk5O80bLeyVfms",
+        "recnEvuDCiLQyhkxs",
+        "recsT0XQOowQ9ku33"
+      ]
+    },
+    "recOZlUEG9StztSLQ": {
+      "Command Name": "/versioning:info",
+      "Plugin": [
+        "rec6h21K3lGHHhSLA"
+      ],
+      "Description": "Display version information and validate configuration",
+      "File Path": "plugins/versioning/commands/info.md",
+      "Argument Hint": "[status|validate|history]",
+      "Registered in Settings": true,
+      "Agents": [
+        "rec17IJsBNDEtHgEb",
+        "recfuP0vkChLm2uhF",
+        "recfx5dOtnW0Z66Iq",
+        "recmXftGmyEZFjyVd"
+      ]
+    },
+    "recP6Cg1Pgk1ZYczO": {
+      "Command Name": "/versioning:generate-release-notes",
+      "Plugin": [
+        "rec6h21K3lGHHhSLA"
+      ],
+      "Description": "AI-powered release notes with migration guides and breaking change analysis",
+      "File Path": "plugins/versioning/commands/generate-release-notes.md",
+      "Argument Hint": "[version] [--output=FILE]",
+      "Registered in Settings": true
+    },
+    "recPV4fx4PpiFW3Rz": {
+      "Command Name": "/deployment:canary-deploy",
+      "Plugin": [
+        "recyOkR1IcrPmrCJL"
+      ],
+      "Description": "Progressive traffic rollout with auto-rollback monitoring",
+      "File Path": "plugins/deployment/commands/canary-deploy.md",
+      "Argument Hint": "[deployment-target]",
+      "Registered in Settings": true
+    },
+    "recQUjycezXc5qS3R": {
+      "Command Name": "/versioning:prerelease",
+      "Plugin": [
+        "rec6h21K3lGHHhSLA"
+      ],
+      "Description": "Create pre-release versions (alpha, beta, RC)",
+      "File Path": "plugins/versioning/commands/prerelease.md",
+      "Argument Hint": "[alpha|beta|rc] [--dry-run]",
+      "Registered in Settings": true
+    },
+    "recUw8BNDBZezw70J": {
+      "Command Name": "/versioning:analyze-breaking",
+      "Plugin": [
+        "rec6h21K3lGHHhSLA"
+      ],
+      "Description": "Detect breaking changes and recommend version bump",
+      "File Path": "plugins/versioning/commands/analyze-breaking.md",
+      "Argument Hint": "[--from=tag] [--detailed]",
+      "Registered in Settings": true
+    },
+    "recVVopu09KY8aVts": {
+      "Command Name": "/deployment:rollback",
+      "Plugin": [
+        "recyOkR1IcrPmrCJL"
+      ],
+      "Description": "Rollback to previous deployment version with platform-specific rollback procedures",
+      "File Path": "plugins/deployment/commands/rollback.md",
+      "Argument Hint": "[deployment-id-or-version]",
+      "Registered in Settings": true,
+      "Agents": [
+        "recju6tMpbcAJ0moW",
+        "recYPwcBROB12CqCM"
+      ]
+    },
+    "recXfnfamkfxQ4PHm": {
+      "Command Name": "/versioning:approve-release",
+      "Plugin": [
+        "rec6h21K3lGHHhSLA"
+      ],
+      "Description": "Multi-stakeholder approval workflow before release",
+      "File Path": "plugins/versioning/commands/approve-release.md",
+      "Argument Hint": "[version]",
+      "Registered in Settings": true
+    },
+    "recYXqg8plpLXJEc3": {
+      "Command Name": "/planning:add-spec",
+      "Plugin": [
+        "recdYoKmuKiAuuwhd"
+      ],
+      "Description": "[DEPRECATED] Use /planning:add-feature instead - adds spec with similarity checking and complete planning sync",
+      "File Path": "plugins/planning/commands/add-spec.md",
+      "Argument Hint": "<feature-description>",
+      "Registered in Settings": true
+    },
+    "recaSlOfQOPGeidZX": {
+      "Command Name": "/iterate:refactor",
+      "Plugin": [
+        "rece6fN8rGNcWgjgB"
+      ],
+      "Description": "Refactor code for quality - improve code structure and maintainability without changing functionality",
+      "File Path": "plugins/iterate/commands/refactor.md",
+      "Argument Hint": "file-or-directory",
+      "Registered in Settings": true,
+      "Agents": [
+        "recg1iba26Fk1ODND"
+      ]
+    },
+    "recdIO7qxtKPWhJAL": {
+      "Command Name": "/deployment:validate",
+      "Plugin": [
+        "recyOkR1IcrPmrCJL"
+      ],
+      "Description": "Validate deployment health with comprehensive checks (URL accessibility, health endpoints, environment variables)",
+      "File Path": "plugins/deployment/commands/validate.md",
+      "Argument Hint": "<deployment-url>",
+      "Registered in Settings": true,
+      "Agents": [
+        "reciMookvcjhXK2Wx",
+        "recQiZrEvh6vystCE",
+        "recYPwcBROB12CqCM",
+        "recYpPbSRQLljTyPM",
+        "recju6tMpbcAJ0moW",
+        "recrUhvQhJqOFOhWX",
+        "recuxJJbhSPPD6vUp"
+      ]
+    },
+    "recfL5SlEOWBscLFB": {
+      "Command Name": "/supervisor:start",
+      "Plugin": [
+        "recgPtkm7T722xWmt"
+      ],
+      "Description": "Verify agent setup and worktree readiness before work begins",
+      "File Path": "plugins/supervisor/commands/start.md",
+      "Argument Hint": "<spec-name>",
+      "Registered in Settings": true,
+      "Agents": [
+        "recsOptp13xBsB0rx"
+      ]
+    },
+    "recfW9nCcQ9pvF6a4": {
+      "Command Name": "/planning:clarify",
+      "Plugin": [
+        "recdYoKmuKiAuuwhd"
+      ],
+      "Description": "Gather clarification on ambiguous requirements, specs, or tasks through structured questions. Helps resolve uncertainty before implementation.",
+      "File Path": "plugins/planning/commands/clarify.md",
+      "Argument Hint": "[spec-name or topic]",
+      "Registered in Settings": true
+    },
+    "recgGem0LYCM3oVSe": {
+      "Command Name": "/deployment:prepare",
+      "Plugin": [
+        "recyOkR1IcrPmrCJL"
+      ],
+      "Description": "Prepare project for deployment with pre-flight checks (dependencies, build tools, authentication, environment variables)",
+      "File Path": "plugins/deployment/commands/prepare.md",
+      "Argument Hint": "[project-path]",
+      "Registered in Settings": true,
+      "Agents": [
+        "recQiZrEvh6vystCE",
+        "recYPwcBROB12CqCM",
+        "recYpPbSRQLljTyPM",
+        "recuxJJbhSPPD6vUp"
+      ]
+    },
+    "recgKXxJwZ5HRuYfy": {
+      "Command Name": "/quality:validate-tasks",
+      "Plugin": [
+        "recAAZT8HmERi0B1s"
+      ],
+      "Description": "Validate task completion status against actual implementation",
+      "File Path": "plugins/quality/commands/validate-tasks.md",
+      "Argument Hint": "<spec-number>",
+      "Registered in Settings": true
+    },
+    "recgrh4rb7Z2tyeAg": {
+      "Command Name": "/quality:validate-code",
+      "Plugin": [
+        "recAAZT8HmERi0B1s"
+      ],
+      "Description": "Review implementation code quality, security, and test coverage",
+      "File Path": "plugins/quality/commands/validate-code.md",
+      "Argument Hint": "<spec-number> [--generate-tests]",
+      "Registered in Settings": true
+    },
+    "recjKS7KOjFWZkBZM": {
+      "Command Name": "/quality:test",
+      "Plugin": [
+        "recAAZT8HmERi0B1s"
+      ],
+      "Description": "Run comprehensive test suite (Newman API, Playwright E2E, security scans)",
+      "File Path": "plugins/quality/commands/test.md",
+      "Argument Hint": "[test-type]",
+      "Registered in Settings": true,
+      "Agents": [
+        "recHe54datvAdjwgI",
+        "recOcwPaozZmS2U5X",
+        "recrUhvQhJqOFOhWX",
+        "rec9s7YV6EGmdl90L",
+        "recB0UVsrefJ9d8LB",
+        "recDuQjXFmvGQMyXX",
+        "recsT0XQOowQ9ku33"
+      ]
+    },
+    "recjk1FtTFKqPFiJV": {
+      "Command Name": "/foundation:mcp-sync",
+      "Plugin": [
+        "recKhXJjImbjvszyk"
+      ],
+      "Description": "Sync universal MCP registry to target format (.mcp.json or .vscode/mcp.json)",
+      "File Path": "plugins/foundation/commands/mcp-sync.md",
+      "Argument Hint": "<claude|vscode|both> [server-name...]",
+      "Registered in Settings": true
+    },
+    "recm2Z3lFWPRqJELw": {
+      "Command Name": "/planning:update-feature",
+      "Plugin": [
+        "recdYoKmuKiAuuwhd"
+      ],
+      "Description": "Update existing feature across roadmap, specs, and architecture docs when requirements change",
+      "File Path": "plugins/planning/commands/update-feature.md",
+      "Argument Hint": "<spec-number> [changes]",
+      "Registered in Settings": true
+    },
+    "recnyhwq5mm2Af9xV": {
+      "Command Name": "/versioning:rollback",
+      "Plugin": [
+        "rec6h21K3lGHHhSLA"
+      ],
+      "Description": "Rollback to previous version by removing tag and resetting files",
+      "File Path": "plugins/versioning/commands/rollback.md",
+      "Argument Hint": "[version]",
+      "Registered in Settings": true
+    },
+    "recojExrcAnW0qBK8": {
+      "Command Name": "/iterate:enhance",
+      "Plugin": [
+        "rece6fN8rGNcWgjgB"
+      ],
+      "Description": "Enhance existing features - add improvements and optimizations to existing features",
+      "File Path": "plugins/iterate/commands/enhance.md",
+      "Argument Hint": "feature-name",
+      "Registered in Settings": true,
+      "Agents": [
+        "rec9w2g5KFxpQkYRD"
+      ]
+    },
+    "recpKXp17gaWrXrmK": {
+      "Command Name": "/planning:analyze-project",
+      "Plugin": [
+        "recdYoKmuKiAuuwhd"
+      ],
+      "Description": "Analyze existing project specs for completeness and identify gaps",
+      "File Path": "plugins/planning/commands/analyze-project.md",
+      "Argument Hint": "(optional)",
+      "Registered in Settings": true
+    },
+    "recsHcpHEXgzVv0eK": {
+      "Command Name": "/deployment:setup-monitoring",
+      "Plugin": [
+        "recyOkR1IcrPmrCJL"
+      ],
+      "Description": "Observability integration (Sentry, DataDog, alerts)",
+      "File Path": "plugins/deployment/commands/setup-monitoring.md",
+      "Argument Hint": "[monitoring-platform]",
+      "Registered in Settings": true
+    },
+    "rectTaHWSqGMk0N3U": {
+      "Command Name": "/quality:performance",
+      "Plugin": [
+        "recAAZT8HmERi0B1s"
+      ],
+      "Description": "Analyze performance and identify bottlenecks",
+      "File Path": "plugins/quality/commands/performance.md",
+      "Argument Hint": "[analysis-type]",
+      "Registered in Settings": true,
+      "Agents": [
+        "recH429kYvZ9OQb1X"
+      ]
+    },
+    "recv1b4mxapvwWCqG": {
+      "Command Name": "/planning:add-feature",
+      "Plugin": [
+        "recdYoKmuKiAuuwhd"
+      ],
+      "Description": "Add complete feature with roadmap, spec, ADR, and architecture updates - keeps all planning docs in sync",
+      "File Path": "plugins/planning/commands/add-feature.md",
+      "Argument Hint": "<feature-description>",
+      "Registered in Settings": true
+    },
+    "recvA3VNuXUCukpH0": {
+      "Command Name": "/planning:view-docs",
+      "Plugin": [
+        "recdYoKmuKiAuuwhd"
+      ],
+      "Description": "Launch visual documentation registry viewer",
+      "File Path": "plugins/planning/commands/view-docs.md",
+      "Argument Hint": "none",
+      "Registered in Settings": true
+    },
+    "recvAfVBu7nUnpcCM": {
+      "Command Name": "/deployment:feature-flags-setup",
+      "Plugin": [
+        "recyOkR1IcrPmrCJL"
+      ],
+      "Description": "Initialize feature flag infrastructure (LaunchDarkly/Flagsmith)",
+      "File Path": "plugins/deployment/commands/feature-flags-setup.md",
+      "Argument Hint": "[launchdarkly|flagsmith|split]",
+      "Registered in Settings": true
+    },
+    "recwrwJI3te2rLE7j": {
+      "Command Name": "/iterate:sync",
+      "Plugin": [
+        "rece6fN8rGNcWgjgB"
+      ],
+      "Description": "Sync specs with implementation - update specs, tasks, and docs to match current code state",
+      "File Path": "plugins/iterate/commands/sync.md",
+      "Argument Hint": "[feature-area]",
+      "Registered in Settings": true,
+      "Agents": [
+        "rec9s7YV6EGmdl90L",
+        "rec9w2g5KFxpQkYRD",
+        "recB0UVsrefJ9d8LB",
+        "reccw2XPQhtTlKJlg",
+        "recehuS4vKlomNzf4",
+        "recg1iba26Fk1ODND"
+      ]
+    },
+    "recxmhZbUIDUBPg6o": {
+      "Command Name": "/planning:init-project",
+      "Plugin": [
+        "recdYoKmuKiAuuwhd"
+      ],
+      "Description": "Create ALL project specs in one shot from massive description using parallel agents",
+      "File Path": "plugins/planning/commands/init-project.md",
+      "Argument Hint": "<project-description>",
+      "Registered in Settings": true,
+      "Agents": [
+        "recAYAIsSqzeU6rDB"
+      ]
+    },
+    "recyGl3J7Si99rwRc": {
+      "Command Name": "/foundation:use-pnpm",
+      "Plugin": [
+        "recKhXJjImbjvszyk"
+      ],
+      "Description": "Convert Node.js project from npm to pnpm for faster worktree dependency installs",
+      "File Path": "plugins/foundation/commands/use-pnpm.md",
+      "Argument Hint": "none",
+      "Registered in Settings": true,
+      "Agents": [
+        "recsOptp13xBsB0rx"
+      ]
+    },
+    "reczv4MJHWU9nyOrH": {
+      "Command Name": "/planning:spec",
+      "Plugin": [
+        "recdYoKmuKiAuuwhd"
+      ],
+      "Description": "Create, list, and validate specifications in specs/ directory",
+      "File Path": "plugins/planning/commands/spec.md",
+      "Argument Hint": "<action> [spec-name]",
+      "Registered in Settings": true,
+      "Agents": [
+        "recNYbLYG0SEwgDHX",
+        "recRk5k6iv5vMgW6r",
+        "recsEOM7oQ6h0SPrK",
+        "recsOptp13xBsB0rx",
+        "recAYAIsSqzeU6rDB"
+      ]
+    }
+  },
+  "agents": {
+    "rec0Zb9UzUvmb4fDX": {
+      "Agent Name": "version-rollback-executor",
+      "Plugin": [
+        "rec6h21K3lGHHhSLA"
+      ],
+      "File Path": "plugins/versioning/agents/version-rollback-executor.md",
+      "Purpose": "Safely rollback version releases by removing tags and restoring previous version files",
+      "Status": "Missing Documentation"
+    },
+    "rec0grEvF4VXGdS1t": {
+      "Agent Name": "technical-validator",
+      "Plugin": [
+        "recdYoKmuKiAuuwhd"
+      ],
+      "File Path": "plugins/planning/agents/technical-validator.md",
+      "Purpose": "Validates architecture completeness, diagrams, security best practices, and technical quality",
+      "Has Slash Commands Section": true,
+      "Status": "Missing Documentation"
+    },
+    "rec17IJsBNDEtHgEb": {
+      "Agent Name": "breaking-change-detector",
+      "Plugin": [
+        "rec6h21K3lGHHhSLA"
+      ],
+      "File Path": "plugins/versioning/agents/breaking-change-detector.md",
+      "Purpose": "Use this agent to analyze API contracts and database schemas for breaking changes to determine semantic version requirements. Invoke before version bumps to detect changes requiring major version increments.",
+      "Has Slash Commands Section": true,
+      "Has MCP Section": true,
+      "Status": "Needs Update",
+      "Skills": [
+        "recslToLOiKVBYCc8"
+      ],
+      "Uses Commands": [
+        "recOZlUEG9StztSLQ"
+      ],
+      "MCP Servers Linked": [
+        "recLAdRqTtlbIkzty",
+        "rec0gQ3kzXsHKE8ut",
+        "recZh56XVeGrdeVXP"
+      ]
+    },
+    "rec19tTbWDs8Df6wI": {
+      "Agent Name": "cost-validator",
+      "Plugin": [
+        "recdYoKmuKiAuuwhd"
+      ],
+      "File Path": "plugins/planning/agents/cost-validator.md",
+      "Purpose": "Validates budget constraints, estimates monthly costs, and ensures cost-effectiveness",
+      "Has Slash Commands Section": true,
+      "Status": "Missing Documentation"
+    },
+    "rec4Voz49RPmbVC68": {
+      "Agent Name": "timeline-validator",
+      "Plugin": [
+        "recdYoKmuKiAuuwhd"
+      ],
+      "File Path": "plugins/planning/agents/timeline-validator.md",
+      "Purpose": "Validates timeline feasibility, identifies blockers, and confirms aggressive timelines are achievable",
+      "Has Slash Commands Section": true,
+      "Status": "Missing Documentation"
+    },
+    "rec9s7YV6EGmdl90L": {
+      "Agent Name": "task-validator",
+      "Plugin": [
+        "recAAZT8HmERi0B1s"
+      ],
+      "File Path": "plugins/quality/agents/task-validator.md",
+      "Purpose": "Validate that tasks marked complete in tasks.md have corresponding implementation work done",
+      "Has Slash Commands Section": true,
+      "Status": "Complete",
+      "Skills": [
+        "recUvSw9ynrCHsenN"
+      ],
+      "Uses Commands": [
+        "recjKS7KOjFWZkBZM",
+        "recwrwJI3te2rLE7j"
+      ],
+      "MCP Servers Linked": [
+        "recLAdRqTtlbIkzty"
+      ]
+    },
+    "rec9w2g5KFxpQkYRD": {
+      "Agent Name": "feature-enhancer",
+      "Plugin": [
+        "rece6fN8rGNcWgjgB"
+      ],
+      "File Path": "plugins/iterate/agents/feature-enhancer.md",
+      "Purpose": "Use this agent to enhance features - adds improvements and optimizations to existing features",
+      "Has Slash Commands Section": true,
+      "Has MCP Section": true,
+      "Status": "Needs Update",
+      "Skills": [
+        "recUvSw9ynrCHsenN"
+      ],
+      "Uses Commands": [
+        "recojExrcAnW0qBK8",
+        "recwrwJI3te2rLE7j"
+      ],
+      "MCP Servers Linked": [
+        "recLAdRqTtlbIkzty",
+        "rec0gQ3kzXsHKE8ut"
+      ]
+    },
+    "recAYAIsSqzeU6rDB": {
+      "Agent Name": "feature-analyzer",
+      "Plugin": [
+        "recdYoKmuKiAuuwhd"
+      ],
+      "File Path": "plugins/planning/agents/feature-analyzer.md",
+      "Purpose": "Use this agent to analyze massive project descriptions and break them into discrete features with numbering, naming, dependencies, and shared context extraction for parallel spec generation",
+      "Has Slash Commands Section": true,
+      "Has MCP Section": true,
+      "Status": "Needs Update",
+      "Skills": [
+        "recSr0cXqzMO1BOXr",
+        "rec8zuF6V7qyBCndm",
+        "recrGKvVkCj0zyzrm"
+      ],
+      "Uses Commands": [
+        "reczv4MJHWU9nyOrH",
+        "recxmhZbUIDUBPg6o"
+      ],
+      "MCP Servers Linked": [
+        "recLAdRqTtlbIkzty",
+        "rec0gQ3kzXsHKE8ut"
+      ]
+    },
+    "recB0UVsrefJ9d8LB": {
+      "Agent Name": "task-validator",
+      "Plugin": [
+        "recAAZT8HmERi0B1s"
+      ],
+      "File Path": "plugins/quality/agents/task-validator.md",
+      "Purpose": "Validate that tasks marked complete in tasks.md actually have corresponding implementation work done",
+      "Has Slash Commands Section": true,
+      "Status": "Missing Documentation",
+      "Skills": [
+        "recUvSw9ynrCHsenN"
+      ],
+      "Uses Commands": [
+        "recjKS7KOjFWZkBZM",
+        "recwrwJI3te2rLE7j"
+      ]
+    },
+    "recDuQjXFmvGQMyXX": {
+      "Agent Name": "code-validator",
+      "Plugin": [
+        "recAAZT8HmERi0B1s"
+      ],
+      "File Path": "plugins/quality/agents/code-validator.md",
+      "Purpose": "Review implementation code against spec requirements, check security rules, and generate comprehensive test recommendations",
+      "Has Slash Commands Section": true,
+      "Status": "Missing Documentation",
+      "Skills": [
+        "recFKn5gTrIrFU9Bo",
+        "recV4RXRw3meAEdJ3",
+        "reczWUpvAnglwGlTY"
+      ],
+      "Uses Commands": [
+        "recLyruHQnWJ3M782",
+        "recjKS7KOjFWZkBZM",
+        "recOLATsP2tR3PgBu"
+      ]
+    },
+    "recH429kYvZ9OQb1X": {
+      "Agent Name": "performance-analyzer",
+      "Plugin": [
+        "recAAZT8HmERi0B1s"
+      ],
+      "File Path": "plugins/quality/agents/performance-analyzer.md",
+      "Purpose": "Analyzes performance and identifies bottlenecks with optimization recommendations",
+      "Has Slash Commands Section": true,
+      "Has MCP Section": true,
+      "Status": "Needs Update",
+      "Skills": [
+        "recV4RXRw3meAEdJ3",
+        "reczWUpvAnglwGlTY"
+      ],
+      "Uses Commands": [
+        "rectTaHWSqGMk0N3U"
+      ],
+      "MCP Servers Linked": [
+        "recLAdRqTtlbIkzty",
+        "rec0gQ3kzXsHKE8ut"
+      ]
+    },
+    "recHe54datvAdjwgI": {
+      "Agent Name": "test-generator",
+      "Plugin": [
+        "recAAZT8HmERi0B1s"
+      ],
+      "File Path": "plugins/quality/agents/test-generator.md",
+      "Purpose": "Generates comprehensive test suites from implementation analysis",
+      "Has Slash Commands Section": true,
+      "Has MCP Section": true,
+      "Status": "Needs Update",
+      "Skills": [
+        "recV4RXRw3meAEdJ3",
+        "reczWUpvAnglwGlTY"
+      ],
+      "Uses Commands": [
+        "recjKS7KOjFWZkBZM"
+      ],
+      "MCP Servers Linked": [
+        "recT1KGTsguC3ZPyf",
+        "recLAdRqTtlbIkzty",
+        "rec0gQ3kzXsHKE8ut",
+        "rec4mmF9kv8NFG8O8"
+      ]
+    },
+    "recKMeICGF6a5monc": {
+      "Agent Name": "security-scanner",
+      "Plugin": [
+        "recAAZT8HmERi0B1s"
+      ],
+      "File Path": "plugins/quality/agents/security-scanner.md",
+      "Purpose": "Performs comprehensive security analysis of projects",
+      "Has Slash Commands Section": true,
+      "Has MCP Section": true,
+      "Status": "Needs Update",
+      "Skills": [
+        "recFKn5gTrIrFU9Bo"
+      ],
+      "Uses Commands": [
+        "recLyruHQnWJ3M782"
+      ],
+      "MCP Servers Linked": [
+        "recLAdRqTtlbIkzty",
+        "rec0gQ3kzXsHKE8ut"
+      ]
+    },
+    "recLJxwGk2LdQ37y1": {
+      "Agent Name": "deployment-preparer",
+      "Plugin": [
+        "recyOkR1IcrPmrCJL"
+      ],
+      "File Path": "plugins/deployment/agents/deployment-preparer.md",
+      "Purpose": "Run comprehensive pre-flight checks to ensure projects are ready for deployment",
+      "Status": "Missing Documentation",
+      "Uses Commands": [
+        "recBHOQioLoJGan7e"
+      ]
+    },
+    "recLd6jq3o2KfAKKF": {
+      "Agent Name": "cto-reviewer",
+      "Plugin": [
+        "recdYoKmuKiAuuwhd"
+      ],
+      "File Path": "plugins/planning/agents/cto-reviewer.md",
+      "Purpose": "Executive-level architecture review that reads all validation reports and provides approval status",
+      "Has Slash Commands Section": true,
+      "Status": "Missing Documentation"
+    },
+    "recNYbLYG0SEwgDHX": {
+      "Agent Name": "requirements-processor",
+      "Plugin": [
+        "recdYoKmuKiAuuwhd"
+      ],
+      "File Path": "plugins/planning/agents/requirements-processor.md",
+      "Purpose": "Process multimodal inputs (files, images, URLs, docs) and extract requirements for wizard",
+      "Has Slash Commands Section": true,
+      "Has MCP Section": true,
+      "Status": "Needs Update",
+      "Uses Commands": [
+        "reczv4MJHWU9nyOrH"
+      ],
+      "MCP Servers Linked": [
+        "recLAdRqTtlbIkzty",
+        "rec0gQ3kzXsHKE8ut"
+      ]
+    },
+    "recOcwPaozZmS2U5X": {
+      "Agent Name": "compliance-checker",
+      "Plugin": [
+        "recAAZT8HmERi0B1s"
+      ],
+      "File Path": "plugins/quality/agents/compliance-checker.md",
+      "Purpose": "Checks project compliance with licensing, code standards, and regulatory requirements",
+      "Has Slash Commands Section": true,
+      "Has MCP Section": true,
+      "Status": "Needs Update",
+      "Skills": [
+        "recFKn5gTrIrFU9Bo"
+      ],
+      "Uses Commands": [
+        "recjKS7KOjFWZkBZM"
+      ],
+      "MCP Servers Linked": [
+        "recLAdRqTtlbIkzty",
+        "rec0gQ3kzXsHKE8ut"
+      ]
+    },
+    "recQiZrEvh6vystCE": {
+      "Agent Name": "feature-flag-integrator",
+      "Plugin": [
+        "recyOkR1IcrPmrCJL"
+      ],
+      "File Path": "plugins/deployment/agents/feature-flag-integrator.md",
+      "Purpose": "Use this agent to integrate feature flag services (LaunchDarkly, Flagsmith) with SDK setup, environment configuration, and deployment workflows. Invoke when setting up feature flags for gradual rollouts, A/B testing, or controlled deployments.",
+      "Has Slash Commands Section": true,
+      "Has MCP Section": true,
+      "Status": "Needs Update",
+      "Skills": [
+        "recqZCOhpDZoZ3h8e",
+        "recrk7d6wx3yz53BO"
+      ],
+      "Uses Commands": [
+        "recApVLQ7ulWi0SmC",
+        "recdIO7qxtKPWhJAL",
+        "recgGem0LYCM3oVSe"
+      ],
+      "MCP Servers Linked": [
+        "recLAdRqTtlbIkzty",
+        "rec0gQ3kzXsHKE8ut"
+      ]
+    },
+    "recRk5k6iv5vMgW6r": {
+      "Agent Name": "feature-spec-writer",
+      "Plugin": [
+        "recdYoKmuKiAuuwhd"
+      ],
+      "File Path": "plugins/planning/agents/feature-spec-writer.md",
+      "Purpose": "Fill content in feature spec templates (spec.md, tasks.md) based on architecture docs and feature breakdown",
+      "Has Slash Commands Section": true,
+      "Has MCP Section": true,
+      "Status": "Needs Update",
+      "Uses Commands": [
+        "reczv4MJHWU9nyOrH"
+      ],
+      "MCP Servers Linked": [
+        "rec0gQ3kzXsHKE8ut"
+      ]
+    },
+    "recTeLBPWPq68GjuM": {
+      "Agent Name": "roadmap-planner",
+      "Plugin": [
+        "recdYoKmuKiAuuwhd"
+      ],
+      "File Path": "plugins/planning/agents/roadmap-planner.md",
+      "Purpose": "Use this agent to create project roadmaps with milestones, phases, timelines, and mermaid gantt charts",
+      "Has Slash Commands Section": true,
+      "Has MCP Section": true,
+      "Status": "Needs Update",
+      "Skills": [
+        "recSr0cXqzMO1BOXr"
+      ],
+      "Uses Commands": [
+        "recAi3lJmycHkFNKy"
+      ],
+      "MCP Servers Linked": [
+        "rec0gQ3kzXsHKE8ut"
+      ]
+    },
+    "recU25fW6mq27ri62": {
+      "Agent Name": "env-detector",
+      "Plugin": [
+        "recKhXJjImbjvszyk"
+      ],
+      "File Path": "plugins/foundation/agents/env-detector.md",
+      "Purpose": "Use this agent to detect required environment variables from multiple sources (specs, manifests, code). Analyzes specs/ directory first, then package files, then scans code. Generates complete .env files with required keys.",
+      "Has Slash Commands Section": true,
+      "Has MCP Section": true,
+      "Status": "Needs Update",
+      "Skills": [
+        "recbSoqDm5Ez81iKH",
+        "recx5ZoRceblBivCn",
+        "recrk7d6wx3yz53BO"
+      ],
+      "Uses Commands": [
+        "recApVLQ7ulWi0SmC",
+        "recOLATsP2tR3PgBu"
+      ],
+      "MCP Servers Linked": [
+        "recLAdRqTtlbIkzty",
+        "rec0gQ3kzXsHKE8ut"
+      ]
+    },
+    "recYPwcBROB12CqCM": {
+      "Agent Name": "canary-deployer",
+      "Plugin": [
+        "recyOkR1IcrPmrCJL"
+      ],
+      "File Path": "plugins/deployment/agents/canary-deployer.md",
+      "Purpose": "Use this agent to orchestrate progressive rollouts with traffic splitting and error monitoring for canary deployments across Vercel, DigitalOcean, and Railway platforms.",
+      "Has Slash Commands Section": true,
+      "Has MCP Section": true,
+      "Status": "Needs Update",
+      "Skills": [
+        "recPaPMAiHoFl08kk",
+        "rec6tnYB4OJrYbs30",
+        "rec4j00MkbHQixrtT",
+        "recQnQ1Psd7EOKHu6"
+      ],
+      "Uses Commands": [
+        "recdIO7qxtKPWhJAL",
+        "recVVopu09KY8aVts",
+        "recgGem0LYCM3oVSe"
+      ],
+      "MCP Servers Linked": [
+        "recLAdRqTtlbIkzty"
+      ]
+    },
+    "recYTsRtF9mkkP7jX": {
+      "Agent Name": "decision-documenter",
+      "Plugin": [
+        "recdYoKmuKiAuuwhd"
+      ],
+      "File Path": "plugins/planning/agents/decision-documenter.md",
+      "Purpose": "Use this agent to create and manage Architecture Decision Records (ADRs) with proper numbering, context, alternatives, and rationale",
+      "Has Slash Commands Section": true,
+      "Has MCP Section": true,
+      "Status": "Needs Update",
+      "Skills": [
+        "recSr0cXqzMO1BOXr",
+        "rec8zuF6V7qyBCndm",
+        "recrGKvVkCj0zyzrm"
+      ],
+      "Uses Commands": [
+        "recO9XiCDeSBDHda8",
+        "recAc7kabuopxBdIX"
+      ],
+      "MCP Servers Linked": [
+        "recLAdRqTtlbIkzty",
+        "rec0gQ3kzXsHKE8ut"
+      ]
+    },
+    "recYbqNskizC4TMeM": {
+      "Agent Name": "changelog-generator",
+      "Plugin": [
+        "rec6h21K3lGHHhSLA"
+      ],
+      "File Path": "plugins/versioning/agents/changelog-generator.md",
+      "Purpose": "Use this agent to generate formatted changelogs from git commit history using conventional commits. Invoke when bumping versions, creating releases, or documenting changes between versions.",
+      "Has Slash Commands Section": true,
+      "Has MCP Section": true,
+      "Status": "Needs Update",
+      "Skills": [
+        "recslToLOiKVBYCc8"
+      ],
+      "Uses Commands": [
+        "rec4qs0bR4OKjgDrW"
+      ],
+      "MCP Servers Linked": [
+        "recLAdRqTtlbIkzty",
+        "rec0gQ3kzXsHKE8ut"
+      ]
+    },
+    "recYpPbSRQLljTyPM": {
+      "Agent Name": "deployment-detector",
+      "Plugin": [
+        "recyOkR1IcrPmrCJL"
+      ],
+      "File Path": "plugins/deployment/agents/deployment-detector.md",
+      "Purpose": "Use this agent to detect project type and determine the appropriate deployment platform (FastMCP Cloud, DigitalOcean, Vercel, Hostinger, Netlify, Cloudflare Pages). Invoke when analyzing projects for deployment routing decisions.",
+      "Has Slash Commands Section": true,
+      "Has MCP Section": true,
+      "Status": "Needs Update",
+      "Skills": [
+        "recqZCOhpDZoZ3h8e",
+        "rec6tnYB4OJrYbs30"
+      ],
+      "Uses Commands": [
+        "recdIO7qxtKPWhJAL",
+        "recgGem0LYCM3oVSe"
+      ],
+      "MCP Servers Linked": [
+        "recLAdRqTtlbIkzty",
+        "rec0gQ3kzXsHKE8ut"
+      ]
+    },
+    "reccw2XPQhtTlKJlg": {
+      "Agent Name": "sync-analyzer",
+      "Plugin": [
+        "rece6fN8rGNcWgjgB"
+      ],
+      "File Path": "plugins/iterate/agents/sync-analyzer.md",
+      "Purpose": "Use this agent to sync specs with implementation - analyzes code vs specs and updates documentation",
+      "Has Slash Commands Section": true,
+      "Has MCP Section": true,
+      "Status": "Needs Update",
+      "Skills": [
+        "recUvSw9ynrCHsenN"
+      ],
+      "Uses Commands": [
+        "recwrwJI3te2rLE7j"
+      ],
+      "MCP Servers Linked": [
+        "recLAdRqTtlbIkzty",
+        "rec0gQ3kzXsHKE8ut"
+      ]
+    },
+    "recdk5O80bLeyVfms": {
+      "Agent Name": "stack-detector",
+      "Plugin": [
+        "recKhXJjImbjvszyk"
+      ],
+      "File Path": "plugins/foundation/agents/stack-detector.md",
+      "Purpose": "Use this agent to analyze project structure and detect complete tech stack including frameworks, languages, AI SDKs, databases, and deployment targets. Invoke when needing to understand project architecture and populate .claude/project.json with detected stack information.",
+      "Has Slash Commands Section": true,
+      "Has MCP Section": true,
+      "Status": "Needs Update",
+      "Skills": [
+        "recbSoqDm5Ez81iKH",
+        "recrk7d6wx3yz53BO"
+      ],
+      "Uses Commands": [
+        "recOLATsP2tR3PgBu"
+      ],
+      "MCP Servers Linked": [
+        "recLAdRqTtlbIkzty",
+        "rec0gQ3kzXsHKE8ut"
+      ]
+    },
+    "recehuS4vKlomNzf4": {
+      "Agent Name": "implementation-adjuster",
+      "Plugin": [
+        "rece6fN8rGNcWgjgB"
+      ],
+      "File Path": "plugins/iterate/agents/implementation-adjuster.md",
+      "Purpose": "Use this agent to adjust code based on feedback - makes targeted changes to code based on user requirements",
+      "Has Slash Commands Section": true,
+      "Has MCP Section": true,
+      "Status": "Needs Update",
+      "Skills": [
+        "recUvSw9ynrCHsenN"
+      ],
+      "Uses Commands": [
+        "recL6pOuuDG0w9CxY",
+        "recwrwJI3te2rLE7j"
+      ],
+      "MCP Servers Linked": [
+        "recLAdRqTtlbIkzty",
+        "rec0gQ3kzXsHKE8ut"
+      ]
+    },
+    "recfuP0vkChLm2uhF": {
+      "Agent Name": "release-validator",
+      "Plugin": [
+        "rec6h21K3lGHHhSLA"
+      ],
+      "File Path": "plugins/versioning/agents/release-validator.md",
+      "Purpose": "Use this agent to validate version releases for completeness, correctness, and readiness before publishing. Invoke before creating releases, pushing tags, or publishing packages to ensure quality.",
+      "Has Slash Commands Section": true,
+      "Has MCP Section": true,
+      "Status": "Needs Update",
+      "Skills": [
+        "recslToLOiKVBYCc8"
+      ],
+      "Uses Commands": [
+        "recOZlUEG9StztSLQ"
+      ],
+      "MCP Servers Linked": [
+        "recLAdRqTtlbIkzty",
+        "rec0gQ3kzXsHKE8ut"
+      ]
+    },
+    "recfx5dOtnW0Z66Iq": {
+      "Agent Name": "release-notes-generator",
+      "Plugin": [
+        "rec6h21K3lGHHhSLA"
+      ],
+      "File Path": "plugins/versioning/agents/release-notes-generator.md",
+      "Purpose": "Use this agent to parse conventional commits with AI summarization for generating user-friendly release notes. Invoke when creating release notes that need natural language summaries, not just commit lists.",
+      "Has Slash Commands Section": true,
+      "Has MCP Section": true,
+      "Status": "Needs Update",
+      "Skills": [
+        "recslToLOiKVBYCc8"
+      ],
+      "Uses Commands": [
+        "rec4qs0bR4OKjgDrW",
+        "recOZlUEG9StztSLQ"
+      ],
+      "MCP Servers Linked": [
+        "recLAdRqTtlbIkzty",
+        "rec0gQ3kzXsHKE8ut"
+      ]
+    },
+    "recg1iba26Fk1ODND": {
+      "Agent Name": "code-refactorer",
+      "Plugin": [
+        "rece6fN8rGNcWgjgB"
+      ],
+      "File Path": "plugins/iterate/agents/code-refactorer.md",
+      "Purpose": "Use this agent to refactor code for quality - improves code structure and maintainability without changing functionality",
+      "Has Slash Commands Section": true,
+      "Has MCP Section": true,
+      "Status": "Needs Update",
+      "Skills": [
+        "recUvSw9ynrCHsenN"
+      ],
+      "Uses Commands": [
+        "recaSlOfQOPGeidZX",
+        "recwrwJI3te2rLE7j"
+      ],
+      "MCP Servers Linked": [
+        "recLAdRqTtlbIkzty",
+        "rec0gQ3kzXsHKE8ut"
+      ]
+    },
+    "reciMookvcjhXK2Wx": {
+      "Agent Name": "deployment-deployer",
+      "Plugin": [
+        "recyOkR1IcrPmrCJL"
+      ],
+      "File Path": "plugins/deployment/agents/deployment-deployer.md",
+      "Purpose": "Use this agent to execute deployment to detected platforms (FastMCP Cloud, DigitalOcean, Vercel, Hostinger, Netlify, Cloudflare Pages) with proper authentication, build processes, and configuration. Invoke when ready to deploy after detection and validation.",
+      "Has Slash Commands Section": true,
+      "Has MCP Section": true,
+      "Status": "Needs Update",
+      "Skills": [
+        "recqZCOhpDZoZ3h8e",
+        "rec7GmdMs28odT0ri",
+        "rec4j00MkbHQixrtT",
+        "recQnQ1Psd7EOKHu6"
+      ],
+      "Uses Commands": [
+        "recdIO7qxtKPWhJAL",
+        "rec3ftt9uJZZOLQ4U"
+      ],
+      "MCP Servers Linked": [
+        "recLAdRqTtlbIkzty",
+        "rec0gQ3kzXsHKE8ut"
+      ]
+    },
+    "recju6tMpbcAJ0moW": {
+      "Agent Name": "rollback-automator",
+      "Plugin": [
+        "recyOkR1IcrPmrCJL"
+      ],
+      "File Path": "plugins/deployment/agents/rollback-automator.md",
+      "Purpose": "Use this agent to create automated rollback trigger setup with error rate monitoring and notifications for deployed applications across platforms. Invoke when setting up automated failure detection and rollback workflows.",
+      "Has Slash Commands Section": true,
+      "Has MCP Section": true,
+      "Status": "Needs Update",
+      "Skills": [
+        "recpQiEpByJ7uX0K6",
+        "recPaPMAiHoFl08kk",
+        "rec6tnYB4OJrYbs30",
+        "recqZCOhpDZoZ3h8e"
+      ],
+      "Uses Commands": [
+        "recdIO7qxtKPWhJAL",
+        "recVVopu09KY8aVts"
+      ],
+      "MCP Servers Linked": [
+        "recLAdRqTtlbIkzty"
+      ]
+    },
+    "reckFInoEkoitPlPi": {
+      "Agent Name": "monitoring-setup-executor",
+      "Plugin": [
+        "recyOkR1IcrPmrCJL"
+      ],
+      "File Path": "plugins/deployment/agents/monitoring-setup-executor.md",
+      "Purpose": "Set up production monitoring and observability for deployed applications",
+      "Status": "Missing Documentation"
+    },
+    "recmXftGmyEZFjyVd": {
+      "Agent Name": "approval-workflow-manager",
+      "Plugin": [
+        "rec6h21K3lGHHhSLA"
+      ],
+      "File Path": "plugins/versioning/agents/approval-workflow-manager.md",
+      "Purpose": "Use this agent to coordinate multi-stakeholder approval workflows and manage GitHub release publishing. Invoke when managing approval processes, tracking stakeholder sign-offs, or orchestrating release coordination across teams.",
+      "Has Slash Commands Section": true,
+      "Has MCP Section": true,
+      "Status": "Needs Update",
+      "Skills": [
+        "recslToLOiKVBYCc8"
+      ],
+      "Uses Commands": [
+        "rec4qs0bR4OKjgDrW",
+        "recOZlUEG9StztSLQ"
+      ],
+      "MCP Servers Linked": [
+        "recLAdRqTtlbIkzty"
+      ]
+    },
+    "recn1FKWZBrkcvnn4": {
+      "Agent Name": "version-bumper",
+      "Plugin": [
+        "rec6h21K3lGHHhSLA"
+      ],
+      "File Path": "plugins/versioning/agents/version-bumper.md",
+      "Purpose": "Calculate new versions, generate changelogs, update version files, create git commits and tags",
+      "Status": "Missing Documentation"
+    },
+    "recnEvuDCiLQyhkxs": {
+      "Agent Name": "stack-detector",
+      "Plugin": [
+        "recKhXJjImbjvszyk"
+      ],
+      "File Path": "plugins/foundation/agents/stack-detector.md",
+      "Purpose": "Use this agent to analyze project structure and detect complete tech stack including frameworks, languages, AI SDKs, databases, and deployment targets. Invoke when needing to understand project architecture and populate .claude/project.json with detected stack information.",
+      "Has Slash Commands Section": true,
+      "Has MCP Section": true,
+      "Status": "Complete",
+      "Skills": [
+        "recbSoqDm5Ez81iKH",
+        "recrk7d6wx3yz53BO"
+      ],
+      "Uses Commands": [
+        "recOLATsP2tR3PgBu"
+      ],
+      "MCP Servers Linked": [
+        "rec0gQ3kzXsHKE8ut"
+      ]
+    },
+    "recnVsgYvBEBRR7OV": {
+      "Agent Name": "architecture-designer",
+      "Plugin": [
+        "recdYoKmuKiAuuwhd"
+      ],
+      "File Path": "plugins/planning/agents/architecture-designer.md",
+      "Purpose": "Use this agent to design and document system architecture including component diagrams, data flows, infrastructure, and technical specifications",
+      "Has Slash Commands Section": true,
+      "Has MCP Section": true,
+      "Status": "Needs Update",
+      "Skills": [
+        "recSr0cXqzMO1BOXr",
+        "rec8zuF6V7qyBCndm",
+        "recrGKvVkCj0zyzrm"
+      ],
+      "Uses Commands": [
+        "recO9XiCDeSBDHda8",
+        "recAc7kabuopxBdIX"
+      ],
+      "MCP Servers Linked": [
+        "recLAdRqTtlbIkzty",
+        "rec0gQ3kzXsHKE8ut"
+      ]
+    },
+    "recrUhvQhJqOFOhWX": {
+      "Agent Name": "deployment-validator",
+      "Plugin": [
+        "recyOkR1IcrPmrCJL"
+      ],
+      "File Path": "plugins/deployment/agents/deployment-validator.md",
+      "Purpose": "Use this agent to validate successful deployment with health checks, endpoint testing, and comprehensive verification. Invoke after deployment completes to ensure the application is running correctly.",
+      "Has Slash Commands Section": true,
+      "Has MCP Section": true,
+      "Status": "Needs Update",
+      "Skills": [
+        "recPaPMAiHoFl08kk",
+        "recqZCOhpDZoZ3h8e"
+      ],
+      "Uses Commands": [
+        "recdIO7qxtKPWhJAL",
+        "recjKS7KOjFWZkBZM"
+      ],
+      "MCP Servers Linked": [
+        "rec0gQ3kzXsHKE8ut"
+      ]
+    },
+    "recsEOM7oQ6h0SPrK": {
+      "Agent Name": "spec-analyzer",
+      "Plugin": [
+        "recdYoKmuKiAuuwhd"
+      ],
+      "File Path": "plugins/planning/agents/spec-analyzer.md",
+      "Purpose": "Use this agent to analyze existing spec directories for completeness, quality, and code alignment. Returns JSON with completeness percentages, quality issues, implementation gaps, and recommendations",
+      "Has Slash Commands Section": true,
+      "Has MCP Section": true,
+      "Status": "Needs Update",
+      "Skills": [
+        "rec8zuF6V7qyBCndm"
+      ],
+      "Uses Commands": [
+        "reczv4MJHWU9nyOrH"
+      ],
+      "MCP Servers Linked": [
+        "recLAdRqTtlbIkzty",
+        "rec0gQ3kzXsHKE8ut"
+      ]
+    },
+    "recsOptp13xBsB0rx": {
+      "Agent Name": "worktree-coordinator",
+      "Plugin": [
+        "recgPtkm7T722xWmt"
+      ],
+      "File Path": "plugins/supervisor/agents/worktree-coordinator.md",
+      "Purpose": "Coordinates worktree creation and registers them in Mem0 for multi-agent tracking",
+      "Has Slash Commands Section": true,
+      "Has MCP Section": true,
+      "Status": "Needs Update",
+      "Skills": [
+        "recyKHUcQ2YzeHSIF"
+      ],
+      "Uses Commands": [
+        "recEV1dgMpsnEcOTL",
+        "recfL5SlEOWBscLFB",
+        "recyGl3J7Si99rwRc",
+        "reczv4MJHWU9nyOrH"
+      ],
+      "MCP Servers Linked": [
+        "rec70yp8ailpSfdHq",
+        "recLAdRqTtlbIkzty",
+        "rec0gQ3kzXsHKE8ut"
+      ]
+    },
+    "recsT0XQOowQ9ku33": {
+      "Agent Name": "code-validator",
+      "Plugin": [
+        "recAAZT8HmERi0B1s"
+      ],
+      "File Path": "plugins/quality/agents/code-validator.md",
+      "Purpose": "Review implementation code against spec requirements, check security rules, and generate comprehensive test recommendations",
+      "Has Slash Commands Section": true,
+      "Status": "Complete",
+      "Skills": [
+        "recFKn5gTrIrFU9Bo",
+        "recV4RXRw3meAEdJ3",
+        "reczWUpvAnglwGlTY"
+      ],
+      "Uses Commands": [
+        "recLyruHQnWJ3M782",
+        "recjKS7KOjFWZkBZM",
+        "recOLATsP2tR3PgBu"
+      ],
+      "MCP Servers Linked": [
+        "recLAdRqTtlbIkzty"
+      ]
+    },
+    "recuxJJbhSPPD6vUp": {
+      "Agent Name": "observability-integrator",
+      "Plugin": [
+        "recyOkR1IcrPmrCJL"
+      ],
+      "File Path": "plugins/deployment/agents/observability-integrator.md",
+      "Purpose": "Use this agent to integrate Sentry and DataDog for error tracking, APM, and observability monitoring across deployed applications.",
+      "Has Slash Commands Section": true,
+      "Has MCP Section": true,
+      "Status": "Needs Update",
+      "Skills": [
+        "recPaPMAiHoFl08kk",
+        "rec6tnYB4OJrYbs30",
+        "recqZCOhpDZoZ3h8e"
+      ],
+      "Uses Commands": [
+        "recdIO7qxtKPWhJAL",
+        "recgGem0LYCM3oVSe"
+      ],
+      "MCP Servers Linked": [
+        "recLAdRqTtlbIkzty",
+        "rec0gQ3kzXsHKE8ut"
+      ]
+    }
+  },
+  "plugins": {
+    "rec1vjkEsBaURfl9o": {
+      "Name": "mem0",
+      "Description": "Mem0 memory integration (Platform/OSS/MCP), persistent AI memory, context sharing",
+      "Directory Path": "ai-dev-marketplace/mem0",
+      "Status": "Active",
+      "Marketplace Link": [
+        "recCr65SdaVoisH7t"
+      ],
+      "Agent Count (formula)": 0,
+      "Command Count (formula)": 0,
+      "Skills Count (formula)": 0
+    },
+    "rec2qnBArRNHF4OO0": {
+      "Name": "elevenlabs",
+      "Description": "ElevenLabs TTS/STT, conversational agents, voice cloning, production features",
+      "Directory Path": "ai-dev-marketplace/elevenlabs",
+      "Status": "Active",
+      "Marketplace Link": [
+        "recCr65SdaVoisH7t"
+      ],
+      "Agent Count (formula)": 0,
+      "Command Count (formula)": 0,
+      "Skills Count (formula)": 0
+    },
+    "rec6h21K3lGHHhSLA": {
+      "Name": "versioning",
+      "Description": "Semantic versioning, changelog generation, release notes, approval workflows",
+      "Directory Path": "plugins/versioning",
+      "Status": "Active",
+      "Agents": [
+        "recYbqNskizC4TMeM",
+        "recfuP0vkChLm2uhF",
+        "recmXftGmyEZFjyVd",
+        "recfx5dOtnW0Z66Iq",
+        "rec0Zb9UzUvmb4fDX",
+        "recn1FKWZBrkcvnn4",
+        "rec17IJsBNDEtHgEb"
+      ],
+      "Commands": [
+        "recQUjycezXc5qS3R",
+        "recXfnfamkfxQ4PHm",
+        "recAfcZzA2YqBPvIj",
+        "rec01uAMQUzDEEV6Y",
+        "recnyhwq5mm2Af9xV",
+        "rec4qs0bR4OKjgDrW",
+        "recOZlUEG9StztSLQ",
+        "recUw8BNDBZezw70J",
+        "recP6Cg1Pgk1ZYczO"
+      ],
+      "Skills": [
+        "recLWKDthaAJmt0iR",
+        "recnkZLOmJI5Xq63r",
+        "recslToLOiKVBYCc8",
+        "recRRFjVRB3uLvyEY"
+      ],
+      "Marketplace Link": [
+        "recKtPSO3YD1WVBdb"
+      ],
+      "Agent Count (formula)": 7,
+      "Command Count (formula)": 9,
+      "Skills Count (formula)": 4
+    },
+    "rec787wUAsWyAb1CF": {
+      "Name": "ml-training",
+      "Description": "ML model training, GPU platforms (Modal, RunPod, Lambda, Vertex AI), PEFT, deployment",
+      "Directory Path": "ai-dev-marketplace/ml-training",
+      "Status": "Active",
+      "Marketplace Link": [
+        "recCr65SdaVoisH7t"
+      ],
+      "Agent Count (formula)": 0,
+      "Command Count (formula)": 0,
+      "Skills Count (formula)": 0
+    },
+    "recAAZT8HmERi0B1s": {
+      "Name": "quality",
+      "Description": "Testing (Newman/Playwright), security scanning, code validation, task validation",
+      "Directory Path": "plugins/quality",
+      "Status": "Active",
+      "Agents": [
+        "rec9s7YV6EGmdl90L",
+        "recsT0XQOowQ9ku33",
+        "recH429kYvZ9OQb1X",
+        "recOcwPaozZmS2U5X",
+        "recDuQjXFmvGQMyXX",
+        "recKMeICGF6a5monc",
+        "recB0UVsrefJ9d8LB",
+        "recHe54datvAdjwgI"
+      ],
+      "Commands": [
+        "recjKS7KOjFWZkBZM",
+        "recgKXxJwZ5HRuYfy",
+        "rectTaHWSqGMk0N3U",
+        "recLyruHQnWJ3M782",
+        "recgrh4rb7Z2tyeAg"
+      ],
+      "Skills": [
+        "recV4RXRw3meAEdJ3",
+        "reczWUpvAnglwGlTY",
+        "rechygh4rtCidBh05",
+        "recFyXtga1E20hLQx",
+        "recZYMx8UoFpxOwpP",
+        "recFKn5gTrIrFU9Bo"
+      ],
+      "Marketplace Link": [
+        "recKtPSO3YD1WVBdb"
+      ],
+      "Agent Count (formula)": 8,
+      "Command Count (formula)": 5,
+      "Skills Count (formula)": 6
+    },
+    "recDK3woKENiqkyp6": {
+      "Name": "fastmcp",
+      "Description": "FastMCP server creation, API wrappers, client setup, deployment, testing",
+      "Directory Path": "ai-dev-marketplace/fastmcp",
+      "Status": "Active",
+      "Marketplace Link": [
+        "recCr65SdaVoisH7t"
+      ],
+      "Agent Count (formula)": 0,
+      "Command Count (formula)": 0,
+      "Skills Count (formula)": 0
+    },
+    "recFmN7BSIPiaa8BA": {
+      "Name": "fastmcp",
+      "Status": "Active",
+      "Marketplace Link": [
+        "recvHDpiD7IWEl26s"
+      ],
+      "Agent Count (formula)": 0,
+      "Command Count (formula)": 0,
+      "Skills Count (formula)": 0
+    },
+    "recKhXJjImbjvszyk": {
+      "Name": "foundation",
+      "Description": "Project initialization, tech stack detection, environment setup, MCP management",
+      "Directory Path": "plugins/foundation",
+      "Status": "Active",
+      "Agents": [
+        "recnEvuDCiLQyhkxs",
+        "recU25fW6mq27ri62",
+        "recdk5O80bLeyVfms"
+      ],
+      "Commands": [
+        "recjk1FtTFKqPFiJV",
+        "rec5pfGDH1r81CCTd",
+        "recOLATsP2tR3PgBu",
+        "rec8QFZ4LWZwerVdd",
+        "recApVLQ7ulWi0SmC",
+        "recAJNZszhesO36JN",
+        "recL5qSaUrNTdhbaj",
+        "rec7dnQFVAffSbAvw",
+        "recyGl3J7Si99rwRc",
+        "recLkjIPJSMjZfuyw"
+      ],
+      "Skills": [
+        "recQBqL6idEffLkvp",
+        "recrk7d6wx3yz53BO",
+        "recx5ZoRceblBivCn",
+        "recbSoqDm5Ez81iKH",
+        "receTSX9biwwDR1ge",
+        "rec2GgaBbBdthnuFi"
+      ],
+      "Marketplace Link": [
+        "recKtPSO3YD1WVBdb"
+      ],
+      "Agent Count (formula)": 3,
+      "Command Count (formula)": 10,
+      "Skills Count (formula)": 6
+    },
+    "recO13z80B12SArqj": {
+      "Name": "supabase",
+      "Description": "Supabase integration, schema design, RLS, auth, realtime, AI features (pgvector)",
+      "Directory Path": "ai-dev-marketplace/supabase",
+      "Status": "Active",
+      "Marketplace Link": [
+        "recCr65SdaVoisH7t"
+      ],
+      "Agent Count (formula)": 0,
+      "Command Count (formula)": 0,
+      "Skills Count (formula)": 0
+    },
+    "recOPplYGZO2WPEht": {
+      "Name": "fastapi-backend",
+      "Description": "FastAPI, async SQLAlchemy, Pydantic, endpoint generation, database setup",
+      "Directory Path": "ai-dev-marketplace/fastapi-backend",
+      "Status": "Active",
+      "Marketplace Link": [
+        "recCr65SdaVoisH7t"
+      ],
+      "Agent Count (formula)": 0,
+      "Command Count (formula)": 0,
+      "Skills Count (formula)": 0
+    },
+    "recTlJqr2X5IlBA67": {
+      "Name": "ai-tech-stack-1",
+      "Description": "Full-stack AI orchestrator - coordinates ai-dev plugins through 9 phases",
+      "Directory Path": "ai-tech-stack-1/plugin",
+      "Status": "Active",
+      "Marketplace Link": [
+        "recOoZEXYWzqltgW9"
+      ],
+      "Agent Count (formula)": 0,
+      "Command Count (formula)": 0,
+      "Skills Count (formula)": 0
+    },
+    "reca7GgvZJwpUln0o": {
+      "Name": "payments",
+      "Description": "Stripe integration, checkout, subscriptions, webhooks",
+      "Directory Path": "ai-dev-marketplace/payments",
+      "Status": "Active",
+      "Marketplace Link": [
+        "recCr65SdaVoisH7t"
+      ],
+      "Agent Count (formula)": 0,
+      "Command Count (formula)": 0,
+      "Skills Count (formula)": 0
+    },
+    "recdYoKmuKiAuuwhd": {
+      "Name": "planning",
+      "Description": "Specifications, architecture design, roadmaps, ADRs, feature analysis",
+      "Directory Path": "plugins/planning",
+      "Status": "Active",
+      "Agents": [
+        "recLd6jq3o2KfAKKF",
+        "recAYAIsSqzeU6rDB",
+        "rec19tTbWDs8Df6wI",
+        "recnVsgYvBEBRR7OV",
+        "rec0grEvF4VXGdS1t",
+        "recsEOM7oQ6h0SPrK",
+        "recRk5k6iv5vMgW6r",
+        "recTeLBPWPq68GjuM",
+        "recNYbLYG0SEwgDHX",
+        "recYTsRtF9mkkP7jX",
+        "rec4Voz49RPmbVC68"
+      ],
+      "Commands": [
+        "recADAs6tPSV9QWeY",
+        "recxmhZbUIDUBPg6o",
+        "rec6fhj14GSm5caiG",
+        "recfW9nCcQ9pvF6a4",
+        "rec38IU71JfBjpDEs",
+        "recYXqg8plpLXJEc3",
+        "recO9XiCDeSBDHda8",
+        "recpKXp17gaWrXrmK",
+        "recAc7kabuopxBdIX",
+        "reczv4MJHWU9nyOrH",
+        "recAi3lJmycHkFNKy",
+        "recvA3VNuXUCukpH0",
+        "recm2Z3lFWPRqJELw",
+        "recv1b4mxapvwWCqG"
+      ],
+      "Skills": [
+        "recrGKvVkCj0zyzrm",
+        "rec8zuF6V7qyBCndm",
+        "recT9ZkBScUAzPxTj",
+        "recSr0cXqzMO1BOXr"
+      ],
+      "Marketplace Link": [
+        "recKtPSO3YD1WVBdb"
+      ],
+      "Agent Count (formula)": 11,
+      "Command Count (formula)": 14,
+      "Skills Count (formula)": 4
+    },
+    "rece6fN8rGNcWgjgB": {
+      "Name": "iterate",
+      "Description": "Task management, code adjustments, refactoring, feature enhancement, spec syncing",
+      "Directory Path": "plugins/iterate",
+      "Status": "Active",
+      "Agents": [
+        "recehuS4vKlomNzf4",
+        "recg1iba26Fk1ODND",
+        "reccw2XPQhtTlKJlg",
+        "rec9w2g5KFxpQkYRD"
+      ],
+      "Commands": [
+        "recojExrcAnW0qBK8",
+        "recwrwJI3te2rLE7j",
+        "recaSlOfQOPGeidZX",
+        "recL6pOuuDG0w9CxY"
+      ],
+      "Skills": [
+        "recUvSw9ynrCHsenN",
+        "recyKHUcQ2YzeHSIF"
+      ],
+      "Marketplace Link": [
+        "recKtPSO3YD1WVBdb"
+      ],
+      "Agent Count (formula)": 4,
+      "Command Count (formula)": 4,
+      "Skills Count (formula)": 2
+    },
+    "recf6z6N4qO3hLXGE": {
+      "Name": "rag-pipeline",
+      "Description": "RAG system building, document processing, embeddings, vector DBs, retrieval optimization",
+      "Directory Path": "ai-dev-marketplace/rag-pipeline",
+      "Status": "Active",
+      "Marketplace Link": [
+        "recCr65SdaVoisH7t"
+      ],
+      "Agent Count (formula)": 0,
+      "Command Count (formula)": 0,
+      "Skills Count (formula)": 0
+    },
+    "recgPtkm7T722xWmt": {
+      "Name": "supervisor",
+      "Description": "Worktree coordination, multi-agent tracking, parallel development workflows",
+      "Directory Path": "plugins/supervisor",
+      "Status": "Active",
+      "Agents": [
+        "recsOptp13xBsB0rx"
+      ],
+      "Commands": [
+        "rec33UXG7PKnmzmxQ",
+        "recEV1dgMpsnEcOTL",
+        "recfL5SlEOWBscLFB",
+        "recGDzKHYN6H5h7Gf"
+      ],
+      "Skills": [
+        "recvb2Z22HuYfw9Lc"
+      ],
+      "Marketplace Link": [
+        "recKtPSO3YD1WVBdb"
+      ],
+      "Agent Count (formula)": 1,
+      "Command Count (formula)": 4,
+      "Skills Count (formula)": 1
+    },
+    "recm7Sfk4KRsAeazK": {
+      "Name": "openrouter",
+      "Description": "OpenRouter integration, 500+ models, routing, LangChain, Vercel AI SDK",
+      "Directory Path": "ai-dev-marketplace/openrouter",
+      "Status": "Active",
+      "Marketplace Link": [
+        "recCr65SdaVoisH7t"
+      ],
+      "Agent Count (formula)": 0,
+      "Command Count (formula)": 0,
+      "Skills Count (formula)": 0
+    },
+    "recnJvCIfP61U3mlN": {
+      "Name": "vercel-ai-sdk",
+      "Description": "Vercel AI SDK integration, streaming, chat interfaces, RAG, agents, tools",
+      "Directory Path": "ai-dev-marketplace/vercel-ai-sdk",
+      "Status": "Active",
+      "Marketplace Link": [
+        "recCr65SdaVoisH7t"
+      ],
+      "Agent Count (formula)": 0,
+      "Command Count (formula)": 0,
+      "Skills Count (formula)": 0
+    },
+    "recptvJDplybPgXkU": {
+      "Name": "nextjs-frontend",
+      "Description": "Next.js 15, shadcn/ui, TypeScript, Tailwind, component building, page generation",
+      "Directory Path": "ai-dev-marketplace/nextjs-frontend",
+      "Status": "Active",
+      "Marketplace Link": [
+        "recCr65SdaVoisH7t"
+      ],
+      "Agent Count (formula)": 0,
+      "Command Count (formula)": 0,
+      "Skills Count (formula)": 0
+    },
+    "recyOkR1IcrPmrCJL": {
+      "Name": "deployment",
+      "Description": "Platform detection, deployment orchestration, CI/CD setup, validation, rollback",
+      "Directory Path": "plugins/deployment",
+      "Status": "Active",
+      "Agents": [
+        "recQiZrEvh6vystCE",
+        "recYpPbSRQLljTyPM",
+        "recju6tMpbcAJ0moW",
+        "recuxJJbhSPPD6vUp",
+        "recYPwcBROB12CqCM",
+        "recrUhvQhJqOFOhWX",
+        "recLJxwGk2LdQ37y1",
+        "reciMookvcjhXK2Wx",
+        "reckFInoEkoitPlPi"
+      ],
+      "Commands": [
+        "rec3ftt9uJZZOLQ4U",
+        "recgGem0LYCM3oVSe",
+        "recVVopu09KY8aVts",
+        "rec70nIGLljCXhS5e",
+        "recsHcpHEXgzVv0eK",
+        "recPV4fx4PpiFW3Rz",
+        "recNBCyuFFLDA9HXe",
+        "recBohNYcWU4Oyt5l",
+        "recBHOQioLoJGan7e",
+        "recdIO7qxtKPWhJAL",
+        "recKNHltQlIIMi5bl",
+        "recvAfVBu7nUnpcCM"
+      ],
+      "Skills": [
+        "rec6tnYB4OJrYbs30",
+        "recQnQ1Psd7EOKHu6",
+        "recqZCOhpDZoZ3h8e",
+        "rec7GmdMs28odT0ri",
+        "recpQiEpByJ7uX0K6",
+        "rec4j00MkbHQixrtT",
+        "recAxSRHAQb5y6Gxq",
+        "recPaPMAiHoFl08kk",
+        "recqQChCLG1AEa8uf"
+      ],
+      "Marketplace Link": [
+        "recKtPSO3YD1WVBdb"
+      ],
+      "Agent Count (formula)": 9,
+      "Command Count (formula)": 12,
+      "Skills Count (formula)": 9
+    },
+    "reczpCimPivX9e2wt": {
+      "Name": "website-builder",
+      "Description": "Astro website building, Supabase CMS, AI content/image generation",
+      "Directory Path": "ai-dev-marketplace/website-builder",
+      "Status": "Active",
+      "Marketplace Link": [
+        "recCr65SdaVoisH7t"
+      ],
+      "Agent Count (formula)": 0,
+      "Command Count (formula)": 0,
+      "Skills Count (formula)": 0
+    }
+  }
+}

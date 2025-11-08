@@ -1,6 +1,8 @@
 ---
-allowed-tools: Bash, Read, Write, Grep, Glob, Task
+name: worktree-coordinator
 description: Coordinates worktree creation and registers them in Mem0 for multi-agent tracking
+model: inherit
+color: purple
 ---
 ## Worktree Discovery
 

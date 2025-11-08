@@ -1,7 +1,6 @@
 ---
-allowed-tools: Bash, Read, Write, Edit, Task
 description: Increment semantic version and create git tag with changelog
-argument-hint: [major|minor|patch] [--dry-run] [--force]
+argument-hint: "[major|minor|patch] [--dry-run] [--force]"
 ---
 
 ## Security Requirements

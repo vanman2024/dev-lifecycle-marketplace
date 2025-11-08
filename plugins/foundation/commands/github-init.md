@@ -1,7 +1,6 @@
 ---
 description: Complete GitHub repository initialization with gh CLI - creates repo, configures settings, branch protection, templates, and integrates with hooks-setup and CI/CD
-argument-hint: [repo-name] [--public|--private] [--org=org-name]
-allowed-tools: Bash, Read, Write, Glob, AskUserQuestion, TodoWrite
+argument-hint: "[repo-name] [--public|--private] [--org=org-name]"
 ---
 
 ## Security Requirements
