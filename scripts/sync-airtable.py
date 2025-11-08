@@ -20,7 +20,12 @@ from pyairtable import Api
 import yaml
 
 # Airtable configuration
-AIRTABLE_API_KEY = os.getenv("AIRTABLE_API_KEY", "pat6Wdcb4Uj6AtcFr.60698f69f01ab1e1a13d50558fdf7edbe80201d7279cde9531ed816984779ce9")
+AIRTABLE_API_KEY = os.getenv("AIRTABLE_API_KEY")
+if not AIRTABLE_API_KEY:
+    print("❌ ERROR: AIRTABLE_API_KEY environment variable not set")
+    print("   Export it: export AIRTABLE_API_KEY=your_airtable_api_key_here")
+    exit(1)
+
 BASE_ID = "appHbSB7WhT1TxEQb"
 
 # Initialize Airtable API
@@ -561,3 +566,5 @@ if __name__ == "__main__":
     print("  1. Review changes in Airtable")
     print("  2. Validate data accuracy")
     print("  3. Run this script after any plugin modifications")
+# Test comment
+# Test

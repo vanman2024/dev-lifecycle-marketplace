@@ -20,6 +20,7 @@ fi
 # Secret patterns to detect
 declare -a PATTERNS=(
   "AKIA[0-9A-Z]{16}"                    # AWS Access Key
+  "pat[a-zA-Z0-9\.]{30,}"               # Airtable API key
   "api[_-]?key['\"]?\s*[:=]\s*['\"]?[a-zA-Z0-9]{20,}"  # Generic API key
   "sk-[a-zA-Z0-9]{32,}"                 # OpenAI API key
   "sk-ant-[a-zA-Z0-9\-_]{95,}"          # Anthropic API key
