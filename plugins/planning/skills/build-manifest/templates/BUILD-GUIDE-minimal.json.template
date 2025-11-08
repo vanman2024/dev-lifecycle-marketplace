@@ -1,0 +1,17 @@
+{
+  "project": "{{PROJECT_NAME}}",
+  "techStack": {{TECH_STACK}},
+  "buildLayers": [
+    {
+      "layer": 1,
+      "name": "Infrastructure",
+      "commands": {{LAYER_1_COMMANDS}}
+    },
+    {
+      "layer": 2,
+      "name": "Tech Stack",
+      "commands": {{LAYER_2_COMMANDS}},
+      "gaps": {{GAPS}}
+    }
+  ]
+}

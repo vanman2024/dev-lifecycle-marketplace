@@ -1,0 +1,120 @@
+{
+  "project": "{{PROJECT_NAME}}",
+  "generated": "{{TIMESTAMP}}",
+  "techStack": {
+    "detected": {{DETECTED_TECHNOLOGIES}},
+    "source": "{{ARCHITECTURE_DOCS_PATH}}",
+    "marketplaces": [
+      "dev-lifecycle-marketplace",
+      "ai-dev-marketplace",
+      "mcp-servers-marketplace"
+    ]
+  },
+  "buildLayers": [
+    {
+      "layer": 1,
+      "name": "Infrastructure Foundation",
+      "description": "Core project setup - detection, specs, worktrees (same for all projects)",
+      "plugins": ["foundation", "planning", "supervisor"],
+      "commands": [
+        {
+          "command": "/foundation:detect",
+          "plugin": "foundation",
+          "purpose": "Detect tech stack from codebase",
+          "available": true,
+          "airtableId": "{{COMMAND_RECORD_ID}}",
+          "marketplace": "dev-lifecycle-marketplace"
+        },
+        {
+          "command": "/planning:wizard",
+          "plugin": "planning",
+          "purpose": "Generate comprehensive specs via multimodal wizard",
+          "available": true,
+          "airtableId": "{{COMMAND_RECORD_ID}}",
+          "marketplace": "dev-lifecycle-marketplace"
+        },
+        {
+          "command": "/planning:architecture",
+          "plugin": "planning",
+          "purpose": "Design system architecture with diagrams",
+          "available": true,
+          "airtableId": "{{COMMAND_RECORD_ID}}",
+          "marketplace": "dev-lifecycle-marketplace"
+        },
+        {
+          "command": "/supervisor:init --all",
+          "plugin": "supervisor",
+          "purpose": "Setup git worktrees for parallel agent execution",
+          "available": true,
+          "airtableId": "{{COMMAND_RECORD_ID}}",
+          "marketplace": "dev-lifecycle-marketplace"
+        }
+      ],
+      "executionOrder": "sequential",
+      "estimatedTime": "5-10 minutes"
+    },
+    {
+      "layer": 2,
+      "name": "Tech Stack Initialization",
+      "description": "Initialize detected frameworks and services",
+      "plugins": {{LAYER_2_PLUGINS}},
+      "commands": {{LAYER_2_COMMANDS}},
+      "executionOrder": "parallel",
+      "estimatedTime": "10-15 minutes",
+      "gaps": {{DETECTED_GAPS}}
+    },
+    {
+      "layer": 3,
+      "name": "Feature Implementation",
+      "description": "Build features from specs using detected tech stack",
+      "plugins": {{LAYER_3_PLUGINS}},
+      "commands": {{LAYER_3_COMMANDS}},
+      "executionOrder": "spec-driven",
+      "estimatedTime": "variable",
+      "notes": "Commands used depend on spec requirements. Reference BUILD-GUIDE when implementing features."
+    },
+    {
+      "layer": 4,
+      "name": "Quality & Deployment",
+      "description": "Testing, validation, and production deployment",
+      "plugins": ["quality", "deployment", "versioning"],
+      "commands": [
+        {
+          "command": "/quality:test",
+          "plugin": "quality",
+          "purpose": "Run comprehensive test suite (Newman API, Playwright E2E, security)",
+          "available": true,
+          "airtableId": "{{COMMAND_RECORD_ID}}",
+          "marketplace": "dev-lifecycle-marketplace"
+        },
+        {
+          "command": "/deployment:deploy",
+          "plugin": "deployment",
+          "purpose": "Auto-detect platform and deploy with validation",
+          "available": true,
+          "airtableId": "{{COMMAND_RECORD_ID}}",
+          "marketplace": "dev-lifecycle-marketplace"
+        },
+        {
+          "command": "/versioning:bump patch",
+          "plugin": "versioning",
+          "purpose": "Semantic versioning with changelog generation",
+          "available": true,
+          "airtableId": "{{COMMAND_RECORD_ID}}",
+          "marketplace": "dev-lifecycle-marketplace"
+        }
+      ],
+      "executionOrder": "sequential",
+      "estimatedTime": "15-20 minutes"
+    }
+  ],
+  "gaps": {{ALL_GAPS}},
+  "metadata": {
+    "totalCommands": {{TOTAL_COMMAND_COUNT}},
+    "totalPlugins": {{TOTAL_PLUGIN_COUNT}},
+    "availableCommands": {{AVAILABLE_COMMAND_COUNT}},
+    "missingPlugins": {{MISSING_PLUGIN_COUNT}},
+    "airtableBaseId": "appHbSB7WhT1TxEQb",
+    "generatedBy": "build-manifest-generator agent"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "project": "project-with-gaps",
+  "techStack": {
+    "detected": ["nextjs-15", "redis", "mongodb"],
+    "source": "docs/architecture/README.md"
+  },
+  "buildLayers": [
+    {
+      "layer": 2,
+      "name": "Tech Stack Initialization",
+      "commands": [
+        {
+          "command": "/nextjs-frontend:init",
+          "plugin": "nextjs-frontend",
+          "available": true
+        }
+      ],
+      "gaps": [
+        {
+          "technology": "redis",
+          "reason": "No redis plugin found in any marketplace",
+          "suggestion": "Create redis plugin with /domain-plugin-builder:build-plugin redis"
+        },
+        {
+          "technology": "mongodb",
+          "reason": "No mongodb plugin found in any marketplace",
+          "suggestion": "Create mongodb plugin with /domain-plugin-builder:build-plugin mongodb"
+        }
+      ]
+    }
+  ],
+  "gaps": [
+    {
+      "technology": "redis",
+      "mentioned_in": "docs/architecture/caching.md"
+    },
+    {
+      "technology": "mongodb",
+      "mentioned_in": "docs/architecture/database.md"
+    }
+  ],
+  "metadata": {
+    "missingPlugins": 2
+  }
+}

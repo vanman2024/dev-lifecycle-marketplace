@@ -1,0 +1,9 @@
+{
+  "layer": {{LAYER_NUMBER}},
+  "name": "{{LAYER_NAME}}",
+  "description": "{{LAYER_DESCRIPTION}}",
+  "plugins": {{PLUGIN_LIST}},
+  "commands": {{COMMAND_LIST}},
+  "executionOrder": "{{EXECUTION_ORDER}}",
+  "estimatedTime": "{{ESTIMATED_TIME}}"
+}

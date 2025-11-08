@@ -1,0 +1,211 @@
+{
+  "project": "my-saas-app",
+  "generated": "2025-01-07T10:30:00Z",
+  "techStack": {
+    "detected": [
+      "nextjs-15",
+      "fastapi",
+      "supabase",
+      "vercel-ai-sdk",
+      "openrouter",
+      "mem0"
+    ],
+    "source": "docs/architecture/README.md",
+    "marketplaces": [
+      "dev-lifecycle-marketplace",
+      "ai-dev-marketplace",
+      "mcp-servers-marketplace"
+    ]
+  },
+  "buildLayers": [
+    {
+      "layer": 1,
+      "name": "Infrastructure Foundation",
+      "description": "Core project setup - detection, specs, worktrees (same for all projects)",
+      "plugins": ["foundation", "planning", "supervisor"],
+      "commands": [
+        {
+          "command": "/foundation:detect",
+          "plugin": "foundation",
+          "purpose": "Detect tech stack from codebase",
+          "available": true,
+          "airtableId": "recXXX001",
+          "marketplace": "dev-lifecycle-marketplace"
+        },
+        {
+          "command": "/planning:wizard",
+          "plugin": "planning",
+          "purpose": "Generate comprehensive specs via multimodal wizard",
+          "available": true,
+          "airtableId": "recXXX002",
+          "marketplace": "dev-lifecycle-marketplace"
+        },
+        {
+          "command": "/planning:architecture",
+          "plugin": "planning",
+          "purpose": "Design system architecture with diagrams",
+          "available": true,
+          "airtableId": "recXXX003",
+          "marketplace": "dev-lifecycle-marketplace"
+        },
+        {
+          "command": "/supervisor:init --all",
+          "plugin": "supervisor",
+          "purpose": "Setup git worktrees for parallel agent execution",
+          "available": true,
+          "airtableId": "recXXX004",
+          "marketplace": "dev-lifecycle-marketplace"
+        }
+      ],
+      "executionOrder": "sequential",
+      "estimatedTime": "5-10 minutes"
+    },
+    {
+      "layer": 2,
+      "name": "Tech Stack Initialization",
+      "description": "Initialize detected frameworks and services",
+      "plugins": ["nextjs-frontend", "fastapi-backend", "supabase", "vercel-ai-sdk", "openrouter", "mem0"],
+      "commands": [
+        {
+          "command": "/nextjs-frontend:init",
+          "plugin": "nextjs-frontend",
+          "purpose": "Setup Next.js 15 with TypeScript, Tailwind, shadcn/ui",
+          "available": true,
+          "airtableId": "recXXX101",
+          "marketplace": "ai-dev-marketplace"
+        },
+        {
+          "command": "/fastapi-backend:init",
+          "plugin": "fastapi-backend",
+          "purpose": "Setup FastAPI with async SQLAlchemy, Alembic migrations",
+          "available": true,
+          "airtableId": "recXXX102",
+          "marketplace": "ai-dev-marketplace"
+        },
+        {
+          "command": "/supabase:init",
+          "plugin": "supabase",
+          "purpose": "Initialize Supabase project with PostgreSQL, Auth, Storage",
+          "available": true,
+          "airtableId": "recXXX103",
+          "marketplace": "ai-dev-marketplace"
+        },
+        {
+          "command": "/vercel-ai-sdk:new-app",
+          "plugin": "vercel-ai-sdk",
+          "purpose": "Setup Vercel AI SDK with streaming, chat interface",
+          "available": true,
+          "airtableId": "recXXX104",
+          "marketplace": "ai-dev-marketplace"
+        },
+        {
+          "command": "/openrouter:init",
+          "plugin": "openrouter",
+          "purpose": "Configure OpenRouter for multi-model access (500+ models)",
+          "available": true,
+          "airtableId": "recXXX105",
+          "marketplace": "ai-dev-marketplace"
+        },
+        {
+          "command": "/mem0:init-platform",
+          "plugin": "mem0",
+          "purpose": "Setup Mem0 Platform for managed memory layer",
+          "available": true,
+          "airtableId": "recXXX106",
+          "marketplace": "ai-dev-marketplace"
+        }
+      ],
+      "executionOrder": "parallel",
+      "estimatedTime": "10-15 minutes",
+      "gaps": []
+    },
+    {
+      "layer": 3,
+      "name": "Feature Implementation",
+      "description": "Build features from specs using detected tech stack",
+      "plugins": ["nextjs-frontend", "fastapi-backend", "supabase", "vercel-ai-sdk", "mem0"],
+      "commands": [
+        {
+          "category": "UI Components",
+          "commands": [
+            "/nextjs-frontend:add-component <name>",
+            "/nextjs-frontend:add-page <route>",
+            "/nextjs-frontend:search-components <query>"
+          ]
+        },
+        {
+          "category": "API Endpoints",
+          "commands": [
+            "/fastapi-backend:add-endpoint <path>",
+            "/fastapi-backend:add-auth",
+            "/fastapi-backend:setup-database"
+          ]
+        },
+        {
+          "category": "Database",
+          "commands": [
+            "/supabase:create-schema <name>",
+            "/supabase:add-rls",
+            "/supabase:add-auth",
+            "/supabase:setup-ai"
+          ]
+        },
+        {
+          "category": "AI Features",
+          "commands": [
+            "/vercel-ai-sdk:add-chat",
+            "/vercel-ai-sdk:add-streaming",
+            "/vercel-ai-sdk:add-tools",
+            "/mem0:add-conversation-memory"
+          ]
+        }
+      ],
+      "executionOrder": "spec-driven",
+      "estimatedTime": "variable",
+      "notes": "Commands used depend on spec requirements. Reference BUILD-GUIDE when implementing features."
+    },
+    {
+      "layer": 4,
+      "name": "Quality & Deployment",
+      "description": "Testing, validation, and production deployment",
+      "plugins": ["quality", "deployment", "versioning"],
+      "commands": [
+        {
+          "command": "/quality:test",
+          "plugin": "quality",
+          "purpose": "Run comprehensive test suite (Newman API, Playwright E2E, security)",
+          "available": true,
+          "airtableId": "recXXX201",
+          "marketplace": "dev-lifecycle-marketplace"
+        },
+        {
+          "command": "/deployment:deploy",
+          "plugin": "deployment",
+          "purpose": "Auto-detect platform and deploy with validation",
+          "available": true,
+          "airtableId": "recXXX202",
+          "marketplace": "dev-lifecycle-marketplace"
+        },
+        {
+          "command": "/versioning:bump patch",
+          "plugin": "versioning",
+          "purpose": "Semantic versioning with changelog generation",
+          "available": true,
+          "airtableId": "recXXX203",
+          "marketplace": "dev-lifecycle-marketplace"
+        }
+      ],
+      "executionOrder": "sequential",
+      "estimatedTime": "15-20 minutes"
+    }
+  ],
+  "gaps": [],
+  "metadata": {
+    "totalCommands": 28,
+    "totalPlugins": 12,
+    "availableCommands": 28,
+    "missingPlugins": 0,
+    "airtableBaseId": "appHbSB7WhT1TxEQb",
+    "generatedBy": "build-manifest-generator agent"
+  }
+}
