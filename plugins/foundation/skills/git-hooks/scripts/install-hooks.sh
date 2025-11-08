@@ -42,6 +42,28 @@ else
   echo "⚠ GitHub workflow template not found"
 fi
 
+# Install security scanning scripts for GitHub Actions
+echo ""
+echo "Installing security scanning scripts..."
+SCRIPTS_DIR="$TARGET_DIR/scripts"
+mkdir -p "$SCRIPTS_DIR"
+
+SECURITY_SCRIPTS_DIR="/home/gotime2022/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/quality/skills/security-patterns/scripts"
+
+if [ -d "$SECURITY_SCRIPTS_DIR" ]; then
+  for script in scan-secrets.sh scan-dependencies.sh scan-owasp.sh generate-security-report.sh; do
+    if [ -f "$SECURITY_SCRIPTS_DIR/$script" ]; then
+      cp "$SECURITY_SCRIPTS_DIR/$script" "$SCRIPTS_DIR/$script"
+      chmod +x "$SCRIPTS_DIR/$script"
+      echo "✓ Installed $script"
+    else
+      echo "⚠ Script not found: $script"
+    fi
+  done
+else
+  echo "⚠ Security scripts directory not found"
+fi
+
 echo ""
 echo "Git hooks and GitHub workflow installed successfully!"
 echo ""
@@ -52,5 +74,11 @@ echo "  - pre-push: Security scans"
 echo ""
 echo "Installed GitHub workflow:"
 echo "  - .github/workflows/security-scan.yml: Server-side security checks"
+echo ""
+echo "Installed security scripts:"
+echo "  - scripts/scan-secrets.sh: Comprehensive secret detection"
+echo "  - scripts/scan-dependencies.sh: Dependency vulnerability scanning"
+echo "  - scripts/scan-owasp.sh: OWASP security pattern detection"
+echo "  - scripts/generate-security-report.sh: Security report generator"
 echo ""
 echo "To bypass local hooks: git commit --no-verify"

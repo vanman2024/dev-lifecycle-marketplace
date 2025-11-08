@@ -121,6 +121,22 @@ declare -A PATTERNS=(
 
     # PyPI Tokens
     ["pypi_token"]='pypi-AgEIcHlwaS5vcmc[A-Za-z0-9\-_]{50,}'
+
+    # Airtable API Keys
+    ["airtable_key"]='(key|pat)[a-zA-Z0-9]{14,}'
+    ["airtable_env"]='AIRTABLE_API_KEY["\s:=]+[A-Za-z0-9]{10,}'
+
+    # Anthropic API Keys
+    ["anthropic_key"]='sk-ant-[a-zA-Z0-9\-_]{95,}'
+
+    # OpenAI API Keys
+    ["openai_key"]='sk-[a-zA-Z0-9]{32,}'
+
+    # Context7 API Keys
+    ["context7_key"]='ctx7-[a-zA-Z0-9]{32,}'
+
+    # Supabase Keys
+    ["supabase_key"]='supabase_[a-zA-Z0-9_]{20,}'
 )
 
 # Determine severity based on pattern type
@@ -130,7 +146,7 @@ get_severity() {
         aws_*|rsa_private_key|ssh_private_key|pgp_private_key|ec_private_key)
             echo "CRITICAL"
             ;;
-        *_secret|*_password|*_token|postgres_url|mysql_url|mongodb_url)
+        *_secret|*_password|*_token|postgres_url|mysql_url|mongodb_url|airtable_*|anthropic_key|openai_key|context7_key|supabase_key)
             echo "HIGH"
             ;;
         api_key|apikey|jwt_token)

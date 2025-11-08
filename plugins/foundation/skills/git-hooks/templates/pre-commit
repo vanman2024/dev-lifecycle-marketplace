@@ -20,18 +20,24 @@ fi
 # Secret patterns to detect
 declare -a PATTERNS=(
   "AKIA[0-9A-Z]{16}"                    # AWS Access Key
-  "pat[a-zA-Z0-9\.]{30,}"               # Airtable API key
+  "(key|pat)[a-zA-Z0-9]{14,}"           # Airtable API key (keySOMETHING or patSOMETHING)
+  "AIRTABLE_API_KEY['\"]?\s*[:=]\s*['\"]?[a-zA-Z0-9]{10,}" # Airtable env var
   "api[_-]?key['\"]?\s*[:=]\s*['\"]?[a-zA-Z0-9]{20,}"  # Generic API key
   "sk-[a-zA-Z0-9]{32,}"                 # OpenAI API key
   "sk-ant-[a-zA-Z0-9\-_]{95,}"          # Anthropic API key
   "ctx7-[a-zA-Z0-9]{32,}"               # Context7 API key
   "Bearer [a-zA-Z0-9_\-\.]{20,}"        # Bearer token
+  "ghp_[a-zA-Z0-9]{36}"                 # GitHub Personal Access Token
+  "gho_[a-zA-Z0-9]{36}"                 # GitHub OAuth Token
+  "ghs_[a-zA-Z0-9]{36}"                 # GitHub App Secret
   "password['\"]?\s*[:=]\s*['\"]?[^ '\"]+" # Password
   "secret['\"]?\s*[:=]\s*['\"]?[^ '\"]+"   # Secret
   "token['\"]?\s*[:=]\s*['\"]?[a-zA-Z0-9]{20,}" # Token
   "-----BEGIN (RSA |DSA )?PRIVATE KEY-----" # Private key
   "postgres://[^ '\"]*:[^ '\"]*@"       # Database connection string
   "mongodb(\+srv)?://[^ '\"]*:[^ '\"]*@" # MongoDB connection string
+  "supabase_[a-zA-Z0-9_]{20,}"          # Supabase service role key
+  "eyJ[a-zA-Z0-9_-]{20,}\.[a-zA-Z0-9_-]{20,}\.[a-zA-Z0-9_-]{20,}" # JWT token
   "value:\s*['\"]?[0-9]{3}\.[a-zA-Z0-9]{20,}['\"]?" # YAML/JSON value with API key pattern (e.g., 202.R6c...)
 )
 
@@ -44,14 +50,39 @@ for file in $STAGED_FILES; do
   fi
 
   # Skip common safe files
-  if [[ "$file" == "package-lock.json" ]] || [[ "$file" == "yarn.lock" ]] || [[ "$file" == *.md ]]; then
+  if [[ "$file" == "package-lock.json" ]] || [[ "$file" == "yarn.lock" ]] || [[ "$file" == "pnpm-lock.yaml" ]]; then
+    continue
+  fi
+
+  # Skip security pattern definition files (they contain pattern definitions, not actual secrets)
+  if [[ "$file" == *"scan-secrets.sh" ]] || [[ "$file" == *"security-patterns"*"/scripts/"* ]]; then
     continue
   fi
 
   for pattern in "${PATTERNS[@]}"; do
     if grep -qE "$pattern" "$file" 2>/dev/null; then
+      # Check if it's a safe placeholder pattern
+      if grep -qE "(your_.*_key_here|your_.*_token_here|your_.*_secret_here|placeholder|example|REPLACEME|TODO)" "$file" 2>/dev/null; then
+        # If the line contains both the pattern AND a placeholder indicator, it's likely safe
+        matched_line=$(grep -E "$pattern" "$file" 2>/dev/null | head -1)
+        if echo "$matched_line" | grep -qE "(your_.*_key_here|your_.*_token_here|your_.*_secret_here|placeholder|example|REPLACEME|TODO)"; then
+          continue
+        fi
+      fi
+
+      # Also skip .env.example files and .md files if they contain placeholder text
+      if [[ "$file" == *.env.example ]] || [[ "$file" == *.md ]]; then
+        matched_line=$(grep -E "$pattern" "$file" 2>/dev/null | head -1)
+        if echo "$matched_line" | grep -qE "(your_|example|placeholder|REPLACEME|TODO)"; then
+          continue
+        fi
+      fi
+
       echo -e "${RED}✗${NC} Potential secret found in: $file"
       echo -e "${YELLOW}  Pattern matched: $pattern${NC}"
+      grep -n -E "$pattern" "$file" 2>/dev/null | head -3 | while read -r line; do
+        echo -e "${YELLOW}  $line${NC}"
+      done
       FOUND_SECRETS=1
     fi
   done
