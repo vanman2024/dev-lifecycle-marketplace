@@ -7,15 +7,15 @@ import os
 from pyairtable import Api
 
 # Airtable configuration
-AIRTABLE_API_KEY = os.getenv("AIRTABLE_API_KEY")
-if not AIRTABLE_API_KEY:
-    print("❌ ERROR: AIRTABLE_API_KEY environment variable not set")
-    print("   Export it: export AIRTABLE_API_KEY=your_key_here")
+AIRTABLE_TOKEN = os.getenv("AIRTABLE_TOKEN")
+if not AIRTABLE_TOKEN:
+    print("❌ ERROR: AIRTABLE_TOKEN environment variable not set")
+    print("   Export it: export AIRTABLE_TOKEN=your_key_here")
     exit(1)
 BASE_ID = "appHbSB7WhT1TxEQb"
 
 # Initialize Airtable API
-api = Api(AIRTABLE_API_KEY)
+api = Api(AIRTABLE_TOKEN)
 base = api.base(BASE_ID)
 mcp_servers_table = base.table("MCP Servers")
 
