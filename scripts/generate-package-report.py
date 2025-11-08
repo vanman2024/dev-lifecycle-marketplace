@@ -17,7 +17,11 @@ from pathlib import Path
 from pyairtable import Api
 
 # Airtable configuration
-AIRTABLE_API_KEY = os.getenv("AIRTABLE_API_KEY", "pat6Wdcb4Uj6AtcFr.60698f69f01ab1e1a13d50558fdf7edbe80201d7279cde9531ed816984779ce9")
+AIRTABLE_API_KEY = os.getenv("AIRTABLE_API_KEY")
+if not AIRTABLE_API_KEY:
+    print("❌ ERROR: AIRTABLE_API_KEY environment variable not set")
+    print("   Export it: export AIRTABLE_API_KEY=your_key_here")
+    exit(1)
 BASE_ID = "appHbSB7WhT1TxEQb"
 
 # Initialize Airtable API
