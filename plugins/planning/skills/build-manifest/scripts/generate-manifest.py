@@ -37,13 +37,28 @@ api = Api(AIRTABLE_TOKEN)
 
 def read_architecture_docs(arch_path):
     """Extract tech stack from architecture documentation"""
+    import os
+
     print(f"📖 Reading architecture docs: {arch_path}")
 
     tech_stack = []
+    content = ""
 
-    # Read architecture README
-    with open(arch_path, 'r') as f:
-        content = f.read()
+    # Check if path is a directory or file
+    if os.path.isdir(arch_path):
+        # Walk through directory and read all .md files
+        print(f"   📂 Scanning directory for markdown files...")
+        for root, dirs, files in os.walk(arch_path):
+            for file in files:
+                if file.endswith('.md'):
+                    file_path = os.path.join(root, file)
+                    print(f"      📄 Reading: {file}")
+                    with open(file_path, 'r') as f:
+                        content += f.read() + "\n"
+    else:
+        # Read single file
+        with open(arch_path, 'r') as f:
+            content = f.read()
 
     # Simple tech detection (can be enhanced with better parsing)
     tech_keywords = {
@@ -74,6 +89,21 @@ def query_plugins_for_tech(tech_stack):
     plugins_table = api.table(BASE_ID, "Plugins")
     matched_plugins = {}
 
+    # ALWAYS include dev-lifecycle-marketplace core plugins
+    core_plugins = ["foundation", "planning", "supervisor", "iterate", "quality", "deployment", "versioning"]
+
+    print(f"   📦 Adding core dev-lifecycle plugins...")
+    for core_plugin in core_plugins:
+        formula = f"LOWER({{Name}})='{core_plugin}'"
+        records = plugins_table.all(formula=formula)
+        if records:
+            for record in records:
+                plugin_name = record['fields'].get('Name')
+                matched_plugins[plugin_name] = record['id']
+                print(f"   ✓ Found core plugin: {plugin_name}")
+
+    # Query for detected tech stack plugins
+    print(f"   📦 Adding detected tech stack plugins...")
     for tech in tech_stack:
         # Query for plugin by name (fuzzy match)
         formula = f"FIND('{tech}', LOWER({{Name}}))"
@@ -82,8 +112,9 @@ def query_plugins_for_tech(tech_stack):
         if records:
             for record in records:
                 plugin_name = record['fields'].get('Name')
-                matched_plugins[plugin_name] = record['id']
-                print(f"   ✓ Found plugin: {plugin_name}")
+                if plugin_name not in matched_plugins:  # Avoid duplicates
+                    matched_plugins[plugin_name] = record['id']
+                    print(f"   ✓ Found tech plugin: {plugin_name}")
         else:
             print(f"   ⚠️  No plugin found for: {tech}")
 
@@ -95,25 +126,33 @@ def query_commands_for_plugins(plugin_ids):
     print(f"\n📋 Querying commands for plugins...")
 
     commands_table = api.table(BASE_ID, "Commands")
-    all_commands = {}
 
-    for plugin_name, plugin_id in plugin_ids.items():
-        formula = f"{{Plugin}}='{plugin_id}'"
-        records = commands_table.all(formula=formula)
+    # Fetch all commands at once (more efficient than per-plugin queries)
+    all_records = commands_table.all()
 
-        commands = []
-        for record in records:
-            cmd = {
-                "command": record['fields'].get('Command Name'),
-                "plugin": plugin_name,
-                "description": record['fields'].get('Description'),
-                "airtableId": record['id'],
-                "available": True
-            }
-            commands.append(cmd)
+    # Group commands by plugin
+    all_commands = {plugin_name: [] for plugin_name in plugin_ids.keys()}
 
-        all_commands[plugin_name] = commands
-        print(f"   ✓ {plugin_name}: {len(commands)} commands")
+    for record in all_records:
+        # Get the linked plugin IDs (array of record IDs)
+        plugin_links = record['fields'].get('Plugin', [])
+
+        # Check if this command belongs to any of our target plugins
+        for plugin_name, plugin_id in plugin_ids.items():
+            if plugin_id in plugin_links:
+                cmd = {
+                    "command": record['fields'].get('Command Name'),
+                    "plugin": plugin_name,
+                    "description": record['fields'].get('Description'),
+                    "airtableId": record['id'],
+                    "available": True
+                }
+                all_commands[plugin_name].append(cmd)
+
+    # Print summary
+    for plugin_name in plugin_ids.keys():
+        count = len(all_commands[plugin_name])
+        print(f"   ✓ {plugin_name}: {count} commands")
 
     return all_commands
 
@@ -164,20 +203,35 @@ def organize_into_layers(all_commands):
         }
     }
 
+    # Layer 1: Foundation, planning, supervisor commands
+    for plugin in ["foundation", "planning", "supervisor", "iterate"]:
+        if plugin in all_commands:
+            for cmd in all_commands[plugin]:
+                layers["layer1"]["commands"].append(cmd)
+
     # Layer 2: Init commands from tech stack plugins
     for plugin, commands in all_commands.items():
-        for cmd in commands:
-            if ':init' in cmd['command']:
-                layers["layer2"]["plugins"].append(plugin)
-                layers["layer2"]["commands"].append(cmd)
+        if plugin not in ["foundation", "planning", "supervisor", "iterate", "quality", "deployment", "versioning"]:
+            for cmd in commands:
+                if ':init' in cmd['command']:
+                    if plugin not in layers["layer2"]["plugins"]:
+                        layers["layer2"]["plugins"].append(plugin)
+                    layers["layer2"]["commands"].append(cmd)
 
-    # Layer 3: All other tech stack commands
+    # Layer 3: All other tech stack commands (non-init, non-lifecycle)
     for plugin, commands in all_commands.items():
-        for cmd in commands:
-            if ':init' not in cmd['command'] and plugin not in ["quality", "deployment", "versioning"]:
-                if plugin not in layers["layer3"]["plugins"]:
-                    layers["layer3"]["plugins"].append(plugin)
-                layers["layer3"]["commands"].append(cmd)
+        if plugin not in ["foundation", "planning", "supervisor", "iterate", "quality", "deployment", "versioning"]:
+            for cmd in commands:
+                if ':init' not in cmd['command']:
+                    if plugin not in layers["layer3"]["plugins"]:
+                        layers["layer3"]["plugins"].append(plugin)
+                    layers["layer3"]["commands"].append(cmd)
+
+    # Layer 4: Quality, deployment, versioning commands
+    for plugin in ["quality", "deployment", "versioning"]:
+        if plugin in all_commands:
+            for cmd in all_commands[plugin]:
+                layers["layer4"]["commands"].append(cmd)
 
     print(f"   ✓ Layer 1: {len(layers['layer1']['commands'])} commands")
     print(f"   ✓ Layer 2: {len(layers['layer2']['commands'])} commands")
