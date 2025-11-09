@@ -1,0 +1,10 @@
+{
+  "name": "testing",
+  "version": "1.0.0",
+  "description": "Automated testing with Newman/Postman for API testing and Playwright for E2E browser testing",
+  "author": "dev-lifecycle-marketplace",
+  "repository": "https://github.com/vanman2024/dev-lifecycle-marketplace",
+  "tags": ["testing", "newman", "postman", "playwright", "e2e", "api-testing"],
+  "dependencies": [],
+  "status": "active"
+}

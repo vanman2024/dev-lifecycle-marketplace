@@ -1,0 +1,10 @@
+{
+  "name": "security",
+  "version": "1.0.0",
+  "description": "Security infrastructure with git hooks, secret scanning, vulnerability detection, and OWASP best practices",
+  "author": "dev-lifecycle-marketplace",
+  "repository": "https://github.com/vanman2024/dev-lifecycle-marketplace",
+  "tags": ["security", "hooks", "scanning", "vulnerability", "owasp", "secrets"],
+  "dependencies": [],
+  "status": "active"
+}

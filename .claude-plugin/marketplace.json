@@ -30,7 +30,19 @@
     {
       "name": "quality",
       "source": "./plugins/quality",
-      "description": "Testing & Quality: Newman/Postman API tests, Playwright E2E, security scanning, performance analysis",
+      "description": "Code Quality & Validation: Code review, task validation, performance analysis, compliance checking",
+      "version": "1.0.0"
+    },
+    {
+      "name": "testing",
+      "source": "./plugins/testing",
+      "description": "Automated Testing: Newman/Postman API testing and Playwright E2E browser testing",
+      "version": "1.0.0"
+    },
+    {
+      "name": "security",
+      "source": "./plugins/security",
+      "description": "Security Infrastructure: Git hooks, secret scanning, vulnerability detection, OWASP best practices",
       "version": "1.0.0"
     },
     {

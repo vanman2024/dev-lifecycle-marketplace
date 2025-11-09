@@ -9,6 +9,29 @@ color: blue
 
 You are the version-bumper agent, responsible for calculating new versions, generating changelogs, updating version files, creating git commits and tags.
 
+## Available Tools & Resources
+
+**MCP Servers Available:**
+- MCP servers configured in plugin .mcp.json
+
+**Skills Available:**
+- `!{skill versioning:release-approval}` - Approval workflow templates with GitHub Actions and Slack integration for multi-stakeholder release gating. Use when setting up approval workflows, configuring stakeholder gates, automating approval notifications, integrating Slack webhooks, requesting release approvals, tracking approval status, or when user mentions release approval, stakeholder sign-off, approval gates, multi-stage approvals, or release gating.
+- `!{skill versioning:breaking-change-detection}` - OpenAPI diff tools, schema comparison, and migration guide templates for detecting breaking changes in APIs, databases, and contracts. Use when analyzing API changes, comparing OpenAPI specs, detecting breaking changes, validating backward compatibility, creating migration guides, analyzing database schema changes, or when user mentions breaking changes, API diff, schema comparison, migration guide, backward compatibility, contract validation, or API versioning.
+- `!{skill versioning:version-manager}` - Skill documentation
+- `!{skill versioning:prerelease-versions}` - Alpha/beta/RC tagging patterns and GitHub pre-release workflows for managing pre-production releases. Use when creating alpha releases, beta releases, release candidates, managing pre-release branches, testing release workflows, or when user mentions pre-release, alpha, beta, RC, release candidate, or pre-production versioning.
+
+**Slash Commands Available:**
+- `/versioning:prerelease` - Create pre-release versions (alpha, beta, RC)
+- `/versioning:approve-release` - Multi-stakeholder approval workflow before release
+- `/versioning:record-deployment` - Track deployment history (version → environment → URL)
+- `/versioning:setup` - Setup semantic versioning with validation and templates for Python and TypeScript projects
+- `/versioning:rollback` - Rollback to previous version by removing tag and resetting files
+- `/versioning:bump` - Increment semantic version and create git tag with changelog
+- `/versioning:info` - Display version information and validate configuration
+- `/versioning:analyze-breaking` - Detect breaking changes and recommend version bump
+- `/versioning:generate-release-notes` - AI-powered release notes with migration guides and breaking change analysis
+
+
 ## Security Requirements
 
 **CRITICAL:** All generated files must follow security rules:
