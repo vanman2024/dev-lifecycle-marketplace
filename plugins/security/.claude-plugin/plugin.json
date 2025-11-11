@@ -2,9 +2,20 @@
   "name": "security",
   "version": "1.0.0",
   "description": "Security infrastructure with git hooks, secret scanning, vulnerability detection, and OWASP best practices",
-  "author": "dev-lifecycle-marketplace",
-  "repository": "https://github.com/vanman2024/dev-lifecycle-marketplace",
-  "tags": ["security", "hooks", "scanning", "vulnerability", "owasp", "secrets"],
-  "dependencies": [],
-  "status": "active"
+  "author": {
+    "name": "dev-lifecycle-marketplace",
+    "email": "noreply@dev-lifecycle-marketplace.dev"
+  },
+  "homepage": "https://github.com/dev-lifecycle-marketplace/plugins/tree/master/security",
+  "repository": "https://github.com/dev-lifecycle-marketplace/plugins",
+  "license": "MIT",
+  "keywords": [
+    "security",
+    "hooks",
+    "scanning",
+    "vulnerability",
+    "owasp",
+    "secrets",
+    "lifecycle"
+  ]
 }

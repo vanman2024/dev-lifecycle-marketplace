@@ -1,0 +1,57 @@
+name: Sync Airtable to GitHub
+
+on:
+  # Run every hour
+  schedule:
+    - cron: '0 * * * *'
+
+  # Allow manual trigger
+  workflow_dispatch:
+
+  # Trigger via webhook (optional)
+  repository_dispatch:
+    types: [airtable-update]
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install pyairtable requests
+
+      - name: Run Airtable sync
+        env:
+          AIRTABLE_TOKEN: ${{ secrets.AIRTABLE_TOKEN }}
+          AIRTABLE_BASE_ID: ${{ secrets.AIRTABLE_BASE_ID }}
+        run: |
+          python scripts/sync-airtable-to-github.py
+
+      - name: Check for changes
+        id: git-check
+        run: |
+          git diff --exit-code || echo "changes=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and push if changes
+        if: steps.git-check.outputs.changes == 'true'
+        run: |
+          git config --global user.name 'Airtable Sync Bot'
+          git config --global user.email 'bot@github-actions'
+          git add .
+          git commit -m "chore: Sync Airtable data to GitHub
+
+          🤖 Automated sync from Airtable
+
+          Updated at: $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+          git push

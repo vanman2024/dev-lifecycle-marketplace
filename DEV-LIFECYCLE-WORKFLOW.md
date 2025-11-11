@@ -330,18 +330,42 @@ This workflow shows:
 **NEVER** build features without this process:
 
 1. **Decide: Is this a new feature or modification?**
-   - New feature? → `/planning:add-feature`
+   - New feature? → `/planning:add-feature` (creates spec quickly)
    - Modify existing? → `/iterate:adjust` or `/iterate:enhance`
 
-2. **Layer the tasks** → `/iterate:tasks F00X`
+2. **Quick layer the tasks** → `/iterate:tasks F00X`
+   - ⚡ Should take <2 minutes for simple features
    - Creates layered-tasks.md with dependencies
    - L0 (infrastructure) → L1 (core) → L2 (features) → L3 (integration)
+   - Uses Plan agent (fast analysis, not deep exploration)
 
 3. **Build layer by layer**
    - Follow layered-tasks.md order
    - Complete L0 before L1, L1 before L2, etc.
 
-4. **Sync after each layer** → `/iterate:sync F00X`
+4. **Sync after each layer** → `/iterate:sync F00X` (quick check)
+
+## ⚡ SPEED OPTIMIZATION
+
+### When to use FAST vs DEEP analysis:
+
+**🚀 FAST Analysis (<2 minutes):**
+- Small improvements: "Add dark mode toggle"
+- UI enhancements: "Improve button styling"
+- New simple features: "Add user profile page"
+- **Use:** `/planning:add-feature` → `/iterate:tasks` (default)
+- **Agent:** Plan agent (quick thoroughness)
+
+**🔍 DEEP Analysis (5-10 minutes):**
+- Complex features: "Build RAG pipeline with vector search"
+- Architecture changes: "Refactor auth system"
+- Multi-service features: "Integrate payment processing"
+- **Use:** Explore agent or manual planning
+- **When:** Large, complex, cross-cutting concerns
+
+**Rule of thumb:**
+- If spec.md fits on one screen → FAST
+- If spec.md is 3+ screens → Consider breaking into multiple smaller features
 
 **Example - User says "Frontend needs improvement":**
 
