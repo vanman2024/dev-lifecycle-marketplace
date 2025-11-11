@@ -63,64 +63,42 @@ Actions:
 - DO NOT proceed without explicit user approval
 
 Phase 5: Implementation
-Goal: Execute structure creation using standardized script
+Goal: Invoke structure-organizer agent for intelligent migration
 
 DO NOT START WITHOUT USER APPROVAL
 
 Actions:
-- Create backup of current structure (if migrating existing project)
-- Example: !{bash tar -czf project-backup-$(date +%Y%m%d-%H%M%S).tar.gz . --exclude=node_modules --exclude=.git --exclude=__pycache__}
-- Use create-structure script from project-structure skill:
-- Example: !{bash bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/project-structure/scripts/create-structure.sh full-stack .}
-- Script automatically creates: backend/, frontend/, docs/, scripts/, tests/e2e/, .gitignore, README stubs, .env.example files
-- If migrating existing files, move them to new locations:
-  - Backend files → backend/src/
-  - Frontend files → frontend/src/ or frontend/app/
-  - Tests → backend/tests/ or frontend/__tests__/
-- Update import paths if needed (Python, TypeScript)
 
-Phase 6: Validation
-Goal: Verify migration succeeded and project still works
+Launch the structure-organizer agent to handle intelligent analysis and migration.
 
-Actions:
-- Check all files were moved correctly
-- Example: !{bash ls -la backend/ frontend/ docs/ scripts/}
-- Verify no orphaned files remain
-- Test backend still works (if applicable)
-- Example: !{bash cd backend && npm run typecheck 2>/dev/null || python -m py_compile src/*.py 2>/dev/null || echo "No validation available"}
-- Test frontend still works (if applicable)
-- Example: !{bash cd frontend && npm run typecheck 2>/dev/null || echo "No validation available"}
-- Report any issues found
+Provide the agent with context:
+- Project path: $ARGUMENTS
+- Project type from Phase 2: [full-stack/backend-only/frontend-only/microservices]
+- User preferences from Phase 3: [backend vs api, frontend vs web, migrate files yes/no]
+- Current structure issues identified
 
-Phase 7: Documentation
-Goal: Document new structure and update guides
+The agent will:
+1. Verify analysis and ask any additional questions
+2. Create detailed migration plan
+3. Get final approval
+4. Create backup automatically
+5. Run create-structure.sh script with correct type
+6. Move files if needed
+7. Update configurations
+8. Validate compliance
+9. Return results
+
+Phase 6: Summary
+Goal: Display results from structure-organizer agent
 
 Actions:
-- Create docs/PROJECT-STRUCTURE.md explaining:
-  - Directory layout
-  - Where to add new files
-  - Testing conventions
-  - Deployment process
-- Update root README.md with:
-  - Getting started for backend
-  - Getting started for frontend
-  - Development workflow
-  - Structure overview
-- Create scripts/README.md explaining available scripts
-
-Phase 8: Summary
-Goal: Report results and next steps
-
-Actions:
-- Display migration summary:
-  - Files moved: backend, frontend, docs, scripts
-  - Structure validated: ✅
-  - Import paths updated: ✅
-  - Documentation created: ✅
-- Show new structure tree
-- Backup location: project-backup-YYYYMMDD-HHMMSS.tar.gz
+- Show agent's migration results
+- Display compliance score improvement
+- Show backup location
+- List what was created/moved
 - Suggest next steps:
   - Review generated READMEs
+  - Configure .env.example files
   - Run tests to verify functionality
   - Update CI/CD workflows for new structure
-  - Use /foundation:validate-structure to check compliance
+  - Use /foundation:validate-structure to verify final compliance
