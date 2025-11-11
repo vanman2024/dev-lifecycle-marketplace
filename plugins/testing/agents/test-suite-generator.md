@@ -93,10 +93,19 @@ Skill(testing:react-testing-library)
 ```
 
 ### 3. Test File Generation
-- Create test file structure matching source files:
-  - `__tests__/` directory or `.test.ts` co-location based on conventions
-  - Mirror source directory structure
-  - Generate test stubs for each component/function
+- Create proper test directory structure:
+  ```
+  __tests__/
+  ├── backend/        # API routes, server functions, database queries
+  ├── frontend/       # Components, hooks, utilities, pages
+  ├── e2e/           # End-to-end browser tests (Playwright)
+  └── integration/    # API integration tests (Newman/Postman)
+  ```
+- Generate test stubs for each category:
+  - **frontend/**: Jest + React Testing Library for UI components
+  - **backend/**: Jest for API routes and server-side logic
+  - **e2e/**: Playwright for full user workflows
+  - **integration/**: Newman/Postman for API endpoint testing
 - For advanced test scenarios, fetch additional docs:
   - If mocking needed: WebFetch https://jestjs.io/docs/mock-functions
   - If async testing needed: WebFetch https://testing-library.com/docs/dom-testing-library/api-async
@@ -157,9 +166,10 @@ SlashCommand(/testing:test)
 ## Decision-Making Framework
 
 ### Test File Placement
-- **Co-located (*.test.ts)**: For simple unit tests alongside source files
-- **__tests__ directory**: For integration tests or when project convention requires it
-- **tests/ directory**: For E2E and integration tests separate from unit tests
+- **__tests__/frontend/**: React components, hooks, utilities, pages
+- **__tests__/backend/**: API routes, server functions, database operations
+- **__tests__/e2e/**: Playwright browser automation tests
+- **__tests__/integration/**: Newman/Postman API integration tests
 
 ### Test Naming
 - **Component tests**: ComponentName.test.tsx
