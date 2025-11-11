@@ -115,7 +115,7 @@ git commit -m "fix: extend password reset link validity to 1 hour"
 git commit -m "fix: add error message display to login form"
 
 # Create second beta release
-bash plugins/versioning/skills/prerelease-versions/scripts/create-prerelease.sh beta 2.0.0
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/prerelease-versions/scripts/create-prerelease.sh beta 2.0.0
 
 # Output: 2.0.0-beta.2
 ```
@@ -192,7 +192,7 @@ git commit -m "fix: improve error handling for network timeouts"
 git commit -m "docs: add troubleshooting section for timeout errors"
 
 # Create final beta release
-bash plugins/versioning/skills/prerelease-versions/scripts/create-prerelease.sh beta 2.0.0
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/prerelease-versions/scripts/create-prerelease.sh beta 2.0.0
 
 # Output: 2.0.0-beta.3
 ```
@@ -203,7 +203,7 @@ bash plugins/versioning/skills/prerelease-versions/scripts/create-prerelease.sh 
 
 ```bash
 # Run comprehensive validation
-bash plugins/versioning/skills/prerelease-versions/scripts/test-prerelease.sh 2.0.0-beta.3
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/prerelease-versions/scripts/test-prerelease.sh 2.0.0-beta.3
 ```
 
 **Validation Results**:
@@ -240,7 +240,7 @@ Total Checks Failed: 0
 
 ```bash
 # All beta testing complete, stable and ready for production testing
-bash plugins/versioning/skills/prerelease-versions/scripts/promote-prerelease.sh 2.0.0-beta.3
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/prerelease-versions/scripts/promote-prerelease.sh 2.0.0-beta.3
 ```
 
 **Promotion Output**:

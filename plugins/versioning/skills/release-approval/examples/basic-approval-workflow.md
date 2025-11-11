@@ -16,7 +16,7 @@ Release version `1.2.3` with sequential approval gates:
 
 ```bash
 # Setup approval gates (first time only)
-bash plugins/versioning/skills/release-approval/scripts/setup-approval-gates.sh
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/release-approval/scripts/setup-approval-gates.sh
 
 # This creates:
 # - .github/releases/approval-gates.yml (configuration)
@@ -43,7 +43,7 @@ bash plugins/versioning/skills/release-approval/scripts/setup-approval-gates.sh
 /versioning:approve-release 1.2.0
 
 # Or trigger manually:
-bash plugins/versioning/skills/release-approval/scripts/request-approval.sh 1.2.0 development github
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/release-approval/scripts/request-approval.sh 1.2.0 development github
 ```
 
 **What happens:**
@@ -118,7 +118,7 @@ Feature requirements met. Documentation updated. Ready for release.
 
 ```bash
 # Automatically generated after all approvals
-bash plugins/versioning/skills/release-approval/scripts/generate-approval-audit.sh 1.2.0 approved
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/release-approval/scripts/generate-approval-audit.sh 1.2.0 approved
 
 # Creates: .github/releases/approvals/v1.2.0.json
 ```
@@ -135,7 +135,7 @@ bash plugins/versioning/skills/release-approval/scripts/generate-approval-audit.
 
 ```bash
 # View comprehensive approval status
-bash plugins/versioning/skills/release-approval/scripts/check-approval-status.sh 1.2.0
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/release-approval/scripts/check-approval-status.sh 1.2.0
 ```
 
 **Output:**

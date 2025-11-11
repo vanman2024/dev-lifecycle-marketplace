@@ -20,7 +20,7 @@ Deploy a Node.js application to Vercel production environment.
 First, verify you're authenticated with Vercel:
 
 ```bash
-bash plugins/deployment/skills/deployment-scripts/scripts/check-auth.sh vercel
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/check-auth.sh vercel
 ```
 
 **Expected Output:**
@@ -46,7 +46,7 @@ cp .env.example .env.production
 nano .env.production
 
 # Validate
-bash plugins/deployment/skills/deployment-scripts/scripts/validate-env.sh .env.production
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/validate-env.sh .env.production
 ```
 
 **Expected Output:**
@@ -67,7 +67,7 @@ bash plugins/deployment/skills/deployment-scripts/scripts/validate-env.sh .env.p
 Run pre-deployment checks:
 
 ```bash
-bash plugins/deployment/skills/deployment-scripts/scripts/validate-build.sh .
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/validate-build.sh .
 ```
 
 **Expected Output:**
@@ -87,7 +87,7 @@ bash plugins/deployment/skills/deployment-scripts/scripts/validate-build.sh .
 Deploy to production:
 
 ```bash
-bash plugins/deployment/skills/deployment-scripts/scripts/vercel-deploy.sh production
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/vercel-deploy.sh production
 ```
 
 **Expected Output:**
@@ -108,7 +108,7 @@ bash plugins/deployment/skills/deployment-scripts/scripts/vercel-deploy.sh produ
 Verify deployment is healthy:
 
 ```bash
-bash plugins/deployment/skills/deployment-scripts/scripts/health-check.sh https://my-app.vercel.app
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/health-check.sh https://my-app.vercel.app
 ```
 
 **Expected Output:**
@@ -182,15 +182,15 @@ Deploy the application to the specified platform with full validation.
 ## Actions
 
 ### Phase 1: Pre-deployment Validation
-Bash: bash plugins/deployment/skills/deployment-scripts/scripts/check-auth.sh vercel
-Bash: bash plugins/deployment/skills/deployment-scripts/scripts/validate-env.sh .env.production
-Bash: bash plugins/deployment/skills/deployment-scripts/scripts/validate-build.sh .
+Bash: bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/check-auth.sh vercel
+Bash: bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/validate-env.sh .env.production
+Bash: bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/validate-build.sh .
 
 ### Phase 2: Deploy
-Bash: bash plugins/deployment/skills/deployment-scripts/scripts/vercel-deploy.sh production
+Bash: bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/vercel-deploy.sh production
 
 ### Phase 3: Post-deployment
-Bash: bash plugins/deployment/skills/deployment-scripts/scripts/health-check.sh https://my-app.vercel.app
+Bash: bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/health-check.sh https://my-app.vercel.app
 ```
 
 ## Troubleshooting

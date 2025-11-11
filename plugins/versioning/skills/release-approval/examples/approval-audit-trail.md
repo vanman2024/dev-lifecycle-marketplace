@@ -175,7 +175,7 @@ Complete audit trail documentation and compliance patterns.
 
 ```bash
 # Generate approval audit after all approvals obtained
-bash plugins/versioning/skills/release-approval/scripts/generate-approval-audit.sh \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/release-approval/scripts/generate-approval-audit.sh \
   1.3.0 \
   approved \
   .github/releases/approvals/v1.3.0.json
@@ -198,7 +198,7 @@ bash scripts/generate-approval-audit.sh 1.3.0 approved \
 
 ```bash
 # View approval status with full audit details
-bash plugins/versioning/skills/release-approval/scripts/check-approval-status.sh 1.3.0
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/release-approval/scripts/check-approval-status.sh 1.3.0
 ```
 
 **Output:**

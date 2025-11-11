@@ -8,7 +8,7 @@ End-to-end Slack notification setup for release approvals.
 
 ```bash
 # Run interactive setup script
-bash plugins/versioning/skills/release-approval/scripts/setup-slack-webhook.sh
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/release-approval/scripts/setup-slack-webhook.sh
 ```
 
 **Script will guide you through:**
@@ -65,7 +65,7 @@ SLACK_MENTION_CHANNEL=true
 **Trigger**: Approval workflow starts
 
 ```bash
-bash plugins/versioning/skills/release-approval/scripts/notify-slack.sh \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/release-approval/scripts/notify-slack.sh \
   approval-requested \
   1.2.3 \
   "Release approval requested for v1.2.3. All stakeholders please review."
@@ -88,7 +88,7 @@ Release approval requested for v1.2.3. All stakeholders please review.
 **Trigger**: Stakeholder approves
 
 ```bash
-bash plugins/versioning/skills/release-approval/scripts/notify-slack.sh \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/release-approval/scripts/notify-slack.sh \
   approval-granted \
   1.2.3 \
   "Development team approved by @tech-lead. QA review next."
@@ -109,7 +109,7 @@ Development team approved by @tech-lead. QA review next.
 **Trigger**: Stakeholder rejects
 
 ```bash
-bash plugins/versioning/skills/release-approval/scripts/notify-slack.sh \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/release-approval/scripts/notify-slack.sh \
   approval-denied \
   1.2.3 \
   "Security team rejected: Critical vulnerability CVE-2024-1234 found."
@@ -132,7 +132,7 @@ Security team rejected: Critical vulnerability CVE-2024-1234 found.
 **Trigger**: Approval exceeds timeout threshold
 
 ```bash
-bash plugins/versioning/skills/release-approval/scripts/escalate-approval.sh \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/release-approval/scripts/escalate-approval.sh \
   1.2.3 \
   security \
   24
@@ -159,7 +159,7 @@ Escalated to: @engineering-manager @cto
 **Trigger**: All approvals obtained
 
 ```bash
-bash plugins/versioning/skills/release-approval/scripts/notify-slack.sh \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/release-approval/scripts/notify-slack.sh \
   approval-complete \
   1.2.3 \
   "🎉 All approvals complete for v1.2.3! Ready for release."

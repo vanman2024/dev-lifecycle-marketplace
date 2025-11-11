@@ -145,7 +145,7 @@ Breaking changes communicated to stakeholders. Documentation updated. Ready for 
 
 ```bash
 # Check status while approvals are coming in
-bash plugins/versioning/skills/release-approval/scripts/check-approval-status.sh 2.0.0
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/release-approval/scripts/check-approval-status.sh 2.0.0
 ```
 
 **Output at 11:45 (midway through parallel approvals):**
@@ -275,10 +275,10 @@ If security review takes longer than expected:
 
 ```bash
 # Check status after 24 hours
-bash plugins/versioning/skills/release-approval/scripts/check-approval-status.sh 2.0.0
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/release-approval/scripts/check-approval-status.sh 2.0.0
 
 # Escalate if needed
-bash plugins/versioning/skills/release-approval/scripts/escalate-approval.sh 2.0.0 security 24
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/release-approval/scripts/escalate-approval.sh 2.0.0 security 24
 ```
 
 **Escalation notification sent:**

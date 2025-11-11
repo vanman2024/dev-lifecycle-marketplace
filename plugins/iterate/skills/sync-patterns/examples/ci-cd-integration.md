@@ -28,7 +28,7 @@ jobs:
       - name: Find completed tasks not marked in specs
         id: find_completed
         run: |
-          bash plugins/iterate/skills/sync-patterns/scripts/find-completed-tasks.sh \
+          bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/iterate/skills/sync-patterns/scripts/find-completed-tasks.sh \
             specs/ src/ --json > completed-tasks.json
 
           # Count completed tasks
@@ -37,7 +37,7 @@ jobs:
 
       - name: Generate sync report
         run: |
-          bash plugins/iterate/skills/sync-patterns/scripts/generate-sync-report.sh \
+          bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/iterate/skills/sync-patterns/scripts/generate-sync-report.sh \
             specs/ sync-report.md --code-dir=src/
 
       - name: Upload sync report as artifact
@@ -111,7 +111,7 @@ jobs:
 
       - name: Generate comprehensive sync report
         run: |
-          bash plugins/iterate/skills/sync-patterns/scripts/generate-sync-report.sh \
+          bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/iterate/skills/sync-patterns/scripts/generate-sync-report.sh \
             specs/ \
             reports/sync-report-$(date +%Y-%m-%d).md \
             --code-dir=src/ \
@@ -175,7 +175,7 @@ jobs:
           echo "${{ steps.changed_specs.outputs.specs }}" | while read spec_file; do
             if [ -f "$spec_file" ]; then
               echo "Checking $spec_file..."
-              bash plugins/iterate/skills/sync-patterns/scripts/compare-specs-vs-code.sh \
+              bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/iterate/skills/sync-patterns/scripts/compare-specs-vs-code.sh \
                 "$spec_file" src/ >> spec-comparison.txt
             fi
           done
@@ -205,7 +205,7 @@ sync-check:
   image: ubuntu:latest
   script:
     - apt-get update && apt-get install -y bash grep jq
-    - bash plugins/iterate/skills/sync-patterns/scripts/find-completed-tasks.sh specs/ src/ --json > completed-tasks.json
+    - bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/iterate/skills/sync-patterns/scripts/find-completed-tasks.sh specs/ src/ --json > completed-tasks.json
     - SYNC_PERCENT=$(jq -r '.sync_percentage' completed-tasks.json 2>/dev/null || echo "0")
     - echo "Sync percentage: $SYNC_PERCENT%"
     - |
@@ -225,7 +225,7 @@ generate-sync-report:
   image: ubuntu:latest
   script:
     - apt-get update && apt-get install -y bash grep
-    - bash plugins/iterate/skills/sync-patterns/scripts/generate-sync-report.sh specs/ sync-report.md --code-dir=src/
+    - bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/iterate/skills/sync-patterns/scripts/generate-sync-report.sh specs/ sync-report.md --code-dir=src/
   artifacts:
     paths:
       - sync-report.md
@@ -259,7 +259,7 @@ pipeline {
         stage('Find Completed Tasks') {
             steps {
                 sh '''
-                    bash plugins/iterate/skills/sync-patterns/scripts/find-completed-tasks.sh \
+                    bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/iterate/skills/sync-patterns/scripts/find-completed-tasks.sh \
                         specs/ src/ --json > completed-tasks.json
                 '''
             }
@@ -268,7 +268,7 @@ pipeline {
         stage('Generate Sync Report') {
             steps {
                 sh '''
-                    bash plugins/iterate/skills/sync-patterns/scripts/generate-sync-report.sh \
+                    bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/iterate/skills/sync-patterns/scripts/generate-sync-report.sh \
                         specs/ sync-report.md --code-dir=src/
                 '''
 
@@ -345,13 +345,13 @@ jobs:
       - run:
           name: Find completed tasks
           command: |
-            bash plugins/iterate/skills/sync-patterns/scripts/find-completed-tasks.sh \
+            bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/iterate/skills/sync-patterns/scripts/find-completed-tasks.sh \
               specs/ src/ --json > completed-tasks.json
 
       - run:
           name: Generate sync report
           command: |
-            bash plugins/iterate/skills/sync-patterns/scripts/generate-sync-report.sh \
+            bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/iterate/skills/sync-patterns/scripts/generate-sync-report.sh \
               specs/ sync-report.md --code-dir=src/
 
       - store_artifacts:
@@ -410,7 +410,7 @@ if [ -n "$SPEC_CHANGED" ]; then
     echo "Spec files modified. Checking sync status..."
 
     # Find completed tasks
-    bash plugins/iterate/skills/sync-patterns/scripts/find-completed-tasks.sh \
+    bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/iterate/skills/sync-patterns/scripts/find-completed-tasks.sh \
         specs/ src/ --json > /tmp/completed-tasks.json
 
     COMPLETED_COUNT=$(jq -r '.likely_completed_tasks' /tmp/completed-tasks.json 2>/dev/null || echo "0")
@@ -454,7 +454,7 @@ chmod +x .git/hooks/pre-commit
 WEBHOOK_URL="https://hooks.slack.com/services/YOUR/WEBHOOK/URL"
 
 # Generate sync report
-bash plugins/iterate/skills/sync-patterns/scripts/find-completed-tasks.sh \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/iterate/skills/sync-patterns/scripts/find-completed-tasks.sh \
     specs/ src/ --json > /tmp/sync-data.json
 
 SYNC_PERCENT=$(jq -r '.sync_percentage' /tmp/sync-data.json)

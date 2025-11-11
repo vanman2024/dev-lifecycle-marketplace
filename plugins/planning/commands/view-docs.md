@@ -13,7 +13,7 @@ Goal: Verify viewer components exist
 
 Actions:
 - Check if API server exists:
-  !{bash test -f plugins/planning/skills/doc-sync/scripts/serve-viewer.py && echo "✅ API server found" || echo "❌ API server missing"}
+  !{bash test -f ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/planning/skills/doc-sync/scripts/serve-viewer.py && echo "✅ API server found" || echo "❌ API server missing"}
 - Check if HTML viewer exists:
   !{bash test -f ~/.claude/doc-viewer.html && echo "✅ Viewer found" || echo "❌ Viewer missing"}
 - Check if mem0 venv exists:
@@ -25,7 +25,7 @@ Goal: Start API server and open viewer in browser
 
 Actions:
 - Launch viewer using script:
-  !{bash plugins/planning/skills/doc-sync/scripts/view-docs.sh}
+  !{bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/planning/skills/doc-sync/scripts/view-docs.sh}
 
 This will:
 1. Start API server on http://localhost:8765

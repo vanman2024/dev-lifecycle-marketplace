@@ -83,7 +83,7 @@ docker run -d \
 docker logs -f my-app
 
 # Health check
-bash plugins/deployment/skills/deployment-scripts/scripts/health-check.sh http://localhost:8080
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/health-check.sh http://localhost:8080
 ```
 
 ### Using Docker Compose
@@ -157,7 +157,7 @@ docker-compose down
 
 ```bash
 # Check authentication
-bash plugins/deployment/skills/deployment-scripts/scripts/check-auth.sh fly
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/check-auth.sh fly
 
 # Copy fly.toml template
 cp plugins/deployment/skills/deployment-scripts/templates/fly.toml .
@@ -173,7 +173,7 @@ nano fly.toml
 flyctl deploy
 
 # Or use deployment helper
-bash plugins/deployment/skills/deployment-scripts/scripts/deploy-helper.sh \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/deploy-helper.sh \
   --platform fly \
   --env production
 ```
@@ -185,7 +185,7 @@ bash plugins/deployment/skills/deployment-scripts/scripts/deploy-helper.sh \
 FLY_URL=$(flyctl status --json | jq -r '.Hostname')
 
 # Health check
-bash plugins/deployment/skills/deployment-scripts/scripts/health-check.sh \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/health-check.sh \
   "https://${FLY_URL}"
 ```
 
@@ -304,7 +304,7 @@ SERVICE="my-app"
 TASK_DEFINITION="my-app"
 
 # Check AWS authentication
-bash plugins/deployment/skills/deployment-scripts/scripts/check-auth.sh aws
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/check-auth.sh aws
 
 # Build and push image
 docker build -t "123456789.dkr.ecr.us-east-1.amazonaws.com/my-app:latest" .
@@ -339,7 +339,7 @@ REGION="us-central1"
 SERVICE="my-app"
 
 # Check authentication
-bash plugins/deployment/skills/deployment-scripts/scripts/check-auth.sh gcloud
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/check-auth.sh gcloud
 
 # Build and submit
 gcloud builds submit --tag gcr.io/$PROJECT/$SERVICE
@@ -361,7 +361,7 @@ SERVICE_URL=$(gcloud run services describe $SERVICE \
 echo "✓ Deployed to: $SERVICE_URL"
 
 # Health check
-bash plugins/deployment/skills/deployment-scripts/scripts/health-check.sh "$SERVICE_URL"
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/health-check.sh "$SERVICE_URL"
 ```
 
 ## Multi-Stage Build Optimization

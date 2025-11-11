@@ -230,7 +230,7 @@ components:
 
 ```bash
 # Run OpenAPI diff script
-bash plugins/versioning/skills/breaking-change-detection/scripts/openapi-diff.sh \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/breaking-change-detection/scripts/openapi-diff.sh \
   api-v1.yaml \
   api-v2.yaml \
   --output breaking-changes-report.md

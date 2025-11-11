@@ -33,7 +33,7 @@ Common deployment issues and solutions when using deployment-scripts skill.
 
 2. **Verify authentication:**
    ```bash
-   bash plugins/deployment/skills/deployment-scripts/scripts/check-auth.sh <platform>
+   bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/check-auth.sh <platform>
    ```
 
 3. **Check token expiration:**
@@ -91,7 +91,7 @@ Common deployment issues and solutions when using deployment-scripts skill.
 
 5. **Validate environment file:**
    ```bash
-   bash plugins/deployment/skills/deployment-scripts/scripts/validate-env.sh .env.production
+   bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/validate-env.sh .env.production
    ```
 
 ### Problem: "Insecure value detected"
@@ -455,7 +455,7 @@ Error: No previous deployment found
 2. **Redeploy last known good version:**
    ```bash
    git checkout <last-good-commit>
-   bash plugins/deployment/skills/deployment-scripts/scripts/deploy-helper.sh \
+   bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/deploy-helper.sh \
      --platform vercel --env production
    ```
 
@@ -603,13 +603,13 @@ npm --version
 docker --version
 
 echo "=== Platform Auth ==="
-bash plugins/deployment/skills/deployment-scripts/scripts/check-auth.sh vercel
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/check-auth.sh vercel
 
 echo "=== Environment ==="
-bash plugins/deployment/skills/deployment-scripts/scripts/validate-env.sh .env.production
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/validate-env.sh .env.production
 
 echo "=== Build ==="
-bash plugins/deployment/skills/deployment-scripts/scripts/validate-build.sh .
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/validate-build.sh .
 
 echo "=== Deployment Status ==="
 vercel ls
@@ -630,8 +630,8 @@ vercel logs --limit 50
 
 1. **Always validate before deploying:**
    ```bash
-   bash plugins/deployment/skills/deployment-scripts/scripts/validate-env.sh .env.production
-   bash plugins/deployment/skills/deployment-scripts/scripts/validate-build.sh .
+   bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/validate-env.sh .env.production
+   bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/validate-build.sh .
    ```
 
 2. **Test locally first:**
@@ -651,11 +651,11 @@ vercel logs --limit 50
 4. **Monitor deployments:**
    ```bash
    # Always run health check after deployment
-   bash plugins/deployment/skills/deployment-scripts/scripts/health-check.sh https://my-app.com
+   bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/health-check.sh https://my-app.com
    ```
 
 5. **Keep rollback ready:**
    ```bash
    # Know how to rollback before deploying
-   bash plugins/deployment/skills/deployment-scripts/scripts/rollback-deployment.sh vercel
+   bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/rollback-deployment.sh vercel
    ```

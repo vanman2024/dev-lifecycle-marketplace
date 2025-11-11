@@ -38,7 +38,7 @@ git checkout -b alpha/v3.0.0-auth
 git push -u origin alpha/v3.0.0-auth
 
 # Create alpha release
-bash plugins/versioning/skills/prerelease-versions/scripts/create-prerelease.sh alpha 3.0.0
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/prerelease-versions/scripts/create-prerelease.sh alpha 3.0.0
 # Output: 3.0.0-alpha.1
 
 # Tag with team identifier
@@ -54,7 +54,7 @@ git checkout -b alpha/v3.0.0-analytics
 git push -u origin alpha/v3.0.0-analytics
 
 # Create alpha release
-bash plugins/versioning/skills/prerelease-versions/scripts/create-prerelease.sh alpha 3.0.0
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/prerelease-versions/scripts/create-prerelease.sh alpha 3.0.0
 # Output: 3.0.0-alpha.1
 
 # Tag with team identifier
@@ -70,7 +70,7 @@ git checkout -b alpha/v3.0.0-gateway
 git push -u origin alpha/v3.0.0-gateway
 
 # Create alpha release
-bash plugins/versioning/skills/prerelease-versions/scripts/create-prerelease.sh alpha 3.0.0
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/prerelease-versions/scripts/create-prerelease.sh alpha 3.0.0
 # Output: 3.0.0-alpha.1
 
 # Tag with team identifier
@@ -147,7 +147,7 @@ git push -u origin integration/v3.0.0
 git checkout integration/v3.0.0
 
 # Create alpha release with all features
-bash plugins/versioning/skills/prerelease-versions/scripts/create-prerelease.sh alpha 3.0.0
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/prerelease-versions/scripts/create-prerelease.sh alpha 3.0.0
 # Output: 3.0.0-alpha.1
 
 # Tag as unified release
@@ -183,7 +183,7 @@ git add .
 git commit -m "fix: add rate limit backoff to analytics data fetcher"
 
 # Create second unified alpha
-bash plugins/versioning/skills/prerelease-versions/scripts/create-prerelease.sh alpha 3.0.0
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/prerelease-versions/scripts/create-prerelease.sh alpha 3.0.0
 # Output: 3.0.0-alpha.2
 
 git tag v3.0.0-alpha.2-unified
@@ -201,7 +201,7 @@ git push origin v3.0.0-alpha.2-unified
 git checkout integration/v3.0.0
 
 # Promote unified alpha to beta
-bash plugins/versioning/skills/prerelease-versions/scripts/promote-prerelease.sh 3.0.0-alpha.2
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/prerelease-versions/scripts/promote-prerelease.sh 3.0.0-alpha.2
 # Output: 3.0.0-beta.1
 
 # Create beta branch
@@ -247,7 +247,7 @@ git push origin v3.0.0-beta.1
 git checkout beta/v3.0.0
 
 # Promote to release candidate
-bash plugins/versioning/skills/prerelease-versions/scripts/promote-prerelease.sh 3.0.0-beta.3
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/prerelease-versions/scripts/promote-prerelease.sh 3.0.0-beta.3
 # Output: 3.0.0-rc.1
 
 # Create release branch
@@ -269,7 +269,7 @@ git push origin v3.0.0-rc.1
 # Stakeholder approval obtained
 
 # Promote to stable
-bash plugins/versioning/skills/prerelease-versions/scripts/promote-prerelease.sh 3.0.0-rc.1
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/prerelease-versions/scripts/promote-prerelease.sh 3.0.0-rc.1
 # Output: 3.0.0
 
 # Tag stable release

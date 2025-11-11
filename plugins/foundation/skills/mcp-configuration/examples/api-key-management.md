@@ -21,7 +21,7 @@ MCP supports environment variable substitution using `.env` files:
 ### Interactive Method (Recommended)
 
 ```bash
-bash plugins/foundation/skills/mcp-configuration/scripts/manage-api-keys.sh \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/manage-api-keys.sh \
   --action add \
   --key-name OPENAI_API_KEY
 ```
@@ -36,7 +36,7 @@ Enter value for OPENAI_API_KEY (input hidden): [type key here]
 ### Non-Interactive Method
 
 ```bash
-bash plugins/foundation/skills/mcp-configuration/scripts/manage-api-keys.sh \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/manage-api-keys.sh \
   --action add \
   --key-name OPENAI_API_KEY \
   --key-value "sk-xxxxxxxxxxxxxxxxxxxxx"
@@ -53,7 +53,7 @@ bash plugins/foundation/skills/mcp-configuration/scripts/manage-api-keys.sh \
 ### Method 1: During Server Addition
 
 ```bash
-bash plugins/foundation/skills/mcp-configuration/scripts/add-mcp-server.sh \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/add-mcp-server.sh \
   --name openai-server \
   --type http \
   --url "https://api.openai.com" \
@@ -86,7 +86,7 @@ Edit `.mcp.json`:
 ### List All API Keys
 
 ```bash
-bash plugins/foundation/skills/mcp-configuration/scripts/manage-api-keys.sh \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/manage-api-keys.sh \
   --action list
 ```
 
@@ -103,7 +103,7 @@ Output:
 ### Validate .env File
 
 ```bash
-bash plugins/foundation/skills/mcp-configuration/scripts/manage-api-keys.sh \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/manage-api-keys.sh \
   --action validate
 ```
 
@@ -199,7 +199,7 @@ bash scripts/manage-api-keys.sh --action add --key-name AWS_REGION
 When you no longer need a key:
 
 ```bash
-bash plugins/foundation/skills/mcp-configuration/scripts/manage-api-keys.sh \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/manage-api-keys.sh \
   --action remove \
   --key-name OLD_API_KEY
 ```
@@ -207,7 +207,7 @@ bash plugins/foundation/skills/mcp-configuration/scripts/manage-api-keys.sh \
 Or force removal without confirmation:
 
 ```bash
-bash plugins/foundation/skills/mcp-configuration/scripts/manage-api-keys.sh \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/manage-api-keys.sh \
   --action remove \
   --key-name OLD_API_KEY \
   --force

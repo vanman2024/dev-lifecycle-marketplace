@@ -71,7 +71,7 @@ Reference: plugins/foundation/skills/project-structure/templates/microservices-s
 
 **Usage**:
 ```bash
-bash plugins/foundation/skills/project-structure/scripts/create-structure.sh <type> [path]
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/project-structure/scripts/create-structure.sh <type> [path]
 ```
 
 **Project Types**:
@@ -90,13 +90,13 @@ bash plugins/foundation/skills/project-structure/scripts/create-structure.sh <ty
 **Example**:
 ```bash
 # Create full-stack structure in current directory
-bash plugins/foundation/skills/project-structure/scripts/create-structure.sh full-stack .
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/project-structure/scripts/create-structure.sh full-stack .
 
 # Create backend-only structure in new project
-bash plugins/foundation/skills/project-structure/scripts/create-structure.sh backend-only my-api
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/project-structure/scripts/create-structure.sh backend-only my-api
 
 # Create microservices structure
-bash plugins/foundation/skills/project-structure/scripts/create-structure.sh microservices my-services
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/project-structure/scripts/create-structure.sh microservices my-services
 ```
 
 **Output**: Displays created structure with tree view and next steps
@@ -146,7 +146,7 @@ Reference: `@examples/migration-example.md`
 
 ```bash
 # Use create-structure script directly
-bash plugins/foundation/skills/project-structure/scripts/create-structure.sh full-stack my-project
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/project-structure/scripts/create-structure.sh full-stack my-project
 
 # Or use /foundation:init-structure command (which calls this script)
 SlashCommand(/foundation:init-structure my-project)
@@ -156,13 +156,13 @@ SlashCommand(/foundation:init-structure my-project)
 
 ```bash
 # Create full-stack structure
-bash plugins/foundation/skills/project-structure/scripts/create-structure.sh full-stack .
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/project-structure/scripts/create-structure.sh full-stack .
 
 # Create backend-only structure
-bash plugins/foundation/skills/project-structure/scripts/create-structure.sh backend-only .
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/project-structure/scripts/create-structure.sh backend-only .
 
 # Create microservices structure
-bash plugins/foundation/skills/project-structure/scripts/create-structure.sh microservices .
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/project-structure/scripts/create-structure.sh microservices .
 ```
 
 ### Pattern 3: Validate Existing Structure

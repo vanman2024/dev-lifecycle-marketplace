@@ -20,7 +20,7 @@ Actions:
 ## Phase 2: Progress Monitoring
 
 Actions:
-- Run mid monitoring script: !{bash plugins/supervisor/skills/worktree-orchestration/scripts/mid-monitoring.sh $ARGUMENTS}
+- Run mid monitoring script: !{bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/supervisor/skills/worktree-orchestration/scripts/mid-monitoring.sh $ARGUMENTS}
 - Parse monitoring results
 - Calculate completion percentages
 - Identify stale or blocked agents

@@ -126,7 +126,7 @@ git add tests/
 git commit -m "test: add concurrency regression test for authentication"
 
 # Create second RC
-bash plugins/versioning/skills/prerelease-versions/scripts/create-prerelease.sh rc 2.0.0
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/prerelease-versions/scripts/create-prerelease.sh rc 2.0.0
 
 # Output: 2.0.0-rc.2
 ```
@@ -177,7 +177,7 @@ Expected Stable Release Date: Day 7 (2 days from now)
 
 ```bash
 # Run comprehensive validation one final time
-bash plugins/versioning/skills/prerelease-versions/scripts/test-prerelease.sh 2.0.0-rc.2
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/prerelease-versions/scripts/test-prerelease.sh 2.0.0-rc.2
 ```
 
 **Validation Results**:
@@ -292,7 +292,7 @@ See [MIGRATION.md](MIGRATION.md) for step-by-step instructions.
 
 ```bash
 # All approvals obtained, testing complete
-bash plugins/versioning/skills/prerelease-versions/scripts/promote-prerelease.sh 2.0.0-rc.2
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/prerelease-versions/scripts/promote-prerelease.sh 2.0.0-rc.2
 ```
 
 **Promotion Output**:

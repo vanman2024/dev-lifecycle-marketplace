@@ -53,12 +53,12 @@ jobs:
 
       - name: Validate environment
         run: |
-          bash plugins/deployment/skills/deployment-scripts/scripts/validate-env.sh \
+          bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/validate-env.sh \
             .env.production.example
 
       - name: Validate build
         run: |
-          bash plugins/deployment/skills/deployment-scripts/scripts/validate-build.sh .
+          bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/validate-build.sh .
 
   deploy:
     name: Deploy to Platform
@@ -76,7 +76,7 @@ jobs:
 
       - name: Deploy with helper script
         run: |
-          bash plugins/deployment/skills/deployment-scripts/scripts/deploy-helper.sh \
+          bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/deploy-helper.sh \
             --platform vercel \
             --env production
         env:
@@ -86,7 +86,7 @@ jobs:
 
       - name: Health check
         run: |
-          bash plugins/deployment/skills/deployment-scripts/scripts/health-check.sh \
+          bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/health-check.sh \
             https://my-app.com
 ```
 
@@ -119,12 +119,12 @@ jobs:
 
       - name: Validate
         run: |
-          bash plugins/deployment/skills/deployment-scripts/scripts/validate-env.sh \
+          bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/validate-env.sh \
             .env.${{ inputs.environment }}
 
       - name: Deploy
         run: |
-          bash plugins/deployment/skills/deployment-scripts/scripts/deploy-helper.sh \
+          bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/deploy-helper.sh \
             --platform ${{ inputs.platform }} \
             --env ${{ inputs.environment }}
         env:
@@ -258,13 +258,13 @@ jobs:
       - run:
           name: Validate environment
           command: |
-            bash plugins/deployment/skills/deployment-scripts/scripts/validate-env.sh \
+            bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/validate-env.sh \
               .env.production.example
 
       - run:
           name: Validate build
           command: |
-            bash plugins/deployment/skills/deployment-scripts/scripts/validate-build.sh .
+            bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/validate-build.sh .
 
   deploy:
     docker:
@@ -280,7 +280,7 @@ jobs:
       - run:
           name: Deploy to production
           command: |
-            bash plugins/deployment/skills/deployment-scripts/scripts/deploy-helper.sh \
+            bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/deploy-helper.sh \
               --platform vercel \
               --env production
           environment:
@@ -289,7 +289,7 @@ jobs:
       - run:
           name: Health check
           command: |
-            bash plugins/deployment/skills/deployment-scripts/scripts/health-check.sh \
+            bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/health-check.sh \
               https://my-app.com
 
 workflows:
@@ -402,18 +402,18 @@ definitions:
           - node
         script:
           - npm ci
-          - bash plugins/deployment/skills/deployment-scripts/scripts/validate-env.sh .env.production.example
-          - bash plugins/deployment/skills/deployment-scripts/scripts/validate-build.sh .
+          - bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/validate-env.sh .env.production.example
+          - bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/validate-build.sh .
 
     - step: &deploy
         name: Deploy to Production
         deployment: production
         script:
           - npm install -g vercel
-          - bash plugins/deployment/skills/deployment-scripts/scripts/check-auth.sh vercel
-          - bash plugins/deployment/skills/deployment-scripts/scripts/deploy-helper.sh --platform vercel --env production
+          - bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/check-auth.sh vercel
+          - bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/deploy-helper.sh --platform vercel --env production
         after-script:
-          - bash plugins/deployment/skills/deployment-scripts/scripts/health-check.sh https://my-app.com
+          - bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/health-check.sh https://my-app.com
 
 pipelines:
   branches:
@@ -448,8 +448,8 @@ jobs:
     - stage: validate
       name: "Validate Environment and Build"
       script:
-        - bash plugins/deployment/skills/deployment-scripts/scripts/validate-env.sh .env.production.example
-        - bash plugins/deployment/skills/deployment-scripts/scripts/validate-build.sh .
+        - bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/validate-env.sh .env.production.example
+        - bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/validate-build.sh .
 
     - stage: deploy
       name: "Deploy to Production"
@@ -457,9 +457,9 @@ jobs:
       before_script:
         - npm install -g vercel
       script:
-        - bash plugins/deployment/skills/deployment-scripts/scripts/deploy-helper.sh --platform vercel --env production
+        - bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/deploy-helper.sh --platform vercel --env production
       after_script:
-        - bash plugins/deployment/skills/deployment-scripts/scripts/health-check.sh https://my-app.com
+        - bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/health-check.sh https://my-app.com
 ```
 
 ## Docker-Based CI/CD
@@ -488,7 +488,7 @@ jobs:
       - name: Run validation in container
         run: |
           docker run --rm my-app:latest \
-            bash plugins/deployment/skills/deployment-scripts/scripts/validate-build.sh .
+            bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/validate-build.sh .
 
       - name: Push to registry
         run: |
@@ -498,7 +498,7 @@ jobs:
 
       - name: Deploy to Fly.io
         run: |
-          bash plugins/deployment/skills/deployment-scripts/scripts/deploy-helper.sh \
+          bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/deploy-helper.sh \
             --platform fly \
             --env production
         env:
@@ -543,7 +543,7 @@ deploy:production:
 rollback:
   stage: deploy
   script:
-    - bash plugins/deployment/skills/deployment-scripts/scripts/rollback-deployment.sh vercel
+    - bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/rollback-deployment.sh vercel
   when: manual
 ```
 
@@ -579,8 +579,8 @@ cache:
 
 ```bash
 # Run validation locally first
-bash plugins/deployment/skills/deployment-scripts/scripts/validate-env.sh .env.production
-bash plugins/deployment/skills/deployment-scripts/scripts/validate-build.sh .
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/validate-env.sh .env.production
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/validate-build.sh .
 ```
 
 ### Authentication Issues in CI

@@ -13,7 +13,7 @@ This guide walks through setting up your first MCP server configuration from scr
 First, create a new `.mcp.json` configuration file:
 
 ```bash
-bash plugins/foundation/skills/mcp-configuration/scripts/init-mcp-config.sh
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/init-mcp-config.sh
 ```
 
 This creates a minimal configuration structure:
@@ -31,7 +31,7 @@ This creates a minimal configuration structure:
 Add the standard filesystem server to access local files:
 
 ```bash
-bash plugins/foundation/skills/mcp-configuration/scripts/add-mcp-server.sh \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/add-mcp-server.sh \
   --name filesystem \
   --type stdio \
   --command npx \
@@ -69,7 +69,7 @@ Your `.mcp.json` now looks like:
 Before using the configuration, validate it:
 
 ```bash
-bash plugins/foundation/skills/mcp-configuration/scripts/validate-mcp-config.sh .mcp.json
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/validate-mcp-config.sh .mcp.json
 ```
 
 Expected output:
@@ -123,7 +123,7 @@ In Claude Code, you can now:
 ### Python FastMCP Server
 
 ```bash
-bash plugins/foundation/skills/mcp-configuration/scripts/add-mcp-server.sh \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/add-mcp-server.sh \
   --name my-python-server \
   --type stdio \
   --command python3 \
@@ -133,7 +133,7 @@ bash plugins/foundation/skills/mcp-configuration/scripts/add-mcp-server.sh \
 ### TypeScript/Node Server
 
 ```bash
-bash plugins/foundation/skills/mcp-configuration/scripts/add-mcp-server.sh \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/add-mcp-server.sh \
   --name my-node-server \
   --type stdio \
   --command node \
@@ -143,7 +143,7 @@ bash plugins/foundation/skills/mcp-configuration/scripts/add-mcp-server.sh \
 ### HTTP API Server
 
 ```bash
-bash plugins/foundation/skills/mcp-configuration/scripts/add-mcp-server.sh \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/add-mcp-server.sh \
   --name api-server \
   --type http \
   --url "https://api.example.com"

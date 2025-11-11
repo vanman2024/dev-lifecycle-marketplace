@@ -9,10 +9,10 @@
 cd /path/to/your-project
 
 # Run CI/CD setup (auto-detects platform)
-bash plugins/deployment/skills/cicd-setup/scripts/setup-cicd.sh auto
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/cicd-setup/scripts/setup-cicd.sh auto
 
 # Or specify platform explicitly
-bash plugins/deployment/skills/cicd-setup/scripts/setup-cicd.sh vercel
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/cicd-setup/scripts/setup-cicd.sh vercel
 ```
 
 **That's it!** CI/CD is now fully configured with:

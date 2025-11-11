@@ -45,19 +45,19 @@ deployment-scripts/
 ### 1. Check Authentication
 
 ```bash
-bash plugins/deployment/skills/deployment-scripts/scripts/check-auth.sh vercel
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/check-auth.sh vercel
 ```
 
 ### 2. Validate Environment
 
 ```bash
-bash plugins/deployment/skills/deployment-scripts/scripts/validate-env.sh .env.production
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/validate-env.sh .env.production
 ```
 
 ### 3. Deploy
 
 ```bash
-bash plugins/deployment/skills/deployment-scripts/scripts/deploy-helper.sh \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/deploy-helper.sh \
   --platform vercel \
   --env production
 ```
@@ -221,11 +221,11 @@ Deployment commands should use these scripts via the Bash tool:
 ```markdown
 # In a /deploy command
 
-Bash: bash plugins/deployment/skills/deployment-scripts/scripts/check-auth.sh vercel
-Bash: bash plugins/deployment/skills/deployment-scripts/scripts/validate-env.sh .env.production
-Bash: bash plugins/deployment/skills/deployment-scripts/scripts/validate-build.sh .
-Bash: bash plugins/deployment/skills/deployment-scripts/scripts/vercel-deploy.sh production
-Bash: bash plugins/deployment/skills/deployment-scripts/scripts/health-check.sh https://my-app.com
+Bash: bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/check-auth.sh vercel
+Bash: bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/validate-env.sh .env.production
+Bash: bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/validate-build.sh .
+Bash: bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/vercel-deploy.sh production
+Bash: bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/health-check.sh https://my-app.com
 ```
 
 ## Best Practices

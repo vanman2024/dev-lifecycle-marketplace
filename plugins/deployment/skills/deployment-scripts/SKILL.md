@@ -94,9 +94,9 @@ Commands should use these scripts via Bash tool:
 
 ```markdown
 # In a deployment command
-Bash: bash plugins/deployment/skills/deployment-scripts/scripts/check-auth.sh vercel
-Bash: bash plugins/deployment/skills/deployment-scripts/scripts/validate-env.sh .env.production
-Bash: bash plugins/deployment/skills/deployment-scripts/scripts/vercel-deploy.sh production
+Bash: bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/check-auth.sh vercel
+Bash: bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/validate-env.sh .env.production
+Bash: bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/vercel-deploy.sh production
 ```
 
 ## Requirements

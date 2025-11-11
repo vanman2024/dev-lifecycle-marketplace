@@ -43,7 +43,7 @@ Realistic examples for common scenarios:
 ### Detecting Project Type
 
 ```bash
-bash plugins/versioning/skills/version-manager/scripts/detect-project-type.sh <project_dir> <output_file>
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/version-manager/scripts/detect-project-type.sh <project_dir> <output_file>
 ```
 
 Output format (JSON):
@@ -58,7 +58,7 @@ Output format (JSON):
 ### Bumping Version
 
 ```bash
-bash plugins/versioning/skills/version-manager/scripts/bump-version.sh <bump_type> <current_version>
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/version-manager/scripts/bump-version.sh <bump_type> <current_version>
 ```
 
 Bump types: major, minor, patch
@@ -68,7 +68,7 @@ Returns: New version string
 ### Generating Changelog
 
 ```bash
-bash plugins/versioning/skills/version-manager/scripts/generate-changelog.sh <from_tag> <to_ref> <version>
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/version-manager/scripts/generate-changelog.sh <from_tag> <to_ref> <version>
 ```
 
 Outputs formatted changelog to stdout.
@@ -76,7 +76,7 @@ Outputs formatted changelog to stdout.
 ### Validating Version Consistency
 
 ```bash
-bash plugins/versioning/skills/version-manager/scripts/validate-version.sh <project_dir>
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/version-manager/scripts/validate-version.sh <project_dir>
 ```
 
 Checks VERSION file, pyproject.toml, package.json for consistency.
@@ -89,7 +89,7 @@ Exit codes:
 ### Creating Git Tag
 
 ```bash
-bash plugins/versioning/skills/version-manager/scripts/create-git-tag.sh <version> <changelog_file>
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/version-manager/scripts/create-git-tag.sh <version> <changelog_file>
 ```
 
 Creates annotated git tag with changelog as message.
@@ -153,7 +153,7 @@ If validation fails with version mismatch:
 grep -r "version" VERSION pyproject.toml package.json
 
 # Manually sync if needed
-bash plugins/versioning/skills/version-manager/scripts/bump-version.sh patch $(cat VERSION | jq -r '.version')
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/version-manager/scripts/bump-version.sh patch $(cat VERSION | jq -r '.version')
 ```
 
 ### Changelog Generation Issues
@@ -167,7 +167,7 @@ git log --oneline --grep="^feat:" --grep="^fix:" -E
 git tag -l "v*"
 
 # Regenerate manually
-bash plugins/versioning/skills/version-manager/scripts/generate-changelog.sh v1.0.0 HEAD 1.1.0
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/version-manager/scripts/generate-changelog.sh v1.0.0 HEAD 1.1.0
 ```
 
 ### Git Tag Creation Fails
@@ -181,7 +181,7 @@ git tag -l v1.2.3
 git tag -d v1.2.3
 
 # Recreate tag
-bash plugins/versioning/skills/version-manager/scripts/create-git-tag.sh 1.2.3 CHANGELOG.md
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/version-manager/scripts/create-git-tag.sh 1.2.3 CHANGELOG.md
 ```
 
 ## See Also

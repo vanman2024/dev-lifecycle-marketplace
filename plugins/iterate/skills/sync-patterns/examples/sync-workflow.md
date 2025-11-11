@@ -18,7 +18,7 @@ You've been working on implementing features for several weeks. Your specs direc
 First, compare one specification against the codebase to understand sync status:
 
 ```bash
-bash plugins/iterate/skills/sync-patterns/scripts/compare-specs-vs-code.sh \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/iterate/skills/sync-patterns/scripts/compare-specs-vs-code.sh \
   specs/authentication.md \
   src/
 ```
@@ -64,7 +64,7 @@ Summary:
 Scan all specs to find tasks that are complete in code but not marked in specs:
 
 ```bash
-bash plugins/iterate/skills/sync-patterns/scripts/find-completed-tasks.sh \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/iterate/skills/sync-patterns/scripts/find-completed-tasks.sh \
   specs/ \
   src/ \
   --verbose
@@ -129,7 +129,7 @@ Summary:
 For completed specifications, update the status:
 
 ```bash
-bash plugins/iterate/skills/sync-patterns/scripts/update-spec-status.sh \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/iterate/skills/sync-patterns/scripts/update-spec-status.sh \
   specs/authentication.md \
   complete \
   --user="sync-analyzer"
@@ -215,7 +215,7 @@ sed -i 's/- \[ \] User login with email/- [x] User login with email/' specs/auth
 Create a full sync report for the entire project:
 
 ```bash
-bash plugins/iterate/skills/sync-patterns/scripts/generate-sync-report.sh \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/iterate/skills/sync-patterns/scripts/generate-sync-report.sh \
   specs/ \
   sync-report-$(date +%Y-%m-%d).md \
   --code-dir=src/ \
@@ -320,12 +320,12 @@ jobs:
 
       - name: Find completed tasks
         run: |
-          bash plugins/iterate/skills/sync-patterns/scripts/find-completed-tasks.sh \
+          bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/iterate/skills/sync-patterns/scripts/find-completed-tasks.sh \
             specs/ src/ --json > completed-tasks.json
 
       - name: Generate sync report
         run: |
-          bash plugins/iterate/skills/sync-patterns/scripts/generate-sync-report.sh \
+          bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/iterate/skills/sync-patterns/scripts/generate-sync-report.sh \
             specs/ sync-report.md --code-dir=src/
 
       - name: Post report as comment

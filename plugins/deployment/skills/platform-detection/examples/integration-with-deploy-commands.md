@@ -107,16 +107,16 @@ Verify project is ready for deployment to target platform.
 
 ```bash
 # Detect recommended platform
-PLATFORM=$(bash plugins/deployment/skills/platform-detection/scripts/recommend-platform.sh .)
+PLATFORM=$(bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/platform-detection/scripts/recommend-platform.sh .)
 
 # Run validation
 echo "Validating for $PLATFORM..."
-bash plugins/deployment/skills/platform-detection/scripts/validate-platform-requirements.sh . $PLATFORM
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/platform-detection/scripts/validate-platform-requirements.sh . $PLATFORM
 
 # Analyze deployment configuration
 echo ""
 echo "Configuration Analysis:"
-bash plugins/deployment/skills/platform-detection/scripts/analyze-deployment-config.sh .
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/platform-detection/scripts/analyze-deployment-config.sh .
 ```
 ```
 
@@ -141,7 +141,7 @@ Generate deployment configuration for detected platform.
 ### Phase 1: Detect Platform
 
 ```bash
-PLATFORM=$(bash plugins/deployment/skills/platform-detection/scripts/recommend-platform.sh .)
+PLATFORM=$(bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/platform-detection/scripts/recommend-platform.sh .)
 echo "Generating configuration for: $PLATFORM"
 ```
 
@@ -153,7 +153,7 @@ TEMPLATE="plugins/deployment/skills/platform-detection/templates/platform-config
 
 if [ -f "$TEMPLATE" ]; then
     # Detect project details
-    FRAMEWORK=$(bash plugins/deployment/skills/platform-detection/scripts/detect-framework.sh .)
+    FRAMEWORK=$(bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/platform-detection/scripts/detect-framework.sh .)
 
     # Generate config from template
     # (Use template substitution logic here)
@@ -493,17 +493,17 @@ When deploying projects:
 
 1. **Always use platform-detection skill first**:
    ```bash
-   bash plugins/deployment/skills/platform-detection/scripts/recommend-platform.sh <path>
+   bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/platform-detection/scripts/recommend-platform.sh <path>
    ```
 
 2. **Validate before deploying**:
    ```bash
-   bash plugins/deployment/skills/platform-detection/scripts/validate-platform-requirements.sh <path> <platform>
+   bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/platform-detection/scripts/validate-platform-requirements.sh <path> <platform>
    ```
 
 3. **Analyze configuration**:
    ```bash
-   bash plugins/deployment/skills/platform-detection/scripts/analyze-deployment-config.sh <path>
+   bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/platform-detection/scripts/analyze-deployment-config.sh <path>
    ```
 
 4. **Use detection results to inform deployment strategy**

@@ -59,7 +59,7 @@ This skill provides comprehensive tooling for managing MCP (Model Context Protoc
 #### Step 1: Initialize Registry (One-time)
 
 ```bash
-bash plugins/foundation/skills/mcp-configuration/scripts/registry-init.sh
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/registry-init.sh
 ```
 
 Creates:
@@ -72,7 +72,7 @@ Creates:
 
 ```bash
 # stdio server example (most common)
-bash plugins/foundation/skills/mcp-configuration/scripts/registry-add.sh context7 \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/registry-add.sh context7 \
   --transport stdio \
   --command npx \
   --args "-y,@upstash/context7-mcp" \
@@ -80,13 +80,13 @@ bash plugins/foundation/skills/mcp-configuration/scripts/registry-add.sh context
   --description "Up-to-date library documentation"
 
 # http-remote server example
-bash plugins/foundation/skills/mcp-configuration/scripts/registry-add.sh supabase \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/registry-add.sh supabase \
   --transport http-remote \
   --url "https://mcp.supabase.com/mcp" \
   --description "Supabase database access"
 
 # http-remote-auth server example (VS Code only)
-bash plugins/foundation/skills/mcp-configuration/scripts/registry-add.sh github \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/registry-add.sh github \
   --transport http-remote-auth \
   --url "https://api.githubcopilot.com/mcp/" \
   --header "Authorization: Bearer \${GITHUB_TOKEN}" \
@@ -97,20 +97,20 @@ bash plugins/foundation/skills/mcp-configuration/scripts/registry-add.sh github 
 
 ```bash
 # Sync to Claude Code format (.mcp.json)
-bash plugins/foundation/skills/mcp-configuration/scripts/registry-sync.sh claude
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/registry-sync.sh claude
 
 # Sync to VS Code format (.vscode/mcp.json)
-bash plugins/foundation/skills/mcp-configuration/scripts/registry-sync.sh vscode
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/registry-sync.sh vscode
 
 # Sync to both formats
-bash plugins/foundation/skills/mcp-configuration/scripts/registry-sync.sh both
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/registry-sync.sh both
 ```
 
 #### Step 4: Configure API Keys
 
 ```bash
 # Add API keys to project .env
-bash plugins/foundation/skills/mcp-configuration/scripts/manage-api-keys.sh \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/manage-api-keys.sh \
   --action add \
   --key-name CONTEXT7_API_KEY
 
@@ -121,7 +121,7 @@ bash plugins/foundation/skills/mcp-configuration/scripts/manage-api-keys.sh \
 
 ```bash
 # List all servers
-bash plugins/foundation/skills/mcp-configuration/scripts/registry-list.sh
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/registry-list.sh
 
 # Or use jq directly
 jq -r '.servers | to_entries[] | "\(.key) - \(.value.transport) - \(.value.description)"' \
@@ -138,7 +138,7 @@ When user wants to set up MCP configuration:
 
 2. **Initialize configuration:**
    ```bash
-   bash plugins/foundation/skills/mcp-configuration/scripts/init-mcp-config.sh [path]
+   bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/init-mcp-config.sh [path]
    ```
 
 3. **Use appropriate template:**
@@ -152,7 +152,7 @@ To add a new MCP server to existing configuration:
 
 1. **Execute add-mcp-server script:**
    ```bash
-   bash plugins/foundation/skills/mcp-configuration/scripts/add-mcp-server.sh \
+   bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/add-mcp-server.sh \
      --name "server-name" \
      --type "stdio|http" \
      --command "python" \
@@ -176,7 +176,7 @@ For servers requiring API keys or secrets:
 
 1. **Create/update .env file:**
    ```bash
-   bash plugins/foundation/skills/mcp-configuration/scripts/manage-api-keys.sh \
+   bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/manage-api-keys.sh \
      --action add \
      --key-name "OPENAI_API_KEY" \
      --env-file ".env"
@@ -199,7 +199,7 @@ Before using MCP configuration:
 
 1. **Run validation script:**
    ```bash
-   bash plugins/foundation/skills/mcp-configuration/scripts/validate-mcp-config.sh .mcp.json
+   bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/validate-mcp-config.sh .mcp.json
    ```
 
 2. **Validation checks:**
@@ -221,7 +221,7 @@ To install MCP server packages:
 
 1. **Use installation script:**
    ```bash
-   bash plugins/foundation/skills/mcp-configuration/scripts/install-mcp-server.sh \
+   bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/install-mcp-server.sh \
      --type "python|typescript|npm" \
      --package "fastmcp" \
      --global

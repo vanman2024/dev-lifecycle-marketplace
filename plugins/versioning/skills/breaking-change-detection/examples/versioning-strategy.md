@@ -110,7 +110,7 @@ jobs:
         id: analysis
         continue-on-error: true
         run: |
-          bash plugins/versioning/skills/breaking-change-detection/scripts/analyze-breaking.sh \
+          bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/breaking-change-detection/scripts/analyze-breaking.sh \
             --old-api /tmp/old/openapi.yaml \
             --new-api /tmp/new/openapi.yaml \
             --old-schema /tmp/old/schema.sql \
@@ -361,7 +361,7 @@ jobs:
       - name: Generate changelog
         if: steps.version.outputs.changed == 'true'
         run: |
-          bash plugins/versioning/skills/version-manager/scripts/generate-changelog.sh \
+          bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/version-manager/scripts/generate-changelog.sh \
             "v${{ steps.version.outputs.old }}" \
             HEAD \
             "${{ steps.version.outputs.new }}" \

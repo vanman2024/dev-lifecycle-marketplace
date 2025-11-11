@@ -296,7 +296,7 @@ foundation/
 /foundation:mcp-sync both  # Syncs to both Claude and VS Code formats
 
 # 4. Configure API keys in project .env
-bash plugins/foundation/skills/mcp-configuration/scripts/manage-api-keys.sh --action add --key-name CONTEXT7_API_KEY
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/manage-api-keys.sh --action add --key-name CONTEXT7_API_KEY
 
 # 5. Detect project tech stack
 /foundation:detect

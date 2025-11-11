@@ -20,7 +20,7 @@ Actions:
 ## Phase 2: Verification
 
 Actions:
-- Run start verification script: !{bash plugins/supervisor/skills/worktree-orchestration/scripts/start-verification.sh $ARGUMENTS}
+- Run start verification script: !{bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/supervisor/skills/worktree-orchestration/scripts/start-verification.sh $ARGUMENTS}
 - Parse verification results (JSON or human-readable)
 - Check worktree status for each agent
 - Verify git state is clean

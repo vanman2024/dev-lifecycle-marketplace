@@ -89,15 +89,15 @@ Goal: Configure GitHub secrets and Actions workflow automatically using cicd-set
 Actions:
 - Detect platform from Phase 1 (vercel, digitalocean-app, railway, etc.)
 - Extract platform IDs using cicd-setup skill:
-  - !{bash bash plugins/deployment/skills/cicd-setup/scripts/extract-platform-ids.sh <platform> .}
+  - !{bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/cicd-setup/scripts/extract-platform-ids.sh <platform> .}
 - Configure GitHub secrets using cicd-setup skill:
-  - !{bash bash plugins/deployment/skills/cicd-setup/scripts/configure-github-secrets.sh <platform> .}
+  - !{bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/cicd-setup/scripts/configure-github-secrets.sh <platform> .}
 - This will use gh CLI to set:
   - Vercel: VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID
   - DigitalOcean: DIGITALOCEAN_ACCESS_TOKEN, DO_APP_ID
 - Generate GitHub Actions workflow:
   - !{bash mkdir -p .github/workflows}
-  - !{bash bash plugins/deployment/skills/cicd-setup/scripts/generate-workflow.sh <platform> .github/workflows/deploy.yml}
+  - !{bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/cicd-setup/scripts/generate-workflow.sh <platform> .github/workflows/deploy.yml}
 - Verify workflow created: !{bash [ -f ".github/workflows/deploy.yml" ] && echo "✅ Workflow created"}
 - Commit workflow to git:
   - !{bash git add .github/workflows/deploy.yml}

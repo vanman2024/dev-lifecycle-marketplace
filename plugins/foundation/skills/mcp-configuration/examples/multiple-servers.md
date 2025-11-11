@@ -17,21 +17,21 @@ Different servers provide different capabilities:
 
 ```bash
 # Add filesystem server
-bash plugins/foundation/skills/mcp-configuration/scripts/add-mcp-server.sh \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/add-mcp-server.sh \
   --name filesystem \
   --type stdio \
   --command npx \
   --args "@modelcontextprotocol/server-filesystem /home/user/projects"
 
 # Add Python server
-bash plugins/foundation/skills/mcp-configuration/scripts/add-mcp-server.sh \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/add-mcp-server.sh \
   --name python-tools \
   --type stdio \
   --command python3 \
   --args "-m my_mcp_server"
 
 # Add HTTP API
-bash plugins/foundation/skills/mcp-configuration/scripts/add-mcp-server.sh \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/add-mcp-server.sh \
   --name api-gateway \
   --type http \
   --url "https://api.example.com"

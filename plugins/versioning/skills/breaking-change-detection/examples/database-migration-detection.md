@@ -150,7 +150,7 @@ CREATE UNIQUE INDEX idx_users_email ON users(email);
 
 ```bash
 # Run schema comparison script
-bash plugins/versioning/skills/breaking-change-detection/scripts/schema-compare.sh \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/breaking-change-detection/scripts/schema-compare.sh \
   schema-v1.sql \
   schema-v2.sql \
   --output schema-breaking-changes.md

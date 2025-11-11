@@ -83,7 +83,7 @@ Goal: Automatically extract platform-specific project IDs
 
 Actions:
 - Run platform ID extraction script from cicd-setup skill:
-  - !{bash bash plugins/deployment/skills/cicd-setup/scripts/extract-platform-ids.sh <platform> .}
+  - !{bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/cicd-setup/scripts/extract-platform-ids.sh <platform> .}
 - Script will:
   - Link project to platform if not already linked (e.g., vercel link)
   - Extract IDs from config files (.vercel/project.json, railway.json, etc.)
@@ -97,7 +97,7 @@ Goal: Automatically set GitHub repository secrets via gh CLI
 
 Actions:
 - Run GitHub secrets configuration script from cicd-setup skill:
-  - !{bash bash plugins/deployment/skills/cicd-setup/scripts/configure-github-secrets.sh <platform> .}
+  - !{bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/cicd-setup/scripts/configure-github-secrets.sh <platform> .}
 - Script will use gh CLI to set:
   - Vercel: VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID
   - DigitalOcean: DIGITALOCEAN_ACCESS_TOKEN, DO_APP_ID
@@ -112,7 +112,7 @@ Goal: Create platform-specific deployment workflow
 Actions:
 - Ensure .github/workflows directory exists: !{bash mkdir -p .github/workflows}
 - Run workflow generation script from cicd-setup skill:
-  - !{bash bash plugins/deployment/skills/cicd-setup/scripts/generate-workflow.sh <platform> .github/workflows/deploy.yml}
+  - !{bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/cicd-setup/scripts/generate-workflow.sh <platform> .github/workflows/deploy.yml}
 - Script will copy platform-specific template (vercel-workflow.yml, digitalocean-app-workflow.yml, etc.)
 - Verify workflow file created: !{bash [ -f .github/workflows/deploy.yml ] && echo "✓ Workflow created" || echo "✗ Workflow creation failed"}
 - Display workflow path

@@ -296,10 +296,10 @@ echo $VERCEL_TOKEN  # Must be set
 
 # 2. Run complete CI/CD setup
 cd /path/to/your/project
-bash plugins/deployment/skills/cicd-setup/scripts/setup-cicd.sh vercel
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/cicd-setup/scripts/setup-cicd.sh vercel
 
 # 3. Validate setup
-bash plugins/deployment/skills/cicd-setup/scripts/validate-cicd.sh
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/cicd-setup/scripts/validate-cicd.sh
 
 # 4. Test deployment
 git add .github/workflows/deploy.yml

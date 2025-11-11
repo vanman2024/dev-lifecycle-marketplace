@@ -19,7 +19,7 @@ Actions:
 ## Phase 2: Completion Validation
 
 Actions:
-- Run end verification script: !{bash plugins/supervisor/skills/worktree-orchestration/scripts/end-verification.sh $ARGUMENTS}
+- Run end verification script: !{bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/supervisor/skills/worktree-orchestration/scripts/end-verification.sh $ARGUMENTS}
 - Check all tasks marked complete in layered-tasks.md
 - Verify no uncommitted work in worktrees
 - Validate main branch has no agent commits (protection check)

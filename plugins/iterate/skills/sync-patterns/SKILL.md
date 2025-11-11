@@ -28,7 +28,7 @@ Compares specification requirements against actual code implementation.
 
 **Usage:**
 ```bash
-bash plugins/iterate/skills/sync-patterns/scripts/compare-specs-vs-code.sh <spec-file> [code-directory]
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/iterate/skills/sync-patterns/scripts/compare-specs-vs-code.sh <spec-file> [code-directory]
 ```
 
 **What it does:**
@@ -50,7 +50,7 @@ Updates status markers in specification documents.
 
 **Usage:**
 ```bash
-bash plugins/iterate/skills/sync-patterns/scripts/update-spec-status.sh <spec-file> <status>
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/iterate/skills/sync-patterns/scripts/update-spec-status.sh <spec-file> <status>
 ```
 
 **Supported statuses:**
@@ -73,7 +73,7 @@ Identifies tasks that are completed in code but not marked complete in specs.
 
 **Usage:**
 ```bash
-bash plugins/iterate/skills/sync-patterns/scripts/find-completed-tasks.sh [spec-directory] [code-directory]
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/iterate/skills/sync-patterns/scripts/find-completed-tasks.sh [spec-directory] [code-directory]
 ```
 
 **What it does:**
@@ -96,7 +96,7 @@ Creates comprehensive sync report for entire project or specific spec.
 
 **Usage:**
 ```bash
-bash plugins/iterate/skills/sync-patterns/scripts/generate-sync-report.sh [spec-file-or-directory] [output-file]
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/iterate/skills/sync-patterns/scripts/generate-sync-report.sh [spec-file-or-directory] [output-file]
 ```
 
 **Report includes:**
@@ -182,17 +182,17 @@ The sync-analyzer agent uses these scripts to:
 Phase 1: Analyze Sync State
 
 Run comparison script:
-Bash: bash plugins/iterate/skills/sync-patterns/scripts/compare-specs-vs-code.sh specs/feature.md src/
+Bash: bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/iterate/skills/sync-patterns/scripts/compare-specs-vs-code.sh specs/feature.md src/
 
 Phase 2: Update Status
 
 Mark completed items:
-Bash: bash plugins/iterate/skills/sync-patterns/scripts/update-spec-status.sh specs/feature.md complete
+Bash: bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/iterate/skills/sync-patterns/scripts/update-spec-status.sh specs/feature.md complete
 
 Phase 3: Generate Report
 
 Create sync report:
-Bash: bash plugins/iterate/skills/sync-patterns/scripts/generate-sync-report.sh specs/ sync-report.md
+Bash: bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/iterate/skills/sync-patterns/scripts/generate-sync-report.sh specs/ sync-report.md
 ```
 
 ## Best Practices

@@ -37,7 +37,7 @@ git commit -m "feat: add new authentication system"
 git commit -m "feat: implement JWT token handling"
 
 # Create first alpha release
-bash plugins/versioning/skills/prerelease-versions/scripts/create-prerelease.sh alpha 2.0.0
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/prerelease-versions/scripts/create-prerelease.sh alpha 2.0.0
 
 # Output: 2.0.0-alpha.1
 ```
@@ -85,7 +85,7 @@ git commit -m "fix: correct JWT expiration handling"
 git commit -m "fix: resolve authentication race condition"
 
 # Create second alpha release
-bash plugins/versioning/skills/prerelease-versions/scripts/create-prerelease.sh alpha 2.0.0
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/prerelease-versions/scripts/create-prerelease.sh alpha 2.0.0
 
 # Output: 2.0.0-alpha.2
 ```
@@ -108,7 +108,7 @@ git commit -m "feat: add password reset functionality"
 git commit -m "refactor: improve token storage"
 
 # Create third alpha release
-bash plugins/versioning/skills/prerelease-versions/scripts/create-prerelease.sh alpha 2.0.0
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/prerelease-versions/scripts/create-prerelease.sh alpha 2.0.0
 
 # Output: 2.0.0-alpha.3
 ```
@@ -119,7 +119,7 @@ bash plugins/versioning/skills/prerelease-versions/scripts/create-prerelease.sh 
 
 ```bash
 # Run validation before promoting to beta
-bash plugins/versioning/skills/prerelease-versions/scripts/test-prerelease.sh 2.0.0-alpha.3
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/prerelease-versions/scripts/test-prerelease.sh 2.0.0-alpha.3
 ```
 
 **Validation Results**:
@@ -149,7 +149,7 @@ Total Checks Failed: 0
 ```bash
 # All alpha testing complete, features implemented
 # Promote to beta for wider testing
-bash plugins/versioning/skills/prerelease-versions/scripts/promote-prerelease.sh 2.0.0-alpha.3
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/versioning/skills/prerelease-versions/scripts/promote-prerelease.sh 2.0.0-alpha.3
 ```
 
 **Promotion Output**:

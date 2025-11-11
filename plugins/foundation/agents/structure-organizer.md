@@ -153,10 +153,10 @@ Backup: project-backup-YYYYMMDD-HHMMSS.tar.gz
 
 ### 5. Structure Creation
 - **Execute the create-structure.sh script** from project-structure skill
-- Script location: `plugins/foundation/skills/project-structure/scripts/create-structure.sh`
+- Script location: `~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/project-structure/scripts/create-structure.sh`
 - Run with appropriate project type:
   ```bash
-  bash plugins/foundation/skills/project-structure/scripts/create-structure.sh <type> .
+  bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/project-structure/scripts/create-structure.sh <type> .
   ```
 - Types: full-stack, backend-only, frontend-only, microservices
 - Script automatically creates:

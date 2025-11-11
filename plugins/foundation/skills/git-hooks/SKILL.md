@@ -50,10 +50,10 @@ Use `scripts/install-hooks.sh` to install hooks into any git repository.
 
 ```bash
 # Install all hooks
-bash plugins/foundation/skills/git-hooks/scripts/install-hooks.sh
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/git-hooks/scripts/install-hooks.sh
 
 # Install to specific project
-bash plugins/foundation/skills/git-hooks/scripts/install-hooks.sh /path/to/project
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/git-hooks/scripts/install-hooks.sh /path/to/project
 ```
 
 ## What Gets Checked

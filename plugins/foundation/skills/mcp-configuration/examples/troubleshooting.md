@@ -8,10 +8,10 @@ Before diving into specific issues, run these checks:
 
 ```bash
 # 1. Validate configuration
-bash plugins/foundation/skills/mcp-configuration/scripts/validate-mcp-config.sh .mcp.json
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/validate-mcp-config.sh .mcp.json
 
 # 2. Validate API keys
-bash plugins/foundation/skills/mcp-configuration/scripts/manage-api-keys.sh --action validate
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/manage-api-keys.sh --action validate
 
 # 3. Check file permissions
 ls -la .mcp.json .env
@@ -35,7 +35,7 @@ Error: Configuration file not found: .mcp.json
 
 ```bash
 # Initialize configuration
-bash plugins/foundation/skills/mcp-configuration/scripts/init-mcp-config.sh
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/mcp-configuration/scripts/init-mcp-config.sh
 
 # Or specify custom path
 bash scripts/init-mcp-config.sh /path/to/.mcp.json

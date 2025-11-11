@@ -190,17 +190,17 @@ The `deploy-helper.sh` script supports multi-environment deployments:
 
 ```bash
 # Deploy to staging
-bash plugins/deployment/skills/deployment-scripts/scripts/deploy-helper.sh \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/deploy-helper.sh \
   --platform vercel \
   --env staging
 
 # Deploy to production
-bash plugins/deployment/skills/deployment-scripts/scripts/deploy-helper.sh \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/deploy-helper.sh \
   --platform vercel \
   --env production
 
 # Dry run (show what would be deployed)
-bash plugins/deployment/skills/deployment-scripts/scripts/deploy-helper.sh \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/deploy-helper.sh \
   --platform vercel \
   --env production \
   --dry-run
@@ -303,7 +303,7 @@ jobs:
 
       - name: Deploy
         run: |
-          bash plugins/deployment/skills/deployment-scripts/scripts/deploy-helper.sh \
+          bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/deploy-helper.sh \
             --platform vercel \
             --env ${{ steps.env.outputs.environment }}
         env:
@@ -311,7 +311,7 @@ jobs:
 
       - name: Health check
         run: |
-          bash plugins/deployment/skills/deployment-scripts/scripts/health-check.sh \
+          bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/health-check.sh \
             ${{ steps.env.outputs.url }}
 ```
 
@@ -329,12 +329,12 @@ echo "Promoting staging to production..."
 
 # 1. Verify staging is healthy
 echo "Checking staging health..."
-bash plugins/deployment/skills/deployment-scripts/scripts/health-check.sh \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/health-check.sh \
   https://staging.my-app.com || exit 1
 
 # 2. Run production validation
 echo "Validating production config..."
-bash plugins/deployment/skills/deployment-scripts/scripts/validate-env.sh \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/validate-env.sh \
   .env.production || exit 1
 
 # 3. Deploy to production
@@ -343,7 +343,7 @@ bash scripts/deploy-env.sh production
 
 # 4. Verify production
 echo "Verifying production deployment..."
-bash plugins/deployment/skills/deployment-scripts/scripts/health-check.sh \
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/health-check.sh \
   https://my-app.com || {
     echo "Production health check failed - consider rollback"
     exit 1
@@ -368,7 +368,7 @@ If a production deployment fails, rollback:
 
 ```bash
 # Rollback production to previous deployment
-bash plugins/deployment/skills/deployment-scripts/scripts/rollback-deployment.sh vercel
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/deployment/skills/deployment-scripts/scripts/rollback-deployment.sh vercel
 ```
 
 ## Next Steps
