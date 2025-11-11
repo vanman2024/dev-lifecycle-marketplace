@@ -2,6 +2,59 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+---
+
+# 🚨🚨🚨 CRITICAL: EXECUTE SLASH COMMANDS IMMEDIATELY 🚨🚨🚨
+
+## ⚡ SLASH COMMAND EXECUTION POLICY ⚡
+
+**WHEN YOU SEE A SLASH COMMAND, YOU MUST EXECUTE IT IMMEDIATELY USING THE `SlashCommand` TOOL.**
+
+### REQUIRED BEHAVIOR:
+
+✅ **DO THIS:**
+```bash
+# User asks: "Create a new agent for task validation"
+→ IMMEDIATELY EXECUTE: /domain-plugin-builder:agents-create task-validator "Validate tasks against implementation"
+→ USE SlashCommand TOOL RIGHT NOW - DON'T WAIT, DON'T PLAN, JUST DO IT
+```
+
+❌ **NEVER DO THIS:**
+```bash
+# User asks: "Create a new agent for task validation"
+→ "I'll create a plan to build the agent..." ❌ NO PLANNING
+→ "Let me think about this..." ❌ NO THINKING
+→ "First, I should..." ❌ NO DELAYING
+→ "Would you like me to...?" ❌ NO ASKING FOR PERMISSION
+```
+
+### EXECUTION RULES:
+
+1. **IMMEDIATE EXECUTION**: When slash command is needed, invoke `SlashCommand` tool FIRST, explain AFTER
+2. **NO DELAYS**: Don't plan, don't discuss, don't ask - EXECUTE IMMEDIATELY
+3. **NO MANUAL CREATION**: NEVER manually create agents/commands/skills - ALWAYS use slash commands
+4. **PARALLEL EXECUTION**: Multiple independent commands? Execute ALL in same message block
+
+### EXAMPLES OF IMMEDIATE EXECUTION:
+
+**User Request**: "Create three new agents: task-validator, code-reviewer, test-generator"
+
+**CORRECT Response**:
+```
+[IMMEDIATELY USE SlashCommand TOOL:]
+/domain-plugin-builder:agents-create task-validator "Validate tasks" code-reviewer "Review code quality" test-generator "Generate test suites"
+
+[AFTER execution, explain what was done]
+```
+
+**INCORRECT Response**:
+```
+"Let me create a plan for these agents..." ❌
+"I'll use the domain-plugin-builder to create..." ❌
+"First, I should analyze the requirements..." ❌
+```
+
+---
 
 ## 🚨 CRITICAL: Security Rules - NO HARDCODED API KEYS
 
@@ -166,6 +219,75 @@ Skills provide progressive disclosure of detailed knowledge through:
 - Consistent quality across all components
 
 **Exception:** Only manually edit files when FIXING existing components, not creating new ones.
+
+---
+
+## 🚨 CRITICAL DEVELOPMENT RULE: Always Spec → Layer → Build
+
+**NEVER build features without creating specs and layering tasks first.**
+
+### The Required Process:
+
+```bash
+# 1. User says: "The frontend needs improvement"
+
+# ❌ WRONG - Don't do this:
+/nextjs-frontend:add-component Button  # Random creation = technical debt
+
+# ✅ CORRECT - Always do this:
+
+# Step 1: Create a spec (new feature or enhancement)
+/planning:add-feature "Improve frontend UX with design system"
+# OR if modifying existing:
+/planning:update-feature F001 "Add design system improvements"
+
+# Step 2: Layer the tasks
+/iterate:tasks F001
+# Creates: specs/F001/layered-tasks.md
+# L0: Infrastructure (theme, design tokens)
+# L1: Core components (Button, Card, Input)
+# L2: Feature components (ChatWindow, Dashboard)
+# L3: Integration (wire everything together)
+
+# Step 3: Build layer by layer
+# L0 first:
+/nextjs-frontend:add-component ThemeProvider
+
+# L1 second:
+/nextjs-frontend:add-component Button
+/nextjs-frontend:add-component Card
+
+# L2 third:
+/nextjs-frontend:add-component ChatWindow
+
+# L3 fourth:
+/nextjs-frontend:add-page chat
+
+# Step 4: Sync after each layer
+/iterate:sync F001
+```
+
+### Why This Matters:
+
+**Without this process:**
+- Components created randomly
+- Missing dependencies
+- Duplicate code
+- No clear architecture
+- Technical debt accumulates
+
+**With this process:**
+- Structured development
+- Clear dependencies
+- Reusable components
+- Clean architecture
+- Trackable progress
+
+**This applies to ALL changes:**
+- New features → `/planning:add-feature` → `/iterate:tasks`
+- Enhancements → `/iterate:enhance` → `/iterate:tasks`
+- Refactoring → `/iterate:refactor` → `/iterate:tasks`
+- Bug fixes → Create spec if complex, otherwise proceed directly
 
 ---
 

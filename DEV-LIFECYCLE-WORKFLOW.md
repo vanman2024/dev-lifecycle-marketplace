@@ -325,6 +325,68 @@ This workflow shows:
 
 **Purpose:** Layer tasks, sync specs with code, refactor, enhance
 
+## 🚨 CRITICAL RULE: ALWAYS LAYER BEFORE BUILDING
+
+**NEVER** build features without this process:
+
+1. **Decide: Is this a new feature or modification?**
+   - New feature? → `/planning:add-feature`
+   - Modify existing? → `/iterate:adjust` or `/iterate:enhance`
+
+2. **Layer the tasks** → `/iterate:tasks F00X`
+   - Creates layered-tasks.md with dependencies
+   - L0 (infrastructure) → L1 (core) → L2 (features) → L3 (integration)
+
+3. **Build layer by layer**
+   - Follow layered-tasks.md order
+   - Complete L0 before L1, L1 before L2, etc.
+
+4. **Sync after each layer** → `/iterate:sync F00X`
+
+**Example - User says "Frontend needs improvement":**
+
+```bash
+# ❌ WRONG - Just start building
+/nextjs-frontend:add-component Button  # Creates mess!
+
+# ✅ CORRECT - Spec → Layer → Build
+/planning:add-feature "Improve frontend UX with design system"
+# Creates: specs/F00X/spec.md, tasks.md
+
+/iterate:tasks F00X
+# Creates: specs/F00X/layered-tasks.md
+# L0: Setup Tailwind theme, design tokens
+# L1: Core components (Button, Card, Input)
+# L2: Composite components (ChatWindow, Sidebar)
+# L3: Apply to all pages, wire together
+
+# NOW build layer by layer:
+# L0 first:
+/nextjs-frontend:add-component ThemeProvider
+
+# L1 second:
+/nextjs-frontend:add-component Button
+/nextjs-frontend:add-component Card
+
+# L2 third:
+/nextjs-frontend:add-component ChatWindow
+
+# L3 fourth:
+/nextjs-frontend:add-page chat  # Uses all components
+```
+
+**This prevents:**
+- Random component creation
+- Missing dependencies
+- Unorganized code
+- Technical debt
+
+**This ensures:**
+- Structured development
+- Proper dependencies
+- Reusable components
+- Clean architecture
+
 ### Commands:
 
 ```bash
