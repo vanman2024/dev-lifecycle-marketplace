@@ -1,0 +1,43 @@
+Backend-Only Structure (API/Service)
+=====================================
+
+project-root/
+├── src/
+│   ├── __init__.py or index.ts
+│   ├── main.py or server.ts
+│   ├── routes/ or controllers/
+│   ├── models/
+│   ├── services/
+│   ├── middleware/
+│   └── utils/
+│
+├── tests/
+│   ├── unit/
+│   ├── integration/
+│   ├── __mocks__/
+│   └── fixtures/
+│
+├── docs/
+│   ├── api/
+│   │   └── endpoints.md
+│   └── architecture/
+│       └── README.md
+│
+├── scripts/
+│   ├── setup.sh
+│   ├── deploy.sh
+│   └── migrate.sh
+│
+├── requirements.txt or package.json or go.mod
+├── .env.example
+├── .gitignore
+└── README.md
+
+
+Key Characteristics:
+====================
+✅ Single-purpose backend service
+✅ Tests at root tests/ level
+✅ API documentation in docs/
+✅ Deployment scripts centralized
+✅ .env.example for configuration (never .env)

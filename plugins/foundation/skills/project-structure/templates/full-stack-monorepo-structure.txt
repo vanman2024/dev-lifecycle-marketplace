@@ -1,0 +1,76 @@
+Full-Stack Monorepo Structure (Backend + Frontend)
+===================================================
+
+project-root/
+├── backend/
+│   ├── src/
+│   │   ├── __init__.py
+│   │   ├── main.py or server.ts
+│   │   ├── routes/
+│   │   ├── models/
+│   │   ├── services/
+│   │   └── utils/
+│   ├── tests/
+│   │   ├── unit/
+│   │   ├── integration/
+│   │   └── __mocks__/
+│   ├── requirements.txt or package.json
+│   ├── .env.example
+│   ├── .gitignore
+│   └── README.md
+│
+├── frontend/
+│   ├── app/ or src/
+│   │   ├── components/
+│   │   ├── pages/ or routes/
+│   │   ├── hooks/
+│   │   ├── utils/
+│   │   └── styles/
+│   ├── __tests__/
+│   │   ├── components/
+│   │   ├── hooks/
+│   │   ├── utils/
+│   │   └── __mocks__/
+│   ├── public/
+│   ├── package.json
+│   ├── .env.example
+│   ├── .gitignore
+│   └── README.md
+│
+├── docs/
+│   ├── architecture/
+│   │   ├── README.md
+│   │   ├── diagrams/
+│   │   └── decisions/
+│   ├── guides/
+│   │   ├── setup.md
+│   │   ├── development.md
+│   │   └── deployment.md
+│   └── api/
+│       └── endpoints.md
+│
+├── scripts/
+│   ├── setup.sh
+│   ├── deploy.sh
+│   ├── test-all.sh
+│   └── README.md
+│
+├── tests/
+│   └── e2e/
+│       ├── specs/
+│       └── fixtures/
+│
+├── .gitignore
+├── README.md
+└── package.json (optional: for monorepo workspaces)
+
+
+Key Characteristics:
+====================
+✅ Clear backend/frontend separation
+✅ Tests live with their code (backend/tests/, frontend/__tests__/)
+✅ Separate dependency files (backend/requirements.txt, frontend/package.json)
+✅ E2E tests at root level (tests/e2e/)
+✅ Centralized documentation (docs/)
+✅ Deployment scripts (scripts/)
+✅ .env.example for both sides (never .env)

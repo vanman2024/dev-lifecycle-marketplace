@@ -1,0 +1,49 @@
+Frontend-Only Structure (Web App/Static Site)
+=============================================
+
+project-root/
+├── app/ or src/
+│   ├── components/
+│   ├── pages/ or routes/
+│   ├── hooks/
+│   ├── utils/
+│   ├── styles/
+│   └── types/
+│
+├── __tests__/
+│   ├── components/
+│   ├── hooks/
+│   ├── utils/
+│   └── __mocks__/
+│
+├── tests/
+│   └── e2e/
+│       ├── specs/
+│       └── fixtures/
+│
+├── public/
+│   ├── images/
+│   └── fonts/
+│
+├── docs/
+│   ├── components/
+│   └── guides/
+│
+├── scripts/
+│   ├── build.sh
+│   └── deploy.sh
+│
+├── package.json
+├── .env.example
+├── .gitignore
+└── README.md
+
+
+Key Characteristics:
+====================
+✅ Frontend-focused structure
+✅ Component tests in __tests__/
+✅ E2E tests in tests/e2e/
+✅ Public assets organized
+✅ Component documentation
+✅ .env.example for configuration (never .env)
