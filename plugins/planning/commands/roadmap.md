@@ -1,6 +1,6 @@
 ---
 description: Create development roadmap and timeline
-argument-hint: [timeframe]
+argument-hint: [timeframe] [--refresh]
 ---
 
 ## Security Requirements
@@ -54,13 +54,18 @@ Skills provide pre-built resources to accelerate your work.
 Goal: Understand roadmap scope
 
 Actions:
-- Parse $ARGUMENTS for timeframe (quarterly, annual, release-based)
+- Parse $ARGUMENTS for:
+  - Timeframe (quarterly, annual, release-based)
+  - Flags: --refresh (regenerate from current specs)
 - Load all existing specs
 - Example: !{bash find specs -name "README.md" -type f}
 - Load architecture documentation
 - Example: @docs/architecture/README.md
 - Check for existing roadmap
-- Example: !{bash test -f docs/ROADMAP.md && echo "exists"}
+- Example: !{bash test -f docs/ROADMAP.md && echo "exists" || echo "new"}
+- If --refresh flag present:
+  - Display: "🔄 Refreshing roadmap from current specs and architecture"
+  - Backup existing roadmap: !{bash cp docs/ROADMAP.md docs/ROADMAP.backup.md 2>/dev/null || true}
 
 ## Phase 2: Analysis
 Goal: Analyze project scope
@@ -128,7 +133,13 @@ Actions:
 Goal: Report roadmap creation
 
 Actions:
-- Display: "Roadmap created: docs/ROADMAP.md"
+- If --refresh flag was used:
+  - Display: "✅ Roadmap refreshed: docs/ROADMAP.md"
+  - Display: "📋 Backup saved: docs/ROADMAP.backup.md"
+  - Display: "🔍 Review changes to ensure timeline still accurate"
+- Else:
+  - Display: "✅ Roadmap created: docs/ROADMAP.md"
 - Show key milestones
 - Suggest: "Review and adjust timeline as needed"
 - Note: "Use /iterate:tasks to break down each phase"
+- Tip: "Use --refresh flag to regenerate roadmap after spec changes"

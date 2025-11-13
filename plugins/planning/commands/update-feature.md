@@ -1,6 +1,6 @@
 ---
 description: Update existing feature across roadmap, specs, and architecture docs when requirements change
-argument-hint: <spec-number> [changes]
+argument-hint: <spec-number> [changes] [--all]
 ---
 
 **Arguments**: $ARGUMENTS
@@ -18,10 +18,17 @@ Goal: Identify feature and understand what needs to change
 
 Actions:
 - Create todo list tracking workflow phases using TodoWrite
-- Parse $ARGUMENTS for spec number and change description
-- If spec number not provided, use AskUserQuestion to ask:
+- Parse $ARGUMENTS for:
+  - Spec number or --all flag
+  - Change description
+  - Flags: --all (update all features with same change)
+- If --all flag present:
+  - Display: "🔄 Updating ALL features with change: [changes]"
+  - List all features: !{bash ls -d specs/features/[0-9][0-9][0-9]-* 2>/dev/null}
+  - Confirm with AskUserQuestion: "Update all [count] features?"
+- Else if spec number not provided, use AskUserQuestion to ask:
   - Which feature needs updating? (spec number or name)
-- Validate feature exists:
+- Validate feature(s) exist:
   !{bash find specs/features -name "$SPEC_NUMBER-*" -type d 2>/dev/null | head -1}
 - If not found, display error and list available features:
   !{bash ls -d specs/features/[0-9][0-9][0-9]-* 2>/dev/null}

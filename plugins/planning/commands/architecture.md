@@ -1,6 +1,6 @@
 ---
 description: Design and document system architecture
-argument-hint: <action> [architecture-name]
+argument-hint: <action> [architecture-name] [--sync-specs]
 ---
 
 ## Security Requirements
@@ -55,7 +55,10 @@ Skills provide pre-built resources to accelerate your work.
 Goal: Understand the architecture request and current project state
 
 Actions:
-- Parse $ARGUMENTS for action (design, update, diagram, review)
+- Parse $ARGUMENTS for:
+  - Action (design, update, diagram, review)
+  - Architecture name (optional)
+  - Flags: --sync-specs (auto-update affected specs after architecture changes)
 - Load detected tech stack: @.claude/project.json
 - Check for existing architecture documentation
 - Example: !{bash find docs -name "architecture*.md" 2>/dev/null}
@@ -160,6 +163,12 @@ Actions:
     - Which specs reference changed architecture docs
     - What features are impacted
     - Where implementation plans need review
+
+  - If --sync-specs flag present:
+    - Display: "🔄 Auto-updating affected specs based on architecture changes"
+    - For each affected spec, invoke:
+      SlashCommand(/planning:update-feature F00X "Updated to align with new architecture")
+    - Display: "✅ All affected specs updated"
 
 - If action was 'diagram' or 'review':
   - Skip sync (no changes made)

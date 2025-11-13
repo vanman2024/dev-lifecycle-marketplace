@@ -1,6 +1,6 @@
 ---
 description: Create Architecture Decision Records (ADRs)
-argument-hint: [decision-title]
+argument-hint: [decision-title] [--supersede ADR-XXX]
 ---
 
 ## Security Requirements
@@ -54,11 +54,16 @@ Skills provide pre-built resources to accelerate your work.
 Goal: Understand decision to document
 
 Actions:
-- Parse $ARGUMENTS for decision title
+- Parse $ARGUMENTS for:
+  - Decision title
+  - Flags: --supersede ADR-XXX (mark this ADR as superseding an older one)
 - Check for existing ADRs directory
 - Example: !{bash ls docs/adr/ 2>/dev/null | wc -l}
 - Determine next ADR number
 - Example: !{bash ls docs/adr/*.md 2>/dev/null | tail -1}
+- If --supersede flag present:
+  - Validate superseded ADR exists: !{bash find docs/adr -name "*$SUPERSEDE_NUMBER*" 2>/dev/null}
+  - Load superseded ADR for context: @docs/adr/*$SUPERSEDE_NUMBER*.md
 
 ## Phase 2: Analysis
 Goal: Gather decision context
@@ -100,6 +105,7 @@ Context:
 - Architecture docs: docs/architecture/
 - Wizard requirements (if available): docs/requirements/*/01-initial-request.md, docs/requirements/*/.wizard/extracted-requirements.json, docs/requirements/*/02-wizard-qa.md
 - Decision: $ARGUMENTS
+- Supersedes (if --supersede flag): ADR-XXX (context from docs/adr/)
 
 Requirements:
   - Read wizard requirements first (if they exist) to understand project context
@@ -107,6 +113,10 @@ Requirements:
   - Number sequentially (ADR-XXXX)
   - Include all required sections
   - Link to related specs/architecture
+  - If superseding another ADR:
+    - Add 'Supersedes: ADR-XXX' in frontmatter
+    - Explain why previous decision changed
+    - Mark superseded ADR as deprecated in its status
   - Use decision-tracking skill templates
 
 Deliverable: docs/adr/XXXX-decision-title.md")
@@ -141,6 +151,10 @@ Actions:
 Goal: Report ADR creation
 
 Actions:
-- Display: "Created ADR-XXXX: {title}"
+- Display: "✅ Created ADR-XXXX: {title}"
 - Show file location
-- Suggest: "ADRs are immutable - create new ADR to supersede"
+- If --supersede flag was used:
+  - Display: "🔄 Supersedes: ADR-{old_number}"
+  - Display: "📝 Updated superseded ADR status to 'Deprecated'"
+- Else:
+  - Suggest: "ADRs are immutable - use --supersede ADR-XXX to create superseding ADR"
