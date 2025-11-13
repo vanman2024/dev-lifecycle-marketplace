@@ -19,18 +19,37 @@ Actions:
 - Extract tech stack record with all plugin IDs
 - Build mapping: Record ID → Plugin Name
 
-Phase 2: Generate Workflow
-Goal: Create workflow markdown from Airtable using Web API (not MCP - avoids context overflow)
+Phase 2: Detect Current State
+Goal: Scan current directory to see what's already been done
 
 Actions:
-- Execute workflow generation script (uses Airtable REST API):
-  !{bash python3 ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/workflow-generation/scripts/generate-workflow-doc.py "$ARGUMENTS"}
+- Detect completed setup:
+  !{bash test -f .claude/project.json && echo "foundation-init:done" || echo "foundation-init:todo"}
+  !{bash test -f package.json && echo "nextjs-init:done" || echo "nextjs-init:todo"}
+  !{bash test -f requirements.txt && echo "fastapi-init:done" || echo "fastapi-init:todo"}
+  !{bash test -d supabase && echo "supabase-init:done" || echo "supabase-init:todo"}
+  !{bash test -d specs && echo "planning-wizard:done" || echo "planning-wizard:todo"}
+  !{bash test -d docs/architecture && echo "architecture:done" || echo "architecture:todo"}
+  !{bash test -f docs/ROADMAP.md && echo "roadmap:done" || echo "roadmap:todo"}
+  !{bash test -d supabase/migrations && echo "schema-deployed:done" || echo "schema-deployed:todo"}
+  !{bash test -f .env && echo "env-configured:done" || echo "env-configured:todo"}
+
+- Store detection results for Phase 3
+
+Phase 3: Generate Workflow with Smart Checkboxes
+Goal: Create workflow markdown from Airtable with auto-detected completion status
+
+Actions:
+- Execute workflow generation script with detection data:
+  !{bash python3 ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/workflow-generation/scripts/generate-workflow-doc.py "$ARGUMENTS" --detect-state}
 
 - Script process:
   1. Queries Airtable Web API for tech stack record
   2. Gets all plugin IDs and maps to plugin names
   3. For each plugin: queries commands, agents, skills via API
-  4. Generates complete workflow markdown with 8 phases:
+  4. **NEW**: Reads detection results from Phase 2
+  5. **NEW**: Marks commands as ✅ or □ based on detected state
+  6. Generates complete workflow markdown with 8 phases:
      - Foundation & Init (dev lifecycle + tech stack setup)
      - Planning (specs, architecture, database design)
      - Database & Auth (schema, RLS, auth providers)
@@ -41,14 +60,20 @@ Actions:
      - Iteration (enhance, refactor, adjust)
 
 - Output: `~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/$SAFE_FILENAME-WORKFLOW.md`
+- Format: Uses ✅ for completed, □ for todo based on file detection
 
-Phase 3: Summary
+Phase 4: Summary
 Goal: Report results
 
 Actions:
 - Display file path, size, command counts
+- Show completed vs remaining commands based on detection
 - Show viewing command
-- Explain regeneration: `/lifecycle:generate-workflow "$ARGUMENTS"`
+- Explain:
+  - "✅ = Already done (auto-detected from your files)"
+  - "□ = Still to do"
+  - "You can manually edit checkboxes too: change □ to ✅ or vice versa"
+  - "Regenerate anytime: /foundation:generate-workflow \"$ARGUMENTS\""
 
 **Error Handling:**
 - Tech stack not found → list available stacks
