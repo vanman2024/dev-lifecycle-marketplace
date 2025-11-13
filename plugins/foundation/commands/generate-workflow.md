@@ -4,17 +4,47 @@ argument-hint: <tech-stack-name>
 allowed-tools: Read, Write, Bash, mcp__airtable
 ---
 
-**Arguments**: $ARGUMENTS
+**Arguments**: $ARGUMENTS (optional - auto-detects if not provided)
 
-Goal: Generate comprehensive workflow document from Airtable tech stack configuration showing ALL commands (dev lifecycle + tech-specific) in execution order.
+Goal: Auto-detect or use specified tech stack, then generate comprehensive workflow document with smart checkboxes showing what's done vs. todo.
 
-Phase 1: Query Airtable
+Phase 1: Detect or Select Tech Stack
+Goal: Determine which tech stack this project uses
+
+Actions:
+- If $ARGUMENTS provided:
+  - Use specified stack name directly
+  - Skip to Phase 2
+
+- If NO $ARGUMENTS (auto-detect mode):
+  - Scan current directory for tech indicators:
+    !{bash test -f package.json && grep -q "next" package.json && echo "nextjs:detected"}
+    !{bash test -f requirements.txt && grep -q "fastapi" requirements.txt && echo "fastapi:detected"}
+    !{bash test -d supabase && echo "supabase:detected"}
+    !{bash grep -r "vercel.*ai" package.json 2>/dev/null && echo "vercel-ai-sdk:detected"}
+    !{bash grep -r "openrouter" package.json 2>/dev/null && echo "openrouter:detected"}
+    !{bash grep -r "mem0" package.json requirements.txt 2>/dev/null && echo "mem0:detected"}
+
+  - Query ALL tech stacks from Airtable:
+    !{Use mcp__airtable to list all records from Tech Stacks table tblG07GusbRMJ9h1I}
+
+  - Match detected frameworks to tech stack components:
+    - Compare detected: [nextjs, fastapi, supabase, vercel-ai-sdk, openrouter, mem0]
+    - Against each tech stack's component list
+    - Calculate match score (% of components that match)
+
+  - Select best match (highest score)
+  - Display: "Auto-detected: AI Tech Stack 1 (95% match based on your files)"
+  - Ask user to confirm or choose different stack
+
+- Store selected tech stack name for Phase 2
+
+Phase 1B: Query Airtable
 Goal: Get tech stack and plugin data
 
 Actions:
-- Validate $ARGUMENTS provided (show usage if empty)
 - Query Airtable base `appHbSB7WhT1TxEQb`:
-  - Tech Stacks table `tblG07GusbRMJ9h1I` with filter: `FIND("$ARGUMENTS", {Stack Name})`
+  - Tech Stacks table `tblG07GusbRMJ9h1I` with filter: `FIND("{selected_stack}", {Stack Name})`
   - Plugins table `tblVEI2x2xArVx9ID` with maxRecords=50
 - Extract tech stack record with all plugin IDs
 - Build mapping: Record ID → Plugin Name
