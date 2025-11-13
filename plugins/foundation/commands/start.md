@@ -15,65 +15,42 @@ Core Principles:
 - Clear progress tracking
 - No confusion about what to run next
 
-Phase 1: Welcome and Setup
-Goal: Welcome user and create project directory
+Phase 1: Parse Project Name
+Goal: Extract clean project name from arguments
 
 Actions:
-- Display: "🚀 Project Initialization - 4 Steps: Planning → Tech Stack → Initialize → Build"
-- If $ARGUMENTS: Create directory !{bash mkdir -p "$ARGUMENTS" && cd "$ARGUMENTS"}
-- If no $ARGUMENTS: Use current directory
-- Start workflow
+- Parse $ARGUMENTS to extract project name (remove comments after #)
+- Example: "my-project # comment" → "my-project"
+- Store: PROJECT_NAME=$(echo "$ARGUMENTS" | sed 's/#.*//' | xargs)
 
-Phase 2: Planning (Layer 0)
-Goal: Gather requirements and create specs
-
-Actions:
-- Display: "Step 1/4: Planning & Requirements"
-- Invoke: SlashCommand(/planning:wizard)
-- Display: "✅ Planning complete - specs/ and architecture/ created"
-
-Phase 3: Tech Stack Selection (Layer 1)
-Goal: Select tech stack based on planning output
+Phase 2: Create Directory Structure
+Goal: Create standardized project directory structure
 
 Actions:
-- Display: "Step 2/4: Tech Stack Selection"
-- Invoke: SlashCommand(/foundation:select-stack)
-- Read selection: !{Read .claude/project.json}
-- Display: "✅ Tech stack selected and saved"
+- Display: "🚀 Creating project structure..."
+- If PROJECT_NAME provided: !{bash mkdir -p "$PROJECT_NAME" && cd "$PROJECT_NAME"}
+- If no PROJECT_NAME: Use current directory
+- Create base structure: !{bash mkdir -p .claude docs specs}
+- Create stub files: !{bash touch .claude/project.json README.md .gitignore}
+- Display: "✅ Directory structure created"
 
-Phase 4: Project Initialization (Layer 2)
-Goal: Initialize project structure and generate complete workflow
-
-Actions:
-- Display: "Step 3/4: Project Initialization"
-- Invoke: SlashCommand(/foundation:init-with-stack)
-- Display: "✅ Project initialized - structure created"
-- Read tech stack name: !{Read .claude/project.json}
-- Display: "Step 3.5/4: Generating Complete Command Reference"
-- Invoke: SlashCommand(/foundation:generate-workflow "[tech-stack-name]")
-- Display: "✅ Workflow document generated with ALL commands from Airtable"
-
-Phase 5: Complete and Next Steps
-Goal: Show final summary and guide user on what to do next
+Phase 3: Summary and Next Steps
+Goal: Show what was created and what to do next
 
 Actions:
-- Display: "Step 4/4: Ready to Build! 🎉"
-- List workflow file: !{bash ls *-WORKFLOW.md 2>/dev/null | head -1}
-- Display summary showing:
-  - Project structure created (specs/, architecture/, .claude/)
-  - Workflow document with ALL commands for your tech stack
-  - Commands pulled from Airtable based on selected stack
-  - Complete reference: [workflow-file] shows EVERY available command
-  - Next steps in order:
-    1. /foundation:env-vars setup
-    2. /foundation:env-check
-    3. /foundation:github-init
-    4. /iterate:tasks F001
-    5. Follow Spec → Layer → Build pattern
-- Important: "View complete command list: cat [workflow-file]"
-
-Phase 6: Summary
-Goal: Confirm successful initialization
-
-Actions:
-- Display: "✅ Complete! Planning docs, tech stack selected, structure created, workflow ready. Start building: /iterate:tasks F001 🚀"
+- Display: "✅ Project structure created!"
+- Display: ""
+- Display: "Created:"
+- Display: "  .claude/          # Claude configuration"
+- Display: "  docs/             # Documentation"
+- Display: "  specs/            # Feature specifications"
+- Display: "  README.md         # Project readme"
+- Display: "  .gitignore        # Git ignore rules"
+- Display: ""
+- Display: "Next steps:"
+- Display: "  1. /planning:wizard              # Gather requirements"
+- Display: "  2. /foundation:select-stack      # Choose tech stack"
+- Display: "  3. cat AI-SDK-CHECKLIST.md       # See full workflow"
+- Display: ""
+- Display: "Or see the checklist now:"
+- Display: "  cat ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/AI-SDK-CHECKLIST.md"
