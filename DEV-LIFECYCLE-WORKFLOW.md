@@ -27,47 +27,61 @@ This workflow shows:
 
 **Purpose:** Set up project structure, environment, and base configuration
 
-### Commands:
+### For NEW Projects (Recommended):
 
 ```bash
-# 1.1 Detect existing project or start fresh
-/foundation:detect [project-path]
+# 1.1 Single command to initialize everything
+/foundation:start [project-name]
 
-# 1.2 Initialize/fix project structure
+# This orchestrates 4 steps automatically:
+# Step 1: Planning & Requirements (/planning:wizard)
+# Step 2: Tech Stack Selection (/foundation:select-stack)
+# Step 3: Project Initialization (/foundation:init-with-stack)
+# Step 4: Workflow Generation (/foundation:generate-workflow)
+
+# Output: Complete project with specs/, architecture/, .claude/, and [TECH-STACK]-WORKFLOW.md
+```
+
+### For EXISTING Projects (Manual):
+
+```bash
+# 1.1 Detect existing project tech stack
+/foundation:detect [project-path]
+# Analyzes: package.json, requirements.txt, configs
+# Populates: .claude/project.json
+
+# 1.2 Fix/validate project structure
 /foundation:init-structure [project-path]
 # Creates: backend/, frontend/, docs/, scripts/, tests/
 
 # 1.3 Validate structure compliance
 /foundation:validate-structure [project-path]
 # Returns: Compliance score (0-100%)
+```
 
-# 1.4 Detect tech stack from codebase
-/foundation:detect [project-path]
-# Analyzes: package.json, requirements.txt, configs
-# Populates: .claude/project.json
+### Post-Initialization (Both New and Existing):
 
-# 1.5 Check environment prerequisites
+```bash
+# 1.4 Check environment prerequisites
 /foundation:env-check [--fix]
 # Verifies: Node, Python, Docker, platform CLIs
 
-# 1.6 Manage environment variables
+# 1.5 Manage environment variables
 /foundation:env-vars list
 /foundation:env-vars check
 /foundation:env-vars add KEY VALUE
 
-# 1.7 Setup MCP servers (optional)
-/foundation:mcp-manage add <server-name>
-/foundation:mcp-manage install <server-name>
-
-# 1.8 Initialize GitHub repository (optional)
+# 1.6 Initialize GitHub repository (optional)
 /foundation:github-init [repo-name] [--public|--private]
 ```
 
 **Outputs:**
 - Standardized directory structure
 - .claude/project.json with tech stack info
+- specs/ and architecture/ directories (from /planning:wizard)
+- [TECH-STACK]-WORKFLOW.md with all commands for your stack
 - .gitignore, .env.example files
-- Git repository initialized
+- Git repository initialized (if using github-init)
 
 ---
 
@@ -124,62 +138,62 @@ This workflow shows:
 
 **Purpose:** Capture requirements, break down features, design system architecture
 
-### Commands:
+**Note:** If you used `/foundation:start`, Phase 2 Step 1 (Planning Wizard) was already completed!
+
+### Adding More Features (After Initial Setup):
 
 ```bash
-# 2.1 Interactive requirements gathering
-/planning:wizard [--auto-continue]
-# Multimodal input: text, images, docs, URLs
-# Generates: Comprehensive requirements doc
+# 2.1 Add individual features (incremental)
+/planning:add-feature "<feature description>"
+# Creates: specs/F00X/spec.md, tasks.md, ADR
 
 # 2.2 Create project from massive description (bulk)
 /planning:init-project "<full project description>"
 # Breaks down into: F001, F002, F003... features
 # Parallel spec generation
 
-# 2.3 Add individual features (incremental)
-/planning:add-feature "<feature description>"
-# Creates: specs/F00X/spec.md, tasks.md, ADR
-
-# 2.4 Analyze existing specs (if project has specs/)
-/planning:analyze-project
-# Returns: Completeness %, quality issues, gaps
-
-# 2.5 Update existing features
+# 2.3 Update existing features
 /planning:update-feature F001 "<changes>"
 # Updates: spec, tasks, roadmap, architecture
+```
 
-# 2.6 Create/manage specifications
-/planning:spec create "<feature-name>"
-/planning:spec list
-/planning:spec validate F001
+### Architecture & Documentation:
 
-# 2.7 Design system architecture
+```bash
+# 2.4 Design system architecture
 /planning:architecture design
 /planning:architecture validate
 # Creates: docs/architecture/ with Mermaid diagrams
 
-# 2.8 Document technical decisions
+# 2.5 Document technical decisions
 /planning:decide "<decision-title>"
 # Creates: docs/architecture/decisions/ADR-XXX.md
 
-# 2.9 Create project roadmap
+# 2.6 Create project roadmap
 /planning:roadmap [timeframe]
 # Creates: docs/ROADMAP.md with Gantt chart
 
-# 2.10 Clarify ambiguous requirements
+# 2.7 Analyze existing specs (if project has specs/)
+/planning:analyze-project
+# Returns: Completeness %, quality issues, gaps
+```
+
+### Utilities:
+
+```bash
+# 2.8 Clarify ambiguous requirements
 /planning:clarify [spec-name or topic]
 # Interactive Q&A to resolve uncertainty
 
-# 2.11 Capture development notes
+# 2.9 Capture development notes
 /planning:notes [note-topic]
 # Journal-style development notes
 
-# 2.12 View documentation relationships
+# 2.10 View documentation relationships
 /planning:view-docs
 # Launches: Visual documentation registry viewer
 
-# 2.13 Sync documentation to memory
+# 2.11 Sync documentation to memory
 /planning:doc-sync [project-name]
 # Uses Mem0 to track relationships
 ```
