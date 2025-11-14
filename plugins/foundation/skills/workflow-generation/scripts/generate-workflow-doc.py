@@ -190,30 +190,147 @@ def generate_workflow(tech_stack_name):
         f.write("- Required API keys (see environment setup)\n\n")
         f.write("---\n\n")
 
+        # Group commands by lifecycle phase
+        foundation_commands = []
+        planning_commands = []
+        implementation_commands = []
+        quality_commands = []
+        deployment_commands = []
+        iteration_commands = []
+        other_commands = []
+
+        for plugin_data in plugins_data.values():
+            plugin_name = plugin_data['name'].lower()
+
+            for command in plugin_data["commands"]:
+                cmd_entry = {
+                    "plugin": plugin_data['name'],
+                    "name": command["name"],
+                    "description": command["description"]
+                }
+
+                # Categorize by plugin name
+                if 'foundation' in plugin_name:
+                    foundation_commands.append(cmd_entry)
+                elif 'planning' in plugin_name:
+                    planning_commands.append(cmd_entry)
+                elif 'quality' in plugin_name or 'testing' in plugin_name or 'security' in plugin_name:
+                    quality_commands.append(cmd_entry)
+                elif 'deployment' in plugin_name or 'deploy' in plugin_name:
+                    deployment_commands.append(cmd_entry)
+                elif 'iterate' in plugin_name or 'iteration' in plugin_name:
+                    iteration_commands.append(cmd_entry)
+                else:
+                    implementation_commands.append(cmd_entry)
+
         # Phase 1: Foundation
-        f.write("## Phase 1: Foundation & Project Initialization (15-20 minutes)\n\n")
-        f.write("### 1.1 Initial Setup (Dev Lifecycle)\n\n")
+        f.write("## Phase 1: Foundation & Project Setup\n\n")
+        f.write("### 1.1 Project Initialization\n\n")
         f.write("```bash\n")
-        f.write("# Detect and validate environment\n")
-        f.write("/foundation:env-check\n\n")
-        f.write("# Initialize project structure\n")
+        f.write("# Create project directory\n")
         f.write("cd ~/Projects\n")
         f.write("mkdir my-ai-app && cd my-ai-app\n\n")
-        f.write("# Initialize git\n")
-        f.write("git init\n")
+
+        for cmd in foundation_commands:
+            if any(keyword in cmd["name"].lower() for keyword in ["start", "init", "detect", "env-check", "env-vars"]):
+                f.write(f"# {cmd['description']}\n")
+                f.write(f"/{cmd['plugin']}:{cmd['name']}\n\n")
+
         f.write("```\n\n")
 
-        f.write("### 1.2 Tech Stack Initialization (Tech-Specific Plugins)\n\n")
+        f.write("### 1.2 Tech Stack Setup\n\n")
+        f.write("Initialize your tech stack components:\n\n")
         f.write("```bash\n")
 
-        # Add init commands from each plugin
-        for plugin_data in plugins_data.values():
-            for command in plugin_data["commands"]:
-                command_name = command["name"]
-                if "init" in command_name.lower() or "setup" in command_name.lower():
-                    description = command["description"]
-                    f.write(f"# {description}\n")
-                    f.write(f"/{plugin_data['name']}:{command_name}\n\n")
+        for cmd in implementation_commands:
+            if "init" in cmd["name"].lower() or "setup" in cmd["name"].lower():
+                f.write(f"# {cmd['description']}\n")
+                f.write(f"/{cmd['plugin']}:{cmd['name']}\n\n")
+
+        f.write("```\n\n")
+
+        # Phase 2: Planning
+        f.write("---\n\n")
+        f.write("## Phase 2: Planning & Architecture\n\n")
+        f.write("### 2.1 Requirements & Specifications\n\n")
+        f.write("```bash\n")
+
+        for cmd in planning_commands:
+            if any(keyword in cmd["name"].lower() for keyword in ["wizard", "spec", "roadmap"]):
+                f.write(f"# {cmd['description']}\n")
+                f.write(f"/{cmd['plugin']}:{cmd['name']}\n\n")
+
+        f.write("```\n\n")
+
+        f.write("### 2.2 Architecture Design\n\n")
+        f.write("```bash\n")
+
+        for cmd in planning_commands:
+            if any(keyword in cmd["name"].lower() for keyword in ["architecture", "decide"]):
+                f.write(f"# {cmd['description']}\n")
+                f.write(f"/{cmd['plugin']}:{cmd['name']}\n\n")
+
+        f.write("```\n\n")
+
+        # Phase 3: Implementation
+        f.write("---\n\n")
+        f.write("## Phase 3: Implementation\n\n")
+        f.write("### 3.1 Task Layering\n\n")
+        f.write("```bash\n")
+
+        for cmd in iteration_commands:
+            if "tasks" in cmd["name"].lower():
+                f.write(f"# {cmd['description']}\n")
+                f.write(f"/{cmd['plugin']}:{cmd['name']}\n\n")
+
+        f.write("```\n\n")
+
+        f.write("### 3.2 Feature Development\n\n")
+        f.write("Build features layer by layer following your layered-tasks.md:\n\n")
+        f.write("```bash\n")
+
+        for cmd in implementation_commands:
+            if any(keyword in cmd["name"].lower() for keyword in ["add", "integrate", "create"]) and \
+               not any(keyword in cmd["name"].lower() for keyword in ["init", "setup"]):
+                f.write(f"# {cmd['description']}\n")
+                f.write(f"/{cmd['plugin']}:{cmd['name']}\n\n")
+
+        f.write("```\n\n")
+
+        # Phase 4: Quality
+        f.write("---\n\n")
+        f.write("## Phase 4: Quality & Testing\n\n")
+        f.write("### 4.1 Testing & Validation\n\n")
+        f.write("```bash\n")
+
+        for cmd in quality_commands:
+            f.write(f"# {cmd['description']}\n")
+            f.write(f"/{cmd['plugin']}:{cmd['name']}\n\n")
+
+        f.write("```\n\n")
+
+        # Phase 5: Deployment
+        f.write("---\n\n")
+        f.write("## Phase 5: Deployment\n\n")
+        f.write("### 5.1 Deployment Process\n\n")
+        f.write("```bash\n")
+
+        for cmd in deployment_commands:
+            f.write(f"# {cmd['description']}\n")
+            f.write(f"/{cmd['plugin']}:{cmd['name']}\n\n")
+
+        f.write("```\n\n")
+
+        # Phase 6: Iteration
+        f.write("---\n\n")
+        f.write("## Phase 6: Iteration & Enhancement\n\n")
+        f.write("### 6.1 Feature Enhancement & Refactoring\n\n")
+        f.write("```bash\n")
+
+        for cmd in iteration_commands:
+            if "tasks" not in cmd["name"].lower():  # Already showed tasks earlier
+                f.write(f"# {cmd['description']}\n")
+                f.write(f"/{cmd['plugin']}:{cmd['name']}\n\n")
 
         f.write("```\n\n")
 

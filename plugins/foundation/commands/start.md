@@ -34,23 +34,33 @@ Actions:
 - Create stub files: !{bash touch .claude/project.json README.md .gitignore}
 - Display: "✅ Directory structure created"
 
-Phase 3: Summary and Next Steps
+Phase 3: Initialize Planning
+Goal: Run planning wizard and create initial specs
+
+Actions:
+- Display: "📋 Running planning wizard to gather requirements..."
+- Execute: !{SlashCommand /planning:wizard}
+- Display: "✅ Planning wizard completed"
+
+Phase 4: Summary and Next Steps
 Goal: Show what was created and what to do next
 
 Actions:
-- Display: "✅ Project structure created!"
+- Display: ""
+- Display: "✅ Project initialized successfully!"
 - Display: ""
 - Display: "Created:"
 - Display: "  .claude/          # Claude configuration"
 - Display: "  docs/             # Documentation"
-- Display: "  specs/            # Feature specifications"
+- Display: "  specs/            # Feature specifications (from wizard)"
 - Display: "  README.md         # Project readme"
 - Display: "  .gitignore        # Git ignore rules"
 - Display: ""
 - Display: "Next steps:"
-- Display: "  1. /planning:wizard              # Gather requirements"
-- Display: "  2. /foundation:select-stack      # Choose tech stack"
-- Display: "  3. cat AI-SDK-CHECKLIST.md       # See full workflow"
+- Display: "  1. /foundation:select-stack      # Choose tech stack"
+- Display: "  2. /foundation:init-structure    # Create monorepo structure"
+- Display: "  3. /foundation:generate-workflow # Generate workflow checklist"
 - Display: ""
-- Display: "Or see the checklist now:"
-- Display: "  cat ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/AI-SDK-CHECKLIST.md"
+- Display: "Or manually:"
+- Display: "  /foundation:detect               # Detect tech stack from files"
+- Display: "  /planning:architecture           # Design architecture"

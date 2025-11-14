@@ -1,99 +1,290 @@
 ---
-description: Setup Doppler secret management for scalable environment variable handling
+description: Complete Doppler secret management setup with scripts, docs, and GitHub integration
 argument-hint: [project-name]
 ---
 
+## Security Requirements
+
+**CRITICAL:** All generated files must follow security rules:
+
+@~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/docs/security/SECURITY-RULES.md
+
+**Key requirements:**
+- Never hardcode API keys or secrets
+- Use placeholders: `your_service_key_here`
+- Protect `.env` files with `.gitignore`
+- Create `.env.example` with placeholders only
+- Document key acquisition for users
+
 **Arguments**: $ARGUMENTS
 
-Goal: Configure Doppler CLI and project structure for centralized secret management across all environments.
+Goal: Complete Doppler setup with scripts, documentation, and GitHub integration
 
-Core Principles:
-- Detect project context before setup
-- Use placeholders only (never real secrets)
-- Support multi-environment workflows
-- Provide migration path from .env files
+This command uses the `doppler-management` skill to generate all necessary files.
 
-Phase 1: Discovery
-Goal: Understand project and check prerequisites
+---
+
+## Phase 1: Discovery & Validation
+
+Goal: Detect project context and check prerequisites
 
 Actions:
-- Parse $ARGUMENTS for project name or use directory name:
+- Parse $ARGUMENTS for project name or detect from directory:
   !{bash basename $(pwd)}
+- Detect GitHub repository:
+  !{bash git remote -v 2>&1 | grep origin | head -1 | sed 's/.*github.com[:/]\(.*\)\.git.*/\1/' || echo "not-detected"}
 - Check Doppler CLI installation:
-  !{bash which doppler || echo "not-installed"}
-- Check for existing .env files:
-  !{bash ls -la .env* 2>/dev/null | grep -v .example || echo "no-env-files"}
+  !{bash which doppler && doppler --version || echo "not-installed"}
+- Check authentication:
+  !{bash doppler me 2>&1 | grep -q "email" && echo "authenticated" || echo "not-authenticated"}
 - Load project configuration:
   @.claude/project.json
+- Check for existing .env files:
+  !{bash ls -la .env* 2>/dev/null | grep -v .example || echo "no-env-files"}
 
-Phase 2: Doppler CLI Setup
-Goal: Install and authenticate with Doppler
+If Doppler not installed:
+- Display: "Install Doppler CLI: curl -Ls https://cli.doppler.com/install.sh | sh"
+- Exit with instructions
 
-Actions:
-- If Doppler not installed, display: "Install Doppler CLI: curl -Ls https://cli.doppler.com/install.sh | sh"
-- Verify installation: !{bash doppler --version}
-- Check authentication: !{bash doppler me 2>&1 | grep -q "email" && echo "authenticated" || echo "not-authenticated"}
-- If not authenticated, guide user to: doppler login
+If not authenticated:
+- Display: "Run 'doppler login' to authenticate"
+- Exit with instructions
 
-Phase 3: Project Initialization
+---
+
+## Phase 2: Doppler Project Setup
+
 Goal: Create Doppler project and environments
 
 Actions:
 - Create Doppler project:
-  !{bash doppler projects create $PROJECT_NAME --description "Managed by Claude Code" 2>&1 || echo "exists"}
-- Create environments (dev, staging, production):
-  !{bash doppler environments create dev --project $PROJECT_NAME 2>&1 || true}
-  !{bash doppler environments create staging --project $PROJECT_NAME 2>&1 || true}
-  !{bash doppler environments create production --project $PROJECT_NAME 2>&1 || true}
-- List environments: !{bash doppler environments list --project $PROJECT_NAME}
+  !{bash doppler projects create $PROJECT_NAME --description "$PROJECT_NAME - AI-powered application" 2>&1}
 
-Phase 4: Migration Script Generation
-Goal: Create placeholder migration script
+- Create environments with proper names and slugs:
+  !{bash doppler environments create dev dev --project $PROJECT_NAME 2>&1 || echo "dev exists"}
+  !{bash doppler environments create staging stg --project $PROJECT_NAME 2>&1 || echo "stg exists"}
+  !{bash doppler environments create production prd --project $PROJECT_NAME 2>&1 || echo "prd exists"}
+
+- Configure local development:
+  !{bash doppler setup --project $PROJECT_NAME --config dev --no-interactive 2>&1}
+
+- Verify environments created:
+  !{bash doppler environments --project $PROJECT_NAME 2>&1}
+
+---
+
+## Phase 3: Generate Scripts
+
+Goal: Create all Doppler utility scripts from templates
+
+Use doppler-management skill templates:
+
+**Create scripts/doppler/ directory:**
+!{bash mkdir -p scripts/doppler}
+
+**Generate migrate-to-doppler.sh:**
+- Copy from: `skills/doppler-management/scripts/migrate-to-doppler.sh`
+- Replace variables:
+  - `{{PROJECT_NAME}}` → $PROJECT_NAME
+  - `{{GITHUB_REPO}}` → $GITHUB_REPO (detected)
+  - `{{GENERATION_DATE}}` → $(date +%Y-%m-%d)
+- Output to: `scripts/doppler/migrate-to-doppler.sh`
+- Make executable: !{bash chmod +x scripts/doppler/migrate-to-doppler.sh}
+
+**Generate run-with-doppler.sh:**
+- Copy from: `skills/doppler-management/scripts/run-with-doppler.sh`
+- Replace `{{PROJECT_NAME}}` → $PROJECT_NAME
+- Output to: `scripts/doppler/run-with-doppler.sh`
+- Make executable: !{bash chmod +x scripts/doppler/run-with-doppler.sh}
+
+**Generate setup-doppler-github.sh:**
+- Copy from: `skills/doppler-management/scripts/setup-doppler-github.sh`
+- Replace variables:
+  - `{{PROJECT_NAME}}` → $PROJECT_NAME
+  - `{{GITHUB_REPO}}` → $GITHUB_REPO
+- Output to: `scripts/doppler/setup-doppler-github.sh`
+- Make executable: !{bash chmod +x scripts/doppler/setup-doppler-github.sh}
+
+---
+
+## Phase 4: Generate Documentation
+
+Goal: Create comprehensive Doppler documentation
+
+Use doppler-management skill templates:
+
+**Create docs/doppler/ directory:**
+!{bash mkdir -p docs/doppler}
+
+**Generate README.md:**
+- Copy from: `skills/doppler-management/templates/docs/README.md`
+- Replace variables:
+  - `{{PROJECT_NAME}}` → $PROJECT_NAME
+  - `{{GITHUB_REPO}}` → $GITHUB_REPO
+- Output to: `docs/doppler/README.md`
+
+**Generate integration-guide.md:**
+- Copy from: `skills/doppler-management/templates/docs/integration-guide.md`
+- Replace variables as needed
+- Output to: `docs/doppler/integration-guide.md`
+
+**Generate github-integration.md:**
+- Copy from: `skills/doppler-management/templates/docs/github-integration.md`
+- Replace `{{GITHUB_REPO}}` → $GITHUB_REPO
+- Output to: `docs/doppler/github-integration.md`
+
+**Generate environment-setup.md:**
+- Copy from: `skills/doppler-management/templates/docs/environment-setup.md`
+- Replace variables as needed
+- Output to: `docs/doppler/environment-setup.md`
+
+**Copy PLUGIN-DESIGN.md:**
+- Copy from: `skills/doppler-management/templates/docs/PLUGIN-DESIGN.md`
+- Output to: `docs/doppler/PLUGIN-DESIGN.md`
+
+---
+
+## Phase 5: GitHub Actions Workflow
+
+Goal: Create test workflow for verifying Doppler integration
 
 Actions:
-- Create migrate-to-doppler.sh with placeholder examples
-- Script shows HOW to migrate secrets (with placeholders only)
-- Include examples for: ANTHROPIC_API_KEY, SUPABASE_URL, DATABASE_URL
-- All values use format: your_service_key_here
-- Add security warning comments
+- Create .github/workflows/ directory if not exists:
+  !{bash mkdir -p .github/workflows}
 
-Phase 5: Local Configuration
-Goal: Configure Doppler for local development
+- Generate test-doppler-secrets.yml:
+  - Copy from: `skills/doppler-management/templates/workflows/test-doppler-secrets.yml`
+  - Replace variables as needed
+  - Output to: `.github/workflows/test-doppler-secrets.yml`
 
-Actions:
-- Setup Doppler: !{bash doppler setup --project $PROJECT_NAME --config dev}
-- Add to .gitignore: .doppler.env and doppler.yaml
-- Verify setup: !{bash doppler configure get}
-- Create run-with-doppler.sh wrapper script
+---
 
-Phase 6: Framework Integration
-Goal: Configure framework-specific usage
+## Phase 6: Update .gitignore
+
+Goal: Protect Doppler configuration files
 
 Actions:
-- Detect framework from project.json
-- Provide framework-specific instructions
-- For Next.js: doppler run -- npm run dev
-- For FastAPI: doppler run -- uvicorn main:app --reload
-- For generic: Use run-with-doppler.sh wrapper
+- Check if .gitignore exists
+- Add Doppler entries if not present:
+  ```
+  # Doppler (secret management)
+  .doppler.env
+  doppler.yaml
+  .doppler/
+  ```
 
-Phase 7: Summary
-Goal: Report setup completion
+- Add to .gitignore:
+  !{bash grep -q "doppler" .gitignore 2>/dev/null || echo -e "\n# Doppler (secret management)\n.doppler.env\ndoppler.yaml\n.doppler/" >> .gitignore}
+
+---
+
+## Phase 7: Generate Summary Document
+
+Goal: Create quick reference guide
 
 Actions:
+- Generate DOPPLER-SETUP-SUMMARY.md in project root
+- Include:
+  - Setup status
+  - File locations
+  - Next steps checklist
+  - Common commands
+  - Dashboard links
+  - Migration checklist
+
+---
+
+## Phase 8: Summary & Next Steps
+
+Goal: Display completion status and guide user
+
 Display:
-✅ Doppler Setup Complete
+```
+╔════════════════════════════════════════════════════╗
+║  Doppler Setup Complete!                           ║
+╚════════════════════════════════════════════════════╝
+
 Project: $PROJECT_NAME
-Environments: dev, staging, production
+Repository: $GITHUB_REPO
+Environments: dev, stg, prd
 
 Files Created:
-- migrate-to-doppler.sh (EDIT with real secrets!)
-- run-with-doppler.sh
+✓ scripts/doppler/
+  ├── migrate-to-doppler.sh       (8.4K)
+  ├── run-with-doppler.sh         (1.3K)
+  └── setup-doppler-github.sh     (8.2K)
+
+✓ docs/doppler/
+  ├── README.md                    (9.7K)
+  ├── integration-guide.md         (15K)
+  ├── github-integration.md        (12K)
+  ├── environment-setup.md         (17K)
+  └── PLUGIN-DESIGN.md            (Design docs)
+
+✓ .github/workflows/
+  └── test-doppler-secrets.yml    (6.8K)
+
+✓ DOPPLER-SETUP-SUMMARY.md        (11K)
+
+✓ .gitignore updated
+
+═══════════════════════════════════════════════════
 
 Next Steps:
-1. Edit migrate-to-doppler.sh with actual secrets
-2. Run: bash migrate-to-doppler.sh
-3. Clean old .env: trash-put .env.development .env.staging
-4. Test: doppler run -- [your-command]
-5. Setup CI/CD tokens from dashboard
 
-Dashboard: https://dashboard.doppler.com/workplace/projects/$PROJECT_NAME
+1. EDIT MIGRATION SCRIPT (Required)
+   nano scripts/doppler/migrate-to-doppler.sh
+
+   Replace placeholders with real values:
+   - GOOGLE_API_KEY
+   - SUPABASE_URL
+   - SUPABASE_ANON_KEY
+   - SUPABASE_SERVICE_KEY
+
+2. RUN MIGRATION
+   scripts/doppler/migrate-to-doppler.sh
+
+3. SETUP GITHUB INTEGRATION
+   scripts/doppler/setup-doppler-github.sh
+
+4. TEST LOCAL DEVELOPMENT
+   scripts/doppler/run-with-doppler.sh uvicorn api.main:app --reload
+
+5. VERIFY SECRETS
+   doppler secrets --project $PROJECT_NAME --config dev
+
+6. CLEAN UP OLD .env FILES (After verification)
+   trash-put .env.development .env.staging .env.production
+
+═══════════════════════════════════════════════════
+
+Documentation:
+- Quick Start: docs/doppler/README.md
+- Full Guide:  docs/doppler/integration-guide.md
+- GitHub Setup: docs/doppler/github-integration.md
+- Summary:     DOPPLER-SETUP-SUMMARY.md
+
+Dashboards:
+- Doppler:  https://dashboard.doppler.com/workplace/projects/$PROJECT_NAME
+- GitHub:   https://github.com/$GITHUB_REPO
+
+═══════════════════════════════════════════════════
+
+SECURITY REMINDER:
+⚠️ migrate-to-doppler.sh contains PLACEHOLDERS only
+⚠️ You MUST edit with real secrets before running
+⚠️ Never commit this file after adding real secrets
+```
+
+---
+
+## Available Skills
+
+This command has access to foundation plugin skills:
+
+- **doppler-management**: Complete Doppler setup with all scripts and templates
+- **environment-setup**: Tool verification and system checks
+- **mcp-configuration**: MCP server configuration management
+- **project-detection**: Tech stack and dependency detection
+
+To use a skill: `!{skill skill-name}`

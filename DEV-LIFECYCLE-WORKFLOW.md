@@ -5,7 +5,7 @@ Open multiple terminals and run sections as needed.
 
 ## 🎯 How This Works
 
-**Dev Lifecycle (tech-agnostic)** + **Tech Stack Plugins (tech-specific)** = Complete Application
+**Dev Lifecycle (tech-agnostic)** + **Tech Stack Plugins(tech-specific)** = Complete Application
 
 This workflow shows:
 1. **Dev lifecycle commands** (foundation, planning, iterate, quality, deployment)
