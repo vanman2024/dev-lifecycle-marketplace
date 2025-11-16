@@ -185,14 +185,7 @@ Actions:
   Task(description="Update architecture", subagent_type="planning:architecture-designer", prompt="Update docs/architecture/ for [FEATURE_DESCRIPTION]. Changes: [from Phase 3]. If document mode: Use [DOC_PATH] as source for architectural details. Read relevant files, update sections, add mermaid diagrams if needed. Cross-reference spec and ADR.")
 - Update todos
 
-Phase 8: Register in Mem0
-Goal: Store relationships for synchronization
-
-Actions:
-- Run doc-sync: !{bash python plugins/planning/skills/doc-sync/scripts/sync-to-mem0.py}
-- Update todos
-
-Phase 9: Summary
+Phase 8: Summary
 Goal: Report results
 
 Actions:
