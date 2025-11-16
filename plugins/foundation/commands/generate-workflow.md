@@ -87,6 +87,12 @@ Actions:
   - If found: Read recent ADRs (last 5)
   - Extract: key architecture decisions, rationale, patterns
 
+- **IF EXISTS**: features.json (PRIORITY - read this first!)
+  !{bash test -f features.json && echo "features.json:exists" || echo "features.json:missing"}
+  - If found: Read features.json
+  - Extract: All features, their status, priorities, dependencies
+  - Use this for Feature Status section in workflow
+
 - **IF EXISTS**: specs/
   !{bash ls specs/*/spec.md 2>/dev/null || echo "No specs found"}
   - If found: Count specs, list feature names
@@ -190,6 +196,27 @@ Actions:
 
   ## Phase 6: Iteration & Enhancement
   {Iteration commands from Airtable, with ✅/□ status}
+  ```
+
+  **2.5. Feature Status** (NEW - if features.json exists):
+  ```markdown
+  ## Feature Implementation Status
+
+  {Read features.json if it exists}
+  {For each feature, show:}
+  - {status emoji} F{id}: {name} ({priority})
+    - Status: {status from features.json}
+    - Completion: {auto-detect from file existence}
+
+  Example:
+  - ✅ F001: Google File Search RAG (P0)
+    - Status: completed
+    - Files: backend/services/file_search.py ✓
+  - 🔄 F002: Claude Agent SDK (P0)
+    - Status: in-progress
+    - Files: backend/claude_agent/ (partial)
+  - □ F003: Intelligent Routing (P1)
+    - Status: not-started
   ```
 
   **3. Project-Specific Context**:
