@@ -204,8 +204,24 @@ Actions:
 - Determine if ADR needed based on new tech/architecture decision
 - Determine if architecture docs need updates
 
-Phase 3.5: Update features.json
-Goal: Add feature entry to features.json BEFORE creating spec
+Phase 3.5: Update project.json (if new tech)
+Goal: Add new technology to project.json FIRST (infrastructure layer)
+
+Actions:
+- If new technology detected (from Phase 3):
+  - Read .claude/project.json: @.claude/project.json
+  - Determine what to add:
+    * Mem0 → Add to ai_stack.memory or dependencies
+    * Clerk → Add to dependencies or auth section
+    * ElevenLabs → Add to ai_stack or dependencies
+    * New framework → Add to appropriate section
+  - Update project.json with new tech
+  - Display: "✅ Updated project.json with [NEW_TECH]"
+- If no new tech: Skip this phase
+- Update todos
+
+Phase 3.6: Update features.json
+Goal: Add feature entry to features.json SECOND (tracking layer)
 
 Actions:
 - Check if features.json exists:
@@ -223,22 +239,6 @@ Actions:
   * Created date: [current date]
 - Write updated features.json
 - Display: "✅ Updated features.json with F[NUMBER]"
-- Update todos
-
-Phase 3.6: Update project.json (if new tech)
-Goal: Add new technology to project.json if this feature requires it
-
-Actions:
-- If new technology detected (from Phase 3):
-  - Read .claude/project.json: @.claude/project.json
-  - Determine what to add:
-    * Mem0 → Add to ai_stack.memory or dependencies
-    * Clerk → Add to dependencies or auth section
-    * ElevenLabs → Add to ai_stack or dependencies
-    * New framework → Add to appropriate section
-  - Update project.json with new tech
-  - Display: "✅ Updated project.json with [NEW_TECH]"
-- If no new tech: Skip this phase
 - Update todos
 
 Phase 4: Generate Spec
