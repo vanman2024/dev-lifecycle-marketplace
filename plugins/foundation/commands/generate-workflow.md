@@ -109,6 +109,41 @@ Actions:
 
 - Display: "✅ Project context loaded"
 
+Phase 4.5: Preserve Existing Progress (CRITICAL)
+Goal: Read existing workflow file and preserve manual checkmarks
+
+Actions:
+- Determine expected workflow filename:
+  * Use project name from project.json if available
+  * Otherwise: Use tech stack name
+  * Format: PROJECT-NAME-WORKFLOW.md
+  * Store as: WORKFLOW_FILE
+
+- Check if workflow file exists:
+  !{bash test -f "$WORKFLOW_FILE" && echo "exists" || echo "missing"}
+
+- **If exists** (REGENERATION mode):
+  - Display: "📖 Reading existing workflow to preserve progress..."
+  - Read existing workflow file: @{WORKFLOW_FILE}
+
+  - Parse for command checkmarks:
+    * Look for lines with command format: `- [✅/🔄/□] /plugin:command`
+    * Extract: command name + status emoji
+    * Store in memory map: PRESERVED_STATUS["/plugin:command"] = "✅" or "🔄" or "□"
+    * Count preserved items
+
+  - Parse for feature checkmarks (if Feature Status section exists):
+    * Look for lines with feature format: `- [✅/🔄/□] F001: Feature Name`
+    * Extract: feature ID + status emoji
+    * Store: PRESERVED_FEATURES["F001"] = "✅" or "🔄" or "□"
+
+  - Display: "✅ Preserved {N} command statuses and {M} feature statuses"
+
+- **If missing** (FIRST-TIME mode):
+  - Display: "📝 First-time generation (no existing workflow to preserve)"
+  - Initialize empty: PRESERVED_STATUS = {}
+  - Initialize empty: PRESERVED_FEATURES = {}
+
 Phase 5: Organize Commands (Claude's Intelligence)
 Goal: Apply skill knowledge to organize commands into phases
 
@@ -123,10 +158,15 @@ Actions:
   - Deployment: deploy, prepare, cicd, monitor keywords
   - Iteration: enhance, refactor, adjust, sync keywords
 
-  **Determine completion status** for each command:
-  - ✅ = File evidence suggests complete
-  - 🔄 = Partial implementation detected
-  - □ = Not yet done
+  **Determine completion status** for each command (PRESERVES EXISTING):
+  - **FIRST**: Check PRESERVED_STATUS map (from Phase 4.5)
+    * If command exists in PRESERVED_STATUS: USE that status (user's manual tracking)
+    * This preserves checkmarks from previous workflow
+  - **SECOND**: If NOT in PRESERVED_STATUS (new command): Auto-detect
+    * ✅ = File evidence suggests complete
+    * 🔄 = Partial implementation detected
+    * □ = Not yet done
+  - **Priority**: Manual checkmarks > Auto-detection
 
   **Apply dependency rules**:
   - Foundation always first (no dependencies)
@@ -203,9 +243,15 @@ Actions:
   ## Feature Implementation Status
 
   {Read features.json if it exists}
-  {For each feature, show:}
+  {For each feature, determine status:}
+  - **FIRST**: Check PRESERVED_FEATURES["F{id}"] (from Phase 4.5)
+    * If exists: Use preserved status emoji
+  - **SECOND**: If NOT preserved: Use status from features.json
+  - **THIRD**: If no features.json: Auto-detect from file existence
+
+  {Display:}
   - {status emoji} F{id}: {name} ({priority})
-    - Status: {status from features.json}
+    - Status: {from PRESERVED_FEATURES or features.json}
     - Completion: {auto-detect from file existence}
 
   Example:
@@ -251,6 +297,14 @@ Actions:
 - Display: "✅ Workflow generated successfully!"
 - Display: ""
 - Display: "📄 File: {OUTPUT_FILE}"
+- Display: ""
+- If PRESERVED_STATUS was loaded (regeneration mode):
+  - Display: "🔄 Mode: REGENERATED (preserved {N} existing checkmarks)"
+  - Display: "   - {P} commands kept their status from previous workflow"
+  - Display: "   - {Q} new commands added from Airtable"
+- If first-time generation:
+  - Display: "📝 Mode: FIRST-TIME GENERATION"
+- Display: ""
 - Display: "📊 Stats:"
 - Display: "   - {N} total phases"
 - Display: "   - {M} total commands"
