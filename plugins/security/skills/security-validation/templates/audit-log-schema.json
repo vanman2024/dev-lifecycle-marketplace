@@ -1,0 +1,214 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Security Audit Log Entry",
+  "description": "Structured audit log format for agent actions and security events",
+  "type": "object",
+  "required": ["timestamp", "agent", "action", "result", "risk_level"],
+  "properties": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 UTC timestamp of the event"
+    },
+    "agent": {
+      "type": "string",
+      "description": "Name of the agent performing the action"
+    },
+    "command": {
+      "type": "string",
+      "description": "Slash command that invoked the agent (if applicable)"
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "file_read",
+        "file_write",
+        "file_delete",
+        "bash_execute",
+        "mcp_call",
+        "api_request",
+        "database_query",
+        "deployment",
+        "git_operation"
+      ],
+      "description": "Type of action performed"
+    },
+    "path": {
+      "type": "string",
+      "description": "File path or resource affected (if applicable)"
+    },
+    "result": {
+      "type": "string",
+      "enum": ["success", "error", "blocked"],
+      "description": "Result of the action"
+    },
+    "risk_level": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "critical"],
+      "description": "Risk classification of the operation"
+    },
+    "security_events": {
+      "type": "array",
+      "description": "Security-related events detected during the action",
+      "items": {
+        "type": "object",
+        "required": ["type"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "secret_detected",
+              "secret_blocked",
+              "pii_detected",
+              "pii_masked",
+              "injection_detected",
+              "injection_blocked",
+              "exfiltration_detected",
+              "exfiltration_blocked",
+              "authorization_denied",
+              "approval_required",
+              "approval_granted",
+              "approval_denied"
+            ],
+            "description": "Type of security event"
+          },
+          "severity": {
+            "type": "string",
+            "enum": ["low", "medium", "high", "critical"],
+            "description": "Severity of the security event"
+          },
+          "pattern": {
+            "type": "string",
+            "description": "Pattern or rule that triggered the event"
+          },
+          "masked": {
+            "type": "boolean",
+            "description": "Whether sensitive data was masked (for PII events)"
+          },
+          "blocked": {
+            "type": "boolean",
+            "description": "Whether the operation was blocked (for critical events)"
+          },
+          "details": {
+            "type": "object",
+            "description": "Additional event-specific details"
+          }
+        }
+      }
+    },
+    "details": {
+      "type": "object",
+      "description": "Additional context about the action",
+      "properties": {
+        "size_bytes": {
+          "type": "integer",
+          "description": "Size of file written/read in bytes"
+        },
+        "file_count": {
+          "type": "integer",
+          "description": "Number of files affected"
+        },
+        "command": {
+          "type": "string",
+          "description": "Bash command executed"
+        },
+        "exit_code": {
+          "type": "integer",
+          "description": "Exit code of executed command"
+        },
+        "mcp_server": {
+          "type": "string",
+          "description": "MCP server called"
+        },
+        "mcp_tool": {
+          "type": "string",
+          "description": "MCP tool invoked"
+        },
+        "error_message": {
+          "type": "string",
+          "description": "Error message if result=error"
+        }
+      }
+    },
+    "user_id": {
+      "type": "string",
+      "description": "User identifier (email or username)"
+    },
+    "session_id": {
+      "type": "string",
+      "description": "Session identifier for grouping related actions"
+    }
+  },
+  "examples": [
+    {
+      "timestamp": "2025-01-15T10:30:00Z",
+      "agent": "feature-spec-writer",
+      "command": "/planning:add-feature user-auth",
+      "action": "file_write",
+      "path": "specs/001/spec.md",
+      "result": "success",
+      "risk_level": "low",
+      "security_events": [
+        {
+          "type": "pii_detected",
+          "severity": "medium",
+          "pattern": "email",
+          "masked": true
+        }
+      ],
+      "details": {
+        "size_bytes": 4521,
+        "file_count": 1
+      },
+      "user_id": "user@example.com"
+    },
+    {
+      "timestamp": "2025-01-15T10:35:00Z",
+      "agent": "deployment-deployer",
+      "command": "/deployment:deploy production",
+      "action": "deployment",
+      "path": "vercel.json",
+      "result": "success",
+      "risk_level": "critical",
+      "security_events": [
+        {
+          "type": "approval_required",
+          "severity": "critical",
+          "blocked": false,
+          "details": {
+            "approval_granted": true,
+            "approved_by": "user@example.com",
+            "approved_at": "2025-01-15T10:34:00Z"
+          }
+        }
+      ],
+      "details": {
+        "command": "vercel deploy --prod",
+        "exit_code": 0
+      },
+      "user_id": "user@example.com"
+    },
+    {
+      "timestamp": "2025-01-15T10:40:00Z",
+      "agent": "code-generator",
+      "command": "/nextjs-frontend:add-component Button",
+      "action": "file_write",
+      "path": ".env",
+      "result": "blocked",
+      "risk_level": "critical",
+      "security_events": [
+        {
+          "type": "secret_detected",
+          "severity": "critical",
+          "pattern": "anthropic_api_key",
+          "blocked": true,
+          "details": {
+            "line": 5,
+            "entropy": 4.8
+          }
+        }
+      ],
+      "user_id": "user@example.com"
+    }
+  ]
+}

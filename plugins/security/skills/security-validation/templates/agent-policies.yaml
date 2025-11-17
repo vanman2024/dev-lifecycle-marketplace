@@ -1,0 +1,161 @@
+# Agent Authorization Policies
+# Per-agent path restrictions and operation scoping
+
+agents:
+  # Example: Stack detection agent (foundation plugin)
+  stack-detector:
+    allowed_operations: [read, write]
+    allowed_paths_read:
+      - "package.json"
+      - "*.config.*"
+      - "src/**"
+      - "docs/**"
+      - "requirements.txt"
+      - "go.mod"
+      - "Cargo.toml"
+    allowed_paths_write:
+      - ".claude/project.json"
+    denied_paths:
+      - ".env*"
+      - "secrets/**"
+      - "deployment/**"
+      - "*.key"
+      - "*.pem"
+    risk_level: medium
+
+  # Example: Feature spec writer (planning plugin)
+  feature-spec-writer:
+    allowed_operations: [read, write]
+    allowed_paths_read:
+      - "docs/architecture/**"
+      - "docs/adr/**"
+      - "specs/**"
+      - ".claude/project.json"
+    allowed_paths_write:
+      - "specs/*/spec.md"
+      - "specs/*/tasks.md"
+      - "specs/*/layered-tasks.md"
+    denied_paths:
+      - "src/**"
+      - ".env*"
+      - "deployment/**"
+      - "node_modules/**"
+    risk_level: low
+
+  # Example: Deployment deployer (deployment plugin) - CRITICAL OPERATIONS
+  deployment-deployer:
+    allowed_operations: [read, write, execute]
+    allowed_paths_read:
+      - "deployment/**"
+      - ".claude/project.json"
+      - "package.json"
+      - "vercel.json"
+      - "railway.json"
+    allowed_paths_write:
+      - "deployment/logs/**"
+      - ".deployment-status.json"
+    denied_paths:
+      - "src/**"
+      - "specs/**"
+      - ".env"  # Can read .env.example but not .env
+    allowed_commands:
+      - "vercel deploy"
+      - "railway up"
+      - "npm run build"
+      - "pnpm build"
+      - "docker build"
+    denied_commands:
+      - "rm -rf"
+      - "git push --force"
+      - "DROP TABLE"
+    risk_level: critical
+    requires_approval: true
+    approval_timeout: 300  # 5 minutes
+
+  # Example: Code refactorer (iterate plugin)
+  code-refactorer:
+    allowed_operations: [read, write]
+    allowed_paths_read:
+      - "src/**"
+      - "lib/**"
+      - "components/**"
+      - "specs/**"
+    allowed_paths_write:
+      - "src/**"
+      - "lib/**"
+      - "components/**"
+    denied_paths:
+      - ".env*"
+      - "deployment/**"
+      - "node_modules/**"
+      - "dist/**"
+      - "build/**"
+    max_files_per_operation: 50  # Limit large refactoring
+    risk_level: high
+    requires_approval: true  # For operations affecting >50 files
+
+  # Example: Test generator (quality plugin)
+  test-generator:
+    allowed_operations: [read, write]
+    allowed_paths_read:
+      - "src/**"
+      - "lib/**"
+      - "components/**"
+      - "specs/**"
+      - "tests/**"
+      - "__tests__/**"
+    allowed_paths_write:
+      - "tests/**"
+      - "__tests__/**"
+      - "*.test.ts"
+      - "*.test.js"
+      - "*.spec.ts"
+    denied_paths:
+      - ".env*"
+      - "deployment/**"
+      - "node_modules/**"
+    risk_level: low
+
+  # Example: Input sanitizer (security plugin)
+  input-sanitizer:
+    allowed_operations: [read]
+    allowed_paths_read:
+      - "**/*.md"
+      - "specs/**"
+    denied_paths:
+      - ".env*"
+      - "secrets/**"
+      - "*.key"
+      - "*.pem"
+    risk_level: medium
+
+  # Example: Output validator (security plugin)
+  output-validator:
+    allowed_operations: [read]
+    allowed_paths_read:
+      - "**/*.md"
+      - "**/*.ts"
+      - "**/*.js"
+      - "**/*.py"
+    denied_paths:
+      - ".env*"
+      - "secrets/**"
+    risk_level: medium
+
+# Default policy for unlisted agents
+default:
+  allowed_operations: [read]
+  allowed_paths_read:
+    - "docs/**"
+    - "specs/**"
+    - ".claude/project.json"
+  allowed_paths_write: []
+  denied_paths:
+    - ".env*"
+    - "secrets/**"
+    - "deployment/**"
+    - "*.key"
+    - "*.pem"
+    - "*.crt"
+  risk_level: medium
+  requires_approval: false

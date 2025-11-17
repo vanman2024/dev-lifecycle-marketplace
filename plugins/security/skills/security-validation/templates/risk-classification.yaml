@@ -1,0 +1,229 @@
+# Operation Risk Classification
+# Defines risk tiers and approval requirements for different operations
+
+operations:
+  # File Operations
+  file_delete:
+    risk_level: critical
+    conditions:
+      - count > 10
+      - path matches "deployment/**"
+      - path matches ".env*"
+      - path matches "**/*.key"
+      - path matches "**/*.pem"
+    requires_approval: true
+    approval_timeout: 300  # seconds
+    description: "File deletion operations require approval when deleting multiple files or sensitive paths"
+
+  file_write:
+    risk_level: medium
+    conditions:
+      - path matches "deployment/**"
+      - path matches ".github/workflows/**"
+      - count > 100
+    requires_approval: false
+    description: "File writes to deployment or CI/CD configs are monitored"
+
+  # Database Operations
+  database_ddl:
+    risk_level: critical
+    patterns:
+      - "DROP TABLE"
+      - "DROP DATABASE"
+      - "TRUNCATE"
+      - "ALTER TABLE.*DROP"
+      - "DELETE FROM.*WHERE 1=1"
+    requires_approval: true
+    approval_timeout: 600
+    description: "Destructive database operations require explicit approval"
+
+  database_migration:
+    risk_level: high
+    patterns:
+      - "ALTER TABLE"
+      - "CREATE INDEX"
+      - "DROP INDEX"
+      - "ADD COLUMN"
+      - "DROP COLUMN"
+    requires_approval: true
+    approval_timeout: 300
+    description: "Schema migrations require approval"
+
+  # Deployment Operations
+  deployment_production:
+    risk_level: critical
+    commands:
+      - "vercel deploy --prod"
+      - "railway up --environment production"
+      - "docker push.*:latest"
+      - "kubectl apply.*production"
+    requires_approval: true
+    approval_timeout: 300
+    description: "Production deployments require explicit approval"
+
+  deployment_staging:
+    risk_level: high
+    commands:
+      - "vercel deploy --target preview"
+      - "railway up --environment staging"
+    requires_approval: false
+    description: "Staging deployments are allowed but logged"
+
+  # Git Operations
+  git_force_push:
+    risk_level: critical
+    patterns:
+      - "git push.*--force"
+      - "git push.*-f[^a-z]"
+    requires_approval: true
+    approval_timeout: 180
+    description: "Force push operations require approval"
+
+  git_branch_delete:
+    risk_level: high
+    patterns:
+      - "git branch -D"
+      - "git push.*--delete.*master"
+      - "git push.*--delete.*main"
+    requires_approval: true
+    approval_timeout: 120
+    description: "Branch deletion requires approval, especially for main/master"
+
+  # Credential Operations
+  credential_rotation:
+    risk_level: critical
+    patterns:
+      - "rotate.*key"
+      - "regenerate.*secret"
+      - "reset.*password"
+    requires_approval: true
+    approval_timeout: 600
+    description: "Credential rotation operations require approval"
+
+  env_variable_change:
+    risk_level: high
+    conditions:
+      - path matches ".env*"
+      - path matches "**/.env*"
+    requires_approval: true
+    approval_timeout: 180
+    description: "Environment variable changes require approval"
+
+  # Code Operations
+  large_refactoring:
+    risk_level: high
+    conditions:
+      - file_count > 50
+      - operation == "edit"
+    requires_approval: true
+    approval_timeout: 300
+    description: "Large-scale refactoring (>50 files) requires approval"
+
+  dependency_update_major:
+    risk_level: high
+    patterns:
+      - "npm install.*@\\d+\\.0\\.0"
+      - "pnpm add.*@\\d+\\.0\\.0"
+      - "pip install.*==\\d+\\.0\\.0"
+    requires_approval: true
+    approval_timeout: 180
+    description: "Major version dependency updates require approval"
+
+  # Infrastructure Operations
+  infrastructure_change:
+    risk_level: critical
+    patterns:
+      - "terraform apply"
+      - "pulumi up"
+      - "cdk deploy"
+    requires_approval: true
+    approval_timeout: 600
+    description: "Infrastructure changes require approval"
+
+  # MCP Server Operations
+  mcp_server_add:
+    risk_level: high
+    patterns:
+      - "add.*mcp.*server"
+      - "configure.*mcp"
+    requires_approval: true
+    approval_timeout: 300
+    description: "Adding new MCP servers requires approval"
+
+  # Code Generation
+  code_generation_small:
+    risk_level: low
+    conditions:
+      - file_count <= 10
+      - operation == "write"
+    requires_approval: false
+    description: "Small code generation (<= 10 files) is allowed"
+
+  code_generation_medium:
+    risk_level: medium
+    conditions:
+      - file_count > 10
+      - file_count <= 50
+      - operation == "write"
+    requires_approval: false
+    description: "Medium code generation (11-50 files) is logged"
+
+  code_generation_large:
+    risk_level: high
+    conditions:
+      - file_count > 50
+      - operation == "write"
+    requires_approval: true
+    approval_timeout: 180
+    description: "Large code generation (>50 files) requires approval"
+
+  # Testing Operations
+  test_execution:
+    risk_level: low
+    patterns:
+      - "npm test"
+      - "pytest"
+      - "jest"
+      - "vitest"
+    requires_approval: false
+    description: "Test execution is allowed"
+
+  test_deletion:
+    risk_level: medium
+    conditions:
+      - path matches "**/*.test.*"
+      - path matches "**/*.spec.*"
+      - operation == "delete"
+    requires_approval: true
+    approval_timeout: 120
+    description: "Test file deletion requires approval"
+
+# Risk level definitions
+risk_levels:
+  low:
+    score: 1-25
+    approval_required: false
+    log_level: info
+    retention_days: 30
+    description: "Low-risk operations that are safe to execute automatically"
+
+  medium:
+    score: 26-50
+    approval_required: false
+    log_level: info
+    retention_days: 90
+    description: "Medium-risk operations that are logged for audit"
+
+  high:
+    score: 51-75
+    approval_required: true
+    log_level: warning
+    retention_days: 365
+    description: "High-risk operations that require approval"
+
+  critical:
+    score: 76-100
+    approval_required: true
+    log_level: error
+    retention_days: 730  # 2 years
+    description: "Critical operations that require approval and extended logging"
