@@ -53,47 +53,39 @@ If prerequisites fail, display error and provide fix instructions.
 
 ## Phase 3: Delegate to Setup Agent
 
-Launch version-setup-orchestrator agent to handle complex setup:
+Route to appropriate setup agent based on project type:
 
+**For Python projects:**
 ```
 Task(
-  description="Setup semantic versioning", subagent_type="versioning:version-setup-orchestrator", prompt="You are the version-setup-orchestrator agent.
+  description="Setup Python versioning",
+  subagent_type="versioning:python-version-setup",
+  prompt="Setup Python backend versioning with bump-my-version, GitHub Actions, and PyPI publishing support.
 
-**Project Type**: $PROJECT_TYPE (python/typescript/javascript)
+**Input Parameters**:
+- project_path: current directory
+- release_branches: ['main', 'master']
+- github_actions: true
+- pypi_publish: false (default, can be enabled via flag)
 
-**Tasks**:
+Execute all setup steps and return completion status."
+)
+```
 
-1. Create VERSION file:
-   - Read current version from project manifest (pyproject.toml or package.json)
-   - Default to 0.1.0 if not found
-   - Create VERSION file with JSON structure:
-     {
-       \"version\": \"<current_version>\", \"commit\": \"initial\", \"build_date\": \"<iso_timestamp>\", \"build_type\": \"development\"
-     }
+**For TypeScript/JavaScript projects:**
+```
+Task(
+  description="Setup TypeScript/JavaScript versioning",
+  subagent_type="versioning:typescript-version-setup",
+  prompt="Setup TypeScript frontend versioning with semantic-release, GitHub Actions, and NPM publishing support.
 
-2. Install GitHub Actions workflow:
-   - Copy template from version-manager skill:
-     * Python: templates/workflows/python-version-management.yml
-     * TypeScript/JavaScript: templates/workflows/npm-version-management.yml
-   - Place in .github/workflows/version-management.yml
-   - Verify workflow file created
+**Input Parameters**:
+- project_path: current directory
+- release_branches: ['main', 'master']
+- github_actions: true
+- npm_publish: false (default, can be enabled via flag)
 
-3. Create commit message template:
-   - Copy from version-manager skill: templates/commit-msg-template.txt
-   - Place in .gitmessage
-   - Configure git: git config commit.template .gitmessage
-
-4. Create conventional commits guide:
-   - Generate CONVENTIONAL_COMMITS.md from skill examples
-   - Include: feat, fix, docs, style, refactor, test, chore
-   - Provide examples for each type
-
-5. Add .gitignore entries:
-   - Ensure VERSION file is tracked (NOT ignored)
-   - Add version-related build artifacts to .gitignore
-
-**Deliverable**: Setup completion status with file locations
-"
+Execute all setup steps and return completion status."
 )
 ```
 
