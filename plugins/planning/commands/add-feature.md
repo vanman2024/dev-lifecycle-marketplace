@@ -3,7 +3,29 @@ description: Add complete feature with roadmap, spec, ADR, and architecture upda
 argument-hint: <feature-description> OR --doc=<path/to/document.md>
 ---
 
+---
+🚨 **EXECUTION NOTICE FOR CLAUDE**
+
+When you invoke this command via SlashCommand, the system returns THESE INSTRUCTIONS below.
+
+**YOU are the executor. This is NOT an autonomous subprocess.**
+
+- ✅ The phases below are YOUR execution checklist
+- ✅ YOU must run each phase immediately using tools (Bash, Read, Write, Edit, TodoWrite)
+- ✅ Complete ALL phases before considering this command done
+- ❌ DON't wait for "the command to complete" - YOU complete it by executing the phases
+- ❌ DON't treat this as status output - it IS your instruction set
+
+**Immediately after SlashCommand returns, start executing Phase 0, then Phase 1, etc.**
+
+See `@CLAUDE.md` section "SlashCommand Execution - YOU Are The Executor" for detailed explanation.
+
+---
+
+
 **Arguments**: $ARGUMENTS
+
+**🚨 EXECUTE IMMEDIATELY: When this command is invoked, autonomously execute ALL phases below from start to finish.**
 
 Goal: Add a new feature to the project with complete planning documentation that stays synchronized across roadmap, specs, ADRs, and architecture. Can accept text description OR analyze an existing document to intelligently determine what needs to be created.
 
@@ -195,12 +217,12 @@ Goal: Determine feature details and placement
 
 Actions:
 - Calculate next spec number (N+1 from highest)
-- Extract from FEATURE_DESCRIPTION:
-  - Priority: Look for keywords (revenue, critical, must-have → P0; important → P1; nice-to-have → P2)
-  - Dependencies: Look for "depends on F0XX", "requires F0XX", mentions of other features
-  - Complexity: Estimate from scope (marketplace/ecosystem → Complex; single feature → Moderate; enhancement → Simple)
-  - New tech: Check if description mentions new SDKs/frameworks not in project.json
-- ONLY use AskUserQuestion if information is missing or ambiguous
+- Use AskUserQuestion to gather:
+  - Priority level? (P0, P1, P2)
+  - Which phase should this be in? (Current sprint, Next sprint, Future)
+  - Dependencies on existing features? (list spec numbers)
+  - Does this require new technology/architecture decision?
+  - Estimated complexity? (Simple: 1-2 days, Moderate: 2-3 days, Complex: 3-5 days)
 - Determine if ADR needed based on new tech/architecture decision
 - Determine if architecture docs need updates
 
@@ -241,39 +263,26 @@ Actions:
 - Display: "✅ Updated features.json with F[NUMBER]"
 - Update todos
 
-Phase 4: Generate Spec
-Goal: Create detailed feature specification
+Phase 4: Execute All Documentation in Parallel
+Goal: Generate spec, roadmap, ADR, and architecture updates simultaneously for maximum speed
 
 Actions:
+
+**🚀 CRITICAL: Execute ALL applicable tasks below in PARALLEL by calling them in a SINGLE message with multiple Task invocations.**
 
 Task(description="Generate feature spec", subagent_type="planning:feature-spec-writer", prompt="Create complete spec for: [FEATURE_DESCRIPTION]. Spec number: [NEXT_NUMBER]. Priority: [P0/P1/P2]. Dependencies: [list]. Read architecture docs, reference them (don't duplicate). If document mode: Use [DOC_PATH] as primary source. Create specs/features/[NUMBER]-[slug]/spec.md and tasks.md. Follow minimal format (100-150 lines).")
 
-Update todos
-
-Phase 5: Update Roadmap
-Goal: Add feature to strategic roadmap
-
-Actions:
-
 Task(description="Update roadmap", subagent_type="planning:roadmap-planner", prompt="Add feature [NUMBER] to ROADMAP.md: [FEATURE_DESCRIPTION]. Priority: [P0/P1/P2]. Phase: [X]. Complexity: [X days]. Dependencies: [list]. Read docs/ROADMAP.md, add to appropriate phase, recalculate totals, update gantt if present.")
 
+IF new architecture decision needed OR ADR_REQUIRED=true:
+Task(description="Create ADR", subagent_type="planning:decision-documenter", prompt="Create ADR for [FEATURE_DESCRIPTION] decision: [context from analysis]. Determine next ADR number from docs/adr/. Document what/why/alternatives/consequences. Reference spec [NUMBER]. If document mode: Extract decision details from [DOC_PATH]. Create docs/adr/[NUMBER]-[slug].md.")
+
+IF architecture updates needed OR MODE=DOCUMENT:
+Task(description="Update architecture", subagent_type="planning:architecture-designer", prompt="Update docs/architecture/ for [FEATURE_DESCRIPTION]. Changes: [from Phase 3]. If document mode: Use [DOC_PATH] as source for architectural details. Read relevant files, update sections, add mermaid diagrams if needed. Cross-reference spec and ADR.")
+
+**Remember: Send ALL applicable Task calls in ONE message to enable parallel execution.**
+
 Update todos
-
-Phase 6: Create ADR (if needed)
-Goal: Document architecture decision
-
-Actions:
-- If new architecture decision needed (from Phase 2/3) OR ADR_REQUIRED=true (from Phase 1.5):
-  Task(description="Create ADR", subagent_type="planning:decision-documenter", prompt="Create ADR for [FEATURE_DESCRIPTION] decision: [context from analysis]. Determine next ADR number from docs/adr/. Document what/why/alternatives/consequences. Reference spec [NUMBER]. If document mode: Extract decision details from [DOC_PATH]. Create docs/adr/[NUMBER]-[slug].md.")
-- Update todos
-
-Phase 7: Update Architecture (if needed)
-Goal: Update architecture docs
-
-Actions:
-- If architecture updates needed OR MODE=DOCUMENT with architectural content:
-  Task(description="Update architecture", subagent_type="planning:architecture-designer", prompt="Update docs/architecture/ for [FEATURE_DESCRIPTION]. Changes: [from Phase 3]. If document mode: Use [DOC_PATH] as source for architectural details. Read relevant files, update sections, add mermaid diagrams if needed. Cross-reference spec and ADR.")
-- Update todos
 
 Phase 8: Summary
 Goal: Report results
