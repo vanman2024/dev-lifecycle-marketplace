@@ -14,11 +14,64 @@ Core Principles:
 - Document-driven: Can analyze existing docs and intelligently route
 - User validation: Get approval before generating all docs
 
+Phase 0: Infrastructure & Implementation Discovery
+Goal: Check existing infrastructure, implementation state, and documentation BEFORE creating feature
+
+Actions:
+- Create todo list tracking workflow phases using TodoWrite
+
+- Display: "🔍 Discovering existing infrastructure and implementation..."
+
+- **Check Tech Stack & Infrastructure** (.claude/project.json):
+  !{bash test -f .claude/project.json && echo "exists" || echo "missing"}
+  - If exists: Read .claude/project.json
+    * Extract: frameworks, ai_stack, database, dependencies
+    * Store as: PROJECT_STACK
+  - Display discovered stack: "Found: {frontend framework}, {backend framework}, {database}, {AI SDKs}"
+
+- **Check Workflow Document** (*-WORKFLOW.md):
+  !{bash ls *-WORKFLOW.md 2>/dev/null || echo "missing"}
+  - If exists: Read workflow document
+    * Extract: Current phase, completion status, planned vs implemented
+    * Store as: WORKFLOW_STATE
+  - Display: "Workflow: {phase}, {completion}%"
+
+- **Check Existing Features** (features.json):
+  !{bash test -f features.json && echo "exists" || echo "missing"}
+  - If exists: Read features.json
+    * Count total features, by status
+    * Extract feature names for similarity checking later
+    * Store as: EXISTING_FEATURES
+  - Display: "Found {N} existing features ({X} complete, {Y} in-progress, {Z} planned)"
+
+- **Check Backend Implementation**:
+  !{bash test -d backend && echo "exists" || echo "missing"}
+  - If exists: Scan backend structure
+    * List services: !{bash ls backend/api/services/*.py 2>/dev/null | wc -l}
+    * List routes: !{bash ls backend/api/routes/*.py 2>/dev/null | wc -l}
+    * List models: !{bash ls backend/models/*.py 2>/dev/null | wc -l}
+    * Store as: BACKEND_STATE
+  - Display: "Backend: {N} services, {M} routes, {P} models"
+
+- **Check Frontend Implementation**:
+  !{bash test -d frontend && echo "exists" || echo "missing"}
+  - If exists: Scan frontend structure
+    * List pages: !{bash find frontend -name "page.tsx" 2>/dev/null | wc -l}
+    * List components: !{bash find frontend/components -name "*.tsx" 2>/dev/null | wc -l}
+    * Store as: FRONTEND_STATE
+  - Display: "Frontend: {N} pages, {M} components"
+
+- **Summary - Gaps & Prerequisites**:
+  - Display: "✅ Infrastructure Discovery Complete"
+  - If missing dependencies detected:
+    * Display: "⚠️  Missing Prerequisites:"
+    * List what's missing (SDKs, frameworks, tools)
+    * Ask: "Continue anyway or fix prerequisites first?"
+
 Phase 1: Input Analysis
 Goal: Parse input (text description OR document) and extract feature requirements
 
 Actions:
-- Create todo list tracking workflow phases using TodoWrite
 - Parse $ARGUMENTS to detect mode:
   * If contains "--doc=" → Extract file path, set MODE=DOCUMENT
   * Otherwise → Set MODE=TEXT, store description
