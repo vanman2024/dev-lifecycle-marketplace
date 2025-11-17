@@ -195,12 +195,12 @@ Goal: Determine feature details and placement
 
 Actions:
 - Calculate next spec number (N+1 from highest)
-- Use AskUserQuestion to gather:
-  - Priority level? (P0, P1, P2)
-  - Which phase should this be in? (Current sprint, Next sprint, Future)
-  - Dependencies on existing features? (list spec numbers)
-  - Does this require new technology/architecture decision?
-  - Estimated complexity? (Simple: 1-2 days, Moderate: 2-3 days, Complex: 3-5 days)
+- Extract from FEATURE_DESCRIPTION:
+  - Priority: Look for keywords (revenue, critical, must-have → P0; important → P1; nice-to-have → P2)
+  - Dependencies: Look for "depends on F0XX", "requires F0XX", mentions of other features
+  - Complexity: Estimate from scope (marketplace/ecosystem → Complex; single feature → Moderate; enhancement → Simple)
+  - New tech: Check if description mentions new SDKs/frameworks not in project.json
+- ONLY use AskUserQuestion if information is missing or ambiguous
 - Determine if ADR needed based on new tech/architecture decision
 - Determine if architecture docs need updates
 
