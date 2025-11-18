@@ -1,7 +1,7 @@
 ---
 description: Execute all layered tasks sequentially (L0→L3)
 argument-hint: <spec-name>
-allowed-tools: Read, Write, Bash, Glob, Grep, SlashCommand, TodoWrite
+allowed-tools: Read, Write, Bash(*), Glob, Grep, SlashCommand, TodoWrite
 ---
 
 **Arguments**: $ARGUMENTS

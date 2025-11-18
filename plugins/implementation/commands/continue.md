@@ -1,7 +1,7 @@
 ---
 description: Resume execution after pause or failure
 argument-hint: <spec-name>
-allowed-tools: Read, Write, Bash, SlashCommand
+allowed-tools: Read, Write, Bash(*), SlashCommand
 ---
 
 **Arguments**: $ARGUMENTS
