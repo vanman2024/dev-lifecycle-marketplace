@@ -274,7 +274,15 @@ Actions:
 - Create summary report:
   - Features defined: X
   - Total estimated time: Y days
-  - Architecture docs: 8 files created
+  - Architecture docs created:
+    * docs/architecture/README.md
+    * docs/architecture/backend.md
+    * docs/architecture/frontend.md
+    * docs/architecture/data.md
+    * docs/architecture/ai.md
+    * docs/architecture/infrastructure.md
+    * docs/architecture/security.md
+    * docs/architecture/integrations.md
   - ADRs: Z decisions documented
   - project.json: Created with tech stack
   - features.json: Created with feature breakdown
@@ -292,13 +300,22 @@ Actions:
   ```
   ✅ Architecture Planning Complete!
 
-  Created:
-  - docs/requirements/ (wizard inputs)
-  - docs/architecture/ (8 architecture files)
-  - docs/adr/ (architectural decisions)
+  Created Architecture Documentation:
+  - docs/requirements/ (wizard Q&A inputs)
+  - docs/architecture/README.md (system overview)
+  - docs/architecture/backend.md (backend architecture)
+  - docs/architecture/frontend.md (frontend architecture)
+  - docs/architecture/data.md (database schema)
+  - docs/architecture/ai.md (AI stack architecture)
+  - docs/architecture/infrastructure.md (infrastructure components)
+  - docs/architecture/security.md (security architecture)
+  - docs/architecture/integrations.md (external integrations)
+  - docs/adr/*.md (architectural decision records)
   - docs/ROADMAP.md (project roadmap)
-  - .claude/project.json (tech stack configuration)
-  - features.json (X features defined)
+
+  Created Configuration Files:
+  - .claude/project.json (tech stack from architecture docs)
+  - features.json (X features from breakdown)
 
   Next Steps:
   1. Review docs/FINAL-APPROVAL.md for validation results
