@@ -28,6 +28,12 @@
       "version": "1.0.0"
     },
     {
+      "name": "implementation",
+      "source": "./plugins/implementation",
+      "description": "Orchestrate execution of layered tasks by mapping to tech-specific commands",
+      "version": "1.0.0"
+    },
+    {
       "name": "quality",
       "source": "./plugins/quality",
       "description": "Code Quality & Validation: Code review, task validation, performance analysis, compliance checking",
