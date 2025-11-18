@@ -64,19 +64,25 @@ Phase 3: Fetch Available Commands from Airtable
 Goal: Query tech stack in Airtable to get ALL available commands for implementation
 
 Actions:
-- Read .claude/project.json to get tech stack name
-  @.claude/project.json
-- Extract tech_stack_name from project.json
-- Use Airtable MCP to search for tech stack:
-  * Search Tech Stacks table for matching stack name
-  * Get stack record ID
-- For EACH lifecycle phase (Planning, Iteration, Quality, Testing, Deployment):
-  * Get linked plugin record from tech stack
-  * Get all command records linked to that plugin
-  * Extract command names, descriptions, argument hints
-  * Store in AVAILABLE_COMMANDS map organized by plugin
-- Result: Complete list of implementation commands available for this tech stack
-- Display: "Found [N] commands across [M] plugins"
+- Navigate to planning skill directory:
+  !{cd ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/planning/skills/feature-workflow-generation}
+- Execute Python script to query Airtable:
+  !{python3 scripts/generate-feature-workflow.py}
+- Script returns JSON with:
+  * tech_stack: Tech stack name from project.json
+  * features: Array of features from features.json with spec content
+  * available_commands: All commands available for the tech stack
+  * plugins: Plugin details organized by lifecycle phase
+- Parse JSON output and extract:
+  * AVAILABLE_COMMANDS: Map of commands organized by plugin
+  * FEATURES_DATA: Features with spec content
+  * TECH_STACK_NAME: Tech stack being used
+- Handle errors:
+  * If "error" in JSON: Display error message and exit
+  * If missing features.json: Suggest running /planning:add-feature
+  * If missing project.json: Suggest running /foundation:detect
+  * If Airtable fails: Fall back to filesystem-based command discovery
+- Display: "Found [N] commands across [M] plugins for [TECH_STACK_NAME]"
 
 Phase 4: Generate Workflow Document
 Goal: Create FEATURE-IMPLEMENTATION-WORKFLOW.md with feature-specific commands
