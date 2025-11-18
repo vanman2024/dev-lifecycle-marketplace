@@ -139,32 +139,7 @@ Actions:
 - If critical issues found: Display and ask user to proceed or regenerate
 - Update todos
 
-Phase 5: Generate Feature Specs (BATCHED PARALLEL)
-Goal: Generate all feature specs using batched parallel execution
-
-Actions:
-**Batch 1 (10 agents)**: Launch feature specs 001-010
-- Launch IN PARALLEL (one message, 10 Task calls):
-  Task 1-10: feature-spec-writer agents for features 001-010
-
-**Batch 2 (10 agents)**: Launch feature specs 011-020
-- Launch IN PARALLEL (one message, 10 Task calls):
-  Task 1-10: feature-spec-writer agents for features 011-020
-
-- Each agent receives:
-  - feature-breakdown.json entry for their feature
-  - Architecture docs: docs/architecture/
-  - ADRs: docs/adr/
-  - Roadmap: docs/ROADMAP.md
-  - Shared context from wizard requirements
-
-- Total features: 20 (adjust based on actual feature count)
-- Batch size: 10 agents (UI-safe)
-- Expected time: 2-3 minutes per batch
-- Verify: !{bash test -d specs/features && ls -d specs/features/*/ | wc -l}
-- Update todos
-
-Phase 5.5: Create project.json and features.json
+Phase 5: Create project.json and features.json
 Goal: Generate project configuration and features registry from architecture docs
 
 Actions:
@@ -250,55 +225,61 @@ Actions:
 - Display completion:
   - "✅ Created .claude/project.json with detected tech stack"
   - "✅ Created features.json with [X] features"
-  - "Next: /planning:init-project will read these files to generate specs"
+  - "📋 Architecture planning complete!"
+  - "Next step: Run /planning:init-project to generate feature specs"
+  - "Then: Run /foundation:generate-infrastructure-specs for infrastructure specs"
 
 - Update todos
 
-Phase 6: Final Plan Validation (Complete Review)
-Goal: Validate entire planning package before implementation
+Phase 6: Final Architecture Validation
+Goal: Validate architecture planning is complete and ready for spec generation
 
 Actions:
-- Launch CTO reviewer for final approval:
+- Launch CTO reviewer for architecture approval:
 
-  Task: CTO reviewer reads complete planning package
-  - All 8 architecture files
+  Task: CTO reviewer reads architecture planning package
+  - All 8 architecture files (frontend.md, backend.md, data.md, ai.md, infrastructure.md, security.md, integrations.md, README.md)
   - All ADRs and ROADMAP.md
-  - All feature specs (specs/features/*/spec.md)
-  - All tasks files (specs/features/*/tasks.md)
+  - project.json (tech stack configuration)
+  - features.json (feature breakdown)
   - Previous validation reports (if any warnings)
   - Wizard requirements and Q&A
 
   CTO validates:
-  - Specs align with architecture
-  - Features are implementable
-  - Dependencies properly mapped
-  - No conflicts between specs
-  - Plan is production-ready
+  - Architecture is complete and coherent
+  - Tech stack choices are appropriate
+  - Features are well-defined and scoped
+  - Infrastructure components identified
+  - Security considerations documented
+  - Plan is ready for spec generation
 
   Output: docs/FINAL-APPROVAL.md
   - Status: APPROVED | APPROVED_WITH_CHANGES | REJECTED
-  - Executive summary of complete plan
+  - Executive summary of architecture plan
   - Critical issues (blockers)
-  - Warnings (should fix)
+  - Warnings (should fix before spec generation)
   - Recommendations (optional)
-  - Final go/no-go decision
+  - Go/no-go decision for proceeding to spec generation
 
-- If REJECTED: Display issues and ask user to regenerate specs
+- If REJECTED: Display issues and ask user to regenerate architecture
 - If APPROVED_WITH_CHANGES: Display warnings and ask user to proceed or fix
 - If APPROVED: Continue to finalization
 - Update todos
 
 Phase 7: Finalization
-Goal: Complete wizard and prepare for implementation
+Goal: Complete wizard and prepare for spec generation
 
 Actions:
 - Update ROADMAP.md with final approval status
 - Create summary report:
-  - Features created: X
+  - Features defined: X
   - Total estimated time: Y days
-  - Infrastructure: Handled by [plugin-name] Phase 0-2
+  - Architecture docs: 8 files created
+  - ADRs: Z decisions documented
+  - project.json: Created with tech stack
+  - features.json: Created with feature breakdown
   - Approval status: APPROVED (from Phase 6)
-  - Next steps: Run /supervisor:init --all to create worktrees
+  - Next steps: Run /planning:init-project to generate feature specs
 
 - Save summary to `.wizard/completion-summary.md`
 - Mark all todos complete
@@ -307,9 +288,23 @@ Phase 8: Summary
 Goal: Display results and next steps
 
 Actions:
-- Display: Requirements in docs/requirements/, Architecture in docs/architecture/, ROADMAP.md created
-- Display: X features created in specs/features/
-- Display: Infrastructure handled by plugin (no infra specs)
-- Display: Final approval status from CTO review
-- Next steps: Review FINAL-APPROVAL.md, run /ai-tech-stack-1:build-full-stack-phase-0, then /supervisor:init --all
-- If --auto-continue flag provided, automatically proceed to Phase 0
+- Display completion message:
+  ```
+  ✅ Architecture Planning Complete!
+
+  Created:
+  - docs/requirements/ (wizard inputs)
+  - docs/architecture/ (8 architecture files)
+  - docs/adr/ (architectural decisions)
+  - docs/ROADMAP.md (project roadmap)
+  - .claude/project.json (tech stack configuration)
+  - features.json (X features defined)
+
+  Next Steps:
+  1. Review docs/FINAL-APPROVAL.md for validation results
+  2. Run /planning:init-project to generate feature specs
+  3. Run /foundation:generate-infrastructure-specs for infrastructure specs
+  4. Begin implementation following the specs
+  ```
+
+- Update todos to completed

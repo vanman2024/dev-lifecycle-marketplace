@@ -1,88 +1,113 @@
 ---
-description: Execute all layered tasks sequentially (L0→L3)
-argument-hint: <spec-name>
+description: Execute feature implementation by discovering commands and executing tasks
+argument-hint: <spec-id>
 allowed-tools: Read, Write, Bash(*), Glob, Grep, SlashCommand, TodoWrite
 ---
 
 **Arguments**: $ARGUMENTS
 
-Goal: Execute complete implementation workflow by reading layered-tasks.md, mapping tasks to tech-specific commands, and executing layer by layer with progress tracking.
+Goal: Execute complete feature implementation by reading spec.md and tasks.md, discovering available commands from enabled plugins, intelligently mapping tasks to commands, and executing sequentially with progress tracking.
 
 Core Principles:
-- Read layered-tasks.md for execution plan
-- Map tasks to tech-specific commands based on project.json
-- Execute L0 → L1 → L2 → L3 sequentially
-- Auto-sync with /iterate:sync after each layer
+- Read spec.md for feature context and requirements
+- Read tasks.md for task list to execute
+- Discover available commands from .claude/settings.json
+- Map tasks to commands based on keywords and tech stack
+- Execute tasks sequentially with progress tracking
+- Auto-sync with /iterate:sync after execution
 - Track progress in .claude/execution/<spec>.json
-- Pause on mapping failures
 
-Phase 1: Discovery & Setup
-Goal: Load spec, validate, and initialize tracking
-
-Actions:
-- Create todos: Discovery, L0, Sync L0, L1, Sync L1, L2, Sync L2, L3, Final Sync
-- Parse $ARGUMENTS to extract spec name
-- Validate: !{bash test -d specs/$ARGUMENTS && echo "exists" || echo "missing"}
-- If missing: Error "Spec not found. Run /planning:add-feature" and exit
-- Read: @specs/$ARGUMENTS/layered-tasks.md and @.claude/project.json
-- Extract tech stack for command mapping
-- Initialize tracking: !{bash mkdir -p .claude/execution}
-- Create .claude/execution/$ARGUMENTS.json with layers status
-- Display: "Found [X] tasks across [Y] layers"
-
-Phase 2: Execute L0 & Sync
-Goal: Execute infrastructure tasks and validate
+Phase 0: Discovery & Context Loading
+Goal: Load spec files, discover available commands, and prepare for execution
 
 Actions:
-- Extract L0 tasks from layered-tasks.md
-- Map tasks to commands (database→apply_migration, auth→clerk:init, AI→add-provider, etc.)
-- If mapping fails: Ask user for command, pause
-- Execute each task via SlashCommand, update L0.tasks in tracking
-- Display: "L0 Progress: [X/Y]"
-- Mark L0.status = "complete"
-- Sync: !{bash /iterate:sync $ARGUMENTS}
-- Update todo: L0 complete
+- Create todos: Load Context, Discover Commands, Execute Tasks, Sync & Validate
+- Parse $ARGUMENTS to extract spec ID (e.g., "F001", "infrastructure/001-auth")
+- Validate spec exists: !{bash test -d specs/$ARGUMENTS && echo "exists" || echo "missing"}
+- If missing: Error "Spec not found at specs/$ARGUMENTS. Run /planning:add-feature first" and exit
+- Read spec context:
+  * @specs/$ARGUMENTS/spec.md (feature description, requirements, user stories)
+  * @specs/$ARGUMENTS/tasks.md (task list to execute)
+  * @.claude/project.json (tech stack for intelligent command mapping)
+  * @.claude/settings.json (enabled plugins and available commands)
+- Display feature summary:
+  * Feature: [Name from spec.md]
+  * Spec ID: $ARGUMENTS
+  * Tasks: [X tasks found in tasks.md]
+- Discover available commands:
+  * Parse enabledPlugins from settings.json
+  * List plugins: display "[Y] plugins enabled"
+  * Display: "Command discovery complete - ready for task mapping"
+- Initialize execution tracking:
+  * !{bash mkdir -p .claude/execution}
+  * Create .claude/execution/$ARGUMENTS.json with initial status
+  * Track: spec_id, started_at, tasks: [], status: "in_progress"
 
-Phase 3: Execute L1 & Sync
-Goal: Execute core services and validate
-
-Actions:
-- Extract L1 tasks from layered-tasks.md
-- Map: component→add-component, endpoint→add-endpoint, table→apply_migration
-- Execute via SlashCommand, update L1.tasks
-- Display: "L1 Progress: [X/Y]"
-- Mark L1.status = "complete"
-- Sync: !{bash /iterate:sync $ARGUMENTS}
-- Update todo: L1 complete
-
-Phase 4: Execute L2 & Sync
-Goal: Execute features and validate
-
-Actions:
-- Extract L2 tasks from layered-tasks.md
-- Map: streaming→add-streaming, pages→add-page, integration→integrate-supabase
-- Execute via SlashCommand, update L2.tasks
-- Display: "L2 Progress: [X/Y]"
-- Mark L2.status = "complete"
-- Sync: !{bash /iterate:sync $ARGUMENTS}
-- Update todo: L2 complete
-
-Phase 5: Execute L3 & Final Sync
-Goal: Execute integration, validate, and summarize
+Phase 1: Intelligent Task Mapping
+Goal: Map each task from tasks.md to appropriate commands from enabled plugins
 
 Actions:
-- Extract L3 tasks from layered-tasks.md
-- Map: wire→add-component, connect→Edit, test→npm run test, config→Edit .env.local
-- Execute via SlashCommand, update L3.tasks
-- Display: "L3 Progress: [X/Y]"
-- Mark L3.status = "complete"
-- Final sync: !{bash /iterate:sync $ARGUMENTS}
-- Update: completed_at timestamp
-- Mark all todos complete
-- Display summary:
-  * Feature: $ARGUMENTS
-  * Status: All layers complete (L0→L3)
+- Extract tasks from tasks.md (parse markdown checklist format)
+- For each task:
+  * Analyze task description for keywords
+  * Extract action type (create, setup, configure, deploy, test, etc.)
+  * Extract subject (component, endpoint, schema, auth, deployment, etc.)
+  * Match to tech stack from project.json
+  * Score available commands by relevance:
+    - Keyword matching (component → add-component, endpoint → add-endpoint)
+    - Tech stack alignment (Next.js → nextjs-frontend:*, FastAPI → fastapi-backend:*)
+    - Plugin capabilities (auth → supabase:add-auth OR clerk:add-auth based on project.json)
+  * Select highest-scoring command (confidence-based)
+  * If confidence < 60%: Ask user "Which command for task: [description]?"
+  * Display mapping: "Task: [description] → Command: /plugin:command-name [args]"
+- Create execution plan with all mappings
+- Display execution plan:
   * Total tasks: [X]
-  * Execution time: [Y] min
-  * Log: .claude/execution/$ARGUMENTS.json
-- Next steps: /quality:validate-code $ARGUMENTS, /testing:test
+  * Mapped commands: [list of unique commands]
+  * Estimated time: [Y] minutes
+- Ask user: "Execute plan? (y/n)" - If no, exit gracefully
+
+Phase 2: Sequential Task Execution
+Goal: Execute all tasks sequentially with progress tracking
+
+Actions:
+- Update todo: Mark "Execute Tasks" as in_progress
+- For each task in execution plan:
+  * Display: "Executing task [X/Y]: [task description]"
+  * Display: "Command: [/plugin:command args]"
+  * Execute via SlashCommand tool
+  * Capture result and any errors
+  * Update .claude/execution/$ARGUMENTS.json:
+    - Add task to tasks array
+    - Mark task.status = "complete" or "failed"
+    - Record task.command, task.output, task.timestamp
+  * If execution fails:
+    - Display error: "Task failed: [error message]"
+    - Ask user: "Continue with remaining tasks? (y/n)"
+    - If no: Mark execution as "partial", save state, exit
+  * Display progress: "Progress: [X/Y] tasks complete"
+- All tasks complete: Display "✅ All tasks executed successfully"
+- Update execution tracking:
+  * Mark status = "complete"
+  * Record completed_at timestamp
+  * Save final .claude/execution/$ARGUMENTS.json
+
+Phase 3: Sync and Validation
+Goal: Sync implementation with specs and provide summary
+
+Actions:
+- Run sync: Execute /iterate:sync $ARGUMENTS
+- Display sync results
+- Generate execution summary:
+  * Feature: $ARGUMENTS
+  * Status: [complete|partial|failed]
+  * Tasks executed: [X/Y]
+  * Duration: [start to end time]
+  * Commands used: [unique command count]
+  * Log file: .claude/execution/$ARGUMENTS.json
+- Display next steps:
+  * Validate code: /quality:validate-code $ARGUMENTS
+  * Run tests: /testing:test $ARGUMENTS
+  * Deploy: /deployment:deploy
+- Mark all todos complete
+- Success message: "🎉 Feature implementation complete!"

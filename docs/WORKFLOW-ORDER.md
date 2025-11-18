@@ -14,7 +14,7 @@ There are **TWO DIFFERENT starting points** depending on whether you have existi
 **Starting point**: User has an idea but no code
 
 ```bash
-# Step 1: PLANNING WIZARD - Complete project planning
+# Step 1: PLANNING WIZARD - Architecture planning ONLY
 /planning:wizard
 # Creates:
 # - docs/architecture/*.md (8 architecture docs: frontend, backend, data, ai, infrastructure, security, integrations, README)
@@ -22,16 +22,16 @@ There are **TWO DIFFERENT starting points** depending on whether you have existi
 # - docs/ROADMAP.md (project roadmap)
 # - .claude/project.json (extracted from architecture docs) ✅
 # - features.json (from feature breakdown) ✅
-# - specs/features/*/ (feature spec directories)
+# Does NOT create specs/ - that's init-project's job!
 
-# Step 2: PLANNING - Generate remaining feature specs
+# Step 2: PLANNING - Generate ALL feature specs
 /planning:init-project
 # READS:
-# - features.json (created by wizard)
-# - .claude/project.json (created by wizard)
+# - features.json (created by wizard) ✅
+# - .claude/project.json (created by wizard) ✅
 # Creates:
-# - specs/features/F001-*/ (any missing spec directories)
-# - Complete spec.md, setup.md, tasks.md for each feature
+# - specs/features/F001-*/ (ALL feature spec directories)
+# - spec.md, setup.md, tasks.md for EACH feature
 
 # Step 3: FOUNDATION - Generate infrastructure specs
 /foundation:generate-infrastructure-specs
