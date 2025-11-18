@@ -1,0 +1,16 @@
+{
+  "index": 0,
+  "description": "Setup database schema",
+  "command": "/supabase:create-schema chat",
+  "agent": "supabase-agent",
+  "complexity": "easy",
+  "dependencies": [],
+  "status": "pending",
+  "started_at": null,
+  "completed_at": null,
+  "duration_ms": null,
+  "output": null,
+  "files_created": [],
+  "files_modified": [],
+  "error": null
+}

@@ -1,0 +1,44 @@
+{
+  "name": "Infrastructure",
+  "status": "pending",
+  "total_tasks": 2,
+  "completed_tasks": 0,
+  "failed_tasks": 0,
+  "started_at": null,
+  "completed_at": null,
+  "duration_ms": null,
+  "tasks": [
+    {
+      "index": 0,
+      "description": "Setup database schema",
+      "command": "/supabase:create-schema chat",
+      "agent": "supabase-agent",
+      "complexity": "easy",
+      "dependencies": [],
+      "status": "pending",
+      "started_at": null,
+      "completed_at": null,
+      "duration_ms": null,
+      "output": null,
+      "files_created": [],
+      "files_modified": [],
+      "error": null
+    },
+    {
+      "index": 1,
+      "description": "Initialize API structure",
+      "command": "/fastapi-backend:init api",
+      "agent": "fastapi-agent",
+      "complexity": "easy",
+      "dependencies": [0],
+      "status": "pending",
+      "started_at": null,
+      "completed_at": null,
+      "duration_ms": null,
+      "output": null,
+      "files_created": [],
+      "files_modified": [],
+      "error": null
+    }
+  ]
+}
