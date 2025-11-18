@@ -97,16 +97,17 @@ This is the **dev-lifecycle-marketplace** - a collection of tech-agnostic workfl
 
 ## Core Architecture
 
-### The 5 Lifecycle Phases
+### The 7 Lifecycle Plugins
 
-The marketplace consists of 5 independent plugins that work together as a cohesive workflow:
+The marketplace consists of 7 independent plugins that work together as a cohesive workflow:
 
-1. **foundation** - Project initialization, tech stack detection, environment setup
-2. **planning** - Specifications, architecture design, roadmaps, ADRs
-3. **iterate** - Task management, code adjustments, refactoring, feature enhancement
-4. **quality** - Standardized testing (Newman/Postman + Playwright), security scanning
-5. **deployment** - Platform auto-detection and deployment orchestration
-6. **version** - Versioning and changelog management (planned for future release)
+1. **foundation** - Project initialization, tech stack detection, environment setup, workflow generation
+2. **planning** - Specifications, architecture design, roadmaps, ADRs, feature workflow generation
+3. **implementation** - Execution orchestration, task-to-command mapping, automated feature building
+4. **iterate** - Task layering, code adjustments, refactoring, feature enhancement
+5. **quality** - Code validation, security scanning, performance analysis, compliance checking
+6. **testing** - Test execution (Newman/Postman API + Playwright E2E), test generation
+7. **deployment** - Platform auto-detection and deployment orchestration
 
 ### Plugin Structure
 
@@ -495,22 +496,33 @@ The `task-layering` agent (iterate plugin) is preserved from the legacy system a
 ## Typical Full Workflow
 
 ```bash
-# 1. Initialize project
+# 1. Foundation - Initialize and detect
 /foundation:init my-project
+/foundation:detect
+/foundation:generate-workflow "AI Tech Stack 1"  # Infrastructure setup workflow
 
-# 2. Create specifications
-/planning:spec "user authentication feature"
+# 2. Planning - Create specifications
+/planning:add-feature "user authentication"
 /planning:architecture
+/planning:generate-feature-workflow  # Feature implementation workflow
 
-# 3. Manage and layer tasks
-/iterate:tasks spec-001
+# 3. Implementation - Execute features automatically
+/iterate:tasks F001  # Layer tasks for parallel execution
+/implementation:execute F001  # Auto-map and execute all commands
 
-# 4. (External: Implement features using tech-specific plugins)
+# 4. Iterate - Adjust and enhance
+/iterate:adjust "Add error handling to auth"
+/iterate:sync F001  # Sync implementation with specs
 
-# 5. Test implementation
-/quality:test
+# 5. Quality - Validate code
+/quality:validate-code F001
+/quality:security
 
-# 6. Deploy to production
+# 6. Testing - Execute test suites
+/testing:test F001
+/testing:test-frontend
+
+# 7. Deployment - Deploy to production
 /deployment:deploy
 ```
 
@@ -519,15 +531,17 @@ The `task-layering` agent (iterate plugin) is preserved from the legacy system a
 | Plugin | Commands | Agents | Skills | Total |
 |--------|----------|--------|--------|-------|
 | foundation | 4 | 1 | 3 | 8 |
-| planning | 5 | 4 | 3 | 12 |
+| planning | 5 | 4 | 4 | 13 |
+| implementation | 5 | 4 | 3 | 12 |
 | iterate | 3 | 4 | 1 | 8 |
-| quality | 3 | 4 | 3 | 10 |
+| quality | 3 | 4 | 2 | 9 |
+| testing | 3 | 3 | 5 | 11 |
 | deployment | 4 | 3 | 3 | 10 |
-| **TOTAL** | **19** | **16** | **13** | **48** |
+| **TOTAL** | **27** | **23** | **21** | **71** |
 
 ## Architecture Decisions
 
-### Why 5 Plugins Instead of Monolithic?
+### Why 7 Plugins Instead of Monolithic?
 
 - **Modularity**: Users can use only the lifecycle phases they need
 - **Maintainability**: Each plugin has clear boundaries and responsibilities
