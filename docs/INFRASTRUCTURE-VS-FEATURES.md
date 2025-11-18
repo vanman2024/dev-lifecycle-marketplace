@@ -184,40 +184,52 @@ Ask yourself:
 
 ## Workflow Separation
 
-### Infrastructure Workflow (Foundation)
+**IMPORTANT**: Workflow depends on whether you have existing code or not!
+
+### Greenfield Project (No Code Yet)
 
 ```bash
-# 1. Detect tech stack and infrastructure needs
-/foundation:detect
-
-# 2. Generate infrastructure specs
-/foundation:generate-infrastructure-specs
-
-# Result:
-specs/infrastructure/
-├── 001-authentication/  (Clerk)
-├── 002-database/        (Supabase PostgreSQL)
-├── 003-caching/         (Redis)
-├── 004-monitoring/      (Sentry)
-└── ...
-```
-
-### Feature Workflow (Planning)
-
-```bash
-# 1. Create features.json from requirements
-/planning:wizard  # OR /planning:add-feature
+# 1. PLANNING FIRST - Design features before building
+/planning:wizard
 
 # 2. Generate feature specs
 /planning:init-project
 
+# 3. BUILD features (following specs)
+# ... developer work ...
+
+# 4. FOUNDATION - Now detect infrastructure from built code
+/foundation:detect
+
+# 5. Generate infrastructure specs
+/foundation:generate-infrastructure-specs
+
 # Result:
-specs/features/
-├── F001-google-file-search-rag/
-├── F002-claude-agent-sdk-study-partner/
-├── F004-hybrid-question-generation/
-└── ...
+specs/features/          # Created from wizard/planning
+specs/infrastructure/    # Created from detected code
 ```
+
+### Brownfield Project (Code Already Exists)
+
+```bash
+# 1. FOUNDATION FIRST - Detect what exists
+/foundation:detect
+
+# 2. Generate infrastructure specs from detected components
+/foundation:generate-infrastructure-specs
+
+# 3. PLANNING - Document user-facing features
+/planning:wizard  # OR /planning:add-feature
+
+# 4. Generate feature specs
+/planning:init-project
+
+# Result:
+specs/infrastructure/    # Created from detected code
+specs/features/          # Created from wizard/planning
+```
+
+**See docs/WORKFLOW-ORDER.md for detailed explanation of greenfield vs brownfield workflows.**
 
 ## Migration Guide: Fix Existing Projects
 
