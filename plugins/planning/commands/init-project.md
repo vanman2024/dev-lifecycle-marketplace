@@ -62,14 +62,36 @@ Skills provide pre-built resources to accelerate your work.
 
 **Arguments**: $ARGUMENTS
 
-Goal: Rapidly generate complete project specifications from a massive project description by breaking it into features and generating specs in parallel
+Goal: Rapidly generate complete project specifications from features.json (or massive project description if features.json missing)
 
 Core Principles:
-- Break down complexity with feature-analyzer
-- Generate specs in parallel for speed
+- **Prefer features.json if it exists** (source of truth)
+- Read project.json for tech stack context
+- Generate specs ONLY for features without specs/ directories
+- Process 3-5 features at a time (batching)
 - Use structured JSON to coordinate agents
-- Consolidate results into project-specs.json
 - Provide comprehensive summary with paths
+
+Phase 0: Check Existing Project Data
+Goal: Check if features.json and project.json already exist
+
+Actions:
+- Check for features.json: !{bash test -f features.json && echo "✅ EXISTS" || echo "⚠️ MISSING"}
+- Check for project.json: !{bash test -f .claude/project.json && echo "✅ EXISTS" || echo "⚠️ MISSING"}
+
+**If BOTH exist**:
+  - Read features.json: @features.json
+  - Read project.json: @.claude/project.json
+  - Extract feature list from features.json
+  - Check which features already have specs:
+    !{bash for f in $(jq -r '.features[].id' features.json 2>/dev/null); do if [ -d "specs/$f" ]; then echo "$f: ✅ HAS SPEC"; else echo "$f: ⚠️ NEEDS SPEC"; fi; done}
+  - Filter to features WITHOUT specs
+  - Display: "Found [X] features, [Y] need specs"
+  - **SKIP to Phase 4** (use existing features.json)
+
+**If features.json MISSING**:
+  - Display: "features.json not found - will create from architecture docs"
+  - Continue to Phase 1 (architecture analysis)
 
 Phase 1: Verify Architecture Documentation
 Goal: Check for architecture docs created by /planning:architecture, /planning:decide, /planning:roadmap
@@ -161,24 +183,44 @@ Save JSON to: /tmp/feature-breakdown.json")
 
 Wait for feature-analyzer to complete and generate JSON.
 
-Phase 4: Load Feature Breakdown
-Goal: Parse the feature breakdown JSON for parallel spec generation
+Phase 4: Prepare Feature List for Spec Generation
+Goal: Get final list of features that need specs (from features.json OR feature-breakdown.json)
 
 Actions:
-- Load the generated JSON: @/tmp/feature-breakdown.json
-- Extract feature list from JSON
-- Count total features: !{bash jq '.features | length' /tmp/feature-breakdown.json}
-- Display feature list for user visibility
-- Example: !{bash jq -r '.features[] | "\(.number) - \(.name): \(.focus)"' /tmp/feature-breakdown.json}
+**If came from Phase 0** (features.json exists):
+  - Features list already loaded from features.json
+  - Filter to features WITHOUT specs/ directories (from Phase 0)
+  - Use project.json for tech stack context
+  - Display: "Generating specs for [X] features from features.json"
 
-Phase 5: Parallel Spec Generation
-Goal: Spawn N spec-writer agents (one per feature) to run simultaneously
+**If came from Phase 3** (created feature-breakdown.json):
+  - Load the generated JSON: @/tmp/feature-breakdown.json
+  - Extract feature list from JSON
+  - Count total features: !{bash jq '.features | length' /tmp/feature-breakdown.json}
+  - Display feature list for user visibility
+  - Example: !{bash jq -r '.features[] | "\(.number) - \(.name): \(.focus)"' /tmp/feature-breakdown.json}
+  - Display: "Generating specs for [X] features from architecture analysis"
+
+**Batching Strategy**:
+  - Total features to generate: [X]
+  - Batch size: 3-5 features at a time
+  - Number of batches: [X/5 rounded up]
+  - Display: "Will generate in [Y] batches of 3-5 features"
+
+Phase 5: Parallel Spec Generation (Batch 1)
+Goal: Generate specs for first 3-5 features in parallel
 
 Actions:
+- Select first 3-5 features from list (features without specs)
+- Display: "Batch 1: Generating specs for features [F001, F002, F003...]"
 
-Read feature breakdown JSON and launch one spec-writer agent per feature:
+**Data Sources for Spec Writer**:
+- If from features.json: Use feature data from features.json + project.json for tech stack
+- If from feature-breakdown.json: Use feature data from /tmp/feature-breakdown.json + architecture docs
 
-For each feature in the JSON, launch a parallel Task:
+**Launch parallel spec-writer agents** (3-5 at a time):
+
+For each feature in BATCH 1, launch a parallel Task:
 
 Task(description="Generate spec for feature 001", subagent_type="planning:spec-writer", prompt="You are the spec-writer agent. Create complete specifications (spec.md, plan.md, tasks.md) for this feature.
 
