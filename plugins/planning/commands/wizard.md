@@ -164,6 +164,96 @@ Actions:
 - Verify: !{bash test -d specs/features && ls -d specs/features/*/ | wc -l}
 - Update todos
 
+Phase 5.5: Create project.json and features.json
+Goal: Generate project configuration and features registry from architecture docs
+
+Actions:
+**Step 1: Create .claude/project.json**
+- Extract tech stack from architecture documents:
+  - Framework: @docs/architecture/frontend.md (Next.js, React, Vue, etc.)
+  - Backend: @docs/architecture/backend.md (FastAPI, Django, Express, etc.)
+  - Database: @docs/architecture/data.md (PostgreSQL, Supabase, MongoDB, etc.)
+  - AI Stack: @docs/architecture/ai.md (Vercel AI SDK, Claude Agent SDK, etc.)
+  - Infrastructure: @docs/architecture/infrastructure.md (Auth, caching, monitoring, etc.)
+
+- Generate project.json structure:
+  ```json
+  {
+    "name": "project-name",
+    "description": "from initial requirements",
+    "frameworks": {
+      "frontend": { "primary": "detected", "version": "detected", "language": "TypeScript" },
+      "backend": { "primary": "detected", "version": "detected", "language": "Python" }
+    },
+    "ai_stack": {
+      "sdks": ["detected from ai.md"],
+      "providers": ["detected from ai.md"],
+      "memory": "detected",
+      "mcp_servers": []
+    },
+    "database": {
+      "type": "detected",
+      "provider": "detected",
+      "orm": "detected"
+    },
+    "infrastructure": {
+      "authentication": { "provider": "detected", "features": [] },
+      "caching": { "provider": "detected", "strategy": "" },
+      "monitoring": { "provider": "detected", "features": [] },
+      "error_handling": { "provider": "detected" },
+      "ci_cd": { "platform": "detected", "workflows": [] }
+    },
+    "detected_at": "current-date"
+  }
+  ```
+
+- Write: !{bash cat > .claude/project.json <<'EOF' ... EOF}
+- Verify: !{bash test -f .claude/project.json && echo "✅ Created" || echo "❌ Failed"}
+
+**Step 2: Create features.json**
+- Read feature-breakdown.json from Phase 4: @/tmp/feature-breakdown.json
+- Transform to features.json format:
+  ```json
+  {
+    "project": "project-name",
+    "generated_at": "timestamp",
+    "description": "from requirements",
+    "source_documents": {
+      "architecture": ["list of architecture docs"],
+      "adr": ["list of ADRs"],
+      "roadmap": "docs/ROADMAP.md"
+    },
+    "features": [
+      {
+        "id": "F001",
+        "name": "feature name",
+        "description": "from feature-breakdown",
+        "priority": "P0/P1/P2",
+        "phase": "MVP/Beta/Post-MVP",
+        "complexity": "Simple/Moderate/Complex",
+        "estimated_days": 2-3,
+        "dependencies": ["other feature IDs"],
+        "adr_references": []
+      }
+    ],
+    "shared_context": {
+      "tech_stack": ["from architecture"],
+      "user_types": ["from requirements"],
+      "data_entities": ["from data.md"]
+    }
+  }
+  ```
+
+- Write: !{bash cat > features.json <<'EOF' ... EOF}
+- Verify: !{bash test -f features.json && jq '.features | length' features.json}
+
+- Display completion:
+  - "✅ Created .claude/project.json with detected tech stack"
+  - "✅ Created features.json with [X] features"
+  - "Next: /planning:init-project will read these files to generate specs"
+
+- Update todos
+
 Phase 6: Final Plan Validation (Complete Review)
 Goal: Validate entire planning package before implementation
 
