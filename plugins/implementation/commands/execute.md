@@ -38,10 +38,14 @@ Actions:
   * Parse enabledPlugins from settings.json
   * List plugins: display "[Y] plugins enabled"
   * Display: "Command discovery complete - ready for task mapping"
-- Initialize execution tracking:
+- Check execution history:
   * !{bash mkdir -p .claude/execution}
-  * Create .claude/execution/$ARGUMENTS.json with initial status
-  * Track: spec_id, started_at, tasks: [], status: "in_progress"
+  * Check if .claude/execution/$ARGUMENTS.json exists
+  * If exists: @.claude/execution/$ARGUMENTS.json (read previous execution history)
+  * Display previously executed commands: "[X] commands already run"
+  * Mark completed tasks to skip: "Resuming from last checkpoint"
+  * If not exists: Create new .claude/execution/$ARGUMENTS.json
+  * Track: spec_id, started_at, tasks: [], executed_commands: [], status: "in_progress"
 
 Phase 1: Intelligent Task Mapping
 Goal: Map each task from tasks.md to appropriate commands from enabled plugins
@@ -73,12 +77,15 @@ Goal: Execute all tasks sequentially with progress tracking
 Actions:
 - Update todo: Mark "Execute Tasks" as in_progress
 - For each task in execution plan:
-  * Display: "Executing task [X/Y]: [task description]"
+  * Check execution history: if command already in executed_commands array, skip
+  * If already executed: Display "⏭️  Skipping: [command] (already run)" and continue
+  * If not executed: Display "Executing task [X/Y]: [task description]"
   * Display: "Command: [/plugin:command args]"
   * Execute via SlashCommand tool
   * Capture result and any errors
   * Update .claude/execution/$ARGUMENTS.json:
     - Add task to tasks array
+    - Add command to executed_commands array (deduplicated)
     - Mark task.status = "complete" or "failed"
     - Record task.command, task.output, task.timestamp
   * If execution fails:

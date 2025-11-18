@@ -197,12 +197,19 @@ Actions:
   - Tech stack references
   - Common dependencies
   - Infrastructure requirements
+- **CRITICAL: Analyze feature dependencies and determine build order**:
+  - Infrastructure must come first (always dependency for features)
+  - Foundation features before dependent features
+  - Core services before UI features
+  - Data models before features using them
+  - API endpoints before frontend consuming them
 - Number features sequentially (F001, F002, etc.)
-- Group features by priority and dependencies
+- **Order features by build_order (not just priority)**
+- Group features by priority AND dependencies
 - Update todos
 
 Phase 6: Generate features.json
-Goal: Write comprehensive features.json
+Goal: Write comprehensive features.json with dependency-based ordering
 
 Actions:
 - Generate features.json with structure:
@@ -216,13 +223,22 @@ Actions:
         "priority": "P0",
         "status": "not_started",
         "estimated_effort": "3-5 days",
+        "build_order": 1,
         "dependencies": ["infrastructure"],
+        "blocks": ["F003", "F005"],
         "architecture_refs": [
           "docs/architecture/ai.md#rag-system",
           "docs/architecture/backend.md#api-endpoints"
         ]
       }
     ],
+    "build_order_explanation": {
+      "1": "Foundation features (no feature dependencies, only infrastructure)",
+      "2": "Core services (depend on foundation)",
+      "3": "Secondary features (depend on core services)",
+      "4": "UI features (depend on backend/core services)",
+      "5": "Integration features (depend on multiple features)"
+    },
     "shared_context": {
       "tech_stack": "Next.js 15 + FastAPI + Supabase",
       "ai_stack": "Claude Agent SDK + Vercel AI SDK",
@@ -233,6 +249,10 @@ Actions:
     "extracted_from": "ROADMAP.md + architecture docs via /planning:extract-config"
   }
   ```
+- **CRITICAL: Features MUST be ordered by build_order in the array**
+  - Feature with build_order: 1 comes first
+  - Features with same build_order can be built in parallel
+  - This ensures /planning:init-project creates specs in correct order
 - Write to features.json
 - Validate JSON syntax
 - Update todos
@@ -252,8 +272,15 @@ Actions:
   - Dependencies correctly identified
   - Priority levels assigned
   - Architecture references valid
+  - **CRITICAL: Build order is correct**:
+    - Features ordered by build_order field
+    - No circular dependencies
+    - Dependencies have lower build_order than dependents
+    - Features with same build_order can be built in parallel
 - Check for inconsistencies between files
-- Display validation results
+- Display validation results including:
+  - Feature build order summary (X features at order 1, Y at order 2, etc.)
+  - Dependency graph validation
 - Update todos
 
 Phase 8: Summary
@@ -263,11 +290,18 @@ Actions:
 - Display completion message:
   ```
   ✅ Configuration Extraction Complete!
-  
+
   Generated Files:
   - .claude/project.json (tech stack and infrastructure)
-  - features.json (feature breakdown with priorities)
-  
+  - features.json (feature breakdown with build order)
+
+  Feature Build Order:
+  - Build Order 1: X features (foundation - can build in parallel)
+  - Build Order 2: Y features (core services - can build in parallel)
+  - Build Order 3: Z features (secondary - can build in parallel)
+  - Build Order 4: N features (UI - can build in parallel)
+  - Build Order 5: M features (integration - can build in parallel)
+
   Extracted From:
   - docs/architecture/README.md
   - docs/architecture/backend.md
@@ -278,10 +312,11 @@ Actions:
   - docs/architecture/security.md
   - docs/architecture/integrations.md
   - docs/ROADMAP.md
-  
+
   Next Steps:
-  1. Run /planning:init-project to generate feature specs from features.json
-  2. Run /foundation:generate-infrastructure-specs to generate infrastructure specs from project.json
-  3. Begin implementation following the specs
+  1. Run /planning:init-project to generate feature specs (creates specs in build order)
+  2. Run /foundation:generate-infrastructure-specs to generate infrastructure specs
+  3. Build features in order (build_order: 1 → 2 → 3 → 4 → 5)
+  4. Features with same build_order can be built in parallel
   ```
 - Mark all todos completed
