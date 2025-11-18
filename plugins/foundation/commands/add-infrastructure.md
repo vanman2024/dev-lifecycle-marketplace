@@ -45,7 +45,7 @@ Goal: Extract infrastructure component type and description
 Actions:
 - Create todo list tracking phases
 - Parse arguments: `<component-type> "<description>"`
-- Valid component types:
+- Common component types (predefined):
   - `authentication` - Auth providers (Clerk, Auth0, Supabase Auth)
   - `database` - Database setup (PostgreSQL, MongoDB, Redis)
   - `caching` - Cache layers (Redis, Memcached)
@@ -62,7 +62,21 @@ Actions:
   - `payments` - Payment processing infrastructure (Stripe setup)
   - `backup` - Backup and disaster recovery
   - `logging` - Structured logging (Winston, Pino, structured logs)
+- **Custom types allowed**: If type is not in predefined list, accept it anyway
+  - Convert to snake_case for consistency (e.g., "feature-flags" → "feature_flags")
+  - Infer category from description
+  - Examples of custom types:
+    - `feature_flags` - Feature flag services (LaunchDarkly, Flagsmith)
+    - `cdn` - Content delivery networks
+    - `dns` - DNS management
+    - `secrets` - Secret management (Vault, Doppler)
+    - `notifications` - Push notifications
+    - `sms` - SMS services (Twilio)
+    - `video` - Video processing/streaming
+    - `pdf` - PDF generation
+    - Any other system-level component
 - Example: `webhooks "Stripe webhook handling for payment events"`
+- Example custom: `feature_flags "LaunchDarkly for gradual rollouts and A/B testing"`
 - Update todos
 
 Phase 2: Check Existing Infrastructure
@@ -234,6 +248,8 @@ Actions:
 
 ## Examples
 
+### Predefined Types
+
 ```bash
 # Add webhook handling
 /foundation:add-infrastructure webhooks "Stripe webhook handling for payment events with signature verification"
@@ -252,4 +268,32 @@ Actions:
 
 # Add analytics
 /foundation:add-infrastructure analytics "Mixpanel for user behavior tracking and funnel analysis"
+```
+
+### Custom Types (Not in Predefined List)
+
+```bash
+# Feature flags
+/foundation:add-infrastructure feature_flags "LaunchDarkly for gradual rollouts and A/B testing"
+
+# Push notifications
+/foundation:add-infrastructure notifications "Firebase Cloud Messaging for mobile push notifications"
+
+# SMS service
+/foundation:add-infrastructure sms "Twilio for SMS verification and alerts"
+
+# PDF generation
+/foundation:add-infrastructure pdf "Puppeteer-based PDF generation for invoices and reports"
+
+# Video processing
+/foundation:add-infrastructure video "FFmpeg pipeline for video transcoding and thumbnail generation"
+
+# CDN
+/foundation:add-infrastructure cdn "CloudFront CDN for static assets and media delivery"
+
+# Secret management
+/foundation:add-infrastructure secrets "Doppler for centralized secret management across environments"
+
+# Scheduled jobs
+/foundation:add-infrastructure scheduler "APScheduler for cron-like scheduled tasks"
 ```
