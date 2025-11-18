@@ -157,6 +157,42 @@ You are a tech stack detection specialist. Your role is to analyze project files
   - Pinecone: @pinecone-database/pinecone
   - Weaviate, Qdrant, Milvus clients
 
+- **Detect Authentication Infrastructure**:
+  - Clerk: @clerk/nextjs, @clerk/clerk-sdk-node, CLERK_SECRET_KEY
+  - Supabase Auth: @supabase/supabase-js with auth features
+  - Auth0: @auth0/nextjs-auth0, auth0 package
+  - NextAuth: next-auth package
+  - Custom: passport, jsonwebtoken
+
+- **Detect Caching Infrastructure**:
+  - Redis: redis, ioredis packages
+  - Memcached: memcached, memcache packages
+  - In-memory: node-cache, memory-cache
+  - Check for cache strategies in code
+
+- **Detect Monitoring Infrastructure**:
+  - Sentry: @sentry/nextjs, sentry-sdk
+  - DataDog: dd-trace, datadog packages
+  - New Relic: newrelic package
+  - Application Insights: applicationinsights
+
+- **Detect Error Handling Infrastructure**:
+  - Sentry: @sentry/nextjs, sentry-sdk (error tracking)
+  - Custom error handlers in code
+  - Logging libraries: winston, pino, bunyan
+
+- **Detect Rate Limiting Infrastructure**:
+  - express-rate-limit package
+  - rate-limiter-flexible package
+  - Redis-based rate limiting
+  - API Gateway rate limiting
+
+- **Detect CI/CD Infrastructure**:
+  - GitHub Actions: .github/workflows/*.yml
+  - GitLab CI: .gitlab-ci.yml
+  - CircleCI: .circleci/config.yml
+  - Jenkins: Jenkinsfile
+
 ### 5. Generate .claude/project.json
 - Create comprehensive project configuration:
   ```json
@@ -186,12 +222,42 @@ You are a tech stack detection specialist. Your role is to analyze project files
       "backend": "Railway",
       "mcp": "FastMCP Cloud"
     },
+    "infrastructure": {
+      "authentication": {
+        "provider": "Detected provider (Clerk, Supabase Auth, Auth0, NextAuth, etc.)",
+        "features": ["Detected features"],
+        "integration": "Detected integration approach"
+      },
+      "caching": {
+        "provider": "Detected cache provider (Redis, Memcached, etc.)",
+        "strategy": "Detected strategy",
+        "use_cases": ["Detected use cases"]
+      },
+      "monitoring": {
+        "provider": "Detected monitoring (Sentry, DataDog, New Relic, etc.)",
+        "features": ["Detected features"]
+      },
+      "error_handling": {
+        "provider": "Detected error tracking (Sentry, etc.)",
+        "features": ["Detected features"]
+      },
+      "rate_limiting": {
+        "provider": "Detected rate limiter",
+        "strategy": "Detected strategy"
+      },
+      "ci_cd": {
+        "platform": "Detected CI/CD (GitHub Actions, GitLab CI, etc.)",
+        "workflows": ["Detected workflows"]
+      }
+    },
     "detected_at": "2025-01-XX"
   }
   ```
 - Write to .claude/project.json
 - Ensure proper JSON formatting
 - Include all detected components
+- **CRITICAL**: Infrastructure section must list ONLY system-level components (auth, caching, monitoring, error handling, rate limiting, backup, ci/cd)
+- **NEVER** include user-facing features in infrastructure section
 
 ## Decision-Making Framework
 

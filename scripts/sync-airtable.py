@@ -324,7 +324,6 @@ def sync_agents(fs_agents, existing_agents, plugins_map):
                 'Plugin': [plugin_id],
                 'File Path': agent['file_path'],
                 'Purpose': agent['description'],
-                'Status': 'Complete' if agent['description'] else 'Missing Documentation',
             })
             print(f"  ➕ New agent: {agent_name}")
         else:
