@@ -1,6 +1,6 @@
 ---
-description: Query Airtable for tech stack and generate intelligent workflow with project context
-argument-hint: <tech-stack-name>
+description: Generate infrastructure setup workflow (foundation, planning docs, database) from tech stack
+argument-hint: <tech-stack-name> [--full|--summary|--phase <name>]
 allowed-tools: Read, Write, Bash, Skill, mcp__airtable
 ---
 
@@ -26,7 +26,24 @@ See `@CLAUDE.md` section "SlashCommand Execution - YOU Are The Executor" for det
 
 **Arguments**: $ARGUMENTS (optional - auto-detects if not provided)
 
-Goal: Generate comprehensive, project-aware workflow document with smart checkboxes showing completion status, organized into phases for parallel execution.
+Goal: Generate INFRASTRUCTURE setup workflow for project initialization. This covers foundation, planning documentation, and database setup ONLY.
+
+**Scope Clarification**:
+- **This command** (`/foundation:generate-workflow`): Infrastructure setup (one-time)
+  * Foundation (init, detect, env setup)
+  * Planning docs (architecture, ADRs, specs structure)
+  * Database & Auth (Supabase, RLS policies)
+
+- **For feature implementation**: Use `/planning:generate-feature-workflow` instead
+  * Feature-by-feature workflows from features.json
+  * Implementation commands matched to requirements
+  * Quality and testing validation steps
+
+**Flags**:
+- `--full`: Include all 6 phases (Foundation → Implementation → Quality → Testing → Deployment → Iteration)
+- `--summary`: Phases only, no command details (~50 lines)
+- `--phase <name>`: Generate specific phase only (Foundation|Planning|Database|Implementation|Quality|Testing|Deployment)
+- Default (no flag): Infrastructure only (Foundation, Planning, Database)
 
 Phase 1: Load Knowledge
 Goal: Load workflow generation patterns and phasing knowledge
@@ -66,6 +83,30 @@ Actions:
   - Ask user to confirm or choose different stack
 
 - Store selected tech stack name as STACK_NAME
+
+Phase 2.5: Parse Flags and Determine Scope
+Goal: Parse command flags to determine what to include in workflow
+
+Actions:
+- Parse $ARGUMENTS for flags:
+  * Extract `--full` flag: FULL_MODE=true/false
+  * Extract `--summary` flag: SUMMARY_MODE=true/false
+  * Extract `--phase <name>` flag: PHASE_FILTER="<name>"/null
+  * Extract remaining as STACK_NAME (if not already set from Phase 2)
+
+- Determine workflow scope:
+  * If `--full`: INCLUDE_PHASES=["Foundation", "Planning", "Database", "Implementation", "Quality", "Testing", "Deployment", "Iteration"]
+  * If `--phase <name>`: INCLUDE_PHASES=[<name>]
+  * If `--summary`: INCLUDE_PHASES=All, SUMMARY_MODE=true
+  * **Default** (no flags): INCLUDE_PHASES=["Foundation", "Planning", "Database"]
+
+- Store flags:
+  * FULL_MODE (boolean)
+  * SUMMARY_MODE (boolean)
+  * PHASE_FILTER (string or null)
+  * INCLUDE_PHASES (array)
+
+- Display: "Scope: {Infrastructure only|Full workflow|Summary|Phase: <name>}"
 
 Phase 3: Get Raw Data from Airtable
 Goal: Query Airtable and validate commands
@@ -173,10 +214,18 @@ Actions:
   **Categorize each command** into phases:
   - Foundation: init, setup, detect, validate, env, structure keywords
   - Planning: wizard, spec, architecture, decide, roadmap keywords
+  - Database: create-schema, add-rls, add-auth, deploy-migration keywords
   - Implementation: add, create, integrate, build keywords
-  - Quality: test, validate, security, performance keywords
+  - Quality: validate-code, code-reviewer, task-validator keywords
+  - Testing: test, playwright, newman keywords
   - Deployment: deploy, prepare, cicd, monitor keywords
   - Iteration: enhance, refactor, adjust, sync keywords
+
+  **Apply INCLUDE_PHASES filter** (from Phase 2.5):
+  - Only include commands in phases listed in INCLUDE_PHASES
+  - If INCLUDE_PHASES=["Foundation", "Planning", "Database"]: Skip Implementation, Quality, Testing, Deployment, Iteration commands
+  - If PHASE_FILTER set: Only include commands from that specific phase
+  - Display: "Filtered to {N} phases: {INCLUDE_PHASES}"
 
   **Determine completion status** for each command (PRESERVES EXISTING):
   - **FIRST**: Check PRESERVED_STATUS map (from Phase 4.5)
@@ -211,16 +260,26 @@ Actions:
 - Determine output filename:
   * Use project name from project.json if available
   * Otherwise: Use tech stack name
-  * Format: PROJECT-NAME-WORKFLOW.md in current directory
+  * If PHASE_FILTER set: Format as PROJECT-NAME-{PHASE_FILTER}-WORKFLOW.md
+  * If default (infrastructure): Format as PROJECT-NAME-INFRASTRUCTURE-WORKFLOW.md
+  * If --full: Format as PROJECT-NAME-FULL-WORKFLOW.md
+  * If --summary: Format as PROJECT-NAME-SUMMARY.md
+
+- Determine workflow title based on scope:
+  * Infrastructure only: "Infrastructure Setup Workflow"
+  * Full workflow: "Full-Stack Development Workflow"
+  * Summary: "Workflow Summary"
+  * Specific phase: "{Phase Name} Workflow"
 
 - Generate workflow with sections:
 
-  **1. Project Overview**:
+  **1. Project Overview** (skip if SUMMARY_MODE):
   ```markdown
-  # {Project Name} - Full-Stack Development Workflow
+  # {Project Name} - {Workflow Title}
 
   **Auto-generated**: {Date}
   **Tech Stack**: {From project.json}
+  **Scope**: {Infrastructure only|Full workflow|{Phase name}|Summary}
   **Project Phase**: {From project state detection}
 
   ---
@@ -235,27 +294,46 @@ Actions:
   - ✅ = Completed (auto-detected from your files)
   - □ = Not started / To do
   - 🔄 = In progress (partial implementation detected)
+
+  ## Workflow Separation
+  - This workflow: Infrastructure setup (one-time)
+  - For features: Use /planning:generate-feature-workflow
   ```
 
-  **2. Phased Commands** (Using skill organization):
+  **2. Phased Commands** (Respecting INCLUDE_PHASES):
+
+  **If SUMMARY_MODE**: Only show phase headers with command counts:
+  ```markdown
+  ## Phase 1: Foundation & Project Setup (N commands)
+  ## Phase 2: Planning & Architecture (M commands)
+  ## Phase 3: Database & Auth (K commands)
+  ```
+
+  **If NOT SUMMARY_MODE**: Include full command details
   ```markdown
   ## Phase 1: Foundation & Project Setup
-  {Foundation commands from Airtable, with ✅/□ status}
+  {Foundation commands IF "Foundation" in INCLUDE_PHASES}
 
   ## Phase 2: Planning & Architecture
-  {Planning commands from Airtable, with ✅/□ status}
+  {Planning commands IF "Planning" in INCLUDE_PHASES}
 
-  ## Phase 3: Implementation
-  {Implementation commands from Airtable, with ✅/□ status}
+  ## Phase 3: Database & Auth
+  {Database commands IF "Database" in INCLUDE_PHASES}
 
-  ## Phase 4: Quality & Testing
-  {Quality commands from Airtable, with ✅/□ status}
+  ## Phase 4: Implementation
+  {Implementation commands IF "Implementation" in INCLUDE_PHASES}
 
-  ## Phase 5: Deployment
-  {Deployment commands from Airtable, with ✅/□ status}
+  ## Phase 5: Quality
+  {Quality commands IF "Quality" in INCLUDE_PHASES}
 
-  ## Phase 6: Iteration & Enhancement
-  {Iteration commands from Airtable, with ✅/□ status}
+  ## Phase 6: Testing
+  {Testing commands IF "Testing" in INCLUDE_PHASES}
+
+  ## Phase 7: Deployment
+  {Deployment commands IF "Deployment" in INCLUDE_PHASES}
+
+  ## Phase 8: Iteration & Enhancement
+  {Iteration commands IF "Iteration" in INCLUDE_PHASES}
   ```
 
   **2.5. Feature Status** (NEW - if features.json exists):
