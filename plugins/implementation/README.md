@@ -23,9 +23,7 @@ The implementation plugin bridges the critical gap between planning/task-layerin
 
 ## Skills
 
-- `command-mapping` - Task-to-command mapping patterns and rules
-- `execution-tracking` - Execution status management and reporting
-- `parallel-execution` - Parallel task execution strategies
+- `execution-tracking` - Execution status management and reporting (3 scripts, 5 templates, 3 examples)
 
 ## Usage
 
