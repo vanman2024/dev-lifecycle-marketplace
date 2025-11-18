@@ -139,99 +139,7 @@ Actions:
 - If critical issues found: Display and ask user to proceed or regenerate
 - Update todos
 
-Phase 5: Create project.json and features.json
-Goal: Generate project configuration and features registry from architecture docs
-
-Actions:
-**Step 1: Create .claude/project.json**
-- Extract tech stack from architecture documents:
-  - Framework: @docs/architecture/frontend.md (Next.js, React, Vue, etc.)
-  - Backend: @docs/architecture/backend.md (FastAPI, Django, Express, etc.)
-  - Database: @docs/architecture/data.md (PostgreSQL, Supabase, MongoDB, etc.)
-  - AI Stack: @docs/architecture/ai.md (Vercel AI SDK, Claude Agent SDK, etc.)
-  - Infrastructure: @docs/architecture/infrastructure.md (Auth, caching, monitoring, etc.)
-
-- Generate project.json structure:
-  ```json
-  {
-    "name": "project-name",
-    "description": "from initial requirements",
-    "frameworks": {
-      "frontend": { "primary": "detected", "version": "detected", "language": "TypeScript" },
-      "backend": { "primary": "detected", "version": "detected", "language": "Python" }
-    },
-    "ai_stack": {
-      "sdks": ["detected from ai.md"],
-      "providers": ["detected from ai.md"],
-      "memory": "detected",
-      "mcp_servers": []
-    },
-    "database": {
-      "type": "detected",
-      "provider": "detected",
-      "orm": "detected"
-    },
-    "infrastructure": {
-      "authentication": { "provider": "detected", "features": [] },
-      "caching": { "provider": "detected", "strategy": "" },
-      "monitoring": { "provider": "detected", "features": [] },
-      "error_handling": { "provider": "detected" },
-      "ci_cd": { "platform": "detected", "workflows": [] }
-    },
-    "detected_at": "current-date"
-  }
-  ```
-
-- Write: !{bash cat > .claude/project.json <<'EOF' ... EOF}
-- Verify: !{bash test -f .claude/project.json && echo "✅ Created" || echo "❌ Failed"}
-
-**Step 2: Create features.json**
-- Read feature-breakdown.json from Phase 4: @/tmp/feature-breakdown.json
-- Transform to features.json format:
-  ```json
-  {
-    "project": "project-name",
-    "generated_at": "timestamp",
-    "description": "from requirements",
-    "source_documents": {
-      "architecture": ["list of architecture docs"],
-      "adr": ["list of ADRs"],
-      "roadmap": "docs/ROADMAP.md"
-    },
-    "features": [
-      {
-        "id": "F001",
-        "name": "feature name",
-        "description": "from feature-breakdown",
-        "priority": "P0/P1/P2",
-        "phase": "MVP/Beta/Post-MVP",
-        "complexity": "Simple/Moderate/Complex",
-        "estimated_days": 2-3,
-        "dependencies": ["other feature IDs"],
-        "adr_references": []
-      }
-    ],
-    "shared_context": {
-      "tech_stack": ["from architecture"],
-      "user_types": ["from requirements"],
-      "data_entities": ["from data.md"]
-    }
-  }
-  ```
-
-- Write: !{bash cat > features.json <<'EOF' ... EOF}
-- Verify: !{bash test -f features.json && jq '.features | length' features.json}
-
-- Display completion:
-  - "✅ Created .claude/project.json with detected tech stack"
-  - "✅ Created features.json with [X] features"
-  - "📋 Architecture planning complete!"
-  - "Next step: Run /planning:init-project to generate feature specs"
-  - "Then: Run /foundation:generate-infrastructure-specs for infrastructure specs"
-
-- Update todos
-
-Phase 6: Final Architecture Validation
+Phase 5: Final Architecture Validation
 Goal: Validate architecture planning is complete and ready for spec generation
 
 Actions:
@@ -266,7 +174,7 @@ Actions:
 - If APPROVED: Continue to finalization
 - Update todos
 
-Phase 7: Finalization
+Phase 6: Finalization
 Goal: Complete wizard and prepare for spec generation
 
 Actions:
@@ -284,15 +192,13 @@ Actions:
     * docs/architecture/security.md
     * docs/architecture/integrations.md
   - ADRs: Z decisions documented
-  - project.json: Created with tech stack
-  - features.json: Created with feature breakdown
-  - Approval status: APPROVED (from Phase 6)
-  - Next steps: Run /planning:init-project to generate feature specs
+  - Approval status: APPROVED (from Phase 5)
+  - Next steps: Run /planning:extract-config to create project.json and features.json
 
 - Save summary to `.wizard/completion-summary.md`
 - Mark all todos complete
 
-Phase 8: Summary
+Phase 7: Summary
 Goal: Display results and next steps
 
 Actions:
@@ -313,15 +219,12 @@ Actions:
   - docs/adr/*.md (architectural decision records)
   - docs/ROADMAP.md (project roadmap)
 
-  Created Configuration Files:
-  - .claude/project.json (tech stack from architecture docs)
-  - features.json (X features from breakdown)
-
   Next Steps:
   1. Review docs/FINAL-APPROVAL.md for validation results
-  2. Run /planning:init-project to generate feature specs
-  3. Run /foundation:generate-infrastructure-specs for infrastructure specs
-  4. Begin implementation following the specs
+  2. Run /planning:extract-config to create project.json and features.json
+  3. Run /planning:init-project to generate feature specs
+  4. Run /foundation:generate-infrastructure-specs for infrastructure specs
+  5. Begin implementation following the specs
   ```
 
 - Update todos to completed
