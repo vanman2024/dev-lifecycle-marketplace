@@ -1,8 +1,8 @@
 # Development Lifecycle Marketplace
 
-**Tech-agnostic workflow automation - from init to deploy in 5 lifecycle phases.**
+**Tech-agnostic workflow automation - from init to deploy in 7 lifecycle phases.**
 
-**Version**: 2.0.0 (Rebuilt October 2025)
+**Version**: 2.0.0 (Rebuilt October 2025 + November 2025 additions)
 
 ---
 
@@ -14,7 +14,7 @@ The **dev-lifecycle-marketplace** provides structured development workflow plugi
 
 ---
 
-## Architecture: 5 Lifecycle Plugins
+## Architecture: 7 Lifecycle Plugins
 
 ### 1. **foundation** - Foundation & Setup
 Initialize projects, detect tech stack, configure environment
@@ -86,31 +86,84 @@ Task management, code adjustments, refactoring, feature enhancement
 
 ---
 
-### 4. **quality** - Testing & Quality Assurance
-Standardized testing with Newman/Postman, Playwright, security scanning
+### 4. **implementation** - Execution Orchestration
+Automated feature building from layered tasks with tech-specific command mapping
 
 **Commands:**
-- `/quality:test` - Run comprehensive test suite (Newman API, Playwright E2E, security scans)
+- `/implementation:execute` - Execute all layered tasks (L0→L3) sequentially
+- `/implementation:execute-layer` - Execute specific layer only
+- `/implementation:status` - Show execution progress
+- `/implementation:continue` - Resume execution after pause/failure
+- `/implementation:map-task` - Preview task-to-command mapping (dry-run)
+
+**What it does:**
+- Bridges the gap between planning and quality phases
+- Automatically maps task descriptions to tech-specific commands
+- Executes layered tasks with proper dependency management
+- Tracks progress with `.claude/execution/` status files
+- Handles retries and error recovery
+- Auto-syncs with `/iterate:sync` after each layer
+
+**Components:**
+- 5 commands
+- 4 agents (execution-orchestrator, task-mapper, command-executor, progress-tracker)
+- 3 skills (command-mapping, execution-tracking, parallel-execution)
+
+**Example Workflow:**
+```bash
+/planning:add-feature "AI chat interface"
+/iterate:tasks F001
+/implementation:execute F001  # Automatically executes all mapped commands
+```
+
+---
+
+### 5. **quality** - Code Quality & Validation
+Code validation, security scanning, and compliance checking
+
+**Commands:**
+- `/quality:validate-code` - Validate code against specs and security rules
 - `/quality:security` - Run security scans and vulnerability checks
 - `/quality:performance` - Analyze performance and identify bottlenecks
 
 **What it does:**
-- **Newman/Postman**: API testing with collections, environments, assertions
-- **Playwright**: E2E browser testing with page object models
-- **DigitalOcean Webhooks**: $4-6/month webhook testing infrastructure
+- **Code Validation**: Review implementation against spec requirements
 - **Security Scanning**: npm audit, safety, bandit, secret detection
 - **Performance Analysis**: Lighthouse, profiling, bottleneck identification
+- **Compliance Checking**: Licensing, code standards, regulatory requirements
 
 **Components:**
 - 3 commands
-- 4 agents (test-generator, security-scanner, performance-analyzer, compliance-checker)
-- 3 skills (newman-testing, playwright-e2e, security-patterns)
-
-**Note:** Skills have comprehensive documentation but require full implementation (scripts, templates, examples).
+- 4 agents (code-validator, security-scanner, performance-analyzer, compliance-checker)
+- 2 skills (security-patterns, validation-rules)
 
 ---
 
-### 5. **deployment** - Deployment Orchestration
+### 6. **testing** - Test Execution
+Test suite execution with Newman/Postman (API) and Playwright (E2E)
+
+**Commands:**
+- `/testing:test` - Run comprehensive test suite (Newman API + Playwright E2E)
+- `/testing:test-frontend` - Frontend-specific tests (component, visual, a11y, performance)
+- `/testing:generate-tests` - Generate test suites from implementation
+
+**What it does:**
+- **Newman/Postman**: API testing with collections, environments, assertions, reporting
+- **Playwright**: E2E browser testing with page object models, visual regression
+- **DigitalOcean Webhooks**: $4-6/month webhook testing infrastructure
+- **Frontend Testing**: Component tests (Jest/Vitest + RTL), visual regression, accessibility, performance
+- **Test Generation**: Auto-generate tests from implementation code
+
+**Components:**
+- 3 commands
+- 3 agents (test-suite-generator, frontend-test-generator, test-generator)
+- 4 skills (newman-testing, playwright-e2e, frontend-testing, newman-runner, postman-collection-manager)
+
+**Note:** Separate from quality plugin - quality validates, testing executes.
+
+---
+
+### 7. **deployment** - Deployment Orchestration
 Automated deployment with platform detection
 
 **Commands:**
@@ -139,39 +192,56 @@ Automated deployment with platform detection
 | Plugin | Commands | Agents | Skills | Total |
 |--------|----------|--------|--------|-------|
 | foundation | 4 | 1 | 3 | 8 |
-| planning | 5 | 4 | 3 | 12 |
+| planning | 5 | 4 | 4 | 13 |
+| implementation | 5 | 4 | 3 | 12 |
 | iterate | 3 | 4 | 1 | 8 |
-| quality | 3 | 4 | 3 | 10 |
+| quality | 3 | 4 | 2 | 9 |
+| testing | 3 | 3 | 5 | 11 |
 | deployment | 4 | 3 | 3 | 10 |
-| **TOTAL** | **19** | **16** | **13** | **48** |
+| **TOTAL** | **27** | **23** | **21** | **71** |
 
 ---
 
 ## Quick Start
 
-### 1. Initialize New Project
+### Complete Workflow Example
+
 ```bash
+# 1. Initialize Project
 /foundation:init my-new-project
-```
+/foundation:detect
 
-### 2. Create Specifications
-```bash
-/planning:spec "user authentication feature"
-```
+# 2. Create Feature Specifications
+/planning:add-feature "user authentication"
 
-### 3. Manage Tasks
-```bash
-/iterate:tasks
-```
+# 3. Layer Tasks for Parallel Execution
+/iterate:tasks F001
 
-### 4. Run Tests
-```bash
-/quality:test
-```
+# 4. Execute Implementation Automatically
+/implementation:execute F001
 
-### 5. Deploy
-```bash
+# 5. Validate Code Quality
+/quality:validate-code F001
+
+# 6. Run Test Suites
+/testing:test F001
+
+# 7. Deploy to Production
 /deployment:deploy
+```
+
+### Workflow Generation
+
+```bash
+# Generate infrastructure workflow (one-time setup)
+/foundation:generate-workflow "AI Tech Stack 1"
+
+# Generate feature implementation workflow (ongoing)
+/planning:generate-feature-workflow
+
+# Filter workflows
+/foundation:generate-workflow "Stack Name" --summary
+/planning:generate-feature-workflow --priority P0 --split
 ```
 
 ---
