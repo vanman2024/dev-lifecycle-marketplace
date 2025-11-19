@@ -8,11 +8,19 @@ allowed-tools: Read(*), Write, Bash(*), Glob, Grep, TodoWrite, Task
 
 Goal: Generate infrastructure specifications from project.json in parallel (3-5 at a time), creating specs/infrastructure/ directories similar to how /planning:init-project creates feature specs.
 
+## Required Reference Document
+
+**CRITICAL**: Read the infrastructure vs features classification guide:
+`@~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/docs/INFRASTRUCTURE-VS-FEATURES.md`
+
+This document defines what counts as infrastructure vs features and must be referenced when generating specs.
+
 Core Principles:
 - Read project.json as source of truth for infrastructure needs
 - Generate specs ONLY for infrastructure components without specs
 - Process 3-5 infrastructure components at a time (batching)
 - Mirror /planning:init-project pattern for consistency
+- Reference INFRASTRUCTURE-VS-FEATURES.md for classification guidance
 
 Phase 0: Check Existing Project Data
 Goal: Verify project.json exists and contains infrastructure section
