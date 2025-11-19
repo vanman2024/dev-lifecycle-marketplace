@@ -31,7 +31,7 @@
 specs/infrastructure/
 ├── 001-authentication/
 │   ├── spec.md          # Clerk integration requirements
-│   ├── setup.md         # OAuth setup, environment variables
+│   ├── setup.md         # OAuth setup, environment variables, API keys
 │   └── tasks.md         # 5 phases: Setup → Config → Implementation → Monitoring → Docs
 ├── 002-database/
 │   ├── spec.md          # Supabase PostgreSQL requirements
@@ -66,11 +66,9 @@ specs/infrastructure/
 specs/features/
 ├── F001-google-file-search-rag/
 │   ├── spec.md          # Feature requirements, user stories
-│   ├── setup.md         # Feature-specific setup (File Search API)
-│   └── tasks.md         # Implementation tasks
+│   └── tasks.md         # Implementation tasks (includes setup in Phase 1)
 ├── F002-claude-agent-sdk-study-partner/
 │   ├── spec.md          # AI tutor feature requirements
-│   ├── setup.md         # Claude Agent SDK setup
 │   └── tasks.md
 └── ...
 ```

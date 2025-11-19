@@ -40,7 +40,7 @@ There are **TWO DIFFERENT starting points** depending on whether you have existi
 # - .claude/project.json (created by extract-config) ✅
 # Creates:
 # - specs/features/F001-*/ (ALL feature spec directories)
-# - spec.md, setup.md, tasks.md for EACH feature
+# - spec.md, tasks.md for EACH feature
 
 # Step 4: FOUNDATION - Generate infrastructure specs
 /foundation:generate-infrastructure-specs
