@@ -84,38 +84,126 @@ Analyze the task description to identify:
 - Setup/Configure/Initialize: Initial configuration
 - Deploy/Migrate/Apply: Deployment operations
 
-### 3. Command Matching Logic
+### 3. Domain Detection & Command Discovery
 
-Based on task type + tech stack, apply these mapping rules:
+**CRITICAL**: Don't just map one task to one command. Create comprehensive command sequences.
 
-**Frontend (Next.js detected):**
-- "Create [X] component" → `/nextjs-frontend:add-component [X]`
-- "Build [X] page" → `/nextjs-frontend:add-page [X]`
-- "Add API route" → `/nextjs-frontend:add-api-route`
-- "Integrate Supabase" → `/nextjs-frontend:integrate-supabase`
+**Step 1: Identify Domain**
+Based on task keywords, identify which plugin domain(s) are involved:
+- Frontend keywords → nextjs-frontend plugin
+- Backend keywords → fastapi-backend plugin
+- Database keywords → supabase plugin
+- AI keywords → vercel-ai-sdk, mem0 plugins
+- Auth keywords → clerk OR supabase plugin
 
-**Backend (FastAPI detected):**
-- "Create POST /api/[X] endpoint" → `/fastapi-backend:add-endpoint "POST /api/[X]"`
-- "Add [X] service" → `/fastapi-backend:add-service [X]`
-- "Create [X] model" → `/fastapi-backend:add-model [X]`
-- "Setup database" → `/fastapi-backend:setup-database`
+**Step 2: List ALL Available Commands for Domain**
 
-**Database (Supabase detected):**
-- "Create [X] schema" → `/supabase:create-schema [X]`
-- "Deploy migration" → `/supabase:deploy-migration`
-- "Add RLS policies" → `/supabase:add-rls`
-- "Set up auth" → `/supabase:add-auth`
-- "Enable realtime" → `/supabase:add-realtime`
+Read settings.json and list every command for the identified plugin:
 
-**AI (Vercel AI SDK detected):**
-- "Add streaming" → `/vercel-ai-sdk:add-streaming`
-- "Add OpenRouter" → `/vercel-ai-sdk:add-provider openrouter`
-- "Add Anthropic" → `/vercel-ai-sdk:add-provider anthropic`
-- "Add tool calling" → `/vercel-ai-sdk:add-tools`
+**Frontend (Next.js detected) - ALL commands:**
+- `/nextjs-frontend:init` - Initialize project
+- `/nextjs-frontend:add-page <name>` - Create page
+- `/nextjs-frontend:add-component <name>` - Create component
+- `/nextjs-frontend:search-components "<query>"` - Find shadcn components
+- `/nextjs-frontend:integrate-supabase` - Add Supabase client
+- `/nextjs-frontend:integrate-ai-sdk` - Add Vercel AI SDK
+- `/nextjs-frontend:enforce-design-system` - Validate design consistency
 
-**Memory (Mem0 detected):**
-- "Add conversation memory" → `/mem0:add-conversation-memory`
-- "Add user memory" → `/mem0:add-user-memory`
+**Backend (FastAPI detected) - ALL commands:**
+- `/fastapi-backend:init` - Initialize project
+- `/fastapi-backend:add-endpoint "<method> <path>"` - Create endpoint
+- `/fastapi-backend:add-auth` - Add authentication
+- `/fastapi-backend:add-testing` - Add test suite
+- `/fastapi-backend:setup-database` - Configure database
+- `/fastapi-backend:setup-deployment` - Configure deployment
+- `/fastapi-backend:validate-api` - Validate OpenAPI spec
+
+**Database (Supabase detected) - ALL commands:**
+- `/supabase:init` - Initialize Supabase
+- `/supabase:create-schema` - Design schema from architecture
+- `/supabase:deploy-migration` - Apply migrations
+- `/supabase:add-auth` - Configure auth
+- `/supabase:add-rls` - Add Row Level Security
+- `/supabase:add-realtime` - Enable realtime
+- `/supabase:add-storage` - Configure storage
+- `/supabase:generate-types` - Generate TypeScript types
+- `/supabase:validate-schema` - Validate before deploy
+
+**AI (Vercel AI SDK detected) - ALL commands:**
+- `/vercel-ai-sdk:new-ai-app` - Create AI app
+- `/vercel-ai-sdk:add-provider <name>` - Add AI provider
+- `/vercel-ai-sdk:add-streaming` - Add streaming
+- `/vercel-ai-sdk:add-chat` - Add chat interface
+- `/vercel-ai-sdk:add-tools` - Add tool calling
+- `/vercel-ai-sdk:add-ui-features` - Add UI components
+
+**Step 3: Create Comprehensive Command Sequence**
+
+For each task, create a SEQUENCE of commands, not just one:
+
+Example: "Create user dashboard with analytics"
+```
+Domain: Frontend
+Available commands: [list all nextjs-frontend commands]
+
+Command sequence:
+1. /nextjs-frontend:add-page dashboard
+2. /nextjs-frontend:search-components "chart"
+3. /nextjs-frontend:add-component DashboardHeader
+4. /nextjs-frontend:add-component StatsCard
+5. /nextjs-frontend:add-component AnalyticsChart
+6. /nextjs-frontend:integrate-supabase (if needs data)
+7. /nextjs-frontend:enforce-design-system
+```
+
+Example: "Create user authentication endpoints"
+```
+Domain: Backend + Auth
+Available commands: [list all fastapi-backend + clerk commands]
+
+Command sequence:
+1. /fastapi-backend:add-auth
+2. /fastapi-backend:add-endpoint "POST /api/auth/login"
+3. /fastapi-backend:add-endpoint "POST /api/auth/register"
+4. /fastapi-backend:add-endpoint "GET /api/auth/me"
+5. /fastapi-backend:add-testing
+6. /fastapi-backend:validate-api
+```
+
+### 4. Interactive Mode for Complex Tasks
+
+For frontend and other complex domains, BE INTERACTIVE:
+
+1. Show all available commands for the domain
+2. Ask user which components/pages they need
+3. Suggest related commands they might want
+4. Build the sequence collaboratively
+
+Example interaction:
+```
+Task: "Build chat interface"
+
+Domain detected: Frontend + AI
+
+Available frontend commands:
+- add-page, add-component, search-components, integrate-ai-sdk...
+
+Available AI commands:
+- add-chat, add-streaming, add-provider...
+
+Suggested sequence:
+1. /nextjs-frontend:add-page chat
+2. /vercel-ai-sdk:add-chat
+3. /vercel-ai-sdk:add-streaming
+4. /nextjs-frontend:add-component ChatMessage
+5. /nextjs-frontend:add-component ChatInput
+6. /nextjs-frontend:search-components "avatar" (for user avatars)
+
+Additional components you might need:
+- MessageList, TypingIndicator, ChatSidebar
+
+Would you like to add any of these? (y/n/specify)
+```
 
 ### 4. Confidence Assessment
 
