@@ -85,33 +85,35 @@ This document shows the **core workflow** for building projects using the dev-li
 
 ```bash
 # 4a. Build infrastructure first (in order)
-# Follow specs/infrastructure/001-*/tasks.md
-# Then specs/infrastructure/002-*/tasks.md
-# etc.
+/implementation:execute 001-authentication
+/implementation:execute 002-database
+/implementation:execute 003-caching
+# etc. - follow specs/infrastructure/ order
 
 # 4b. Build features (in build_order from features.json)
-# Features with build_order: 1 first (can be parallel)
-# Then build_order: 2, 3, 4, 5
+/implementation:execute F001
+/implementation:execute F002
+# Features with same build_order can run in parallel
 
-# 4c. Use tech-specific plugins for actual code
-/nextjs-frontend:init
-/fastapi-backend:init
-/supabase:init
-# etc.
+# 4c. Check progress
+/implementation:status F001
+# Shows: completed tasks, current progress, next actions
 
-# 4d. Layer tasks before building each feature
-/iterate:tasks F001
-# Creates layered-tasks.md with:
-# L0: Infrastructure dependencies
-# L1: Core components
-# L2: Feature components
-# L3: Integration
+# 4d. Resume if interrupted
+/implementation:continue F001
 
-# 4e. Sync after completing each layer
-/iterate:sync F001
+# 4e. Execute specific layer only (if needed)
+/implementation:execute-layer F001 L0
+# Useful for targeted execution and testing
 ```
 
 **Output:** Working implementation matching the specs.
+
+**Note:** The implementation plugin automatically:
+- Discovers available commands from enabled tech plugins
+- Maps tasks to appropriate commands (nextjs-frontend, fastapi-backend, etc.)
+- Executes sequentially with progress tracking
+- Handles layer-by-layer execution (L0 → L1 → L2 → L3)
 
 ---
 
@@ -189,6 +191,24 @@ Run when ready to ship to production.
 /deployment:setup-monitoring [sentry|datadog]
 ```
 
+### Iterate (Changes to Existing Code)
+
+Run when modifying existing features, not for initial implementation.
+
+```bash
+# Enhance existing feature
+/iterate:enhance <feature-name>
+# Adds improvements and optimizations
+
+# Refactor for quality
+/iterate:refactor <file-or-directory>
+# Improves structure without changing functionality
+
+# Adjust based on feedback
+/iterate:adjust "<feedback>"
+# Makes targeted changes based on user requirements
+```
+
 ---
 
 ## GREENFIELD VS BROWNFIELD
@@ -231,9 +251,9 @@ Run when ready to ship to production.
 ```bash
 /planning:add-feature "User dashboard with analytics"
 # Creates specs/features/F00X-user-dashboard/
-# Then:
-/iterate:tasks F00X
-# Build following layered-tasks.md
+
+# Then execute:
+/implementation:execute F00X
 ```
 
 ### Update Existing Feature
@@ -298,9 +318,9 @@ The dev lifecycle orchestrates HOW you build. Tech plugins handle WHAT you build
 1. **Infrastructure before features** - Always build system components first
 2. **Specs before code** - Never build without a spec
 3. **Build order matters** - Follow features.json build_order
-4. **Layer tasks** - Run /iterate:tasks before implementing each feature
-5. **Test continuously** - Run tests after each layer
-6. **Supporting ops are flexible** - Use when needed, not as rigid phases
+4. **Use implementation plugin** - /implementation:execute handles the building
+5. **Test after implementation** - Validate what you built
+6. **Iterate for changes only** - enhance/refactor/adjust existing code
 
 ---
 
