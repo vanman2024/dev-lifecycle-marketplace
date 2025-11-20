@@ -37,18 +37,33 @@ Execute single item after validating its dependencies
 
 ## Automatic Plugin Detection
 
-**Where to find available plugins and commands:**
-1. Read `.claude/settings.json` → enabledPlugins array shows what's available
-2. Each enabled plugin has commands in: `~/.claude/plugins/marketplaces/<marketplace>/plugins/<plugin-name>/commands/`
-3. List the commands directory to see available commands for each plugin
+**MANDATORY: You MUST discover available commands before executing ANY task.**
 
-**How to match tasks to commands:**
-1. Read task description from tasks.md
-2. Look at enabled plugins and their available commands
-3. Find the command that matches what the task needs
-4. If no matching plugin/command, error with clear message
+**Step 1: Read settings.json**
+```bash
+cat .claude/settings.json | grep -A 100 enabledPlugins
+```
+Extract the list of enabled plugins (e.g., clerk@ai-dev-marketplace, supabase@ai-dev-marketplace)
 
-Figure it out from task content and what's actually available - don't hardcode mappings.
+**Step 2: List commands for relevant plugins**
+```bash
+ls ~/.claude/plugins/marketplaces/ai-dev-marketplace/plugins/clerk/commands/
+ls ~/.claude/plugins/marketplaces/ai-dev-marketplace/plugins/supabase/commands/
+```
+This shows you exactly what commands are available (init.md, add-auth.md, etc.)
+
+**Step 3: Match tasks to discovered commands**
+- Task says "Install Clerk" → you found `/clerk:init` → use it
+- Task says "Add authentication" → you found `/clerk:add-auth` → use it
+- Task says "Create migration" → you found `/supabase:deploy-migration` → use it
+
+**Step 4: Execute via SlashCommand**
+```
+SlashCommand(/clerk:init)
+SlashCommand(/clerk:add-auth)
+```
+
+**DO NOT SKIP STEPS 1-2.** You must actually run those commands to discover what's available.
 
 ## CRITICAL: Use SlashCommand Tool
 
