@@ -33,8 +33,11 @@ Goal: Quickly analyze tasks.md and create layered-tasks.md with L0-L3 layers for
 Phase 1: Quick Discovery (10 seconds)
 
 Actions:
-- Parse spec name: $ARGUMENTS
-- Read tasks file: @specs/$ARGUMENTS/tasks.md
+- Parse spec name: $ARGUMENTS (e.g., F001 or 001-feature-name)
+- Find spec directory (phase-nested first, then legacy):
+  !{bash find specs/phase-* -type d -name "*$ARGUMENTS*" 2>/dev/null | head -1 || find specs -type d -name "*$ARGUMENTS*" 2>/dev/null | head -1}
+- Store as SPEC_DIR
+- Read tasks file: @[SPEC_DIR]/tasks.md
 - Count tasks (if >50 tasks, warn user this is too large)
 - Quick scan for obvious patterns (auth, database, UI, API)
 
@@ -136,7 +139,7 @@ Phase 5: Agent Assignment (20 seconds)
 Phase 6: Write Output (10 seconds)
 
 Actions:
-- Write layered-tasks.md to specs/$ARGUMENTS/
+- Write layered-tasks.md to [SPEC_DIR]/ (discovered in Phase 1)
 - Display summary:
   - Total tasks: X
   - L0 (Infrastructure): Y tasks

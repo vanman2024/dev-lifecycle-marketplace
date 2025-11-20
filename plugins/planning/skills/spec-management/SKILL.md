@@ -137,14 +137,56 @@ draft → in-progress → review → approved → implemented
 - Tasks without estimates
 - Vague success criteria
 
-## Numbering Convention
+## Directory Structure
 
-Specs are numbered sequentially with zero-padded 3-digit IDs:
-- `001-user-authentication.md`
-- `002-api-rate-limiting.md`
-- `003-dashboard-redesign.md`
+### Phase-Nested Structure (Recommended)
 
-Numbers are never reused. Deleted specs leave gaps in numbering.
+Specs are organized in phase directories based on dependencies:
+
+```
+specs/
+├── phase-0/                    # Features with no dependencies
+│   ├── F001-core-data/
+│   │   ├── spec.md
+│   │   └── tasks.md
+│   └── F002-base-api/
+├── phase-1/                    # Features depending on Phase 0
+│   ├── F003-user-auth/
+│   └── F004-chat-system/
+├── phase-2/                    # Features depending on Phase 1
+│   └── F005-analytics/
+└── infrastructure/             # Infrastructure specs (not phased)
+    └── 001-database/
+```
+
+### Phase Calculation
+
+Phase is calculated automatically based on dependencies:
+- **Phase 0**: No dependencies (foundation features)
+- **Phase N**: max(dependency phases) + 1
+
+Example: F003 depends on F001 (phase 0) and F002 (phase 0) → F003 is Phase 1
+
+### Naming Convention
+
+- **Format**: `F{XXX}-{feature-slug}/`
+- **Numbering**: Zero-padded 3-digit IDs (F001, F002, ..., F050, F100)
+- **Slug**: kebab-case, 2-4 words max
+- Numbers are never reused. Deleted specs leave gaps in numbering.
+
+### Legacy Flat Structure
+
+For backward compatibility, the system also supports:
+```
+specs/
+├── features/
+│   ├── 001-feature-name/
+│   └── 002-another-feature/
+└── infrastructure/
+    └── 001-component/
+```
+
+The system checks phase-nested first, then falls back to legacy structure.
 
 ## Integration
 

@@ -1,0 +1,126 @@
+{
+  "$schema": "Project.json schema for dev-lifecycle-marketplace",
+  "$version": "2.0.0",
+
+  "name": "{project-name}",
+  "description": "{project-description}",
+  "version": "1.0.0",
+  "project_type": "monorepo | frontend | backend | fullstack",
+
+  "frameworks": {
+    "backend": {
+      "primary": "{FastAPI | Express | Django | etc}",
+      "version": "{version}",
+      "language": "{Python | TypeScript | etc}",
+      "language_version": "{version}"
+    },
+    "frontend": {
+      "primary": "{Next.js | React | Vue | etc}",
+      "version": "{version}",
+      "language": "{TypeScript | JavaScript}",
+      "ui_framework": "{React | Vue | etc}",
+      "component_library": "{shadcn/ui | MUI | etc}",
+      "styling": "{Tailwind CSS | CSS Modules | etc}"
+    }
+  },
+
+  "ai_stack": {
+    "sdks": [],
+    "providers": [],
+    "rag": {},
+    "mcp_servers": []
+  },
+
+  "database": {
+    "type": "{PostgreSQL | MongoDB | etc}",
+    "provider": "{Supabase | PlanetScale | etc}",
+    "version": "{version}",
+    "orm": "{Prisma | SQLAlchemy | none}",
+    "features": []
+  },
+
+  "infrastructure": {
+    "_comment": "Infrastructure items organized by phase for build ordering",
+
+    "existing": [
+      {
+        "id": "I001",
+        "name": "{component-name}",
+        "description": "{description}",
+        "phase": 0,
+        "depends_on": [],
+        "blocks": ["I002", "I003"]
+      }
+    ],
+
+    "needed": [
+      {
+        "id": "I010",
+        "name": "{component-name}",
+        "description": "{description}",
+        "priority": "mvp-blocking | high | medium | low",
+        "phase": 0,
+        "depends_on": [],
+        "blocks": ["F001", "F002"]
+      }
+    ]
+  },
+
+  "environment_variables": {
+    "required": [],
+    "optional": [],
+    "planned": []
+  },
+
+  "testing": {
+    "backend": {
+      "framework": "{pytest | jest | etc}",
+      "location": "{path}"
+    },
+    "frontend": {
+      "framework": "{jest | vitest | etc}",
+      "e2e": "{playwright | cypress | etc}"
+    }
+  },
+
+  "deployment": {
+    "frontend": "{Vercel | Netlify | etc}",
+    "backend": "{Railway | DigitalOcean | etc}",
+    "database": "{Supabase Cloud | etc}"
+  },
+
+  "ci_cd": {
+    "platform": "GitHub Actions",
+    "workflows": []
+  },
+
+  "documentation": {
+    "architecture": "docs/architecture/",
+    "adr": "docs/adr/",
+    "specs": "specs/"
+  },
+
+  "project_status": {
+    "phase": "{Planning | MVP Development | Beta | Production}",
+    "completion": "{percentage}%"
+  },
+
+  "detected_at": "{ISO date}",
+  "detection_confidence": "high | medium | low",
+
+  "_schema_notes": {
+    "infrastructure_phases": {
+      "0": "Core foundation - no infrastructure dependencies (auth, database, caching, sentry)",
+      "1": "First-order dependencies - depends only on phase 0 (error handling, celery, storage)",
+      "2": "Second-order dependencies - depends on phase 0/1 (webhooks, payments, notifications)",
+      "3": "Third-order dependencies - depends on phase 0/1/2 (subscriptions, reports)",
+      "4": "High-level features - many dependencies (voice AI, admin, ads)",
+      "5": "Final integration - depends on everything (health checks)"
+    },
+    "id_format": {
+      "infrastructure": "I001, I002, ... I042",
+      "features": "F001, F002, ... F039"
+    },
+    "phase_calculation": "phase = max(dependency phases) + 1, or 0 if no dependencies"
+  }
+}

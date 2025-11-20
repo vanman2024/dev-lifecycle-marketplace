@@ -38,8 +38,10 @@ Goal: Parse arguments and locate spec
 Actions:
 - Parse $ARGUMENTS for spec number and flags
 - Check for --generate-tests flag
-- Find spec directory: !{bash find specs/features -type d -name "*$SPEC_NUMBER*" | head -1}
-- Verify spec.md exists: !{bash test -f specs/features/$SPEC_DIR/spec.md && echo "✓ Found" || echo "✗ Missing"}
+- Find spec directory (phase-nested first, then legacy):
+  !{bash find specs/phase-* -type d -name "*$SPEC_NUMBER*" 2>/dev/null | head -1 || find specs/features -type d -name "*$SPEC_NUMBER*" 2>/dev/null | head -1}
+- Store as SPEC_DIR
+- Verify spec.md exists: !{bash test -f "$SPEC_DIR/spec.md" && echo "✓ Found" || echo "✗ Missing"}
 
 Phase 2: Validation
 Goal: Launch code-validator agent

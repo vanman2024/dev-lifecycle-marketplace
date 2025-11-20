@@ -23,9 +23,18 @@ echo "  \"description\": \"\"," >> .planning/project-specs.json
 echo "  \"createdAt\": \"$(date -u +"%Y-%m-%dT%H:%M:%SZ")\"," >> .planning/project-specs.json
 echo "  \"specs\": [" >> .planning/project-specs.json
 
-# Find all spec directories (numbered like 001-name, 002-name, etc.)
+# Find all spec directories - check phase-nested first, then legacy flat structure
 FIRST=true
-for spec_dir in $(find "$SPECS_DIR" -maxdepth 1 -type d -name "[0-9][0-9][0-9]-*" | sort); do
+
+# Try phase-nested structure first (specs/phase-*/F*-name)
+SPEC_DIRS=$(find "$SPECS_DIR"/phase-* -maxdepth 1 -type d -name "F[0-9][0-9][0-9]-*" 2>/dev/null | sort)
+
+# Fall back to legacy flat structure (specs/[0-9][0-9][0-9]-name)
+if [ -z "$SPEC_DIRS" ]; then
+  SPEC_DIRS=$(find "$SPECS_DIR" -maxdepth 1 -type d -name "[0-9][0-9][0-9]-*" 2>/dev/null | sort)
+fi
+
+for spec_dir in $SPEC_DIRS; do
   if [ "$FIRST" = true ]; then
     FIRST=false
   else

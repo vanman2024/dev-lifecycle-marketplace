@@ -69,14 +69,17 @@ Actions:
 - Check if bulk mode requested (--all or --bulk in arguments)
 
 ### Single Spec Mode
-- Parse spec name from arguments: $ARGUMENTS
-- Verify spec directory exists: specs/$ARGUMENTS
-- Extract spec number (e.g., "001" from "001-red-seal-ai")
-- Extract spec name (e.g., "red-seal-ai" from "001-red-seal-ai")
+- Parse spec name from arguments: $ARGUMENTS (e.g., F001 or 001-red-seal-ai)
+- Find spec directory (phase-nested first, then legacy):
+  !{bash find specs/phase-* -type d -name "*$ARGUMENTS*" 2>/dev/null | head -1 || find specs -type d -name "*$ARGUMENTS*" 2>/dev/null | head -1}
+- Verify spec directory exists
+- Extract spec number (e.g., "001" from "F001-red-seal-ai")
+- Extract spec name (e.g., "red-seal-ai" from "F001-red-seal-ai")
 - Get current git branch and verify clean working directory
 
 ### Bulk Mode (--all or --bulk)
-- Scan all specs: `specs/*/`
+- Scan all specs across all phases: `specs/phase-*/F*`
+- Fall back to legacy: `specs/*/`
 - Extract spec numbers and names
 - Count total worktrees to create (one per spec)
 - Show summary and confirm with user

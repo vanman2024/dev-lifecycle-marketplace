@@ -1,0 +1,104 @@
+{
+  "$schema": "Features.json schema for dev-lifecycle-marketplace",
+  "$version": "2.0.0",
+
+  "project": "{project-name}",
+  "generated_at": "{ISO datetime}",
+  "description": "{project description}",
+
+  "source_documents": {
+    "architecture": [],
+    "adr": [],
+    "roadmap": "docs/ROADMAP.md"
+  },
+
+  "phases": {
+    "_comment": "Features grouped by infrastructure phase for build ordering",
+    "0": ["F001", "F004", "F005"],
+    "1": ["F002", "F003", "F006"],
+    "2": ["F008", "F018"],
+    "3": ["F020", "F023"],
+    "4": ["F021", "F035"],
+    "5": ["F038"]
+  },
+
+  "features": [
+    {
+      "id": "F001",
+      "name": "{feature-name}",
+      "description": "{description}",
+      "priority": "P0 | P1 | P2",
+      "phase": "MVP | Beta Launch | Post-MVP",
+      "complexity": "Simple | Moderate | Complex",
+      "estimated_days": 3,
+
+      "infrastructure_phase": 0,
+      "infrastructure_dependencies": ["I001", "I010"],
+
+      "dependencies": ["F002", "F003"],
+      "dependent_features": ["F007", "F008"],
+
+      "operational_tasks": [],
+      "adr_references": [],
+      "architecture_notes": "{notes}",
+
+      "status": "planned | in_progress | completed"
+    }
+  ],
+
+  "shared_context": {
+    "tech_stack": [],
+    "user_types": [],
+    "data_entities": [],
+    "external_integrations": [],
+    "cost_model": {},
+    "business_metrics": {}
+  },
+
+  "feature_summary": {
+    "total_features": 0,
+    "p0_critical": 0,
+    "p1_high": 0,
+    "p2_medium": 0,
+    "by_infrastructure_phase": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0
+    },
+    "estimated_total_days": 0
+  },
+
+  "metadata": {
+    "version": "2.0",
+    "last_updated": "{ISO date}",
+    "update_frequency": "On feature add/update"
+  },
+
+  "_schema_notes": {
+    "infrastructure_phase": {
+      "description": "The phase when this feature can be built, based on required infrastructure",
+      "calculation": "max(phases of all infrastructure_dependencies)",
+      "constraint": "Feature cannot be built until all required infrastructure exists"
+    },
+    "infrastructure_dependencies": {
+      "description": "List of infrastructure IDs (I001-I042) this feature requires",
+      "source": "Matched from feature description or explicit specification",
+      "sync": "Must stay in sync with project.json infrastructure section"
+    },
+    "dependencies": {
+      "description": "List of feature IDs (F001-F039) this feature depends on",
+      "note": "Only feature dependencies, not infrastructure"
+    },
+    "phases_object": {
+      "description": "Quick lookup of which features are in each infrastructure phase",
+      "update": "Auto-updated when features are added or phases recalculated"
+    },
+    "build_order": {
+      "rule": "Build Phase 0 features first, then Phase 1, etc.",
+      "parallelization": "Features in same phase can be built in parallel"
+    }
+  }
+}

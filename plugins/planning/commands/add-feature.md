@@ -42,14 +42,23 @@ Goal: Check existing infrastructure, implementation state, and documentation BEF
 Actions:
 - Create todo list tracking workflow phases using TodoWrite
 
+- **CRITICAL: Read schema templates for consistent structure:**
+  - Read project.json schema: @~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/project-detection/templates/project-json-schema.json
+  - Read features.json schema: @~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/planning/skills/spec-management/templates/features-json-schema.json
+  - These schemas define the exact structure for infrastructure phases and feature dependencies
+  - All updates MUST follow these schemas
+
 - Display: "🔍 Discovering existing infrastructure and implementation..."
 
 - **Check Tech Stack & Infrastructure** (.claude/project.json):
   !{bash test -f .claude/project.json && echo "exists" || echo "missing"}
   - If exists: Read .claude/project.json
     * Extract: frameworks, ai_stack, database, dependencies
+    * **Extract: infrastructure.existing and infrastructure.needed with phase assignments**
     * Store as: PROJECT_STACK
+    * Store infrastructure items as: INFRASTRUCTURE_MAP (id → {name, phase, depends_on, blocks})
   - Display discovered stack: "Found: {frontend framework}, {backend framework}, {database}, {AI SDKs}"
+  - Display infrastructure: "Found: {N} infrastructure items across phases 0-5"
 
 - **Check Workflow Document** (*-WORKFLOW.md):
   !{bash ls *-WORKFLOW.md 2>/dev/null || echo "missing"}
@@ -122,8 +131,9 @@ Actions:
 - Load existing planning context:
   - Check if ROADMAP.md exists: !{bash test -f docs/ROADMAP.md && echo "exists" || echo "missing"}
   - Check if architecture docs exist: !{bash test -d docs/architecture && echo "exists" || echo "missing"}
-  - Check if specs directory exists: !{bash test -d specs/features && echo "exists" || echo "missing"}
-  - Find highest existing spec number: !{bash find specs/features -maxdepth 1 -name "[0-9][0-9][0-9]-*" -type d 2>/dev/null | sort | tail -1 | grep -oE '[0-9]{3}' | head -1}
+  - Check if specs directory exists: !{bash test -d specs && echo "exists" || echo "missing"}
+  - Find highest existing spec number across all phases: !{bash find specs/phase-* -maxdepth 1 -type d -name "F[0-9][0-9][0-9]-*" 2>/dev/null | grep -oE 'F[0-9]{3}' | sort | tail -1 | tr -d 'F'}
+  - If no phase dirs exist, check legacy flat structure: !{bash find specs/features -maxdepth 1 -name "[0-9][0-9][0-9]-*" -type d 2>/dev/null | sort | tail -1 | grep -oE '[0-9]{3}' | head -1}
 
 Phase 1.5: Intelligent Document Analysis (If MODE=DOCUMENT)
 Goal: Determine what this document represents and route appropriately
@@ -134,7 +144,7 @@ Actions:
 - Analyze document against existing context:
 
   **1. Compare to existing specs:**
-  - List all existing specs: !{bash ls -d specs/features/[0-9][0-9][0-9]-*/ 2>/dev/null}
+  - List all existing specs: !{bash find specs/phase-* -maxdepth 1 -type d -name "F[0-9][0-9][0-9]-*" 2>/dev/null || ls -d specs/features/[0-9][0-9][0-9]-*/ 2>/dev/null}
   - For each spec, read spec.md
   - Compare document content to each spec (keyword matching, concept similarity)
   - Calculate similarity scores
@@ -191,7 +201,7 @@ Goal: Detect if this is an enhancement to existing feature or truly new
 Actions:
 - **Skip if already analyzed in Phase 1.5 (document mode with routing decision)**
 
-- List all existing specs: !{bash ls -d specs/features/[0-9][0-9][0-9]-*/ 2>/dev/null}
+- List all existing specs: !{bash find specs/phase-* -maxdepth 1 -type d -name "F[0-9][0-9][0-9]-*" 2>/dev/null || ls -d specs/features/[0-9][0-9][0-9]-*/ 2>/dev/null}
 - For each existing spec, read the spec.md file to extract name and description
 - Compare FEATURE_DESCRIPTION against existing feature names/descriptions
 - Look for keyword matches, similar concepts, related functionality
@@ -213,7 +223,7 @@ Actions:
   - Continue to Phase 3 (create new spec)
 
 Phase 3: Feature Planning
-Goal: Determine feature details and placement
+Goal: Determine feature details, placement, and phase
 
 Actions:
 - Calculate next spec number (N+1 from highest)
@@ -222,6 +232,40 @@ Actions:
   - Dependencies: Look for "depends on F0XX", "requires F0XX", mentions of other features
   - Complexity: Estimate from scope (marketplace/ecosystem → Complex; single feature → Moderate; enhancement → Simple)
   - New tech: Check if description mentions new SDKs/frameworks not in project.json (Mem0, Clerk, ElevenLabs, etc.)
+- **Identify required infrastructure from feature description**:
+  - Scan FEATURE_DESCRIPTION for infrastructure keywords:
+    * "auth", "login", "user" → I001 (authentication)
+    * "cache", "redis" → I002 (redis-caching)
+    * "error", "sentry" → I003 (sentry-error-tracking)
+    * "RAG", "file search", "manual" → I010 (google-file-search-rag)
+    * "batch", "gemini" → I011 (gemini-batch-api)
+    * "study partner", "claude agent" → I012 (claude-agent-sdk)
+    * "memory", "mem0" → I013 (mem0-platform)
+    * "voice", "elevenlabs", "TTS", "STT" → I014 (elevenlabs-voice-ai)
+    * "realtime", "presence" → I015 (supabase-realtime)
+    * "streaming", "websocket" → I016 (websocket-streaming)
+    * "celery", "task queue", "background" → I018 (celery-task-queue)
+    * "payment", "stripe" → I020 (stripe-payments)
+    * "subscription" → I021 (subscription-management)
+    * "storage", "file upload" → I022 (supabase-storage)
+    * "quiz", "question selection" → I038 (quiz-assembly-engine)
+  - Store matched IDs as: INFRASTRUCTURE_DEPENDENCIES
+  - Display: "Requires infrastructure: {list of I0XX IDs}"
+
+- **Calculate infrastructure_phase from infrastructure dependencies**:
+  - For each ID in INFRASTRUCTURE_DEPENDENCIES:
+    * Look up phase from INFRASTRUCTURE_MAP
+  - INFRASTRUCTURE_PHASE = max(infrastructure phases) or 0 if none
+  - Display: "Infrastructure phase requirement: {INFRASTRUCTURE_PHASE}"
+
+- **Calculate feature phase from feature dependencies**:
+  - If features.json exists, read it to get phase of each feature dependency
+  - FEATURE_DEP_PHASE = max(feature dependency phases) + 1, or 0 if none
+
+- **Final phase = max(INFRASTRUCTURE_PHASE, FEATURE_DEP_PHASE)**:
+  - This ensures feature can't be built before its infrastructure exists
+  - Store as FEATURE_PHASE
+  - Display: "Feature phase: {FEATURE_PHASE} (infra: {INFRASTRUCTURE_PHASE}, features: {FEATURE_DEP_PHASE})"
 - ONLY use AskUserQuestion if information is missing or ambiguous:
   - Priority unclear? Ask: "What priority? P0 (critical), P1 (important), P2 (nice-to-have)"
   - Dependencies unclear? Ask: "Any dependencies on existing features?"
@@ -247,24 +291,36 @@ Actions:
 - Update todos
 
 Phase 3.6: Update features.json
-Goal: Add feature entry to features.json SECOND (tracking layer)
+Goal: Add feature entry to features.json with phase information
 
 Actions:
 - Check if features.json exists:
   !{bash test -f features.json && echo "exists" || echo "missing"}
-- If missing: Create empty features.json with {}
+- If missing: Create initial features.json with phases structure:
+  ```json
+  {
+    "phases": {},
+    "features": {}
+  }
+  ```
 - Read current features.json: @features.json
-- Add new feature entry:
+- Add new feature entry to features object:
   * Feature ID: F[NEXT_NUMBER] (e.g., F002)
   * Name: [FEATURE_NAME]
   * Description: [FEATURE_DESCRIPTION]
   * Status: "planned"
   * Priority: [P0/P1/P2] (from Phase 3)
-  * Dependencies: [list from Phase 3]
+  * **infrastructure_phase: [FEATURE_PHASE]** (from Phase 3 calculation - max of infra and feature deps)
+  * **infrastructure_dependencies: [INFRASTRUCTURE_DEPENDENCIES]** (list of I0XX IDs from Phase 3)
+  * Dependencies: [feature dependencies only - F0XX IDs from Phase 3]
   * Estimated days: [from Phase 3]
   * Created date: [current date]
+- **Update phases summary**:
+  * If phases.[FEATURE_PHASE] doesn't exist, create it with empty array
+  * Add F[NUMBER] to phases.[FEATURE_PHASE] array
+  * Example: phases.0 = ["F001", "F002"] for phase 0 features
 - Write updated features.json
-- Display: "✅ Updated features.json with F[NUMBER]"
+- Display: "✅ Updated features.json with F[NUMBER] in Phase [PHASE]"
 - Update todos
 
 Phase 4: Execute All Documentation in Parallel
@@ -274,7 +330,7 @@ Actions:
 
 **🚀 CRITICAL: Execute ALL applicable tasks below in PARALLEL by calling them in a SINGLE message with multiple Task invocations.**
 
-Task(description="Generate feature spec", subagent_type="planning:feature-spec-writer", prompt="Create complete spec for: [FEATURE_DESCRIPTION]. Spec number: [NEXT_NUMBER]. Priority: [P0/P1/P2]. Dependencies: [list]. Read architecture docs, reference them (don't duplicate). If document mode: Use [DOC_PATH] as primary source. Create specs/features/[NUMBER]-[slug]/spec.md and tasks.md. Follow minimal format (100-150 lines).")
+Task(description="Generate feature spec", subagent_type="planning:feature-spec-writer", prompt="Create complete spec for: [FEATURE_DESCRIPTION]. Spec number: [NEXT_NUMBER]. Phase: [FEATURE_PHASE]. Priority: [P0/P1/P2]. Dependencies: [list]. Read architecture docs, reference them (don't duplicate). If document mode: Use [DOC_PATH] as primary source. Create specs in phase-nested directory: specs/phase-[FEATURE_PHASE]/F[NUMBER]-[slug]/spec.md and tasks.md. Follow minimal format (100-150 lines).")
 
 Task(description="Update roadmap", subagent_type="planning:roadmap-planner", prompt="Add feature [NUMBER] to ROADMAP.md: [FEATURE_DESCRIPTION]. Priority: [P0/P1/P2]. Phase: [X]. Complexity: [X days]. Dependencies: [list]. Read docs/ROADMAP.md, add to appropriate phase, recalculate totals, update gantt if present.")
 
@@ -298,8 +354,12 @@ Actions:
     - Display: "📄 Processed document: [DOC_PATH]"
     - Display: "📊 Analysis: [NEW FEATURE/ENHANCEMENT/HYBRID]"
   * Display: "✅ Created:"
-    - Spec: specs/features/[NUMBER]-[slug]/
-    - Roadmap: Updated (Phase X, Priority P0/P1/P2, [X days])
+    - Spec: specs/phase-[FEATURE_PHASE]/F[NUMBER]-[slug]/
+    - Roadmap: Updated (Phase [FEATURE_PHASE], Priority P0/P1/P2, [X days])
     - ADR: docs/adr/[NUMBER]-[slug].md (if created)
     - Architecture: Updated files (if applicable)
-- Next steps: Review spec, /iterate:tasks [NUMBER], begin implementation
+  * Display: "📁 Phase [FEATURE_PHASE] now contains: [list features in this phase]"
+- Next steps:
+  * Review spec in specs/phase-[FEATURE_PHASE]/F[NUMBER]-[slug]/
+  * Run /implementation:execute F[NUMBER] to build the feature
+  * Or run /implementation:execute to auto-continue from where you left off

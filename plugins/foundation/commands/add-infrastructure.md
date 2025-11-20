@@ -44,6 +44,13 @@ Goal: Extract infrastructure component type and description
 
 Actions:
 - Create todo list tracking phases
+
+- **CRITICAL: Read schema templates for consistent structure:**
+  - Read project.json schema: @~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/project-detection/templates/project-json-schema.json
+  - Read features.json schema: @~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/planning/skills/spec-management/templates/features-json-schema.json
+  - These schemas define the exact structure for infrastructure phases and dependencies
+  - All updates MUST follow these schemas
+
 - Parse arguments: `<component-type> "<description>"`
 - Common component types (predefined):
   - `authentication` - Auth providers (Clerk, Auth0, Supabase Auth)
@@ -91,23 +98,37 @@ Actions:
 - Update todos
 
 Phase 3: Update project.json
-Goal: Add infrastructure component to project.json
+Goal: Add infrastructure component to project.json with phase and dependencies
 
 Actions:
 - Read current .claude/project.json
+- **Analyze dependencies to calculate phase:**
+  - Scan description for infrastructure dependencies:
+    * Needs auth → depends_on I001 (phase 0)
+    * Needs redis/caching → depends_on I002 (phase 0)
+    * Needs celery → depends_on I018 (phase 1)
+    * Needs payments → depends_on I020 (phase 2)
+    * etc.
+  - phase = max(dependency phases) + 1, or 0 if no dependencies
 - Add new infrastructure component with structure:
   ```json
   "infrastructure": {
-    "webhooks": {
-      "provider": "Custom / Stripe",
-      "description": "User-provided description",
-      "features": ["inbound webhooks", "signature verification", "retry handling"],
-      "integration": "Determined from description"
-    }
+    "needed": [
+      {
+        "id": "I0XX",
+        "name": "{component-type}",
+        "description": "User-provided description",
+        "priority": "high",
+        "phase": {calculated phase},
+        "depends_on": ["{list of I0XX dependencies}"],
+        "blocks": []
+      }
+    ]
   }
   ```
 - Infer provider and features from description
 - Write updated project.json
+- Display: "Added {component-type} at phase {N}"
 - Update todos
 
 Phase 4: Generate Infrastructure Spec
@@ -204,17 +225,28 @@ Actions:
 
 - Update todos
 
-Phase 5: Update Dependencies
-Goal: Update any features that depend on this infrastructure
+Phase 5: Sync Features with New Infrastructure
+Goal: Update features.json to reflect new infrastructure availability
 
 Actions:
-- Check features.json for features that might depend on this infrastructure
-- If webhooks → payment features, subscription features
-- If email → notification features, onboarding features
-- If storage → upload features, media features
-- If queue → background job features, async processing features
-- Add infrastructure dependency to relevant features
+- Read features.json
+- For each feature, check if it could benefit from or depends on this new infrastructure:
+  - Match by keywords in feature description
+  - Match by explicit infrastructure_dependencies field
+- **Recalculate infrastructure_phase for affected features:**
+  - For features that depend on this new infrastructure:
+    * Add this infrastructure ID to their infrastructure_dependencies
+    * Recalculate: infrastructure_phase = max(required infrastructure phases)
+    * If phase increased, update the feature's phase field
+    * Display: "Updated F{XXX} phase: {old} → {new} (now requires I{XXX})"
+- **Update phase groupings:**
+  - Move features to new phases if their infrastructure_phase changed
+  - Ensure phases object reflects current groupings
+- Write updated features.json
+- Display: "Synced {N} features with new infrastructure"
 - Update todos
+
+**Important:** Features should never be in a lower phase than their required infrastructure. If I042 (health-check-system) is phase 5, any feature requiring it must be phase 5+.
 
 Phase 6: Summary
 Goal: Display results and next steps

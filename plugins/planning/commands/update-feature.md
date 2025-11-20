@@ -44,17 +44,17 @@ Actions:
   - Flags: --all (update all features with same change)
 - If --all flag present:
   - Display: "🔄 Updating ALL features with change: [changes]"
-  - List all features: !{bash ls -d specs/features/[0-9][0-9][0-9]-* 2>/dev/null}
+  - List all features: !{bash find specs/phase-* -maxdepth 1 -type d -name "F[0-9][0-9][0-9]-*" 2>/dev/null || ls -d specs/features/[0-9][0-9][0-9]-* 2>/dev/null}
   - Confirm with AskUserQuestion: "Update all [count] features?"
 - Else if spec number not provided, use AskUserQuestion to ask:
   - Which feature needs updating? (spec number or name)
-- Validate feature(s) exist:
-  !{bash find specs/features -name "$SPEC_NUMBER-*" -type d 2>/dev/null | head -1}
+- Validate feature(s) exist (check phase-nested first, then legacy):
+  !{bash find specs/phase-* -type d -name "F$SPEC_NUMBER-*" 2>/dev/null | head -1 || find specs/features -name "$SPEC_NUMBER-*" -type d 2>/dev/null | head -1}
 - If not found, display error and list available features:
-  !{bash ls -d specs/features/[0-9][0-9][0-9]-* 2>/dev/null}
-- Load existing feature files:
-  - Read spec: specs/features/[NUMBER]-*/spec.md
-  - Read tasks: specs/features/[NUMBER]-*/tasks.md
+  !{bash find specs/phase-* -maxdepth 1 -type d -name "F[0-9][0-9][0-9]-*" 2>/dev/null || ls -d specs/features/[0-9][0-9][0-9]-* 2>/dev/null}
+- Load existing feature files (from discovered path):
+  - Read spec: [SPEC_DIR]/spec.md
+  - Read tasks: [SPEC_DIR]/tasks.md
 - Find feature in ROADMAP.md:
   !{bash grep -n "$SPEC_NUMBER" docs/ROADMAP.md}
 

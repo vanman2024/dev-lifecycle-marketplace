@@ -64,10 +64,24 @@ You are a feature specification content writer. Your role is to fill existing sp
 
 ### 1. Discovery & Context Loading
 
+**CRITICAL: Read schema templates for consistent structure:**
+- Read features.json schema: @~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/planning/skills/spec-management/templates/features-json-schema.json
+- Read spec template: @~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/planning/skills/spec-management/templates/feature-spec-minimal.md
+- Read tasks template: @~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/planning/skills/spec-management/templates/feature-tasks-minimal.md
+- These define the exact structure your output MUST follow
+
 **Load feature context:**
 - Read: `.wizard/feature-breakdown.json`
 - Extract: your assigned feature number, name, focus, dependencies
 - Understand: what this feature does and what it depends on
+
+**Load infrastructure context from project.json:**
+- Read: `.claude/project.json`
+- Extract: infrastructure.existing and infrastructure.needed
+- For each infrastructure ID in feature's infrastructure_dependencies:
+  * Look up the infrastructure item (name, phase, description)
+  * Note what infrastructure must be built first
+- Store as: REQUIRED_INFRASTRUCTURE
 
 **Load architecture documentation:**
 - Read relevant sections from:
@@ -78,9 +92,10 @@ You are a feature specification content writer. Your role is to fill existing sp
   - `docs/architecture/security.md` (for auth features)
   - `docs/architecture/integrations.md` (for external services)
 
-**Load existing template files:**
-- Read: `specs/features/NNN-feature-name/spec.md`
-- Read: `specs/features/NNN-feature-name/tasks.md`
+**Load existing template files (phase-nested structure):**
+- Read: `specs/phase-N/FNNN-feature-name/spec.md`
+- Read: `specs/phase-N/FNNN-feature-name/tasks.md`
+- Note: Phase N comes from feature breakdown JSON or prompt
 
 ### 2. Fill spec.md Template
 
@@ -108,7 +123,10 @@ You are a feature specification content writer. Your role is to fill existing sp
 - Keep focused (2-3 day implementation)
 
 **List dependencies:**
-- Other features required before this one
+- **Infrastructure dependencies**: List I0XX IDs from REQUIRED_INFRASTRUCTURE
+  * Format: "Requires I001 (authentication), I010 (google-file-search-rag)"
+  * Include infrastructure phase: "Infrastructure must be at phase X before this feature"
+- **Feature dependencies**: Other features required before this one (F0XX)
 - Features that depend on this one
 
 ### 3. Fill tasks.md Template
@@ -191,23 +209,30 @@ You are a feature specification content writer. Your role is to fill existing sp
 
 ## Output Standards
 
+- **Directory structure**: `specs/phase-N/FNNN-feature-name/` (phase-nested)
 - spec.md: 100-150 lines with clear user stories and scope
 - tasks.md: 30-50 actionable tasks grouped by phase
 - All references link to actual docs that exist
-- Frontmatter preserved exactly as in template
+- Frontmatter preserved exactly as in template, includes phase number
 - No hardcoded API keys or secrets (use placeholders)
 
 ## Self-Verification Checklist
 
 Before completing:
-- ✅ Read feature breakdown JSON
+- ✅ **Read schema templates (features-json-schema, feature-spec-minimal, feature-tasks-minimal)**
+- ✅ Read feature breakdown JSON (extract phase number)
+- ✅ **Read project.json infrastructure section**
+- ✅ **Identified infrastructure_dependencies (I0XX IDs)**
 - ✅ Read relevant architecture docs
+- ✅ **Created directory in phase-nested structure**: `specs/phase-N/FNNN-feature-name/`
 - ✅ Filled all placeholders in spec.md
+- ✅ **Listed infrastructure dependencies with IDs and phases**
 - ✅ Created actionable tasks in tasks.md
 - ✅ Added proper references to architecture docs
-- ✅ Dependencies listed correctly
+- ✅ Feature dependencies listed correctly (F0XX IDs)
 - ✅ Scope is clear and focused
-- ✅ Tasks are grouped by phase
+- ✅ Tasks are grouped by implementation phase
+- ✅ **Frontmatter includes phase number and infrastructure_dependencies**
 - ✅ No hardcoded secrets
 - ✅ Files are concise (~100-150 lines for spec, ~30-50 tasks)
 

@@ -36,9 +36,11 @@ Phase 1: Discovery
 Goal: Parse spec number and locate task files
 
 Actions:
-- Parse $ARGUMENTS for spec number (e.g., "001", "spec-001")
-- Find spec directory: !{bash find specs -type f -name "tasks.md" -path "*$SPEC_NUMBER*" | head -1 | xargs dirname}
-- Verify tasks.md exists: !{bash SPEC_DIR=$(find specs -type f -name "tasks.md" -path "*$SPEC_NUMBER*" | head -1 | xargs dirname) && test -f "$SPEC_DIR/tasks.md" && echo "✓ Found" || echo "✗ Missing"}
+- Parse $ARGUMENTS for spec number (e.g., "F001", "001", "spec-001")
+- Find spec directory (phase-nested first, then legacy):
+  !{bash find specs/phase-* -type f -name "tasks.md" -path "*$SPEC_NUMBER*" 2>/dev/null | head -1 | xargs dirname || find specs -type f -name "tasks.md" -path "*$SPEC_NUMBER*" 2>/dev/null | head -1 | xargs dirname}
+- Store as SPEC_DIR
+- Verify tasks.md exists: !{bash test -f "$SPEC_DIR/tasks.md" && echo "✓ Found" || echo "✗ Missing"}
 - If missing, report error and suggest creating tasks.md
 
 Phase 2: Validation

@@ -1,120 +1,114 @@
 ---
-description: Execute feature implementation by discovering commands and executing tasks
-argument-hint: <spec-id>
-allowed-tools: Read, Write, Bash(*), Glob, Grep, SlashCommand, TodoWrite
+description: Execute feature/infrastructure implementation - single item or full parallel build across phases
+argument-hint: [spec-id | --all | --infrastructure | --features]
+allowed-tools: Read, Bash, Task, TodoWrite
 ---
 
 **Arguments**: $ARGUMENTS
 
-Goal: Execute complete feature implementation by reading spec.md and tasks.md, discovering available commands from enabled plugins, intelligently mapping tasks to commands, and executing sequentially with progress tracking.
+Goal: Execute implementation with intelligent phase orchestration. Delegates to execution-orchestrator agent for actual work.
 
-Core Principles:
-- Read spec.md for feature context and requirements
-- Read tasks.md for task list to execute
-- Discover available commands from .claude/settings.json
-- Map tasks to commands based on keywords and tech stack
-- Execute tasks sequentially with progress tracking
-- Auto-sync with /iterate:sync after execution
-- Track progress in .claude/execution/<spec>.json
+**Modes:**
+- *(no args)* - Auto-continue: find next incomplete item and execute it
+- `<spec-id>` - Execute single infrastructure (I001) or feature (F001)
+- `--all` - Execute EVERYTHING: all infrastructure phases, then all feature phases
+- `--infrastructure` - Execute all infrastructure phases (0→1→2→3→4→5)
+- `--features` - Execute all feature phases (after infrastructure validation)
 
-Phase 0: Discovery & Context Loading
-Goal: Load spec files, discover available commands, and prepare for execution
+**Automatic Plugin Detection:**
+The system automatically detects which plugins to use by:
+1. Reading each spec's tasks.md
+2. Analyzing task keywords (auth, component, endpoint, streaming, etc.)
+3. Matching to available plugins in settings.json
+4. Using only the plugins that are enabled AND relevant to the task
 
-Actions:
-- Create todos: Load Context, Discover Commands, Execute Tasks, Sync & Validate
-- Parse $ARGUMENTS to extract spec ID (e.g., "F001", "infrastructure/001-auth")
-- Validate spec exists: !{bash test -d specs/$ARGUMENTS && echo "exists" || echo "missing"}
-- If missing: Error "Spec not found at specs/$ARGUMENTS. Run /planning:add-feature first" and exit
-- Read spec context:
-  * @specs/$ARGUMENTS/spec.md (feature description, requirements, user stories)
-  * @specs/$ARGUMENTS/tasks.md (task list to execute)
-  * @.claude/project.json (tech stack for intelligent command mapping)
-  * @.claude/settings.json (enabled plugins and available commands)
-- Display feature summary:
-  * Feature: [Name from spec.md]
-  * Spec ID: $ARGUMENTS
-  * Tasks: [X tasks found in tasks.md]
-- Discover available commands:
-  * Parse enabledPlugins from settings.json
-  * List plugins: display "[Y] plugins enabled"
-  * Display: "Command discovery complete - ready for task mapping"
-- Check execution history:
-  * !{bash mkdir -p .claude/execution}
-  * Check if .claude/execution/$ARGUMENTS.json exists
-  * If exists: @.claude/execution/$ARGUMENTS.json (read previous execution history)
-  * Display previously executed commands: "[X] commands already run"
-  * Mark completed tasks to skip: "Resuming from last checkpoint"
-  * If not exists: Create new .claude/execution/$ARGUMENTS.json
-  * Track: spec_id, started_at, tasks: [], executed_commands: [], status: "in_progress"
+**Parallel Execution:**
+- Items WITHIN a phase run in parallel (I001, I002, I003 all Phase 0 → parallel)
+- Phases run sequentially (Phase 0 completes → Phase 1 starts)
 
-Phase 1: Intelligent Task Mapping
-Goal: Map each task from tasks.md to appropriate commands from enabled plugins
+## Execution
+
+Phase 1: Parse Arguments and Determine Mode
+Goal: Understand what to execute
 
 Actions:
-- Extract tasks from tasks.md (parse markdown checklist format)
-- For each task:
-  * Analyze task description for keywords
-  * Extract action type (create, setup, configure, deploy, test, etc.)
-  * Extract subject (component, endpoint, schema, auth, deployment, etc.)
-  * Match to tech stack from project.json
-  * Score available commands by relevance:
-    - Keyword matching (component → add-component, endpoint → add-endpoint)
-    - Tech stack alignment (Next.js → nextjs-frontend:*, FastAPI → fastapi-backend:*)
-    - Plugin capabilities (auth → supabase:add-auth OR clerk:add-auth based on project.json)
-  * Select highest-scoring command (confidence-based)
-  * If confidence < 60%: Ask user "Which command for task: [description]?"
-  * Display mapping: "Task: [description] → Command: /plugin:command-name [args]"
-- Create execution plan with all mappings
-- Display execution plan:
-  * Total tasks: [X]
-  * Mapped commands: [list of unique commands]
-  * Estimated time: [Y] minutes
-- Ask user: "Execute plan? (y/n)" - If no, exit gracefully
+- Create todo: "Execute implementation"
+- Parse $ARGUMENTS:
+  * If empty/no args: MODE = "auto-continue"
+  * If `--all`: MODE = "full"
+  * If `--infrastructure`: MODE = "infrastructure"
+  * If `--features`: MODE = "features"
+  * If starts with I (e.g., I001): MODE = "single-infrastructure"
+  * If starts with F (e.g., F001): MODE = "single-feature"
+  * Otherwise: MODE = "single" (legacy spec path)
+- Display: "Mode: [MODE]"
 
-Phase 2: Sequential Task Execution
-Goal: Execute all tasks sequentially with progress tracking
+Phase 2: Launch Execution Orchestrator Agent
+Goal: Delegate to agent for actual execution
 
 Actions:
-- Update todo: Mark "Execute Tasks" as in_progress
-- For each task in execution plan:
-  * Check execution history: if command already in executed_commands array, skip
-  * If already executed: Display "⏭️  Skipping: [command] (already run)" and continue
-  * If not executed: Display "Executing task [X/Y]: [task description]"
-  * Display: "Command: [/plugin:command args]"
-  * Execute via SlashCommand tool
-  * Capture result and any errors
-  * Update .claude/execution/$ARGUMENTS.json:
-    - Add task to tasks array
-    - Add command to executed_commands array (deduplicated)
-    - Mark task.status = "complete" or "failed"
-    - Record task.command, task.output, task.timestamp
-  * If execution fails:
-    - Display error: "Task failed: [error message]"
-    - Ask user: "Continue with remaining tasks? (y/n)"
-    - If no: Mark execution as "partial", save state, exit
-  * Display progress: "Progress: [X/Y] tasks complete"
-- All tasks complete: Display "✅ All tasks executed successfully"
-- Update execution tracking:
-  * Mark status = "complete"
-  * Record completed_at timestamp
-  * Save final .claude/execution/$ARGUMENTS.json
+- Launch execution-orchestrator agent with mode and target:
 
-Phase 3: Sync and Validation
-Goal: Sync implementation with specs and provide summary
+```
+Task(
+  description="Execute [MODE] implementation",
+  subagent_type="implementation:execution-orchestrator",
+  prompt="Execute implementation in [MODE] mode.
+
+  Target: $ARGUMENTS
+  Mode: [MODE]
+
+  Read schema templates first:
+  - @~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/project-detection/templates/project-json-schema.json
+  - @~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/planning/skills/spec-management/templates/features-json-schema.json
+
+  Then read project context:
+  - .claude/project.json (infrastructure phases)
+  - features.json (feature phases and dependencies)
+  - .claude/settings.json (enabled plugins - this is your command source)
+
+  Automatic Plugin Detection:
+  - Read settings.json enabledPlugins to know what's available
+  - For each task, analyze what it needs and find matching plugin commands
+  - Only use commands from enabled plugins
+  - If no matching plugin enabled, error with message
+
+  For MODE=auto-continue:
+  - Read .claude/execution/*.json to see what's been run
+  - Check project.json infrastructure statuses
+  - Check features.json feature statuses
+  - Find next incomplete item in lowest incomplete phase
+  - Execute it and continue to next
+  - Keep going until user stops or everything is done
+
+  For MODE=full/infrastructure/features:
+  - Group items by phase
+  - Execute phases sequentially (0→1→2→3→4→5)
+  - Within each phase, launch parallel Task agents for all items
+  - Wait for phase to complete before next
+  - Update statuses in project.json/features.json
+
+  For MODE=single-*:
+  - Validate dependencies first
+  - Execute single item's tasks
+  - Update status when complete
+
+  Return comprehensive summary with:
+  - Items executed per phase
+  - Success/failure counts
+  - Plugins used
+  - Duration
+  - Any errors"
+)
+```
+
+Phase 3: Display Results
+Goal: Show execution summary
 
 Actions:
-- Run sync: Execute /iterate:sync $ARGUMENTS
-- Display sync results
-- Generate execution summary:
-  * Feature: $ARGUMENTS
-  * Status: [complete|partial|failed]
-  * Tasks executed: [X/Y]
-  * Duration: [start to end time]
-  * Commands used: [unique command count]
-  * Log file: .claude/execution/$ARGUMENTS.json
-- Display next steps:
-  * Validate code: /quality:validate-code $ARGUMENTS
-  * Run tests: /testing:test $ARGUMENTS
-  * Deploy: /deployment:deploy
-- Mark all todos complete
-- Success message: "🎉 Feature implementation complete!"
+- Display agent's execution summary
+- Show next steps:
+  * /quality:validate-code
+  * /testing:test
+  * /deployment:deploy
+- Mark todo complete

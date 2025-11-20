@@ -83,8 +83,8 @@ Actions:
   - Read features.json: @features.json
   - Read project.json: @.claude/project.json
   - Extract feature list from features.json
-  - Check which features already have specs:
-    !{bash for f in $(jq -r '.features[].id' features.json 2>/dev/null); do if [ -d "specs/$f" ]; then echo "$f: ✅ HAS SPEC"; else echo "$f: ⚠️ NEEDS SPEC"; fi; done}
+  - Check which features already have specs (phase-nested or legacy):
+    !{bash for f in $(jq -r '.features | keys[]' features.json 2>/dev/null); do phase=$(jq -r ".features[\"$f\"].phase // 0" features.json); if [ -d "specs/phase-$phase/$f-"* ] || [ -d "specs/$f" ]; then echo "$f: ✅ HAS SPEC"; else echo "$f: ⚠️ NEEDS SPEC"; fi; done}
   - Filter to features WITHOUT specs
   - Display: "Found [X] features, [Y] need specs"
   - **SKIP to Phase 4** (use existing features.json)
@@ -240,12 +240,13 @@ $ARGUMENTS
 
 Your Feature Assignment:
 - Feature: Extract from JSON /tmp/feature-breakdown.json feature 001
+- Phase: Extract phase from JSON (calculated from dependencies)
 - Focus: Extract focus from JSON
 - Dependencies: Extract dependencies from JSON
 - Integrations: Extract integrations from JSON
 - Shared Context: Extract sharedContext from JSON
 
-Deliverable: Three files in specs/{number}-{name}/ directory:
+Deliverable: Three files in phase-nested directory specs/phase-{phase}/F{number}-{name}/:
 - spec.md (user requirements, tech-agnostic)
 - plan.md (technical design with database schema, API contracts)
 - tasks.md (implementation tasks, 5 phases, numbered)")
@@ -268,12 +269,13 @@ $ARGUMENTS
 
 Your Feature Assignment:
 - Feature: Extract from JSON /tmp/feature-breakdown.json feature 002
+- Phase: Extract phase from JSON (calculated from dependencies)
 - Focus: Extract focus from JSON
 - Dependencies: Extract dependencies from JSON
 - Integrations: Extract integrations from JSON
 - Shared Context: Extract sharedContext from JSON
 
-Deliverable: Three files in specs/{number}-{name}/ directory:
+Deliverable: Three files in phase-nested directory specs/phase-{phase}/F{number}-{name}/:
 - spec.md (user requirements, tech-agnostic)
 - plan.md (technical design with database schema, API contracts)
 - tasks.md (implementation tasks, 5 phases, numbered)")
@@ -285,7 +287,7 @@ NOTE: In actual execution, the command orchestrator will read the JSON and dynam
 Wait for ALL spec-writer agents to complete before proceeding.
 
 Phase 6: Project Overview
-Goal: Create high-level project overview (000-project-overview) with build phases and dependency graph
+Goal: Create high-level project overview with build phases and dependency graph
 
 Actions:
 - Create overview directory: !{bash mkdir -p specs/000-project-overview}
@@ -306,7 +308,7 @@ Actions:
   - **Parallel work opportunities** (which can build simultaneously)
   - **Integration map** (how features connect)
 - Write: specs/000-project-overview/README.md
-- This file provides the bird's-eye view of entire project
+- This file provides the bird's-eye view of entire project with phase organization
 
 Phase 7: Consolidation
 Goal: Generate consolidated project-specs.json from all specs
@@ -315,17 +317,19 @@ Actions:
 - Run consolidation script to generate JSON output
 - Example: !{bash bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/planning/skills/spec-management/scripts/consolidate-specs.sh}
 - Verify JSON was created: !{bash test -f .planning/project-specs.json && echo "Generated" || echo "Missing"}
-- Count total specs created: !{bash ls -1 specs/*/spec.md 2>/dev/null | wc -l}
+- Count total specs created across all phases: !{bash find specs/phase-* -name "spec.md" 2>/dev/null | wc -l}
 
 Phase 8: Summary
 Goal: Provide comprehensive results with paths and next steps
 
 Actions:
-- Display feature count and spec locations
+- Display feature count and spec locations by phase
 - Show project-specs.json location
-- List all created spec directories: !{bash ls -1d specs/*/ 2>/dev/null}
+- List all phase directories and their contents:
+  !{bash for phase in specs/phase-*; do echo "📁 $(basename $phase):"; ls -1 "$phase" 2>/dev/null | sed 's/^/   /'; done}
 - Display summary:
   - Total features analyzed
+  - Features by phase: Phase 0: [X], Phase 1: [Y], Phase 2: [Z]...
   - Total specs created (spec.md, plan.md, tasks.md per feature)
   - JSON consolidation location: .planning/project-specs.json
   - Next steps: Review specs, run /planning:validate-specs

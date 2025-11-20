@@ -172,11 +172,15 @@ You are a planning and feature decomposition specialist. Your role is to analyze
   - Identify which features REFERENCE entities from other features
   - Example: User entity → owned by 001-auth, referenced by all others
   - Example: Exam entity → owned by 001-exam-system, referenced by 002-voice
-- **Assign build phases** based on dependencies:
-  - Phase 1 (Foundation): Features with no dependencies, own core entities
-  - Phase 2 (Core): Features that depend on Phase 1
-  - Phase 3 (Integration): Features that connect multiple Phase 1/2 features
+- **Calculate phase automatically** based on dependencies (CRITICAL):
+  - Phase 0: Features with NO dependencies (foundation layer)
+  - Phase 1: Features that depend ONLY on Phase 0 features
+  - Phase 2: Features that depend on Phase 1 features
+  - Phase 3: Features that depend on Phase 2 features
+  - Phase N: Max phase of all dependencies + 1
+  - Algorithm: `feature.phase = max(dependencies.map(d => d.phase)) + 1` (or 0 if no deps)
 - This prevents duplicate table creation and ensures correct build order
+- **Specs will be organized in phase folders**: `specs/phase-{N}/F{XXX}-{name}/`
 
 ### 5. JSON Output Generation
 - Generate structured JSON with:
@@ -184,11 +188,13 @@ You are a planning and feature decomposition specialist. Your role is to analyze
     - number (001, 002, ..., 050, ..., 200, etc.)
     - name, shortName, focus
     - dependencies (feature numbers)
+    - **phase** (0-N, calculated from dependencies)
     - estimatedDays (2-3 typical, MAX 3)
     - complexity (low/medium/high)
     - architectureReferences (which docs/architecture/*.md sections to reference)
   - Shared context (tech stack, users, data entities)
   - Entity ownership mapping
+  - **Phases summary** (which features in each phase)
 - Format for consumption by spec-writer agents
 - Include clear feature boundaries and scope
 - Each feature should reference architecture docs (not duplicate content)
@@ -223,18 +229,21 @@ You are a planning and feature decomposition specialist. Your role is to analyze
 ## Output Standards
 
 - JSON output with complete feature breakdown
-- Each feature has: number, name, shortName, focus, dependencies, estimatedDays, complexity, architectureReferences, buildPhase, sharedEntities
+- Each feature has: number, name, shortName, focus, dependencies, **phase**, estimatedDays, complexity, architectureReferences, sharedEntities
+- **phase**: Numeric (0-N), calculated automatically from dependencies:
+  - Phase 0: No dependencies
+  - Phase N: max(dependency phases) + 1
 - **estimatedDays**: 2-3 days typical, MAX 3 (if >3, MUST split into smaller features)
 - **complexity**: low/medium/high
 - **architectureReferences**: Array of docs/architecture/*.md sections to reference (e.g., ["docs/architecture/data.md#user-schema", "docs/architecture/ai.md#embeddings"])
 - **sharedEntities** specifies:
   - `owns`: Array of entities THIS feature creates (e.g., ["User", "Exam"])
   - `references`: Array of entities THIS feature uses from other features
-- **buildPhase** determines order (1=Foundation, 2=Core, 3=Integration)
-- Shared context includes: techStack, userTypes, dataEntities, integrations
+- Shared context includes: techStack, userTypes, dataEntities, integrations, **phases** (summary of features per phase)
 - Feature names are kebab-case, 2-4 words
 - Dependencies are explicitly listed by feature number
 - **NO LIMIT on feature count** - Could be 10, 50, 100, 200+ features (whatever is needed to keep each feature 2-3 days)
+- **Specs will be created in phase folders**: `specs/phase-{N}/F{XXX}-{name}/`
 
 ## Self-Verification Checklist
 
@@ -247,13 +256,14 @@ Before outputting JSON, verify:
 - ✅ Each feature will result in 200-300 line spec (not 647!)
 - ✅ Each feature will have 15-25 tasks (not 45!)
 - ✅ Dependencies are correctly identified
+- ✅ **Phase calculated correctly** (0 for no deps, max(dep phases)+1 otherwise)
 - ✅ **Entity ownership assigned** (no entity owned by multiple features)
-- ✅ **Build phases assigned** (1=Foundation, 2=Core, 3=Integration)
 - ✅ **Each entity owned by exactly ONE feature**
 - ✅ **Architecture references provided** for each feature
 - ✅ Feature names are clear and concise
-- ✅ Shared context is complete (tech, users, data)
-- ✅ Numbering follows dependency order and build phase
+- ✅ Shared context is complete (tech, users, data, phases summary)
+- ✅ Numbering follows dependency order and phase
+- ✅ **Phases summary included** (which features in each phase)
 - ✅ **Feature count is WHATEVER IS NEEDED** (no artificial 10-20 limit)
 - ✅ Large projects with 100+ features are FINE if each is properly sized
 - ✅ **Infrastructure components excluded** (they're handled by plugins)
@@ -270,13 +280,13 @@ Before outputting JSON, verify:
       "shortName": "exam-question-bank",
       "focus": "Question database with categories, difficulty levels, and trade-specific content",
       "dependencies": [],
+      "phase": 0,
       "estimatedDays": 3,
       "complexity": "medium",
       "architectureReferences": [
         "docs/architecture/data.md#exam-schema",
         "docs/architecture/backend.md#question-api"
       ],
-      "buildPhase": 1,
       "sharedEntities": {
         "owns": ["Question", "QuestionCategory", "TradeSpecialization"],
         "references": ["User"]
@@ -288,13 +298,13 @@ Before outputting JSON, verify:
       "shortName": "exam-taking-interface",
       "focus": "Interactive exam UI with timer, question navigation, and progress tracking",
       "dependencies": ["001-exam-question-bank"],
+      "phase": 1,
       "estimatedDays": 2,
       "complexity": "medium",
       "architectureReferences": [
         "docs/architecture/frontend.md#exam-interface",
         "docs/architecture/ai.md#question-hints"
       ],
-      "buildPhase": 2,
       "sharedEntities": {
         "owns": ["ExamAttempt", "ExamProgress"],
         "references": ["User", "Question"]
@@ -306,13 +316,13 @@ Before outputting JSON, verify:
       "shortName": "voice-companion",
       "focus": "AI voice assistant for exam practice with real-time feedback",
       "dependencies": ["001-exam-question-bank"],
+      "phase": 1,
       "estimatedDays": 3,
       "complexity": "high",
       "architectureReferences": [
         "docs/architecture/ai.md#voice-assistant",
         "docs/architecture/integrations.md#elevenlabs"
       ],
-      "buildPhase": 2,
       "sharedEntities": {
         "owns": ["VoiceSession", "VoiceInteraction"],
         "references": ["User", "Question"]
@@ -331,6 +341,10 @@ Before outputting JSON, verify:
       "ExamProgress": "002-exam-taking-interface",
       "VoiceSession": "003-voice-companion",
       "VoiceInteraction": "003-voice-companion"
+    },
+    "phases": {
+      "0": ["001-exam-question-bank"],
+      "1": ["002-exam-taking-interface", "003-voice-companion"]
     }
   }
 }
