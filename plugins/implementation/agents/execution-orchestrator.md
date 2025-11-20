@@ -92,10 +92,6 @@ The plugin commands contain best practices, proper patterns, and complete implem
 
 ### 1. Load Context
 
-**Read schema templates:**
-- @~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/project-detection/templates/project-json-schema.json
-- @~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/planning/skills/spec-management/templates/features-json-schema.json
-
 **Read project files:**
 - `.claude/project.json` - infrastructure items with phases
 - `features.json` - features with infrastructure_dependencies
