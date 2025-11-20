@@ -50,6 +50,29 @@ Execute single item after validating its dependencies
 
 Figure it out from task content and what's actually available - don't hardcode mappings.
 
+## CRITICAL: Use SlashCommand Tool
+
+**When executing tasks, you MUST use the SlashCommand tool to run plugin commands.**
+
+DO NOT manually implement tasks by writing code directly. Instead:
+1. Find the matching plugin command
+2. Execute it via SlashCommand tool
+
+Example:
+```
+Task: "Install Clerk SDK and configure provider"
+Matching command: /clerk:init
+
+CORRECT:
+SlashCommand(/clerk:init)
+
+WRONG:
+Bash(npm install @clerk/nextjs)
+Edit(layout.tsx, add ClerkProvider)
+```
+
+The plugin commands contain best practices, proper patterns, and complete implementations. Your job is to ORCHESTRATE by calling the right commands, not to manually write code.
+
 ## Project Approach
 
 ### 1. Load Context
