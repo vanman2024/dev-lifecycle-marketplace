@@ -1,365 +1,143 @@
 ---
-description: Add complete feature with roadmap, spec, ADR, and architecture updates - accepts text or document input
+description: Add complete feature with roadmap, spec, ADR, and architecture updates
 argument-hint: <feature-description> OR --doc=<path/to/document.md>
+allowed-tools: Read, Bash, Task, TodoWrite, AskUserQuestion
 ---
-
----
-🚨 **EXECUTION NOTICE FOR CLAUDE**
-
-When you invoke this command via SlashCommand, the system returns THESE INSTRUCTIONS below.
-
-**YOU are the executor. This is NOT an autonomous subprocess.**
-
-- ✅ The phases below are YOUR execution checklist
-- ✅ YOU must run each phase immediately using tools (Bash, Read, Write, Edit, TodoWrite)
-- ✅ Complete ALL phases before considering this command done
-- ❌ DON't wait for "the command to complete" - YOU complete it by executing the phases
-- ❌ DON't treat this as status output - it IS your instruction set
-
-**Immediately after SlashCommand returns, start executing Phase 0, then Phase 1, etc.**
-
-See `@CLAUDE.md` section "SlashCommand Execution - YOU Are The Executor" for detailed explanation.
-
----
-
 
 **Arguments**: $ARGUMENTS
 
-**🚨 EXECUTE IMMEDIATELY: When this command is invoked, autonomously execute ALL phases below from start to finish.**
+Goal: Add a new feature with complete planning documentation. Delegates to feature-analyzer agent for heavy lifting.
 
-Goal: Add a new feature to the project with complete planning documentation that stays synchronized across roadmap, specs, ADRs, and architecture. Can accept text description OR analyze an existing document to intelligently determine what needs to be created.
-
-Core Principles:
-- Roadmap-first: Update strategic view before tactical details
-- Complete sync: All planning docs updated together
-- Architecture decisions tracked: Create ADRs for new tech/approaches
-- Document-driven: Can analyze existing docs and intelligently route
-- User validation: Get approval before generating all docs
-
-Phase 0: Infrastructure & Implementation Discovery
-Goal: Check existing infrastructure, implementation state, and documentation BEFORE creating feature
+Phase 1: Parse Input
+Goal: Determine input mode and basic context
 
 Actions:
-- Create todo list tracking workflow phases using TodoWrite
+- Create todo: "Add feature to project"
+- Parse $ARGUMENTS:
+  * If contains "--doc=": MODE = "document", extract DOC_PATH
+  * Otherwise: MODE = "text", DESCRIPTION = $ARGUMENTS
+- If MODE = "document":
+  * Validate file exists: !{bash test -f "$DOC_PATH" && echo "exists" || echo "missing"}
+  * If missing: Error and exit
+- Display: "Mode: [MODE]"
 
-- **CRITICAL: Read schema templates for consistent structure:**
-  - Read project.json schema: @~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/project-detection/templates/project-json-schema.json
-  - Read features.json schema: @~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/planning/skills/spec-management/templates/features-json-schema.json
-  - These schemas define the exact structure for infrastructure phases and feature dependencies
-  - All updates MUST follow these schemas
-
-- Display: "🔍 Discovering existing infrastructure and implementation..."
-
-- **Check Tech Stack & Infrastructure** (.claude/project.json):
-  !{bash test -f .claude/project.json && echo "exists" || echo "missing"}
-  - If exists: Read .claude/project.json
-    * Extract: frameworks, ai_stack, database, dependencies
-    * **Extract: infrastructure.existing and infrastructure.needed with phase assignments**
-    * Store as: PROJECT_STACK
-    * Store infrastructure items as: INFRASTRUCTURE_MAP (id → {name, phase, depends_on, blocks})
-  - Display discovered stack: "Found: {frontend framework}, {backend framework}, {database}, {AI SDKs}"
-  - Display infrastructure: "Found: {N} infrastructure items across phases 0-5"
-
-- **Check Workflow Document** (*-WORKFLOW.md):
-  !{bash ls *-WORKFLOW.md 2>/dev/null || echo "missing"}
-  - If exists: Read workflow document
-    * Extract: Current phase, completion status, planned vs implemented
-    * Store as: WORKFLOW_STATE
-  - Display: "Workflow: {phase}, {completion}%"
-
-- **Check Existing Features** (features.json):
-  !{bash test -f features.json && echo "exists" || echo "missing"}
-  - If exists: Read features.json
-    * Count total features, by status
-    * Extract feature names for similarity checking later
-    * Store as: EXISTING_FEATURES
-  - Display: "Found {N} existing features ({X} complete, {Y} in-progress, {Z} planned)"
-
-- **Check Backend Implementation**:
-  !{bash test -d backend && echo "exists" || echo "missing"}
-  - If exists: Scan backend structure
-    * List services: !{bash ls backend/api/services/*.py 2>/dev/null | wc -l}
-    * List routes: !{bash ls backend/api/routes/*.py 2>/dev/null | wc -l}
-    * List models: !{bash ls backend/models/*.py 2>/dev/null | wc -l}
-    * Store as: BACKEND_STATE
-  - Display: "Backend: {N} services, {M} routes, {P} models"
-
-- **Check Frontend Implementation**:
-  !{bash test -d frontend && echo "exists" || echo "missing"}
-  - If exists: Scan frontend structure
-    * List pages: !{bash find frontend -name "page.tsx" 2>/dev/null | wc -l}
-    * List components: !{bash find frontend/components -name "*.tsx" 2>/dev/null | wc -l}
-    * Store as: FRONTEND_STATE
-  - Display: "Frontend: {N} pages, {M} components"
-
-- **Summary - Gaps & Prerequisites**:
-  - Display: "✅ Infrastructure Discovery Complete"
-  - If missing dependencies detected:
-    * Display: "⚠️  Missing Prerequisites:"
-    * List what's missing (SDKs, frameworks, tools)
-    * Ask: "Continue anyway or fix prerequisites first?"
-
-Phase 1: Input Analysis
-Goal: Parse input (text description OR document) and extract feature requirements
+Phase 2: Launch Feature Analyzer
+Goal: Analyze context and determine what to create
 
 Actions:
-- Parse $ARGUMENTS to detect mode:
-  * If contains "--doc=" → Extract file path, set MODE=DOCUMENT
-  * Otherwise → Set MODE=TEXT, store description
+- Launch feature-analyzer agent:
 
-- **If MODE=DOCUMENT**:
-  - Extract document path from $ARGUMENTS (after --doc=)
-  - Validate file exists: !{bash test -f "$DOC_PATH" && echo "exists" || echo "missing"}
-  - If missing: Display error and exit
-  - Read document: @{DOC_PATH}
-  - Extract from document:
-    * Feature name/title
-    * Purpose/problem being solved
-    * Requirements (technical and functional)
-    * Proposed technical approach
-    * Any architecture decisions mentioned
-  - Store as FEATURE_DESCRIPTION
+```
+Task(
+  description="Analyze feature and context",
+  subagent_type="planning:feature-analyzer",
+  prompt="Analyze this feature request and project context.
 
-- **If MODE=TEXT**:
-  - Use $ARGUMENTS as FEATURE_DESCRIPTION
-  - If $ARGUMENTS is unclear or too brief, use AskUserQuestion to gather:
-    * What is the feature name and purpose?
-    * What problem does it solve?
-    * What are the key requirements?
-    * Any technical constraints?
+  Input Mode: [MODE]
+  Description: $ARGUMENTS
+  Document Path: [DOC_PATH if applicable]
 
-- Load existing planning context:
-  - Check if ROADMAP.md exists: !{bash test -f docs/ROADMAP.md && echo "exists" || echo "missing"}
-  - Check if architecture docs exist: !{bash test -d docs/architecture && echo "exists" || echo "missing"}
-  - Check if specs directory exists: !{bash test -d specs && echo "exists" || echo "missing"}
-  - Find highest existing spec number across all phases: !{bash find specs/phase-* -maxdepth 1 -type d -name "F[0-9][0-9][0-9]-*" 2>/dev/null | grep -oE 'F[0-9]{3}' | sort | tail -1 | tr -d 'F'}
-  - If no phase dirs exist, check legacy flat structure: !{bash find specs/features -maxdepth 1 -name "[0-9][0-9][0-9]-*" -type d 2>/dev/null | sort | tail -1 | grep -oE '[0-9]{3}' | head -1}
+  Read schema templates:
+  - @~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/project-detection/templates/project-json-schema.json
+  - @~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/planning/skills/spec-management/templates/features-json-schema.json
 
-Phase 1.5: Intelligent Document Analysis (If MODE=DOCUMENT)
-Goal: Determine what this document represents and route appropriately
+  Analyze:
+  1. Read .claude/project.json for tech stack and infrastructure
+  2. Read features.json for existing features
+  3. Check for similar existing specs (>70% similarity → redirect to update-feature)
+  4. Identify infrastructure dependencies (I0XX IDs)
+  5. Calculate feature phase from dependencies
+  6. Determine if ADR needed (new tech/architecture)
+  7. Determine priority (P0/P1/P2)
 
-Actions:
-- **Only run if MODE=DOCUMENT**
-
-- Analyze document against existing context:
-
-  **1. Compare to existing specs:**
-  - List all existing specs: !{bash find specs/phase-* -maxdepth 1 -type d -name "F[0-9][0-9][0-9]-*" 2>/dev/null || ls -d specs/features/[0-9][0-9][0-9]-*/ 2>/dev/null}
-  - For each spec, read spec.md
-  - Compare document content to each spec (keyword matching, concept similarity)
-  - Calculate similarity scores
-
-  **2. Compare to existing architecture docs:**
-  - List architecture docs: !{bash ls docs/architecture/*.md 2>/dev/null}
-  - Check if document is architectural refinement vs new functionality
-  - If document mostly describes "how" (architecture) vs "what" (features)
-
-  **3. Check for new architectural decisions:**
-  - Scan document for decision keywords: "we will use", "approach", "chosen", "decided"
-  - Compare against existing ADRs: !{bash ls docs/adr/*.md 2>/dev/null}
-  - Determine if new ADR needed
-
-- Determine document type:
-  * **NEW FEATURE** (>70% similarity to existing spec → ENHANCEMENT)
-  * **FEATURE ENHANCEMENT** (high similarity to existing spec)
-  * **ARCHITECTURE REFINEMENT** (no new functionality, design detail only)
-  * **NEW DECISION** (contains architectural decisions not documented)
-  * **HYBRID** (new feature + architecture + decision)
-
-- Route based on analysis:
-
-  **If ENHANCEMENT (>70% similarity to existing spec):**
-  - Display: "📊 Document Analysis: This appears to be an enhancement to existing spec [SPEC_NUMBER]: [SPEC_NAME] ([SIMILARITY]% match)"
-  - Use AskUserQuestion: "Detected similar existing spec. How to proceed?
-    1. Update existing spec [SPEC_NUMBER] (recommended)
-    2. Create new spec (standalone feature)
-    3. Architecture refinement only (no spec needed)"
-  - If option 1: Display "Redirecting to /planning:update-feature [SPEC_NUMBER] --doc=$DOC_PATH" and EXIT
-  - If option 2: Continue to Phase 2 (create new spec)
-  - If option 3: Skip to architecture update only
-
-  **If ARCHITECTURE REFINEMENT:**
-  - Display: "📊 Document Analysis: This appears to be architecture refinement (no new functionality detected)"
-  - Use AskUserQuestion: "This document seems to refine architecture without adding features. Proceed with:
-    1. Update architecture docs only (no spec created)
-    2. Create spec anyway (treat as feature)"
-  - If option 1: Skip to Phase 6 (update architecture) and EXIT
-  - If option 2: Continue to Phase 2
-
-  **If NEW DECISION:**
-  - Display: "📊 Document Analysis: New architectural decision detected"
-  - Set ADR_REQUIRED=true
-  - Continue to Phase 2
-
-  **If HYBRID or NEW FEATURE:**
-  - Display: "📊 Document Analysis: New feature detected (no conflicts with existing specs)"
-  - Continue to Phase 2
-
-Phase 2: Similarity Check (If MODE=TEXT or not analyzed in Phase 1.5)
-Goal: Detect if this is an enhancement to existing feature or truly new
-
-Actions:
-- **Skip if already analyzed in Phase 1.5 (document mode with routing decision)**
-
-- List all existing specs: !{bash find specs/phase-* -maxdepth 1 -type d -name "F[0-9][0-9][0-9]-*" 2>/dev/null || ls -d specs/features/[0-9][0-9][0-9]-*/ 2>/dev/null}
-- For each existing spec, read the spec.md file to extract name and description
-- Compare FEATURE_DESCRIPTION against existing feature names/descriptions
-- Look for keyword matches, similar concepts, related functionality
-- If potential match found (>70% similarity):
-  - Use AskUserQuestion: "This feature sounds related to existing spec(s):
-    - [SPEC_NUMBER]: [SPEC_NAME] ([SIMILARITY]% match)
-
-    Is this:
-    1. New standalone feature (create new spec [NEXT_NUMBER])
-    2. Enhancement to spec [SPEC_NUMBER] (update existing)
-    3. Additional tasks for spec [SPEC_NUMBER] (update tasks only)"
-  - If user selects "Enhancement" or "Additional tasks":
-    - Stop this command
-    - Display: "Redirecting to /planning:update-feature [SPEC_NUMBER] with your description"
-    - Exit (user should run update-feature instead)
-  - If user selects "New standalone feature":
-    - Continue to Phase 3
-- If no similar specs found or similarity <70%:
-  - Continue to Phase 3 (create new spec)
-
-Phase 3: Feature Planning
-Goal: Determine feature details, placement, and phase
-
-Actions:
-- Calculate next spec number (N+1 from highest)
-- Extract from FEATURE_DESCRIPTION:
-  - Priority: Look for keywords (revenue, critical, must-have → P0; important → P1; nice-to-have → P2)
-  - Dependencies: Look for "depends on F0XX", "requires F0XX", mentions of other features
-  - Complexity: Estimate from scope (marketplace/ecosystem → Complex; single feature → Moderate; enhancement → Simple)
-  - New tech: Check if description mentions new SDKs/frameworks not in project.json (Mem0, Clerk, ElevenLabs, etc.)
-- **Identify required infrastructure from feature description**:
-  - Scan FEATURE_DESCRIPTION for infrastructure keywords:
-    * "auth", "login", "user" → I001 (authentication)
-    * "cache", "redis" → I002 (redis-caching)
-    * "error", "sentry" → I003 (sentry-error-tracking)
-    * "RAG", "file search", "manual" → I010 (google-file-search-rag)
-    * "batch", "gemini" → I011 (gemini-batch-api)
-    * "study partner", "claude agent" → I012 (claude-agent-sdk)
-    * "memory", "mem0" → I013 (mem0-platform)
-    * "voice", "elevenlabs", "TTS", "STT" → I014 (elevenlabs-voice-ai)
-    * "realtime", "presence" → I015 (supabase-realtime)
-    * "streaming", "websocket" → I016 (websocket-streaming)
-    * "celery", "task queue", "background" → I018 (celery-task-queue)
-    * "payment", "stripe" → I020 (stripe-payments)
-    * "subscription" → I021 (subscription-management)
-    * "storage", "file upload" → I022 (supabase-storage)
-    * "quiz", "question selection" → I038 (quiz-assembly-engine)
-  - Store matched IDs as: INFRASTRUCTURE_DEPENDENCIES
-  - Display: "Requires infrastructure: {list of I0XX IDs}"
-
-- **Calculate infrastructure_phase from infrastructure dependencies**:
-  - For each ID in INFRASTRUCTURE_DEPENDENCIES:
-    * Look up phase from INFRASTRUCTURE_MAP
-  - INFRASTRUCTURE_PHASE = max(infrastructure phases) or 0 if none
-  - Display: "Infrastructure phase requirement: {INFRASTRUCTURE_PHASE}"
-
-- **Calculate feature phase from feature dependencies**:
-  - If features.json exists, read it to get phase of each feature dependency
-  - FEATURE_DEP_PHASE = max(feature dependency phases) + 1, or 0 if none
-
-- **Final phase = max(INFRASTRUCTURE_PHASE, FEATURE_DEP_PHASE)**:
-  - This ensures feature can't be built before its infrastructure exists
-  - Store as FEATURE_PHASE
-  - Display: "Feature phase: {FEATURE_PHASE} (infra: {INFRASTRUCTURE_PHASE}, features: {FEATURE_DEP_PHASE})"
-- ONLY use AskUserQuestion if information is missing or ambiguous:
-  - Priority unclear? Ask: "What priority? P0 (critical), P1 (important), P2 (nice-to-have)"
-  - Dependencies unclear? Ask: "Any dependencies on existing features?"
-  - New tech unclear? Ask: "Does this require new technology/architecture decision?"
-  - Complexity unclear? Ask: "Estimated complexity? Simple (1-2 days), Moderate (2-3 days), Complex (3-5 days)"
-- Determine if ADR needed based on new tech/architecture decision
-- Determine if architecture docs need updates
-
-Phase 3.5: Update project.json (if new tech)
-Goal: Add new technology to project.json FIRST (infrastructure layer)
-
-Actions:
-- If new technology detected (from Phase 3):
-  - Read .claude/project.json: @.claude/project.json
-  - Determine what to add:
-    * Mem0 → Add to ai_stack.memory or dependencies
-    * Clerk → Add to dependencies or auth section
-    * ElevenLabs → Add to ai_stack or dependencies
-    * New framework → Add to appropriate section
-  - Update project.json with new tech
-  - Display: "✅ Updated project.json with [NEW_TECH]"
-- If no new tech: Skip this phase
-- Update todos
-
-Phase 3.6: Update features.json
-Goal: Add feature entry to features.json with phase information
-
-Actions:
-- Check if features.json exists:
-  !{bash test -f features.json && echo "exists" || echo "missing"}
-- If missing: Create initial features.json with phases structure:
-  ```json
+  Return JSON:
   {
-    "phases": {},
-    "features": {}
-  }
-  ```
-- Read current features.json: @features.json
-- Add new feature entry to features object:
-  * Feature ID: F[NEXT_NUMBER] (e.g., F002)
-  * Name: [FEATURE_NAME]
-  * Description: [FEATURE_DESCRIPTION]
-  * Status: "planned"
-  * Priority: [P0/P1/P2] (from Phase 3)
-  * **infrastructure_phase: [FEATURE_PHASE]** (from Phase 3 calculation - max of infra and feature deps)
-  * **infrastructure_dependencies: [INFRASTRUCTURE_DEPENDENCIES]** (list of I0XX IDs from Phase 3)
-  * Dependencies: [feature dependencies only - F0XX IDs from Phase 3]
-  * Estimated days: [from Phase 3]
-  * Created date: [current date]
-- **Update phases summary**:
-  * If phases.[FEATURE_PHASE] doesn't exist, create it with empty array
-  * Add F[NUMBER] to phases.[FEATURE_PHASE] array
-  * Example: phases.0 = ["F001", "F002"] for phase 0 features
-- Write updated features.json
-- Display: "✅ Updated features.json with F[NUMBER] in Phase [PHASE]"
-- Update todos
+    'next_number': 'F0XX',
+    'name': 'feature-name',
+    'phase': N,
+    'priority': 'P0/P1/P2',
+    'infrastructure_dependencies': ['I001', 'I010'],
+    'feature_dependencies': ['F001'],
+    'needs_adr': true/false,
+    'needs_architecture_update': true/false,
+    'similar_spec': null or 'F0XX',
+    'description': 'extracted description'
+  }"
+)
+```
 
-Phase 4: Execute All Documentation in Parallel
-Goal: Generate spec, roadmap, ADR, and architecture updates simultaneously for maximum speed
+- Parse agent response
+- If similar_spec found:
+  * Display: "Found similar spec [similar_spec]. Redirecting to update-feature."
+  * Exit - user should run /planning:update-feature instead
+
+Phase 3: Update features.json
+Goal: Add feature entry before generating docs
 
 Actions:
+- Read features.json (or create if missing)
+- Add feature entry with:
+  * id, name, description, status: "planned"
+  * priority, phase, infrastructure_dependencies, dependencies
+  * created date
+- Update phases summary array
+- Write features.json
+- Display: "✅ Added F[NUMBER] to features.json (Phase [PHASE])"
 
-**🚀 CRITICAL: Execute ALL applicable tasks below in PARALLEL by calling them in a SINGLE message with multiple Task invocations.**
-
-Task(description="Generate feature spec", subagent_type="planning:feature-spec-writer", prompt="Create complete spec for: [FEATURE_DESCRIPTION]. Spec number: [NEXT_NUMBER]. Phase: [FEATURE_PHASE]. Priority: [P0/P1/P2]. Dependencies: [list]. Read architecture docs, reference them (don't duplicate). If document mode: Use [DOC_PATH] as primary source. Create specs in phase-nested directory: specs/phase-[FEATURE_PHASE]/F[NUMBER]-[slug]/spec.md and tasks.md. Follow minimal format (100-150 lines).")
-
-Task(description="Update roadmap", subagent_type="planning:roadmap-planner", prompt="Add feature [NUMBER] to ROADMAP.md: [FEATURE_DESCRIPTION]. Priority: [P0/P1/P2]. Phase: [X]. Complexity: [X days]. Dependencies: [list]. Read docs/ROADMAP.md, add to appropriate phase, recalculate totals, update gantt if present.")
-
-IF new architecture decision needed OR ADR_REQUIRED=true:
-Task(description="Create ADR", subagent_type="planning:decision-documenter", prompt="Create ADR for [FEATURE_DESCRIPTION] decision: [context from analysis]. Determine next ADR number from docs/adr/. Document what/why/alternatives/consequences. Reference spec [NUMBER]. If document mode: Extract decision details from [DOC_PATH]. Create docs/adr/[NUMBER]-[slug].md.")
-
-IF architecture updates needed OR MODE=DOCUMENT:
-Task(description="Update architecture", subagent_type="planning:architecture-designer", prompt="Update docs/architecture/ for [FEATURE_DESCRIPTION]. Changes: [from Phase 3]. If document mode: Use [DOC_PATH] as source for architectural details. Read relevant files, update sections, add mermaid diagrams if needed. Cross-reference spec and ADR.")
-
-**Remember: Send ALL applicable Task calls in ONE message to enable parallel execution.**
-
-Update todos
-
-Phase 8: Summary
-Goal: Report results
+Phase 4: Generate Documentation in Parallel
+Goal: Create all docs simultaneously
 
 Actions:
-- Mark all todos complete
-- Display mode-specific summary:
-  * If MODE=DOCUMENT:
-    - Display: "📄 Processed document: [DOC_PATH]"
-    - Display: "📊 Analysis: [NEW FEATURE/ENHANCEMENT/HYBRID]"
-  * Display: "✅ Created:"
-    - Spec: specs/phase-[FEATURE_PHASE]/F[NUMBER]-[slug]/
-    - Roadmap: Updated (Phase [FEATURE_PHASE], Priority P0/P1/P2, [X days])
-    - ADR: docs/adr/[NUMBER]-[slug].md (if created)
-    - Architecture: Updated files (if applicable)
-  * Display: "📁 Phase [FEATURE_PHASE] now contains: [list features in this phase]"
+- Launch ALL applicable agents in ONE message:
+
+```
+Task(
+  description="Generate feature spec",
+  subagent_type="planning:feature-spec-writer",
+  prompt="Create spec for F[NUMBER]: [DESCRIPTION].
+  Phase: [PHASE]. Priority: [PRIORITY].
+  Infrastructure deps: [IDS]. Feature deps: [IDS].
+  Create: specs/phase-[PHASE]/F[NUMBER]-[slug]/spec.md and tasks.md"
+)
+
+Task(
+  description="Update roadmap",
+  subagent_type="planning:roadmap-planner",
+  prompt="Add F[NUMBER] to ROADMAP.md: [DESCRIPTION].
+  Priority: [PRIORITY]. Phase: [PHASE]. Dependencies: [list]."
+)
+```
+
+- IF needs_adr:
+```
+Task(
+  description="Create ADR",
+  subagent_type="planning:decision-documenter",
+  prompt="Create ADR for F[NUMBER]: [DESCRIPTION].
+  Document decision, alternatives, consequences."
+)
+```
+
+- IF needs_architecture_update:
+```
+Task(
+  description="Update architecture",
+  subagent_type="planning:architecture-designer",
+  prompt="Update docs/architecture/ for F[NUMBER]: [DESCRIPTION]."
+)
+```
+
+Phase 5: Summary
+Goal: Report results and next steps
+
+Actions:
+- Mark todo complete
+- Display: "✅ Created:"
+  * Spec: specs/phase-[PHASE]/F[NUMBER]-[slug]/
+  * Roadmap: Updated
+  * ADR: (if created)
+  * Architecture: (if updated)
 - Next steps:
-  * Review spec in specs/phase-[FEATURE_PHASE]/F[NUMBER]-[slug]/
+  * Review spec in specs/phase-[PHASE]/F[NUMBER]-[slug]/
   * Run /implementation:execute F[NUMBER] to build the feature
-  * Or run /implementation:execute to auto-continue from where you left off
+  * Or run /implementation:execute to auto-continue
