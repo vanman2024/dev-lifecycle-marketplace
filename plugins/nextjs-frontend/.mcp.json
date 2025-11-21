@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "content-generation": {
+      "url": "https://content.fastmcp.app/mcp",
+      "transport": "http"
+    },
+    "design-system": {
+      "url": "https://supabase.com/mcp",
+      "transport": "http"
+    },
+    "shadcn": {
+      "url": "https://shadcn-mcp.vercel.app/mcp",
+      "transport": "http"
+    }
+  }
+}

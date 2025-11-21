@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "content-generation": {
+      "url": "https://content.fastmcp.app/mcp",
+      "transport": "http"
+    }
+  }
+}
