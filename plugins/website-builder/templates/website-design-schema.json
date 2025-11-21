@@ -43,7 +43,21 @@
         {
           "name": "{section-name}",
           "type": "hero | features | pricing | testimonials | cta | faq",
-          "ai_generated": true
+          "ai_generated": true,
+          "ai_config": {
+            "content_prompt": "Detailed prompt for generate_marketing_content",
+            "image_prompt": "Detailed prompt for generate_image_imagen3",
+            "image_style": "photorealistic | modern_minimal | bold_vibrant | elegant",
+            "aspect_ratio": "16:9 | 1:1 | 9:16 | 3:4 | 4:3",
+            "image_size": "1K | 2K",
+            "model": "imagen-4.0 | imagen-3.0",
+            "tone": "professional | casual | enthusiastic | formal",
+            "mcp_tools": {
+              "content": "generate_marketing_content",
+              "image": "generate_image_imagen3",
+              "enhance_prompt": "enhance_prompt_for_photorealism"
+            }
+          }
         }
       ],
 
@@ -96,6 +110,29 @@
     "enabled": false,
     "provider": "supabase | contentful | sanity",
     "collections": []
+  },
+
+  "mcp_servers": {
+    "content_generation": {
+      "url": "https://content.fastmcp.app/mcp",
+      "enabled": true,
+      "capabilities": [
+        "image_generation",
+        "video_generation",
+        "marketing_content",
+        "social_media",
+        "cost_estimation"
+      ]
+    }
+  },
+
+  "ai_generation_config": {
+    "default_image_model": "imagen-4.0",
+    "default_image_size": "2K",
+    "default_content_model": "claude",
+    "default_tone": "professional",
+    "enable_cost_tracking": true,
+    "auto_generate_seo": true
   },
 
   "design_system": {
@@ -180,9 +217,30 @@
       "faq": "Frequently asked questions accordion"
     },
     "ai_features": {
-      "content_generation": "Generate marketing copy with AI (Google Gemini)",
-      "image_generation": "Generate hero/blog images with AI (Google Imagen)",
+      "content_generation": "Generate marketing copy with AI via MCP server (Claude Sonnet 4 / Gemini 2.5)",
+      "image_generation": "Generate hero/blog images with AI via MCP server (Google Imagen 3/4)",
+      "video_generation": "Generate marketing videos with native audio via MCP server (Google Veo 3)",
+      "social_media": "Generate platform-optimized social media images (Instagram, Twitter, LinkedIn, etc.)",
       "seo_optimization": "Auto-generate SEO meta tags and descriptions"
+    },
+    "mcp_server_tools": {
+      "description": "Available tools from content.fastmcp.app/mcp",
+      "tools": {
+        "generate_image_imagen3": "Generate hero images, marketing visuals (Imagen 3.0/4.0)",
+        "batch_generate_images": "Generate multiple images in one call",
+        "generate_video_veo3": "Generate videos with native audio (Veo 3)",
+        "generate_marketing_content": "AI copywriting (Claude/Gemini)",
+        "enhance_prompt_for_photorealism": "Improve prompts for photorealistic output",
+        "generate_social_media_image": "Platform-optimized images (Instagram, Twitter, etc.)",
+        "batch_generate_social_set": "Multi-platform social campaigns",
+        "calculate_cost_estimate": "Budget planning and cost tracking"
+      },
+      "pricing": {
+        "imagen_1k": "$0.020 per image",
+        "imagen_2k": "$0.080 per image",
+        "veo3_video": "$0.75 per second",
+        "content_generation": "$0.003 per 500 tokens"
+      }
     },
     "phase_calculation": {
       "description": "Phase based on dependencies",
