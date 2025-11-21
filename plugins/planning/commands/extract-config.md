@@ -48,6 +48,8 @@ Actions:
   - docs/architecture/infrastructure.md
   - docs/architecture/security.md
   - docs/architecture/integrations.md
+  - docs/architecture/application-pages.md
+  - docs/architecture/website-pages.md
   - docs/ROADMAP.md
 - If any files missing, display error and exit:
   ```
@@ -63,15 +65,17 @@ Phase 2: Read All Architecture Documentation
 Goal: Load complete context from all architecture files
 
 Actions:
-- Read all 8 architecture files into memory:
+- Read all 10 architecture files into memory:
   - README.md (system overview, project description)
   - backend.md (backend framework, API design, MCP servers)
-  - frontend.md (frontend framework, UI libraries, pages/components)
+  - frontend.md (frontend framework, UI libraries, component patterns)
   - data.md (database type, schema, relationships)
   - ai.md (AI SDKs, providers, memory systems, MCP integrations)
   - infrastructure.md (deployment targets, containerization, CI/CD)
   - security.md (authentication, authorization, secrets management)
   - integrations.md (external services, webhooks, APIs)
+  - application-pages.md (interactive app pages: dashboard, settings, chat, admin, auth)
+  - website-pages.md (static/marketing pages: landing, pricing, about, blog, docs)
 - Read ROADMAP.md (features, milestones, timeline)
 - Read docs/FINAL-APPROVAL.md if exists (validation results)
 - Store content for cross-referencing
@@ -259,10 +263,10 @@ Actions:
 - Update todos
 
 Phase 7: Extract Application Pages (application-design.json)
-Goal: Generate application-design.json for Next.js App Router pages from frontend.md
+Goal: Generate application-design.json from application-pages.md
 
 Actions:
-- Parse frontend.md for application pages:
+- Parse application-pages.md for all application pages:
   * Dashboard pages (main dashboard, analytics, reports)
   * Settings pages (user settings, preferences, profile)
   * Chat/AI pages (chat interface, AI generation)
@@ -293,10 +297,10 @@ Actions:
 - Update todos
 
 Phase 9: Extract Website Pages (website-design.json)
-Goal: Generate website-design.json for Astro marketing/content pages from frontend.md
+Goal: Generate website-design.json from website-pages.md
 
 Actions:
-- Parse frontend.md for marketing/content pages:
+- Parse website-pages.md for all marketing/content pages:
   * Landing pages (main landing, product pages)
   * Marketing pages (pricing, about, features)
   * Blog pages (blog index, post template)
@@ -403,12 +407,14 @@ Actions:
   Extracted From:
   - docs/architecture/README.md
   - docs/architecture/backend.md
-  - docs/architecture/frontend.md
+  - docs/architecture/frontend.md (component patterns)
   - docs/architecture/data.md
   - docs/architecture/ai.md
   - docs/architecture/infrastructure.md
   - docs/architecture/security.md
   - docs/architecture/integrations.md
+  - docs/architecture/application-pages.md (app page inventory)
+  - docs/architecture/website-pages.md (marketing page inventory)
   - docs/ROADMAP.md
 
   Next Steps:

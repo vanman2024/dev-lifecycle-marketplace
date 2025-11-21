@@ -100,22 +100,24 @@ Goal: Create architecture docs using batched parallel agents for speed and UI st
 ⚠️ CONSTRAINT: Maximum 10-12 agents per batch (UI breaks with >10)
 
 Actions:
-**Batch 1 (6 agents)**: Launch architecture + ADRs + roadmap
+**Batch 1 (8 agents)**: Launch architecture + ADRs + roadmap + page specs
 - Launch IN PARALLEL (one message, multiple Task calls):
   Task 1: Generate README.md + backend.md (system overview, Claude Agent SDK, MCP)
   Task 2: Generate data.md + ai.md (Supabase schema, AI architecture)
   Task 3: Generate security.md + integrations.md (auth, API keys, external services)
-  Task 4: Generate infrastructure.md + frontend.md (deployment, optional dashboard)
-  Task 5: Generate ADRs (decision-documenter agent)
-  Task 6: Generate ROADMAP.md (roadmap-planner agent)
+  Task 4: Generate infrastructure.md + frontend.md (deployment, component patterns)
+  Task 5: Generate application-pages.md (interactive app pages: dashboard, settings, chat, admin)
+  Task 6: Generate website-pages.md (static/marketing pages: landing, pricing, about, blog)
+  Task 7: Generate ADRs (decision-documenter agent)
+  Task 8: Generate ROADMAP.md (roadmap-planner agent)
 
 - Each agent receives same context:
   - Wizard requirements: docs/requirements/
   - Extracted data: .wizard/extracted-requirements.json
   - Q&A: docs/requirements/*/02-wizard-qa.md
 
-- Agents work simultaneously (6 agents, UI-safe batch size)
-- Verify all 8 architecture files + ADRs + roadmap created
+- Agents work simultaneously (8 agents, UI-safe batch size)
+- Verify all 10 architecture files + ADRs + roadmap created
 - Update todos
 
 Phase 4.5: Validate Architecture (CTO Review)
@@ -146,7 +148,7 @@ Actions:
 - Launch CTO reviewer for architecture approval:
 
   Task: CTO reviewer reads architecture planning package
-  - All 8 architecture files (frontend.md, backend.md, data.md, ai.md, infrastructure.md, security.md, integrations.md, README.md)
+  - All 10 architecture files (README.md, backend.md, frontend.md, data.md, ai.md, infrastructure.md, security.md, integrations.md, application-pages.md, website-pages.md)
   - All ADRs and ROADMAP.md
   - project.json (tech stack configuration)
   - features.json (feature breakdown)
