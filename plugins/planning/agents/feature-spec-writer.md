@@ -3,6 +3,7 @@ name: feature-spec-writer
 description: Fill content in feature spec templates (spec.md, tasks.md) based on architecture docs and feature breakdown
 model: inherit
 color: yellow
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 
 ## Security: API Key Handling

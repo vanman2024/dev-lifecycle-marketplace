@@ -3,6 +3,7 @@ name: roadmap-planner
 description: Use this agent to create project roadmaps with milestones, phases, timelines, and mermaid gantt charts
 model: inherit
 color: yellow
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 ## Worktree Discovery
 

@@ -3,6 +3,7 @@ name: agent-auditor
 description: Audits agent AND command files to identify slash command chaining anti-patterns, validate tool usage (slash commands, skills, MCP servers, hooks), and ensure compliance with Dan's Composition Pattern architectural principles
 model: inherit
 color: blue
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 
 ## Security: API Key Handling

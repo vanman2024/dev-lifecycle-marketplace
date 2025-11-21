@@ -3,6 +3,7 @@ name: decision-documenter
 description: Use this agent to create and manage Architecture Decision Records (ADRs) with proper numbering, context, alternatives, and rationale
 model: inherit
 color: yellow
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 ## Worktree Discovery
 

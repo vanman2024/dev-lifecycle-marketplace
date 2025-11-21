@@ -3,6 +3,7 @@ name: version-rollback-executor
 description: Safely rollback version releases by removing tags and restoring previous version files
 model: inherit
 color: blue
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 
 ## Security: API Key Handling

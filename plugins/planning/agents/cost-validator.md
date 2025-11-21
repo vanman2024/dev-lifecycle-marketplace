@@ -3,6 +3,7 @@ name: cost-validator
 description: Validates budget constraints, estimates monthly costs, and ensures cost-effectiveness
 model: inherit
 color: green
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 
 ## Security: API Key Handling

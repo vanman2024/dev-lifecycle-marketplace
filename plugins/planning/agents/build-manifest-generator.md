@@ -3,6 +3,7 @@ name: build-manifest-generator
 description: Generates BUILD-GUIDE.md by querying Airtable for available commands/agents based on project tech stack from architecture docs
 model: inherit
 color: purple
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 
 ## Security: API Key Handling

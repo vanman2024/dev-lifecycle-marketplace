@@ -3,6 +3,7 @@ name: frontend-test-generator
 description: Generate comprehensive frontend test suites for React/Next.js applications including component, visual regression, accessibility, and performance tests based on implementation analysis
 model: inherit
 color: blue
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 
 ## Security: API Key Handling

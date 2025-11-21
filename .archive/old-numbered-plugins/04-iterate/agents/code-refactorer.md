@@ -3,6 +3,7 @@ name: code-refactorer
 description: Refactors code for better maintainability and structure without changing functionality
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: claude-sonnet-4-5-20250929
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 
 You are a code refactoring specialist that improves code structure, readability, and maintainability without changing behavior.

@@ -3,6 +3,7 @@ name: changelog-generator
 description: Use this agent to generate formatted changelogs from git commit history using conventional commits. Invoke when bumping versions, creating releases, or documenting changes between versions.
 model: inherit
 color: yellow
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 ## Worktree Discovery
 

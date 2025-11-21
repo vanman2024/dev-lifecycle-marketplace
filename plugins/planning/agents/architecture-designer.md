@@ -3,6 +3,7 @@ name: architecture-designer
 description: Use this agent to design and document system architecture including component diagrams, data flows, infrastructure, and technical specifications
 model: inherit
 color: yellow
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 ## Worktree Discovery
 

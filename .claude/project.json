@@ -1,0 +1,199 @@
+{
+  "$schema": "Project.json schema for dev-lifecycle-marketplace",
+  "$version": "2.0.0",
+
+  "name": "dev-lifecycle-marketplace",
+  "description": "Tech-agnostic workflow automation plugins for complete software development lifecycle",
+  "version": "2.0.0",
+  "project_type": "plugin-marketplace",
+
+  "frameworks": {
+    "backend": {
+      "primary": "N/A",
+      "version": "N/A",
+      "language": "Markdown",
+      "language_version": "N/A"
+    },
+    "frontend": {
+      "primary": "N/A",
+      "version": "N/A",
+      "language": "N/A",
+      "ui_framework": "N/A",
+      "component_library": "N/A",
+      "styling": "N/A"
+    }
+  },
+
+  "ai_stack": {
+    "sdks": [],
+    "providers": [],
+    "rag": {},
+    "mcp_servers": []
+  },
+
+  "database": {
+    "type": "N/A",
+    "provider": "N/A",
+    "version": "N/A",
+    "orm": "none",
+    "features": []
+  },
+
+  "infrastructure": {
+    "_comment": "Infrastructure items organized by phase for build ordering",
+    "existing": [
+      {
+        "id": "I001",
+        "name": "Plugin Framework",
+        "description": "Core plugin architecture with commands, agents, skills structure",
+        "phase": 0,
+        "depends_on": [],
+        "blocks": ["I002", "I003", "I004", "I005", "I006", "I007"]
+      },
+      {
+        "id": "I002",
+        "name": "Foundation Plugin",
+        "description": "Project initialization, tech stack detection, environment setup, workflow generation (14 commands, 4 agents, 9 skills)",
+        "phase": 1,
+        "depends_on": ["I001"],
+        "blocks": ["I003"]
+      },
+      {
+        "id": "I003",
+        "name": "Planning Plugin",
+        "description": "Specifications, architecture design, roadmaps, ADRs, feature workflow generation (16 commands, 16 agents, 6 skills)",
+        "phase": 1,
+        "depends_on": ["I001"],
+        "blocks": ["I004"]
+      },
+      {
+        "id": "I004",
+        "name": "Implementation Plugin",
+        "description": "Execution orchestration, task-to-command mapping, automated feature building (5 commands, 4 agents, 1 skill)",
+        "phase": 2,
+        "depends_on": ["I001", "I002", "I003"],
+        "blocks": ["I005"]
+      },
+      {
+        "id": "I005",
+        "name": "Iterate Plugin",
+        "description": "Task layering, code adjustments, refactoring, feature enhancement (5 commands, 4 agents, 2 skills)",
+        "phase": 2,
+        "depends_on": ["I001", "I003"],
+        "blocks": []
+      },
+      {
+        "id": "I006",
+        "name": "Quality Plugin",
+        "description": "Code validation, security scanning, performance analysis, compliance checking (3 commands, 5 agents, 1 skill)",
+        "phase": 2,
+        "depends_on": ["I001"],
+        "blocks": []
+      },
+      {
+        "id": "I007",
+        "name": "Testing Plugin",
+        "description": "Test execution (Newman/Postman API + Playwright E2E), test generation (3 commands, 3 agents, 5 skills)",
+        "phase": 2,
+        "depends_on": ["I001"],
+        "blocks": []
+      },
+      {
+        "id": "I008",
+        "name": "Deployment Plugin",
+        "description": "Platform auto-detection and deployment orchestration (12 commands, 9 agents, 9 skills)",
+        "phase": 3,
+        "depends_on": ["I001", "I006", "I007"],
+        "blocks": []
+      },
+      {
+        "id": "I009",
+        "name": "Security Plugin",
+        "description": "Security validation, hooks setup, vulnerability scanning (3 commands, 3 agents, 2 skills)",
+        "phase": 2,
+        "depends_on": ["I001"],
+        "blocks": ["I008"]
+      },
+      {
+        "id": "I010",
+        "name": "Supervisor Plugin",
+        "description": "Worktree coordination, multi-agent tracking, completion validation (4 commands, 1 agent, 1 skill)",
+        "phase": 3,
+        "depends_on": ["I001", "I004"],
+        "blocks": []
+      },
+      {
+        "id": "I011",
+        "name": "Versioning Plugin",
+        "description": "Semantic versioning, changelog generation, release management (9 commands, 9 agents, 4 skills)",
+        "phase": 3,
+        "depends_on": ["I001", "I008"],
+        "blocks": []
+      }
+    ],
+    "needed": [
+      {
+        "id": "I012",
+        "name": "Test Authentication System",
+        "description": "Test component to validate execution-orchestrator command discovery and execution",
+        "priority": "high",
+        "phase": 0,
+        "depends_on": [],
+        "blocks": [],
+        "status": "pending",
+        "spec_path": "specs/infrastructure/phase-0/001-test-auth"
+      }
+    ]
+  },
+
+  "environment_variables": {
+    "required": [],
+    "optional": [
+      "AIRTABLE_API_KEY - For workflow template integration",
+      "AIRTABLE_BASE_ID - For stack and command registry"
+    ],
+    "planned": []
+  },
+
+  "testing": {
+    "backend": {
+      "framework": "N/A",
+      "location": "N/A"
+    },
+    "frontend": {
+      "framework": "N/A",
+      "e2e": "N/A"
+    }
+  },
+
+  "deployment": {
+    "frontend": "N/A",
+    "backend": "N/A",
+    "database": "N/A"
+  },
+
+  "ci_cd": {
+    "platform": "GitHub Actions",
+    "workflows": [
+      "Plugin Validation - Validates all plugin.json files",
+      "Command Length Check - Ensures commands under 172 lines",
+      "Agent Length Check - Ensures agents under 300 lines",
+      "Markdown Linting - Validates all .md files",
+      "Git Commit Format - Validates conventional commit messages"
+    ]
+  },
+
+  "documentation": {
+    "architecture": "docs/",
+    "adr": "docs/",
+    "specs": "plugins/"
+  },
+
+  "project_status": {
+    "phase": "Production",
+    "completion": "90%"
+  },
+
+  "detected_at": "2025-01-20T00:00:00Z",
+  "detection_confidence": "high"
+}

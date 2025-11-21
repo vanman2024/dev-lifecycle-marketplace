@@ -3,6 +3,7 @@ name: output-validator
 description: Validate agent-generated content for exfiltration patterns, secrets, malicious URLs before writing files
 model: inherit
 color: red
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 
 ## Security: API Key Handling

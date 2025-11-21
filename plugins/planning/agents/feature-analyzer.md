@@ -3,6 +3,7 @@ name: feature-analyzer
 description: Use this agent to analyze massive project descriptions and break them into discrete features with numbering, naming, dependencies, and shared context extraction for parallel spec generation
 model: inherit
 color: yellow
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 ## Worktree Discovery
 

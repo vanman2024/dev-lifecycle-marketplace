@@ -3,6 +3,7 @@ name: requirements-processor
 description: Process multimodal inputs (files, images, URLs, docs) and extract requirements for wizard
 model: inherit
 color: blue
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 
 ## Security: API Key Handling

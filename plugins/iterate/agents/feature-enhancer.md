@@ -3,6 +3,7 @@ name: feature-enhancer
 description: Use this agent to enhance features - adds improvements and optimizations to existing features
 model: inherit
 color: yellow
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 ## Worktree Discovery
 

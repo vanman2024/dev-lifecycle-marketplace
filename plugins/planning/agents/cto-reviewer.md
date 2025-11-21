@@ -3,6 +3,7 @@ name: cto-reviewer
 description: Executive-level architecture review that reads all validation reports and provides approval status
 model: inherit
 color: red
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 
 ## Security: API Key Handling

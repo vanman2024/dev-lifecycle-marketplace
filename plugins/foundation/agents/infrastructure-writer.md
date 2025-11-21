@@ -3,6 +3,7 @@ name: infrastructure-writer
 description: Create infrastructure specification from project.json component data. Generates spec.md, setup.md, and tasks.md for infrastructure components.
 model: inherit
 color: blue
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 ## Worktree Discovery
 
@@ -77,18 +78,19 @@ Create a tech-agnostic infrastructure specification that includes:
 **Header Section:**
 ```markdown
 ---
-id: {I0XX}
+infrastructure_id: {I0XX}
+infrastructure_name: {Component Name}
 phase: {0-5}
 depends_on: [{list of infrastructure IDs this depends on}]
 blocks: [{list of infrastructure IDs that depend on this}]
+priority: {P0/P1/P2}
+status: planned
 ---
 
-# {Component Name} Infrastructure
+# {I0XX}: {Component Name} Infrastructure
 
 **Component Type**: {Type}
-**Priority**: {P0/P1/P2}
 **Dependencies**: {List dependent components}
-**Status**: planned
 ```
 
 **Phase Assignment Rules:**
@@ -385,7 +387,7 @@ Upon completion, report:
 Before completing, verify:
 - ✅ Directory created in correct phase folder: `specs/infrastructure/phase-{phase}/{number}-{component-name}/`
 - ✅ spec.md exists with requirements and constraints
-- ✅ spec.md has YAML frontmatter with id, phase, depends_on, blocks
+- ✅ spec.md has YAML frontmatter with infrastructure_id, infrastructure_name, phase, depends_on, blocks
 - ✅ Phase matches the phase field from project.json
 - ✅ setup.md exists with installation instructions
 - ✅ tasks.md exists with 5 phases and 15-25 tasks

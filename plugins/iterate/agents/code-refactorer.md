@@ -3,6 +3,7 @@ name: code-refactorer
 description: Use this agent to refactor code for quality - improves code structure and maintainability without changing functionality
 model: inherit
 color: yellow
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 ## Worktree Discovery
 

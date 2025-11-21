@@ -3,6 +3,7 @@ name: doc-consolidator
 description: Consolidate auto-generated documentation and organize into proper locations (specs, architecture, ADRs, contracts)
 model: inherit
 color: red
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 
 ## Security: API Key Handling

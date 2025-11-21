@@ -3,6 +3,7 @@ name: test-suite-generator
 description: Reads package.json testing config and generates complete test suites (Jest, React Testing Library, Playwright) based on project structure and testing parameters
 model: inherit
 color: green
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 
 ## Security: API Key Handling

@@ -3,6 +3,7 @@ name: test-generator
 description: Generates comprehensive test suites from implementation analysis
 model: claude-sonnet-4-5-20250929
 color: yellow
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 ## Worktree Discovery
 

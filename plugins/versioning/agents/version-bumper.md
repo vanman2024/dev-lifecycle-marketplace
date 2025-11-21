@@ -3,6 +3,7 @@ name: version-bumper
 description: Calculate new versions, generate changelogs, update version files, create git commits and tags
 model: inherit
 color: blue
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 
 ## Security: API Key Handling

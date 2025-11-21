@@ -3,6 +3,7 @@ name: performance-analyzer
 description: Analyzes performance and identifies bottlenecks with optimization recommendations
 model: claude-sonnet-4-5-20250929
 color: yellow
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 ## Worktree Discovery
 

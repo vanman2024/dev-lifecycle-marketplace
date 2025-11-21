@@ -3,6 +3,7 @@ name: release-notes-generator
 description: Use this agent to parse conventional commits with AI summarization for generating user-friendly release notes. Invoke when creating release notes that need natural language summaries, not just commit lists.
 model: inherit
 color: blue
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 ## Worktree Discovery
 

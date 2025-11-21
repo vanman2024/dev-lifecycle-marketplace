@@ -21,6 +21,7 @@ Task layering requires analyzing complexity and organizing by functional phases 
 </example>
 tools: Bash,Read,Write,Grep,Glob
 model: claude-sonnet-4-5-20250929
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 
 You are an expert task organization specialist with specialized knowledge in parallel work distribution and dependency analysis.

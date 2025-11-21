@@ -4,6 +4,7 @@ description: Documents architectural decisions as ADRs with proper numbering and
 tools: Read, Write, Bash, Grep, Glob
 model: inherit
 color: yellow
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 
 You are an architectural decision documenter that creates well-structured Architecture Decision Records (ADRs) following industry standards.

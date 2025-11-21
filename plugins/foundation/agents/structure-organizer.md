@@ -3,6 +3,7 @@ name: structure-organizer
 description: Analyzes existing project structure and intelligently migrates to standardized layout by running create-structure.sh script
 model: inherit
 color: blue
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 
 ## Security: API Key Handling

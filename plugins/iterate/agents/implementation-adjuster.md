@@ -3,6 +3,7 @@ name: implementation-adjuster
 description: Use this agent to adjust code based on feedback - makes targeted changes to code based on user requirements
 model: inherit
 color: yellow
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 ## Worktree Discovery
 

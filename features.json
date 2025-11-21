@@ -1,0 +1,229 @@
+{
+  "$schema": "Features.json schema for dev-lifecycle-marketplace",
+  "$version": "2.0.0",
+
+  "project": "dev-lifecycle-marketplace",
+  "generated_at": "2025-01-20T00:00:00Z",
+  "description": "Tech-agnostic workflow automation plugins for development lifecycle",
+
+  "source_documents": {
+    "architecture": [],
+    "adr": [],
+    "roadmap": ""
+  },
+
+  "phases": {
+    "_comment": "Features grouped by infrastructure phase for build ordering",
+    "0": [],
+    "1": ["F001", "F002"],
+    "2": ["F003", "F004", "F005"],
+    "3": ["F006", "F007", "F008"],
+    "4": [],
+    "5": []
+  },
+
+  "features": [
+    {
+      "id": "F001",
+      "name": "Project Detection and Initialization",
+      "description": "Automatic tech stack detection, project.json generation, environment validation, and workflow creation from Airtable templates",
+      "priority": "P0",
+      "phase": "MVP",
+      "complexity": "Complex",
+      "estimated_days": 5,
+      "infrastructure_phase": 1,
+      "infrastructure_dependencies": ["I001", "I002"],
+      "dependencies": [],
+      "dependent_features": ["F003", "F006"],
+      "operational_tasks": [],
+      "adr_references": [],
+      "architecture_notes": "Foundation plugin provides /foundation:detect, /foundation:init-structure, /foundation:generate-workflow with stack-detector agent",
+      "status": "completed"
+    },
+    {
+      "id": "F002",
+      "name": "Specification Management",
+      "description": "Feature and infrastructure spec generation, similarity detection, architecture integration, roadmap synchronization",
+      "priority": "P0",
+      "phase": "MVP",
+      "complexity": "Complex",
+      "estimated_days": 5,
+      "infrastructure_phase": 1,
+      "infrastructure_dependencies": ["I001", "I003"],
+      "dependencies": [],
+      "dependent_features": ["F004", "F005"],
+      "operational_tasks": [],
+      "adr_references": [],
+      "architecture_notes": "Planning plugin provides /planning:add-feature, /planning:add-spec, /planning:spec with feature-analyzer agent",
+      "status": "completed"
+    },
+    {
+      "id": "F003",
+      "name": "Task Layering and Parallel Execution",
+      "description": "Transform sequential tasks into parallel-capable layers with agent assignments, complexity stratification, dependency analysis",
+      "priority": "P0",
+      "phase": "MVP",
+      "complexity": "Complex",
+      "estimated_days": 8,
+      "infrastructure_phase": 2,
+      "infrastructure_dependencies": ["I001", "I003", "I005"],
+      "dependencies": ["F002"],
+      "dependent_features": ["F004"],
+      "operational_tasks": [],
+      "adr_references": [],
+      "architecture_notes": "Iterate plugin provides /iterate:tasks with task-layering agent",
+      "status": "completed"
+    },
+    {
+      "id": "F004",
+      "name": "Automated Implementation Execution",
+      "description": "Phase-aware orchestration with parallel execution, automatic plugin command discovery from settings.json, SlashCommand delegation",
+      "priority": "P0",
+      "phase": "MVP",
+      "complexity": "Complex",
+      "estimated_days": 8,
+      "infrastructure_phase": 2,
+      "infrastructure_dependencies": ["I001", "I002", "I003", "I004"],
+      "dependencies": ["F002", "F003"],
+      "dependent_features": [],
+      "operational_tasks": [],
+      "adr_references": [],
+      "architecture_notes": "Implementation plugin provides /implementation:execute with execution-orchestrator and command-executor agents",
+      "status": "in_progress"
+    },
+    {
+      "id": "F005",
+      "name": "Code Adjustment and Refactoring",
+      "description": "Targeted code changes based on feedback, quality improvements without functionality changes, feature enhancements",
+      "priority": "P1",
+      "phase": "MVP",
+      "complexity": "Moderate",
+      "estimated_days": 5,
+      "infrastructure_phase": 2,
+      "infrastructure_dependencies": ["I001", "I005"],
+      "dependencies": ["F002"],
+      "dependent_features": [],
+      "operational_tasks": [],
+      "adr_references": [],
+      "architecture_notes": "Iterate plugin provides /iterate:adjust, /iterate:refactor, /iterate:enhance",
+      "status": "completed"
+    },
+    {
+      "id": "F006",
+      "name": "Quality Validation",
+      "description": "Code review against specs, security rule validation, comprehensive test recommendations, task completion verification",
+      "priority": "P0",
+      "phase": "MVP",
+      "complexity": "Complex",
+      "estimated_days": 6,
+      "infrastructure_phase": 3,
+      "infrastructure_dependencies": ["I001", "I006"],
+      "dependencies": ["F001"],
+      "dependent_features": ["F008"],
+      "operational_tasks": [],
+      "adr_references": [],
+      "architecture_notes": "Quality plugin provides /quality:validate-code, /quality:validate-tasks with code-validator and task-validator agents",
+      "status": "completed"
+    },
+    {
+      "id": "F007",
+      "name": "Automated Testing",
+      "description": "Newman/Postman API testing, Playwright E2E testing, frontend component testing, test suite generation",
+      "priority": "P0",
+      "phase": "MVP",
+      "complexity": "Complex",
+      "estimated_days": 7,
+      "infrastructure_phase": 3,
+      "infrastructure_dependencies": ["I001", "I007"],
+      "dependencies": [],
+      "dependent_features": ["F008"],
+      "operational_tasks": [],
+      "adr_references": [],
+      "architecture_notes": "Testing plugin provides /testing:test, /testing:generate-tests with test-generator agents and newman-testing, playwright-e2e skills",
+      "status": "completed"
+    },
+    {
+      "id": "F008",
+      "name": "Deployment Orchestration",
+      "description": "Platform auto-detection (FastMCP Cloud, Vercel, Railway, DigitalOcean), deployment preparation, validation, monitoring setup",
+      "priority": "P0",
+      "phase": "MVP",
+      "complexity": "Complex",
+      "estimated_days": 8,
+      "infrastructure_phase": 3,
+      "infrastructure_dependencies": ["I001", "I006", "I007", "I008"],
+      "dependencies": ["F006", "F007"],
+      "dependent_features": [],
+      "operational_tasks": [],
+      "adr_references": [],
+      "architecture_notes": "Deployment plugin provides /deployment:deploy, /deployment:prepare, /deployment:validate with deployment-detector agent",
+      "status": "completed"
+    }
+  ],
+
+  "shared_context": {
+    "tech_stack": [
+      "Markdown (plugin definitions)",
+      "Bash (automation scripts)",
+      "JSON (configuration files)",
+      "YAML (frontmatter)",
+      "Python (utility scripts)",
+      "Git (version control)"
+    ],
+    "user_types": [
+      "Developers (using Claude Code)",
+      "AI Agents (executing workflows)",
+      "Plugin Authors (creating domain plugins)"
+    ],
+    "data_entities": [
+      "Plugin Metadata (plugin.json)",
+      "Commands (slash commands)",
+      "Agents (autonomous executors)",
+      "Skills (progressive disclosure)",
+      "Project Configuration (project.json)",
+      "Feature Tracking (features.json)",
+      "Specifications (spec.md, tasks.md)",
+      "Workflows (WORKFLOW.md from Airtable)"
+    ],
+    "external_integrations": [
+      "Airtable (workflow templates)",
+      "GitHub (version control)",
+      "Claude Code Framework (plugin system)",
+      "Domain-specific marketplaces (nextjs-frontend, fastmcp, etc.)"
+    ],
+    "cost_model": {
+      "development_cost": "Free and open source",
+      "maintenance": "Community-driven",
+      "usage_cost": "Free - no runtime costs"
+    },
+    "business_metrics": {
+      "plugins": 11,
+      "commands": 74,
+      "agents": 58,
+      "skills": 40,
+      "total_components": 172
+    }
+  },
+
+  "feature_summary": {
+    "total_features": 8,
+    "p0_critical": 7,
+    "p1_high": 1,
+    "p2_medium": 0,
+    "by_infrastructure_phase": {
+      "0": 0,
+      "1": 2,
+      "2": 3,
+      "3": 3,
+      "4": 0,
+      "5": 0
+    },
+    "estimated_total_days": 52
+  },
+
+  "metadata": {
+    "version": "2.0",
+    "last_updated": "2025-01-20",
+    "update_frequency": "On plugin add/update"
+  }
+}

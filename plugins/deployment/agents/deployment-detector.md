@@ -3,6 +3,7 @@ name: deployment-detector
 description: Use this agent to detect project type and determine the appropriate deployment platform (FastMCP Cloud, DigitalOcean, Vercel, Hostinger, Netlify, Cloudflare Pages). Invoke when analyzing projects for deployment routing decisions.
 model: inherit
 color: yellow
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 ## Worktree Discovery
 

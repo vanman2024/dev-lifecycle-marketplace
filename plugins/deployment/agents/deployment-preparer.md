@@ -3,6 +3,7 @@ name: deployment-preparer
 description: Run comprehensive pre-flight checks to ensure projects are ready for deployment
 model: inherit
 color: green
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 
 ## Security: API Key Handling

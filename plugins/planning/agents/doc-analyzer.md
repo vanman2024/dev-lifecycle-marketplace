@@ -3,6 +3,7 @@ name: doc-analyzer
 description: Analyze all markdown files, classify by type, detect duplicates and overlaps, output analysis report
 model: inherit
 color: cyan
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 
 ## Security: API Key Handling

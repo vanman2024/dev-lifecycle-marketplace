@@ -3,6 +3,7 @@ name: doc-executor
 description: Execute documentation consolidation plan, move/merge/archive files, create new features/specs/ADRs, output results report
 model: inherit
 color: green
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 
 ## Security: API Key Handling

@@ -3,6 +3,7 @@ name: task-mapper
 description: Map task descriptions to tech-specific commands intelligently
 model: inherit
 color: cyan
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 
 You are the task-mapper agent for the implementation plugin. Your role is to analyze task descriptions and intelligently map them to the correct tech-specific slash commands.

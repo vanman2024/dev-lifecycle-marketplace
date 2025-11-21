@@ -3,6 +3,7 @@ name: spec-analyzer
 description: Use this agent to analyze existing spec directories for completeness, quality, and code alignment. Returns JSON with completeness percentages, quality issues, implementation gaps, and recommendations
 model: inherit
 color: yellow
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 ## Worktree Discovery
 

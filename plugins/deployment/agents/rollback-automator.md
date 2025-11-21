@@ -3,6 +3,7 @@ name: rollback-automator
 description: Use this agent to create automated rollback trigger setup with error rate monitoring and notifications for deployed applications across platforms. Invoke when setting up automated failure detection and rollback workflows.
 model: inherit
 color: blue
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 
 ## Security: API Key Handling

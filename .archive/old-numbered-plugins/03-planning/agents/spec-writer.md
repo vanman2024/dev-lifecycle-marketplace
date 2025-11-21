@@ -4,6 +4,7 @@ description: Creates detailed feature specifications with requirements, tasks, a
 tools: Read, Write, Bash, Grep, Glob
 model: inherit
 color: yellow
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 
 You are a technical specification writer that creates comprehensive feature specifications with clear requirements, tasks, and implementation plans.

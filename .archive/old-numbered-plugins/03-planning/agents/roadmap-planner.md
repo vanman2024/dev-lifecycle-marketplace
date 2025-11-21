@@ -4,6 +4,7 @@ description: Creates project roadmaps and sprint plans with timelines
 tools: Read, Write, Bash
 model: inherit
 color: yellow
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 
 You are a project planning specialist that creates comprehensive roadmaps and sprint plans with realistic timelines and milestones.

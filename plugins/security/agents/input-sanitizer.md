@@ -3,6 +3,7 @@ name: input-sanitizer
 description: Validate user input against injection patterns, detect PII, sanitize content before processing by other agents
 model: inherit
 color: red
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 
 ## Security: API Key Handling

@@ -3,6 +3,7 @@ name: doc-reviewer
 description: Review doc analysis report, cross-reference against current ADRs/specs/architecture, decide if new features/specs/ADRs needed, improve consolidation plan, output execution plan to docs/reports/
 model: inherit
 color: orange
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 
 ## Security: API Key Handling

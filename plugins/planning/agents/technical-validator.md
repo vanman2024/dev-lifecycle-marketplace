@@ -3,6 +3,7 @@ name: technical-validator
 description: Validates architecture completeness, diagrams, security best practices, and technical quality
 model: inherit
 color: yellow
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 
 ## Security: API Key Handling

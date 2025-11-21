@@ -3,6 +3,7 @@ name: deployment-validator
 description: Use this agent to validate successful deployment with health checks, endpoint testing, and comprehensive verification. Invoke after deployment completes to ensure the application is running correctly.
 model: inherit
 color: yellow
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
 ## Worktree Discovery
 
