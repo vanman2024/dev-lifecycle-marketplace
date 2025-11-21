@@ -45,20 +45,25 @@ Actions:
   * "clerk" / "supabase" / etc. → DOMAIN_HINT
 - Display: "Mode: [MODE], Strategy: [STRATEGY]"
 
-### Phase 2: Load Context
-Goal: Read project configuration and current status
+### Phase 2: Load Context and Initialize Tracking
+Goal: Read project configuration and initialize single execution log
 
 Actions:
 - Read project context:
   * !{cat .claude/project.json 2>/dev/null || echo "{}"}
   * !{cat features.json 2>/dev/null || echo "{}"}
+- Initialize SINGLE execution log file:
+  * !{mkdir -p .claude/execution}
+  * If .claude/execution/execution.json exists, read it
+  * Otherwise create new structure:
+    !{echo '{"session":"'$(date -Iseconds)'","specs":{},"overall":{"total_specs":0,"completed":0,"in_progress":0,"pending":0}}' > .claude/execution/execution.json}
 - Identify target specs based on MODE:
   * single-spec: Find the specific spec directory
   * phase: Find all specs in that phase directory
   * all-infrastructure: List all specs in specs/infrastructure/
   * all-features: List all specs in specs/features/
 - For each target spec:
-  * Check current status (pending, in_progress, completed)
+  * Check current status from execution.json
   * Skip if already completed
   * Validate dependencies are met
 - Display: "Found X specs to execute"
@@ -77,14 +82,9 @@ Actions:
     - Layer/dependency info (L0, L1, L2, L3)
     - Domain hints (clerk, supabase, redis, etc.)
   * Count: total, completed, remaining
-- Display task summary:
-  ```
-  Spec: I001 - Authentication
-  Total: 12 tasks
-  Completed: 5 (L0-L1)
-  Remaining: 7 (L2-L3)
-  Domain: clerk
-  ```
+  * Update execution.json with spec entry:
+    !{jq '.specs["'$SPEC_ID'"] = {"status":"pending","tasks_total":'$TOTAL',"tasks_completed":'$DONE',"remaining":'$REMAINING'}' .claude/execution/execution.json > tmp && mv tmp .claude/execution/execution.json}
+- Display task summary for each spec
 
 ### Phase 4: Map Tasks to Agents
 Goal: Determine which agents to spawn for remaining tasks
@@ -96,36 +96,23 @@ Actions:
   * "component" / "UI" / "frontend" → nextjs-frontend:* agents
   * "endpoint" / "API" / "backend" → fastapi-backend:* agents
   * "redis" / "cache" → redis:* agents
+  * "rag" / "vector" / "embedding" → rag-pipeline:* agents
+  * "sentry" / "error" / "monitoring" → deployment:observability-integrator
 - Group tasks by domain and layer
-- Create agent mapping:
-  ```
-  L2 Tasks (parallel):
-  - Task 5: OAuth config → clerk:clerk-oauth-specialist
-  - Task 6: API service → clerk:clerk-api-builder
-  - Task 7: Frontend client → clerk:clerk-nextjs-app-router-agent
-
-  L3 Tasks (after L2):
-  - Task 8: Migration UI → nextjs-frontend:component-builder-agent
-  - Task 9: Validate → clerk:clerk-validator
-  ```
+- Create agent mapping and store in execution.json:
+  !{jq '.specs["'$SPEC_ID'"].agents_mapped = ["agent1", "agent2"]' .claude/execution/execution.json > tmp && mv tmp .claude/execution/execution.json}
 - If DOMAIN_HINT provided, prioritize those agents
 
 ### Phase 5: Execute Agents in Parallel Waves
-Goal: Spawn agents by layer, validate, and track progress
+Goal: Spawn agents by layer, validate, and track progress in single execution.json
 
 Actions:
-- Initialize tracking:
-  * !{mkdir -p .claude/execution}
-  * Create execution log: .claude/execution/$SPEC_ID.json
+- Update spec status to in_progress:
+  !{jq '.specs["'$SPEC_ID'"].status = "in_progress" | .specs["'$SPEC_ID'"].started_at = "'$(date -Iseconds)'"' .claude/execution/execution.json > tmp && mv tmp .claude/execution/execution.json}
 - For each LAYER (L0 → L1 → L2 → L3):
   * Get all tasks in this layer
   * Get mapped agents for these tasks
-  * **SPAWN ALL AGENTS IN PARALLEL** (single message with multiple Task calls):
-    ```
-    Task(subagent_type="clerk:clerk-oauth-specialist", prompt="...")
-    Task(subagent_type="clerk:clerk-api-builder", prompt="...")
-    Task(subagent_type="clerk:clerk-nextjs-app-router-agent", prompt="...")
-    ```
+  * **SPAWN ALL AGENTS IN PARALLEL** (single message with multiple Task calls)
   * Wait for ALL agents to complete
   * **VALIDATE each task:**
     - Check if expected files were created
@@ -134,16 +121,9 @@ Actions:
   * **UPDATE tasks.md checkboxes:**
     - For each completed task: Change `- [ ]` to `- [x]`
     - !{sed -i 's/- \[ \] Task X/- [x] Task X/' $SPEC_DIR/tasks.md}
-  * **UPDATE execution log:**
-    - Add completed tasks with timestamps
-    - Record any failures
-  * Display layer progress:
-    ```
-    ✅ Layer 2 Complete (3/3 tasks)
-    - [x] Task 5: OAuth config
-    - [x] Task 6: API service
-    - [x] Task 7: Frontend client
-    ```
+  * **UPDATE execution.json** (single file, not per-spec):
+    !{jq '.specs["'$SPEC_ID'"].tasks_completed = '$NEW_COUNT' | .specs["'$SPEC_ID'"].last_updated = "'$(date -Iseconds)'"' .claude/execution/execution.json > tmp && mv tmp .claude/execution/execution.json}
+  * Display layer progress
   * Proceed to next layer
 
 ### Phase 6: Final Validation
@@ -155,70 +135,62 @@ Actions:
   * CHECKED = count of `- [x]`
   * UNCHECKED = count of `- [ ]`
 - If UNCHECKED > 0:
-  * Display: "⚠️ $UNCHECKED tasks not completed"
+  * Display: "Warning: $UNCHECKED tasks not completed"
   * List uncompleted tasks
-  * Set status = "partial"
+  * Update execution.json: status = "partial"
   * **DO NOT mark spec as completed**
 - If UNCHECKED = 0:
   * All tasks verified complete
-  * Set status = "completed"
-- Update execution log with final status
+  * Update execution.json: status = "completed", completed_at = timestamp
+- Update overall counts in execution.json:
+  !{jq '.overall.completed = ([.specs[] | select(.status == "completed")] | length) | .overall.in_progress = ([.specs[] | select(.status == "in_progress")] | length) | .overall.pending = ([.specs[] | select(.status == "pending")] | length) | .overall.total_specs = (.specs | length)' .claude/execution/execution.json > tmp && mv tmp .claude/execution/execution.json}
 
 ### Phase 7: Update Project Status
 Goal: Update project.json and features.json
 
 Actions:
 - If status = "completed":
-  * Update infrastructure item in project.json:
-    !{jq '.infrastructure[] | select(.id == "$SPEC_ID") .status = "completed"' .claude/project.json}
+  * Update infrastructure item in project.json
   * Or update feature in features.json
   * Record completion timestamp
 - If status = "partial":
   * Update status to "in_progress"
   * Note remaining tasks
-- Commit execution log:
-  * !{git add .claude/execution/$SPEC_ID.json $SPEC_DIR/tasks.md}
-  * !{git commit -m "implementation: Update $SPEC_ID progress"}
+- Commit changes:
+  * !{git add .claude/execution/execution.json $SPEC_DIR/tasks.md}
+  * !{git commit -m "implementation: Update progress - $SPEC_ID"}
 
 ### Phase 8: Summary
-Goal: Display comprehensive results
+Goal: Display comprehensive results from single execution.json
 
 Actions:
-- Display summary:
-  ```
-  🎉 Execution Complete: $SPEC_NAME
-
-  📊 Results:
-  - Total tasks: $TOTAL
-  - Completed: $COMPLETED ✅
-  - Failed: $FAILED ❌
-  - Manual: $MANUAL ⚠️
-  - Success rate: XX%
-
-  📁 Execution log: .claude/execution/$SPEC_ID.json
-  📝 Tasks file: $SPEC_DIR/tasks.md
-
-  ✅ All checkboxes verified
-  ```
+- Read execution.json and display summary:
+  !{cat .claude/execution/execution.json | jq '.'}
+- Display per-spec status table
+- Show overall totals from execution.json
 - If status = "completed", suggest next steps:
   * /quality:validate-code $SPEC_ID
   * /testing:test $SPEC_ID
   * /deployment:prepare (if all infrastructure done)
 - If status = "partial", suggest:
   * Re-run: /implementation:execute $SPEC_ID
-  * Check failures in execution log
+  * Run: /implementation:check-tasks to see remaining
 - Mark todo complete
 
 ## Important Notes
+
+**Single Execution Log:**
+All progress tracked in ONE file: .claude/execution/execution.json
+This file contains all specs, their status, task counts, and timestamps.
+Never create per-spec JSON files.
 
 **Parallel Agent Execution:**
 Agents within the same layer run in parallel. Send ALL Task() calls in a single message.
 
 **Task Checkbox Tracking:**
-After each agent completes, immediately update tasks.md checkboxes. Never mark a spec complete without verifying all checkboxes are checked.
+After each agent completes, immediately update tasks.md checkboxes and execution.json.
+Never mark a spec complete without verifying all checkboxes are checked.
 
 **Natural Language Flexibility:**
-Users can provide hints like "use all clerk agents" or "run sequentially". Parse these from $ARGUMENTS and adjust execution accordingly.
-
-**Validation Before Completion:**
-Always re-read tasks.md and verify checkbox counts before marking any spec as completed. If validation fails, report the gap.
+Users can provide hints like "use all clerk agents" or "run sequentially".
+Parse these from $ARGUMENTS and adjust execution accordingly.
