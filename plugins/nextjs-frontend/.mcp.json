@@ -6,11 +6,11 @@
     },
     "design-system": {
       "url": "https://supabase.com/mcp",
-      "transport": "http"
+      "transport": "sse"
     },
     "shadcn": {
       "url": "https://shadcn-mcp.vercel.app/mcp",
-      "transport": "http"
+      "transport": "sse"
     }
   }
 }
