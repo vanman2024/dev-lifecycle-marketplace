@@ -1,11 +1,12 @@
 {
-  "$schema": "application-design.json schema for Next.js applications",
+  "$schema": "application-design.json schema for interactive applications",
   "$version": "2.0.0",
 
   "project": "{project-name}",
   "generated_at": "{ISO datetime}",
-  "description": "Interactive application pages and layouts for Next.js App Router",
-  "framework": "Next.js 15",
+  "description": "Interactive application pages and layouts (authenticated/dynamic)",
+  "framework": "Next.js 15 | React | Vue | Svelte",
+  "framework_note": "Optimized for Next.js App Router but supports any interactive frontend framework",
 
   "source_documents": {
     "architecture": ["docs/architecture/frontend.md"],
@@ -118,6 +119,23 @@
   },
 
   "_schema_notes": {
+    "when_to_use": {
+      "description": "Use application-design.json for interactive/authenticated pages regardless of framework",
+      "examples": [
+        "Dashboard pages (user data, analytics, personalized content)",
+        "Settings pages (authenticated, user-specific configuration)",
+        "Chat/AI interfaces (real-time, streaming, interactive)",
+        "Admin panels (role-based access, management tools)",
+        "Any page requiring authentication or dynamic user data"
+      ],
+      "frameworks": [
+        "Next.js App Router (best for React + Server Components)",
+        "React SPA (if using Vite/CRA)",
+        "Vue/Nuxt (if using Vue ecosystem)",
+        "Svelte/SvelteKit (if using Svelte)"
+      ],
+      "key_characteristic": "Pages where interactivity, authentication, and dynamic data are primary concerns"
+    },
     "page_types": {
       "dashboard": "Main user dashboard with stats, activity, navigation",
       "settings": "User settings, preferences, profile management",

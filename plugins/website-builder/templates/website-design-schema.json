@@ -1,11 +1,12 @@
 {
-  "$schema": "website-design.json schema for Astro static sites",
+  "$schema": "website-design.json schema for marketing/content pages",
   "$version": "2.0.0",
 
   "project": "{project-name}",
   "generated_at": "{ISO datetime}",
-  "description": "Marketing website pages and content for Astro static site generator",
-  "framework": "Astro 4.x",
+  "description": "Marketing website pages and content (static/SEO-focused)",
+  "framework": "Astro 4.x | Next.js (static export) | Gatsby | Hugo",
+  "framework_note": "Can use any static site generator OR Next.js with static export",
 
   "source_documents": {
     "architecture": ["docs/architecture/frontend.md"],
@@ -140,6 +141,23 @@
   },
 
   "_schema_notes": {
+    "when_to_use": {
+      "description": "Use website-design.json for marketing/content pages regardless of framework",
+      "examples": [
+        "Landing pages (public-facing, SEO-critical)",
+        "Pricing pages (conversion-focused)",
+        "About/Features pages (informational)",
+        "Blog/Documentation (content-heavy)",
+        "Any page that doesn't require authentication"
+      ],
+      "frameworks": [
+        "Astro (best for pure static content)",
+        "Next.js with static export (good for React consistency)",
+        "Gatsby (if using GraphQL)",
+        "Hugo (if using Go templates)"
+      ],
+      "key_characteristic": "Pages where SEO, performance, and content delivery are primary concerns"
+    },
     "page_types": {
       "landing": "Main landing page with hero, features, CTA",
       "pricing": "Pricing tiers, comparison, FAQ",
