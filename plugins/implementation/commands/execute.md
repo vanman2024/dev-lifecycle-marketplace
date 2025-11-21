@@ -1,7 +1,7 @@
 ---
 description: Execute feature/infrastructure implementation with parallel agents and automatic task tracking
 argument-hint: [spec-id | --phase-X | --infrastructure | --features] [natural language hints]
-allowed-tools: Read, Write, Bash(*), Grep, Glob, Task, SlashCommand, TodoWrite
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Task, TodoWrite
 ---
 
 **Arguments**: $ARGUMENTS
