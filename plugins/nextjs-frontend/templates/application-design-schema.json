@@ -1,0 +1,158 @@
+{
+  "$schema": "application-design.json schema for Next.js applications",
+  "$version": "2.0.0",
+
+  "project": "{project-name}",
+  "generated_at": "{ISO datetime}",
+  "description": "Interactive application pages and layouts for Next.js App Router",
+  "framework": "Next.js 15",
+
+  "source_documents": {
+    "architecture": ["docs/architecture/frontend.md"],
+    "design_system": "design-system.md"
+  },
+
+  "phases": {
+    "_comment": "Application pages grouped by dependency phase for build ordering",
+    "0": ["A001", "A002"],
+    "1": ["A003", "A004"],
+    "2": ["A005", "A006"]
+  },
+
+  "pages": [
+    {
+      "id": "A001",
+      "name": "{page-name}",
+      "route": "/{route-path}",
+      "description": "{description}",
+      "page_type": "dashboard | settings | profile | chat | admin | auth",
+      "priority": "P0 | P1 | P2",
+      "complexity": "Simple | Moderate | Complex",
+      "estimated_hours": 4,
+
+      "phase": 0,
+      "infrastructure_dependencies": ["I001"],
+      "feature_dependencies": ["F001"],
+      "design_dependencies": [],
+
+      "layout": "{layout-name}",
+      "route_group": "(app) | (auth) | (dashboard) | (admin)",
+      "rendering": "server | client | hybrid",
+
+      "components": [
+        {
+          "name": "{component-name}",
+          "type": "existing | new",
+          "source": "shadcn | custom",
+          "rendering": "server | client"
+        }
+      ],
+
+      "data_sources": ["supabase", "api", "static"],
+      "ai_features": ["chat", "generation", "streaming"],
+
+      "responsive_breakpoints": ["mobile", "tablet", "desktop"],
+      "accessibility": {
+        "wcag_level": "AA | AAA",
+        "aria_requirements": []
+      },
+
+      "status": "planned | in_progress | completed"
+    }
+  ],
+
+  "layouts": [
+    {
+      "id": "L001",
+      "name": "{layout-name}",
+      "description": "{description}",
+      "type": "dashboard | auth | minimal | admin",
+      "route_group": "(app) | (auth) | (dashboard)",
+      "components": ["sidebar", "header", "footer", "main"],
+      "used_by": ["A001", "A002"],
+      "status": "planned | in_progress | completed"
+    }
+  ],
+
+  "design_system": {
+    "component_library": "shadcn/ui",
+    "enforcement": {
+      "fonts": 2,
+      "font_weights": 2,
+      "spacing_unit": "8pt",
+      "color_palette": "limited"
+    },
+    "theme": {
+      "colors": {},
+      "typography": {},
+      "spacing": {}
+    },
+    "tokens_location": "frontend/styles/globals.css"
+  },
+
+  "shared_context": {
+    "user_types": [],
+    "authentication": "clerk | supabase | auth0",
+    "state_management": "server-first | zustand | redux",
+    "data_fetching": "server-components | react-query | swr"
+  },
+
+  "application_summary": {
+    "total_pages": 0,
+    "dashboard_pages": 0,
+    "auth_pages": 0,
+    "admin_pages": 0,
+    "total_layouts": 0,
+    "by_phase": {
+      "0": 0,
+      "1": 0,
+      "2": 0
+    },
+    "estimated_total_hours": 0
+  },
+
+  "metadata": {
+    "version": "2.0",
+    "last_updated": "{ISO date}",
+    "update_frequency": "On page add/update"
+  },
+
+  "_schema_notes": {
+    "page_types": {
+      "dashboard": "Main user dashboard with stats, activity, navigation",
+      "settings": "User settings, preferences, profile management",
+      "profile": "User profile pages, public or private",
+      "chat": "AI chat interfaces with streaming responses",
+      "admin": "Admin panels, user management, system config",
+      "auth": "Login, signup, password reset, verification"
+    },
+    "route_groups": {
+      "description": "Next.js App Router route groups for layout sharing",
+      "(app)": "Main application pages with full layout",
+      "(auth)": "Authentication pages with minimal layout",
+      "(dashboard)": "Dashboard pages with sidebar navigation",
+      "(admin)": "Admin pages with admin-specific layout"
+    },
+    "rendering": {
+      "server": "Server Component (default, better performance)",
+      "client": "Client Component (use client directive, for interactivity)",
+      "hybrid": "Mix of Server and Client Components"
+    },
+    "phase_calculation": {
+      "description": "Phase based on infrastructure and design dependencies",
+      "rule": "phase = max(dependency phases) + 1, or 0 if no dependencies"
+    },
+    "id_format": {
+      "pages": "A001, A002, ... A999 (Application pages)",
+      "layouts": "L001, L002, ... L099"
+    },
+    "build_order": {
+      "rule": "Build layouts first, then Phase 0 pages, then Phase 1, etc.",
+      "parallelization": "Pages in same phase can be built in parallel"
+    },
+    "relationship_to_features": {
+      "description": "Application pages implement UI for features",
+      "note": "A feature may span multiple pages, or a page may serve multiple features"
+    }
+  }
+}

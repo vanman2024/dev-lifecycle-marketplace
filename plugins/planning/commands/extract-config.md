@@ -1,5 +1,5 @@
 ---
-description: Extract project.json and features.json from architecture docs - reads all architecture files with full context and generates configuration files
+description: Extract project.json, features.json, application-design.json, and website-design.json from architecture docs
 argument-hint: none
 ---
 
@@ -24,13 +24,14 @@ See `@CLAUDE.md` section "SlashCommand Execution - YOU Are The Executor" for det
 
 **Arguments**: None required
 
-Goal: Extract comprehensive project.json and features.json from all generated architecture documentation with full context.
+Goal: Extract comprehensive project.json, features.json, application-design.json, and website-design.json from all generated architecture documentation with full context.
 
 Core Principles:
 - Read ALL architecture docs before generating config
 - Cross-reference for completeness and consistency
 - Extract tech stack from multiple sources (backend.md, frontend.md, data.md, ai.md, infrastructure.md)
 - Extract features from ROADMAP.md and architecture analysis
+- Extract application pages (Next.js) and website pages (Astro) from frontend.md
 - Generate comprehensive configuration files ready for init-project
 
 Phase 1: Validate Architecture Exists
@@ -257,7 +258,73 @@ Actions:
 - Validate JSON syntax
 - Update todos
 
-Phase 7: Validation
+Phase 7: Extract Application Pages (application-design.json)
+Goal: Generate application-design.json for Next.js App Router pages from frontend.md
+
+Actions:
+- Parse frontend.md for application pages:
+  * Dashboard pages (main dashboard, analytics, reports)
+  * Settings pages (user settings, preferences, profile)
+  * Chat/AI pages (chat interface, AI generation)
+  * Admin pages (user management, system config)
+  * Auth pages (login, signup, password reset)
+- Detect page characteristics:
+  * Route paths (/ dashboard, /settings, /chat)
+  * Route groups ((app), (auth), (admin))
+  * Layouts (dashboard_layout, auth_layout, minimal_layout)
+  * Rendering strategy (server | client | hybrid)
+  * Components needed (sidebar, header, forms, tables)
+  * Data sources (supabase, API endpoints)
+  * AI features (chat streaming, generation)
+- Number pages sequentially (A001, A002, etc.)
+- Determine dependencies and phases
+- Update todos
+
+Phase 8: Generate application-design.json
+Goal: Write comprehensive application-design.json for Next.js application pages
+
+Actions:
+- Generate application-design.json using schema template
+- Include all application pages with full details
+- Add layout definitions (dashboard, auth, minimal)
+- Reference design-system.md for UI enforcement
+- Write to application-design.json
+- Validate JSON syntax
+- Update todos
+
+Phase 9: Extract Website Pages (website-design.json)
+Goal: Generate website-design.json for Astro marketing/content pages from frontend.md
+
+Actions:
+- Parse frontend.md for marketing/content pages:
+  * Landing pages (main landing, product pages)
+  * Marketing pages (pricing, about, features)
+  * Blog pages (blog index, post template)
+  * Documentation pages (docs structure)
+- Detect page characteristics:
+  * Route paths (/, /pricing, /about, /blog)
+  * Sections (hero, features, pricing, testimonials, CTA, FAQ)
+  * Content type (static | collection | CMS)
+  * AI features (content generation, image generation, SEO)
+  * SEO requirements (meta tags, structured data, OG images)
+- Number pages sequentially (W001, W002, etc.)
+- Determine dependencies and phases
+- Update todos
+
+Phase 10: Generate website-design.json
+Goal: Write comprehensive website-design.json for Astro marketing/content pages
+
+Actions:
+- Generate website-design.json using schema template
+- Include all website pages with full details
+- Add content collections (blog posts, docs)
+- Add CMS integration if specified
+- Add AI generation capabilities
+- Write to website-design.json
+- Validate JSON syntax
+- Update todos
+
+Phase 11: Validation
 Goal: Verify extracted configuration is complete and consistent
 
 Actions:
@@ -277,13 +344,29 @@ Actions:
     - No circular dependencies
     - Dependencies have lower build_order than dependents
     - Features with same build_order can be built in parallel
+- Validate application-design.json:
+  - All application pages from frontend.md included
+  - Page routes are valid Next.js App Router routes
+  - Route groups are correct
+  - Layouts match design-system.md
+  - Dependencies correctly identified
+  - Phase ordering is correct
+- Validate website-design.json:
+  - All marketing/content pages from frontend.md included
+  - Page routes are valid Astro routes
+  - Sections match marketing page patterns
+  - Content collections properly defined
+  - AI generation capabilities specified
+  - SEO requirements complete
 - Check for inconsistencies between files
 - Display validation results including:
   - Feature build order summary (X features at order 1, Y at order 2, etc.)
+  - Application pages summary (X pages, Y layouts)
+  - Website pages summary (X pages, Y with AI generation)
   - Dependency graph validation
 - Update todos
 
-Phase 8: Summary
+Phase 12: Summary
 Goal: Display results and next steps
 
 Actions:
@@ -294,6 +377,8 @@ Actions:
   Generated Files:
   - .claude/project.json (tech stack and infrastructure)
   - features.json (feature breakdown with build order)
+  - application-design.json (Next.js application pages)
+  - website-design.json (Astro marketing/content pages)
 
   Feature Build Order:
   - Build Order 1: X features (foundation - can build in parallel)
@@ -301,6 +386,19 @@ Actions:
   - Build Order 3: Z features (secondary - can build in parallel)
   - Build Order 4: N features (UI - can build in parallel)
   - Build Order 5: M features (integration - can build in parallel)
+
+  Application Pages (Next.js):
+  - Phase 0: X pages (can build in parallel)
+  - Phase 1: Y pages (can build in parallel)
+  - Phase 2: Z pages (can build in parallel)
+  - Total Layouts: N
+
+  Website Pages (Astro):
+  - Phase 0: X pages (can build in parallel)
+  - Phase 1: Y pages (can build in parallel)
+  - Phase 2: Z pages (can build in parallel)
+  - AI Content Generation: N pages
+  - AI Image Generation: M pages
 
   Extracted From:
   - docs/architecture/README.md
@@ -316,7 +414,9 @@ Actions:
   Next Steps:
   1. Run /planning:init-project to generate feature specs (creates specs in build order)
   2. Run /foundation:generate-infrastructure-specs to generate infrastructure specs
-  3. Build features in order (build_order: 1 → 2 → 3 → 4 → 5)
-  4. Features with same build_order can be built in parallel
+  3. Build application pages: /implementation:execute --application
+  4. Build website pages: /implementation:execute --website
+  5. Build features in order (build_order: 1 → 2 → 3 → 4 → 5)
+  6. Features with same build_order can be built in parallel
   ```
 - Mark all todos completed

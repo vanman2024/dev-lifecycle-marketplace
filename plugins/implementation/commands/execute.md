@@ -1,6 +1,6 @@
 ---
-description: Execute feature/infrastructure implementation with parallel agents and automatic task tracking
-argument-hint: [spec-id | --phase-X | --infrastructure | --features] [natural language hints]
+description: Execute feature/infrastructure/application/website implementation with parallel agents and automatic task tracking
+argument-hint: [spec-id | --phase-X | --infrastructure | --features | --application | --website] [natural language hints]
 allowed-tools: Read, Write, Bash(*), Grep, Glob, Task, TodoWrite
 ---
 
@@ -12,12 +12,15 @@ Goal: Execute implementation by spawning domain agents in parallel waves with au
 
 **Spec-based:**
 - `I001`, `F001` - Execute single infrastructure/feature spec
+- `A001`, `W001` - Execute single application/website page
 - `phase-0/001-auth` - Execute by path
 
 **Phase-based:**
 - `--phase-0`, `--phase-1` - Execute all items in that phase
 - `--infrastructure` - Execute all infrastructure phases (0 → 1 → 2)
 - `--features` - Execute all features
+- `--application` - Execute all Next.js application pages
+- `--website` - Execute all Astro marketing/content pages
 
 **Natural Language Hints (append to any mode):**
 - "use clerk agents in parallel" - Spawn all clerk agents at once
@@ -33,10 +36,13 @@ Actions:
 - Create todo list for tracking
 - Parse $ARGUMENTS:
   * `I001`, `F001` → MODE = "single-spec"
+  * `A001`, `W001` → MODE = "single-page"
   * `phase-0/XXX` path → MODE = "single-spec" (extract spec ID)
   * `--phase-0`, `--phase-1`, `--phase-2` → MODE = "phase"
   * `--infrastructure` → MODE = "all-infrastructure"
   * `--features` → MODE = "all-features"
+  * `--application` → MODE = "all-application"
+  * `--website` → MODE = "all-website"
   * `--all` → MODE = "full"
   * Empty → MODE = "auto-continue"
 - Extract natural language hints:
@@ -52,6 +58,8 @@ Actions:
 - Read project context:
   * !{cat .claude/project.json 2>/dev/null || echo "{}"}
   * !{cat features.json 2>/dev/null || echo "{}"}
+  * !{cat application-design.json 2>/dev/null || echo "{}"}
+  * !{cat website-design.json 2>/dev/null || echo "{}"}
 - Initialize SINGLE execution log file:
   * !{mkdir -p .claude/execution}
   * If .claude/execution/execution.json exists, read it
@@ -59,9 +67,12 @@ Actions:
     !{echo '{"session":"'$(date -Iseconds)'","specs":{},"overall":{"total_specs":0,"completed":0,"in_progress":0,"pending":0}}' > .claude/execution/execution.json}
 - Identify target specs based on MODE:
   * single-spec: Find the specific spec directory
+  * single-page: Find the specific page directory (application or website)
   * phase: Find all specs in that phase directory
   * all-infrastructure: List all specs in specs/infrastructure/
   * all-features: List all specs in specs/features/
+  * all-application: List all pages in specs/application/
+  * all-website: List all pages in specs/website/
 - For each target spec:
   * Check current status from execution.json
   * Skip if already completed
@@ -98,6 +109,8 @@ Actions:
   * "redis" / "cache" → redis:* agents
   * "rag" / "vector" / "embedding" → rag-pipeline:* agents
   * "sentry" / "error" / "monitoring" → deployment:observability-integrator
+  * "dashboard" / "settings" / "profile" → nextjs-frontend:page-generator-agent (App pages)
+  * "landing" / "pricing" / "about" / "blog" → website-builder:website-content (Marketing pages)
 - Group tasks by domain and layer
 - Create agent mapping and store in execution.json:
   !{jq '.specs["'$SPEC_ID'"].agents_mapped = ["agent1", "agent2"]' .claude/execution/execution.json > tmp && mv tmp .claude/execution/execution.json}

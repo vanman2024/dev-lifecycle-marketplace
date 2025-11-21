@@ -1,6 +1,6 @@
 ---
 description: Check outstanding tasks across specs - shows completion status and remaining work
-argument-hint: [spec-id | --all | --infrastructure | --features]
+argument-hint: [spec-id | --all | --infrastructure | --features | --application | --website]
 allowed-tools: Read, Grep, Glob, Task, TodoWrite
 ---
 
@@ -10,10 +10,13 @@ Goal: Display task completion status across one or more specs. For 3+ specs, spa
 
 ## Modes
 
-- I001, F001 - Check single spec
+- I001, F001 - Check single infrastructure/feature spec
+- A001, W001 - Check single application/website page
 - --all - Check all specs
 - --infrastructure - Check all infrastructure specs
 - --features - Check all feature specs
+- --application - Check all Next.js application pages
+- --website - Check all Astro marketing/content pages
 - (empty) - Check all in-progress specs
 
 ## Execution

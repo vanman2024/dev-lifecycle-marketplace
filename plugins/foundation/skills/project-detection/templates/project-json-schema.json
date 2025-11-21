@@ -97,7 +97,9 @@
   "documentation": {
     "architecture": "docs/architecture/",
     "adr": "docs/adr/",
-    "specs": "specs/"
+    "specs": "specs/",
+    "application_specs": "specs/application/",
+    "website_specs": "specs/website/"
   },
 
   "project_status": {
@@ -119,7 +121,9 @@
     },
     "id_format": {
       "infrastructure": "I001, I002, ... I042",
-      "features": "F001, F002, ... F039"
+      "features": "F001, F002, ... F039",
+      "application_pages": "A001, A002, ... A999",
+      "website_pages": "W001, W002, ... W999"
     },
     "phase_calculation": "phase = max(dependency phases) + 1, or 0 if no dependencies"
   }

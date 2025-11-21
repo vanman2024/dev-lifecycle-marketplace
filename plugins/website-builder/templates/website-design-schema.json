@@ -1,0 +1,183 @@
+{
+  "$schema": "website-design.json schema for Astro static sites",
+  "$version": "2.0.0",
+
+  "project": "{project-name}",
+  "generated_at": "{ISO datetime}",
+  "description": "Marketing website pages and content for Astro static site generator",
+  "framework": "Astro 4.x",
+
+  "source_documents": {
+    "architecture": ["docs/architecture/frontend.md"],
+    "brand_guidelines": null
+  },
+
+  "phases": {
+    "_comment": "Website pages grouped by dependency phase for build ordering",
+    "0": ["W001", "W002"],
+    "1": ["W003", "W004"],
+    "2": ["W005"]
+  },
+
+  "pages": [
+    {
+      "id": "W001",
+      "name": "{page-name}",
+      "route": "/{route-path}",
+      "description": "{description}",
+      "page_type": "landing | pricing | about | features | blog | docs",
+      "priority": "P0 | P1 | P2",
+      "complexity": "Simple | Moderate | Complex",
+      "estimated_hours": 4,
+
+      "phase": 0,
+      "infrastructure_dependencies": [],
+      "feature_dependencies": [],
+      "design_dependencies": [],
+
+      "layout": "{layout-name}",
+      "content_type": "static | collection | dynamic",
+
+      "sections": [
+        {
+          "name": "{section-name}",
+          "type": "hero | features | pricing | testimonials | cta | faq",
+          "ai_generated": true
+        }
+      ],
+
+      "ai_features": {
+        "content_generation": true,
+        "image_generation": true,
+        "seo_optimization": true
+      },
+
+      "seo": {
+        "meta_title": "{title}",
+        "meta_description": "{description}",
+        "structured_data": ["Article", "Organization", "Product"],
+        "og_image": "{path}"
+      },
+
+      "responsive_breakpoints": ["mobile", "tablet", "desktop"],
+      "accessibility": {
+        "wcag_level": "AA | AAA",
+        "aria_requirements": []
+      },
+
+      "status": "planned | in_progress | completed"
+    }
+  ],
+
+  "blog": {
+    "enabled": false,
+    "content_collection": "posts",
+    "ai_generation": false,
+    "categories": [],
+    "tags": []
+  },
+
+  "content_collections": [
+    {
+      "name": "posts",
+      "type": "blog | docs | case-studies",
+      "schema": {
+        "title": "string",
+        "description": "string",
+        "date": "date",
+        "author": "string",
+        "tags": "array"
+      }
+    }
+  ],
+
+  "cms_integration": {
+    "enabled": false,
+    "provider": "supabase | contentful | sanity",
+    "collections": []
+  },
+
+  "design_system": {
+    "typography": {
+      "font_primary": "{font-name}",
+      "font_secondary": "{font-name}"
+    },
+    "colors": {
+      "primary": "{color}",
+      "secondary": "{color}",
+      "accent": "{color}"
+    },
+    "spacing": "tailwind-default | custom",
+    "brand_assets": "{path to logo, icons}"
+  },
+
+  "shared_context": {
+    "brand_voice": "{description}",
+    "target_audience": [],
+    "competitors": [],
+    "unique_value_proposition": "{description}"
+  },
+
+  "website_summary": {
+    "total_pages": 0,
+    "landing_pages": 0,
+    "content_pages": 0,
+    "blog_posts": 0,
+    "by_phase": {
+      "0": 0,
+      "1": 0,
+      "2": 0
+    },
+    "estimated_total_hours": 0,
+    "ai_generated_content": 0,
+    "ai_generated_images": 0
+  },
+
+  "metadata": {
+    "version": "2.0",
+    "last_updated": "{ISO date}",
+    "update_frequency": "On page add/update"
+  },
+
+  "_schema_notes": {
+    "page_types": {
+      "landing": "Main landing page with hero, features, CTA",
+      "pricing": "Pricing tiers, comparison, FAQ",
+      "about": "Company story, team, mission",
+      "features": "Product features showcase",
+      "blog": "Blog post pages (content collection)",
+      "docs": "Documentation pages (content collection)"
+    },
+    "content_type": {
+      "static": "Static MDX page",
+      "collection": "Content collection entry (blog, docs)",
+      "dynamic": "Dynamically generated from CMS"
+    },
+    "section_types": {
+      "hero": "Hero section with headline, subheadline, CTA",
+      "features": "Feature grid or list",
+      "pricing": "Pricing tiers comparison",
+      "testimonials": "Customer testimonials carousel",
+      "cta": "Call-to-action section",
+      "faq": "Frequently asked questions accordion"
+    },
+    "ai_features": {
+      "content_generation": "Generate marketing copy with AI (Google Gemini)",
+      "image_generation": "Generate hero/blog images with AI (Google Imagen)",
+      "seo_optimization": "Auto-generate SEO meta tags and descriptions"
+    },
+    "phase_calculation": {
+      "description": "Phase based on dependencies",
+      "rule": "phase = max(dependency phases) + 1, or 0 if no dependencies"
+    },
+    "id_format": {
+      "pages": "W001, W002, ... W999 (Website pages)",
+      "layouts": "WL001, WL002, ... WL099"
+    },
+    "build_order": {
+      "rule": "Build Phase 0 pages first, then Phase 1, etc.",
+      "parallelization": "Pages in same phase can be built in parallel",
+      "content": "Generate AI content/images during page build"
+    }
+  }
+}
