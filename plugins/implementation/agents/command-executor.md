@@ -1,7 +1,7 @@
 ---
 name: command-executor
 description: Execute tech-specific commands with retry logic and error handling. Use when running mapped slash commands with robust error recovery, execution logging, and structured result reporting.
-model: inherit
+model: haiku
 color: green
 allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---

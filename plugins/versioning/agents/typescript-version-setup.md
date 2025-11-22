@@ -1,7 +1,7 @@
 ---
 name: typescript-version-setup
 description: Setup TypeScript frontend versioning with semantic-release, package.json, and GitHub Actions
-model: inherit
+model: haiku
 color: blue
 allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---

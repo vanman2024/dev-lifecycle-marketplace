@@ -1,7 +1,7 @@
 ---
 name: doc-executor
 description: Execute documentation consolidation plan, move/merge/archive files, create new features/specs/ADRs, output results report
-model: inherit
+model: haiku
 color: green
 allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---

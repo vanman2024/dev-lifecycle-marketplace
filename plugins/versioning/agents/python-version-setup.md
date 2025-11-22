@@ -1,7 +1,7 @@
 ---
 name: python-version-setup
 description: Setup Python backend versioning with bump2version, setup.py, and GitHub Actions
-model: inherit
+model: haiku
 color: blue
 allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---

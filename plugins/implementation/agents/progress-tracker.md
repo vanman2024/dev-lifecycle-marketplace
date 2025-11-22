@@ -1,7 +1,7 @@
 ---
 name: progress-tracker
 description: Track and report execution status in .claude/execution/
-model: inherit
+model: haiku
 color: yellow
 allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---

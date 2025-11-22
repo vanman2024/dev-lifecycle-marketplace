@@ -1,7 +1,7 @@
 ---
 name: execution-orchestrator
 description: Orchestrate implementation execution with parallel phase processing for infrastructure and features
-model: inherit
+model: haiku
 color: purple
 allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---

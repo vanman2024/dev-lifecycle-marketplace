@@ -1,7 +1,7 @@
 ---
 name: observability-integrator
 description: Use this agent to integrate Sentry and DataDog for error tracking, APM, and observability monitoring across deployed applications.
-model: inherit
+model: haiku
 color: green
 allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---

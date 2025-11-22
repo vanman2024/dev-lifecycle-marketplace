@@ -1,7 +1,7 @@
 ---
 name: canary-deployer
 description: Use this agent to orchestrate progressive rollouts with traffic splitting and error monitoring for canary deployments across Vercel, DigitalOcean, and Railway platforms.
-model: inherit
+model: haiku
 color: orange
 allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---

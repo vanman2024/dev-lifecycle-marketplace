@@ -1,7 +1,7 @@
 ---
 name: task-mapper
 description: Map task descriptions to tech-specific commands intelligently
-model: inherit
+model: haiku
 color: cyan
 allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---

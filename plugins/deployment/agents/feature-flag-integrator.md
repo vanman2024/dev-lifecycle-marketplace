@@ -1,7 +1,7 @@
 ---
 name: feature-flag-integrator
 description: Use this agent to integrate feature flag services (LaunchDarkly, Flagsmith) with SDK setup, environment configuration, and deployment workflows. Invoke when setting up feature flags for gradual rollouts, A/B testing, or controlled deployments.
-model: inherit
+model: haiku
 color: green
 allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---

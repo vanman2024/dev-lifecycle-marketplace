@@ -1,7 +1,7 @@
 ---
 name: deployment-deployer
 description: Use this agent to execute deployment to detected platforms (FastMCP Cloud, DigitalOcean, Vercel, Hostinger, Netlify, Cloudflare Pages) with proper authentication, build processes, and configuration. Invoke when ready to deploy after detection and validation.
-model: inherit
+model: haiku
 color: yellow
 allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---

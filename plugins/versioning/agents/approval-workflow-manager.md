@@ -1,7 +1,7 @@
 ---
 name: approval-workflow-manager
 description: Use this agent to coordinate multi-stakeholder approval workflows and manage GitHub release publishing. Invoke when managing approval processes, tracking stakeholder sign-offs, or orchestrating release coordination across teams.
-model: inherit
+model: haiku
 color: green
 allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
