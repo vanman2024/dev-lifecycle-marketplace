@@ -1,12 +1,12 @@
 ---
-description: Execute feature/infrastructure/application/website implementation with parallel agents and automatic task tracking
-argument-hint: [spec-id | --phase-X | --infrastructure | --features | --application | --website] [natural language hints]
-allowed-tools: Read, Write, Bash(*), Grep, Glob, Task, TodoWrite
+description: Execute feature/infrastructure/application/website implementation with intelligent context reading and flexible execution options
+argument-hint: [spec-id | --phase-X | --infrastructure | --features | --application | --website]
+allowed-tools: Read, Write, Bash(*), Grep, Glob, Task, TodoWrite, AskUserQuestion
 ---
 
 **Arguments**: $ARGUMENTS
 
-Goal: Execute implementation by spawning domain agents in parallel waves with automatic task tracking.
+Goal: Execute implementation with full context awareness. Reads all JSON configs, parses tasks, maps to agents, then gives YOU control over execution method (manual, Copilot handoff, or agent spawning).
 
 ## Modes
 
@@ -22,10 +22,11 @@ Goal: Execute implementation by spawning domain agents in parallel waves with au
 - `--application` - Execute all Next.js application pages
 - `--website` - Execute all Astro marketing/content pages
 
-**Natural Language Hints (append to any mode):**
-- "use clerk agents in parallel" - Spawn all clerk agents at once
-- "run domain agents directly" - Skip slash commands, use agents
-- "sequential" - Run one at a time instead of parallel
+**Notes:**
+- Reads all project context (JSON files, tasks.md)
+- Maps tasks to suggested agents
+- **Gives YOU choice**: manual execution, Copilot handoff, or agent spawning per layer
+- Only spawns agents if you explicitly choose that option
 
 ## Execution
 
@@ -45,11 +46,8 @@ Actions:
   * `--website` → MODE = "all-website"
   * `--all` → MODE = "full"
   * Empty → MODE = "auto-continue"
-- Extract natural language hints:
-  * "parallel" / "agents" → STRATEGY = "parallel-agents"
-  * "sequential" → STRATEGY = "sequential"
-  * "clerk" / "supabase" / etc. → DOMAIN_HINT
-- Display: "Mode: [MODE], Strategy: [STRATEGY]"
+- Display: "Mode: [MODE]"
+- Note: User will choose execution method per layer (manual/Copilot/agents)
 
 ### Phase 2: Load Context and Initialize Tracking
 Goal: Read project configuration and initialize single execution log
@@ -116,8 +114,8 @@ Actions:
   !{jq '.specs["'$SPEC_ID'"].agents_mapped = ["agent1", "agent2"]' .claude/execution/execution.json > tmp && mv tmp .claude/execution/execution.json}
 - If DOMAIN_HINT provided, prioritize those agents
 
-### Phase 5: Execute Agents in Parallel Waves
-Goal: Spawn agents by layer, validate, and track progress in single execution.json
+### Phase 5: Present Execution Plan and Get User Decision
+Goal: Show what needs to be done and let user choose execution method
 
 Actions:
 - Update spec status to in_progress:
@@ -125,18 +123,27 @@ Actions:
 - For each LAYER (L0 → L1 → L2 → L3):
   * Get all tasks in this layer
   * Get mapped agents for these tasks
-  * **SPAWN ALL AGENTS IN PARALLEL** (single message with multiple Task calls)
-  * Wait for ALL agents to complete
-  * **VALIDATE each task:**
-    - Check if expected files were created
-    - Check for errors in agent output
-    - Verify task requirements met
-  * **UPDATE tasks.md checkboxes:**
-    - For each completed task: Change `- [ ]` to `- [x]`
-    - !{sed -i 's/- \[ \] Task X/- [x] Task X/' $SPEC_DIR/tasks.md}
-  * **UPDATE execution.json** (single file, not per-spec):
-    !{jq '.specs["'$SPEC_ID'"].tasks_completed = '$NEW_COUNT' | .specs["'$SPEC_ID'"].last_updated = "'$(date -Iseconds)'"' .claude/execution/execution.json > tmp && mv tmp .claude/execution/execution.json}
-  * Display layer progress
+  * **DISPLAY EXECUTION PLAN:**
+    - Show layer number and task count
+    - List each task with description
+    - Show which agents were mapped (if any)
+    - Display estimated complexity (simple/medium/complex)
+  * **ASK USER VIA AskUserQuestion:**
+    Question: "How should I execute Layer [N] ([X] tasks)?"
+    Options:
+      A) "I'll do it manually (Claude uses Bash/Read/Write/Edit tools)"
+      B) "Use Copilot Chat (I'll hand off the task list)"
+      C) "Spawn suggested agents (costs tokens, fully automated)"
+      D) "Skip this layer for now"
+  * **EXECUTE based on user choice:**
+    - Choice A: I execute each task using available tools, update checkboxes as I go
+    - Choice B: Display formatted task list for copy/paste to Copilot, mark layer as "delegated"
+    - Choice C: Spawn mapped agents in parallel, wait for completion, validate results
+    - Choice D: Skip to next layer, mark these tasks as pending
+  * **UPDATE tasks.md and execution.json** after execution:
+    - Update checkboxes for completed tasks: `- [ ]` → `- [x]`
+    - Update execution.json with progress
+  * Display layer completion status
   * Proceed to next layer
 
 ### Phase 6: Final Validation
@@ -197,13 +204,14 @@ All progress tracked in ONE file: .claude/execution/execution.json
 This file contains all specs, their status, task counts, and timestamps.
 Never create per-spec JSON files.
 
-**Parallel Agent Execution:**
-Agents within the same layer run in parallel. Send ALL Task() calls in a single message.
+**User-Controlled Execution:**
+For each layer, user chooses: manual (Claude tools), Copilot handoff, or agent spawning.
+Only spawn agents if user explicitly selects that option for a given layer.
 
 **Task Checkbox Tracking:**
-After each agent completes, immediately update tasks.md checkboxes and execution.json.
+After execution (any method), update tasks.md checkboxes and execution.json.
 Never mark a spec complete without verifying all checkboxes are checked.
 
-**Natural Language Flexibility:**
-Users can provide hints like "use all clerk agents" or "run sequentially".
-Parse these from $ARGUMENTS and adjust execution accordingly.
+**Flexibility:**
+User maintains full control over execution method and token budget.
+Can mix methods: Layer 0 manual, Layer 1 Copilot, Layer 2 agents, etc.
