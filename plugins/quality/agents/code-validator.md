@@ -1,7 +1,7 @@
 ---
 name: code-validator
 description: Review implementation code against spec requirements, check security rules, and generate comprehensive test recommendations
-model: inherit
+model: haiku
 color: green
 allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---

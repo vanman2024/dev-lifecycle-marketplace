@@ -1,7 +1,7 @@
 ---
 name: security-scanner
 description: Performs comprehensive security analysis of projects
-model: claude-sonnet-4-5-20250929
+model: haiku
 color: yellow
 allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---

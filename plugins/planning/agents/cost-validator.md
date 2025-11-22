@@ -1,7 +1,7 @@
 ---
 name: cost-validator
 description: Validates budget constraints, estimates monthly costs, and ensures cost-effectiveness
-model: inherit
+model: haiku
 color: green
 allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---

@@ -1,7 +1,7 @@
 ---
 name: technical-validator
 description: Validates architecture completeness, diagrams, security best practices, and technical quality
-model: inherit
+model: haiku
 color: yellow
 allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---

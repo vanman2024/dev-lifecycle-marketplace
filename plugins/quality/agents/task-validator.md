@@ -1,7 +1,7 @@
 ---
 name: task-validator
 description: Validate that tasks marked complete in tasks.md actually have corresponding implementation work done
-model: inherit
+model: haiku
 color: blue
 allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---

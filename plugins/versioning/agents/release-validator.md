@@ -1,7 +1,7 @@
 ---
 name: release-validator
 description: Use this agent to validate version releases for completeness, correctness, and readiness before publishing. Invoke before creating releases, pushing tags, or publishing packages to ensure quality.
-model: inherit
+model: haiku
 color: yellow
 allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---

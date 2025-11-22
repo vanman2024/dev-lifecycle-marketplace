@@ -1,7 +1,7 @@
 ---
 name: env-detector
 description: Use this agent to detect required environment variables from multiple sources (specs, manifests, code). Analyzes specs/ directory first, then package files, then scans code. Generates complete .env files with required keys.
-model: inherit
+model: haiku
 color: yellow
 allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---

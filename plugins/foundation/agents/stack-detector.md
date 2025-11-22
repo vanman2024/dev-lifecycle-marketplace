@@ -1,7 +1,7 @@
 ---
 name: stack-detector
 description: Use this agent to analyze project structure and detect complete tech stack including frameworks, languages, AI SDKs, databases, and deployment targets. Invoke when needing to understand project architecture and populate .claude/project.json with detected stack information.
-model: inherit
+model: haiku
 color: yellow
 allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---

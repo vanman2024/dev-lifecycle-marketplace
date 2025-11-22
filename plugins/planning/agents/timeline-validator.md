@@ -1,7 +1,7 @@
 ---
 name: timeline-validator
 description: Validates timeline feasibility, identifies blockers, and confirms aggressive timelines are achievable
-model: inherit
+model: haiku
 color: purple
 allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---

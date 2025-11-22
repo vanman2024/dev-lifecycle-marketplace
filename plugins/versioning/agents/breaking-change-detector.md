@@ -1,7 +1,7 @@
 ---
 name: breaking-change-detector
 description: Use this agent to analyze API contracts and database schemas for breaking changes to determine semantic version requirements. Invoke before version bumps to detect changes requiring major version increments.
-model: inherit
+model: haiku
 color: cyan
 allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 ---
