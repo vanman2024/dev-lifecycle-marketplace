@@ -50,8 +50,16 @@ Actions:
 - Check for project.json: !{bash test -f .claude/project.json && echo "✅ EXISTS" || echo "⚠️ MISSING"}
 - If missing: Display error "Run /foundation:detect first to create project.json" and exit
 - Read project.json: @.claude/project.json
+- Read settings.json: @.claude/settings.json
 - Extract infrastructure section
 - Display: "Found [X] infrastructure components"
+
+**Auto-Detect CI/CD Infrastructure:**
+If deployment plugin enabled in settings.json AND ci_cd.platform exists in project.json:
+- Add I044 (github-actions-cicd, phase 0, blocks I045) if missing
+- Add I045 (deployment-automation, phase 1, depends I044) if missing
+- Write updated project.json
+- Display: "✅ Auto-added CI/CD infrastructure"
 
 Phase 1: Create Phase Directory Structure
 Goal: Set up phase-based folder organization
