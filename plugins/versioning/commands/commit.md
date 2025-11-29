@@ -163,36 +163,7 @@ Create the commit:
 git commit -m "<commit_message>"
 ```
 
-## Phase 5: Auto-Update Feature Status
-
-After committing, update `features.json` using the update script:
-
-### 5.1 Run Update Script
-If `features.json` exists in project root, run the update script with the group name as keyword:
-
-```bash
-# Use the group name to find matching feature
-bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/iterate/skills/sync-patterns/scripts/update-feature-status.sh "<group-name>" in-progress
-```
-
-The script will:
-- Match group name (consultant, blog, auth) to feature in features.json
-- Update status: planned → in-progress
-- Skip if already in-progress or completed
-- Report the change
-
-### 5.2 Example
-```bash
-# After committing "consultant" group:
-bash update-feature-status.sh consultant in-progress
-# Output: 📊 F052 (Consultant Booking): planned → in-progress
-```
-
-If no matching feature found, script exits cleanly (no error).
-
----
-
-## Phase 6: Display Results and Remaining Groups
+## Phase 5: Display Results and Remaining Groups
 
 Show commit result:
 ```
@@ -202,8 +173,6 @@ Show commit result:
 Files committed (N):
 - file1.ts
 - file2.tsx
-
-📊 Feature status updated: F052 (Consultant Booking) → in-progress
 
 📋 Remaining uncommitted groups:
 - [2] auth (3 files)
@@ -264,7 +233,6 @@ Detected: 3 separate groups:
 # Shows: [1] blog (5 files), [2] auth (3 files), [3] config (2 files)
 # User picks: 1
 # Commits only blog files
-# Auto-updates F050 (Blog) status in features.json
 
 # Preview groups without committing
 /versioning:commit --dry-run
