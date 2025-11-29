@@ -163,7 +163,45 @@ Create the commit:
 git commit -m "<commit_message>"
 ```
 
-## Phase 5: Display Results and Remaining Groups
+## Phase 5: Auto-Update Feature Status
+
+After committing, update `features.json` status for the related feature:
+
+### 5.1 Map Group to Feature
+- Check if `features.json` exists in project root
+- Match group name to feature by:
+  - Directory patterns: `consultant/` → search for "consultant" in feature names
+  - Keywords: `blog`, `auth`, `payment`, `subscription` → match feature names
+  - Spec references: Check if files are in `specs/features/*/` paths
+
+### 5.2 Update Feature Status
+If a matching feature is found in `features.json`:
+
+```bash
+# Read current status
+current_status = features.json[feature_id].status
+
+# Update logic:
+# - If "planned" → change to "in-progress"
+# - If "in-progress" → keep as "in-progress" (or "completed" if all tasks done)
+# - If "completed" → keep as "completed"
+```
+
+### 5.3 Check Task Completion (Optional)
+If `specs/features/*/tasks.md` exists for the feature:
+- Count total tasks vs completed tasks `[x]`
+- If all tasks complete → set status to "completed"
+- Otherwise → set status to "in-progress"
+
+### 5.4 Save and Report
+- Edit `features.json` with updated status
+- Report: "📊 Updated F052 (Consultant Booking): planned → in-progress"
+
+If no matching feature found, skip silently (infrastructure/config commits don't need feature tracking).
+
+---
+
+## Phase 6: Display Results and Remaining Groups
 
 Show commit result:
 ```
@@ -174,11 +212,13 @@ Files committed (N):
 - file1.ts
 - file2.tsx
 
+📊 Feature status updated: F052 (Consultant Booking) → in-progress
+
 📋 Remaining uncommitted groups:
 - [2] auth (3 files)
 - [3] config (2 files)
 
-Run /versioning:commit-topic again to commit another group.
+Run /versioning:commit again to commit another group.
 ```
 
 ---
@@ -229,12 +269,13 @@ Detected: 3 separate groups:
 
 ```bash
 # Smart detection - shows groups, pick one
-/versioning:commit-topic
+/versioning:commit
 # Shows: [1] blog (5 files), [2] auth (3 files), [3] config (2 files)
 # User picks: 1
 # Commits only blog files
+# Auto-updates F050 (Blog) status in features.json
 
 # Preview groups without committing
-/versioning:commit-topic --dry-run
+/versioning:commit --dry-run
 # Shows detected groups, exits without committing
 ```
