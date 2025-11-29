@@ -165,39 +165,30 @@ git commit -m "<commit_message>"
 
 ## Phase 5: Auto-Update Feature Status
 
-After committing, update `features.json` status for the related feature:
+After committing, update `features.json` using the update script:
 
-### 5.1 Map Group to Feature
-- Check if `features.json` exists in project root
-- Match group name to feature by:
-  - Directory patterns: `consultant/` → search for "consultant" in feature names
-  - Keywords: `blog`, `auth`, `payment`, `subscription` → match feature names
-  - Spec references: Check if files are in `specs/features/*/` paths
-
-### 5.2 Update Feature Status
-If a matching feature is found in `features.json`:
+### 5.1 Run Update Script
+If `features.json` exists in project root, run the update script with the group name as keyword:
 
 ```bash
-# Read current status
-current_status = features.json[feature_id].status
-
-# Update logic:
-# - If "planned" → change to "in-progress"
-# - If "in-progress" → keep as "in-progress" (or "completed" if all tasks done)
-# - If "completed" → keep as "completed"
+# Use the group name to find matching feature
+bash ~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/iterate/skills/sync-patterns/scripts/update-feature-status.sh "<group-name>" in-progress
 ```
 
-### 5.3 Check Task Completion (Optional)
-If `specs/features/*/tasks.md` exists for the feature:
-- Count total tasks vs completed tasks `[x]`
-- If all tasks complete → set status to "completed"
-- Otherwise → set status to "in-progress"
+The script will:
+- Match group name (consultant, blog, auth) to feature in features.json
+- Update status: planned → in-progress
+- Skip if already in-progress or completed
+- Report the change
 
-### 5.4 Save and Report
-- Edit `features.json` with updated status
-- Report: "📊 Updated F052 (Consultant Booking): planned → in-progress"
+### 5.2 Example
+```bash
+# After committing "consultant" group:
+bash update-feature-status.sh consultant in-progress
+# Output: 📊 F052 (Consultant Booking): planned → in-progress
+```
 
-If no matching feature found, skip silently (infrastructure/config commits don't need feature tracking).
+If no matching feature found, script exits cleanly (no error).
 
 ---
 
