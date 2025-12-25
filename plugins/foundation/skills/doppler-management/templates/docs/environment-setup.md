@@ -119,7 +119,7 @@ cp .env.development .env
 
 ```bash
 # Option A: Use production credentials (easiest)
-GOOGLE_API_KEY=AIzaSyAnzoDNLuzms9n_N4HlqauAfKP3uO5ticM
+GOOGLE_API_KEY=your_google_api_key_here
 GOOGLE_FILE_SEARCH_STORE_ID=fileSearchStores/redsealtrainingmaterials-9597tyk1dblp
 
 # Option B: Create separate dev File Search store
@@ -234,7 +234,7 @@ cp .env.production .env
 
 ```bash
 # Use existing production credentials
-GOOGLE_API_KEY=AIzaSyAnzoDNLuzms9n_N4HlqauAfKP3uO5ticM
+GOOGLE_API_KEY=your_google_api_key_here
 GOOGLE_FILE_SEARCH_STORE_ID=fileSearchStores/redsealtrainingmaterials-9597tyk1dblp
 
 # ⚠️ Enable quota monitoring at:

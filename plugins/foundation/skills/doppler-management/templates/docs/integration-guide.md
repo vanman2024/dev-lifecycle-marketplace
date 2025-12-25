@@ -59,7 +59,7 @@ nano migrate-to-doppler.sh
 GOOGLE_API_KEY="your_google_api_key_here"
 
 # After (your actual key):
-GOOGLE_API_KEY="AIzaSyAnzoDNLuzms9n_N4HlqauAfKP3uO5ticM"
+GOOGLE_API_KEY="your_google_api_key_here"
 ```
 
 **⚠️ Security:**
