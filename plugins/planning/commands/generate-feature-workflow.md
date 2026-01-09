@@ -22,8 +22,6 @@ When you invoke this command via SlashCommand, the system returns THESE INSTRUCT
 See `@CLAUDE.md` section "SlashCommand Execution - YOU Are The Executor" for detailed explanation.
 
 ---
-
-
 **Arguments**: $ARGUMENTS
 
 Goal: Generate ongoing feature implementation workflow from features.json and specs/ directory. This workflow guides feature-by-feature implementation with tech-stack-aware commands.

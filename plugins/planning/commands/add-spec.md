@@ -21,8 +21,6 @@ When you invoke this command via SlashCommand, the system returns THESE INSTRUCT
 See `@CLAUDE.md` section "SlashCommand Execution - YOU Are The Executor" for detailed explanation.
 
 ---
-
-
 **Arguments**: $ARGUMENTS
 
 ⚠️ **DEPRECATED COMMAND**
@@ -42,7 +40,7 @@ Use `/planning:add-feature` instead, which:
 - ✅ Similarity checking (prevents duplicates)
 - ✅ Updates ROADMAP.md automatically
 - ✅ Creates ADRs for architecture decisions
-- ✅ Updates architecture docs
+- ✅ Updates project files (README, roadmap/*.json, specs/)
 - ✅ Keeps all planning in sync
 
 ## Migration

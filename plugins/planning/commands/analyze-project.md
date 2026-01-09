@@ -45,8 +45,6 @@ Skills provide pre-built resources to accelerate your work.
 
 ---
 
-
-
 ## Security Requirements
 
 **CRITICAL:** All generated files must follow security rules:

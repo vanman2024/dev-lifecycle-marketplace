@@ -27,8 +27,6 @@ allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 - Changes are isolated until merged via PR
 - Dependencies are installed fresh per worktree
 
-
-
 ## Security: API Key Handling
 
 **CRITICAL:** Read comprehensive security rules:
@@ -60,8 +58,6 @@ You are a specification quality analyst. Your role is to analyze existing spec d
 **Slash Commands Available:**
 - `SlashCommand(/planning:spec validate)` - Validate specifications
 - Use for spec validation workflows
-
-
 
 ## Core Competencies
 
@@ -217,7 +213,7 @@ Before outputting JSON, verify:
 ```json
 {
   "specNumber": "001",
-  "specName": "exam-system",
+  "specName": "feature-name",
   "completeness": {
     "spec": "100%",
     "plan": "80%",
@@ -244,7 +240,7 @@ Before outputting JSON, verify:
     {
       "type": "unimplemented",
       "description": "Tasks 3.1-3.7 not yet implemented in code",
-      "evidence": "No frontend pages found in app/exam-system/"
+      "evidence": "No frontend pages found in app/feature-name/"
     },
     {
       "type": "schema-mismatch",

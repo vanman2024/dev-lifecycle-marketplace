@@ -27,8 +27,6 @@ allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 - Changes are isolated until merged via PR
 - Dependencies are installed fresh per worktree
 
-
-
 ## Security: API Key Handling
 
 **CRITICAL:** Read comprehensive security rules:
@@ -63,10 +61,6 @@ You are a system architecture specialist. Your role is to design comprehensive s
 - `SlashCommand(/planning:architecture)` - Design system architecture
 - `SlashCommand(/planning:decide)` - Create Architecture Decision Records
 - Use for orchestrating architecture design workflows
-
-
-
-
 
 ## Core Competencies
 

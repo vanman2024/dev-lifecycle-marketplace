@@ -45,8 +45,6 @@ Skills provide pre-built resources to accelerate your work.
 
 ---
 
-
-
 ## Security Requirements
 
 **CRITICAL:** All generated files must follow security rules:
@@ -90,30 +88,30 @@ Actions:
   - **SKIP to Phase 4** (use existing features.json)
 
 **If features.json MISSING**:
-  - Display: "features.json not found - will create from architecture docs"
+  - Display: "features.json not found - will create from project files (README, roadmap/*.json, specs/)"
   - Continue to Phase 1 (architecture analysis)
 
 Phase 1: Verify Architecture Documentation
-Goal: Check for architecture docs created by /planning:architecture, /planning:decide, /planning:roadmap
+Goal: Check for project files (README, roadmap/*.json, specs/) created by /planning:architecture, /planning:decide, /planning:roadmap
 
 Actions:
-- Check if architecture docs exist: !{bash test -d docs/architecture && echo "✅ Found" || echo "⚠️ Missing"}
+- Check if project files (README, roadmap/*.json, specs/) exist: !{bash test -d docs/architecture && echo "✅ Found" || echo "⚠️ Missing"}
 - If docs/architecture/ exists:
-  - List architecture files: !{bash ls -1 docs/architecture/*.md 2>/dev/null | wc -l}
+  - List architecture files: !{bash ls -1 roadmap/*.json and specs/ 2>/dev/null | wc -l}
   - List ADR files: !{bash ls -1 docs/adr/*.md 2>/dev/null | wc -l}
   - Verify ROADMAP: !{bash test -f docs/ROADMAP.md && echo "✅ Found" || echo "⚠️ Missing"}
   - Architecture files will be passed directly to agents via @ references:
-    - @docs/architecture/frontend.md
-    - @docs/architecture/backend.md
-    - @docs/architecture/data.md
-    - @docs/architecture/ai.md
-    - @docs/architecture/infrastructure.md
-    - @docs/architecture/security.md
-    - @docs/architecture/integrations.md
+    - 
+    - 
+    - 
+    - 
+    - 
+    - 
+    - 
     - @docs/adr/*.md
-    - @docs/ROADMAP.md
+    - 
 - If not exists:
-  - Note: Will use $ARGUMENTS only (architecture docs recommended)
+  - Note: Will use $ARGUMENTS only (project files (README, roadmap/*.json, specs/) recommended)
 - No temporary files needed
 
 Phase 2: Parse Project Description
@@ -123,7 +121,7 @@ Actions:
 - Parse $ARGUMENTS to extract project description
 - Save description to temporary file for analysis
 - Example: !{bash echo "$ARGUMENTS" > /tmp/project-description.txt}
-- Verify description is substantial (>100 words) OR architecture docs exist
+- Verify description is substantial (>100 words) OR project files (README, roadmap/*.json, specs/) exist
 - Count words: !{bash wc -w < /tmp/project-description.txt}
 
 Phase 3: Feature Analysis
@@ -136,16 +134,8 @@ Task(description="Analyze architecture and break into features", subagent_type="
 INPUT SOURCES:
 
 Architecture Documentation (read directly from source):
-@docs/architecture/frontend.md
-@docs/architecture/backend.md
-@docs/architecture/data.md
-@docs/architecture/ai.md
-@docs/architecture/infrastructure.md
-@docs/architecture/security.md
-@docs/architecture/integrations.md
-@docs/adr/*.md
-@docs/ROADMAP.md
 
+@docs/adr/*.md
 Project Description: $ARGUMENTS
 
 YOUR TASK:
@@ -156,7 +146,7 @@ CRITICAL: Each feature should be:
 - Result in 200-300 line specs (NOT 647!)
 - Have 15-25 tasks (NOT 45!)
 - Single responsibility
-- Reference architecture docs for details (don't duplicate)
+- Reference project files (README, roadmap/*.json, specs/) for details (don't duplicate)
 
 SIZING RULE: If a feature needs >3 days or >25 tasks, it's TOO LARGE - split it.
 
@@ -176,7 +166,7 @@ Deliverable: JSON output with:
   - dependencies (feature numbers this depends on)
   - estimatedDays (2-3 typical, MAX 3)
   - complexity (low/medium/high)
-  - architectureReferences (which docs/architecture/*.md sections to reference)
+  - architectureReferences (which roadmap/*.json and specs/ sections to reference)
 - sharedContext (techStack, userTypes, dataEntities, integrations)
 
 Save JSON to: /tmp/feature-breakdown.json")
@@ -216,7 +206,7 @@ Actions:
 
 **Data Sources for Spec Writer**:
 - If from features.json: Use feature data from features.json + project.json for tech stack
-- If from feature-breakdown.json: Use feature data from /tmp/feature-breakdown.json + architecture docs
+- If from feature-breakdown.json: Use feature data from /tmp/feature-breakdown.json + project files (README, roadmap/*.json, specs/)
 
 **Launch parallel spec-writer agents** (3-5 at a time):
 
@@ -225,16 +215,8 @@ For each feature in BATCH 1, launch a parallel Task:
 Task(description="Generate spec for feature 001", subagent_type="planning:spec-writer", prompt="You are the spec-writer agent. Create complete specifications (spec.md, plan.md, tasks.md) for this feature.
 
 Architecture Documentation (read directly from source):
-@docs/architecture/frontend.md
-@docs/architecture/backend.md
-@docs/architecture/data.md
-@docs/architecture/ai.md
-@docs/architecture/infrastructure.md
-@docs/architecture/security.md
-@docs/architecture/integrations.md
-@docs/adr/*.md
-@docs/ROADMAP.md
 
+@docs/adr/*.md
 Full Project Context:
 $ARGUMENTS
 
@@ -254,16 +236,8 @@ Deliverable: Three files in phase-nested directory specs/phase-{phase}/F{number}
 Task(description="Generate spec for feature 002", subagent_type="planning:spec-writer", prompt="You are the spec-writer agent. Create complete specifications (spec.md, plan.md, tasks.md) for this feature.
 
 Architecture Documentation (read directly from source):
-@docs/architecture/frontend.md
-@docs/architecture/backend.md
-@docs/architecture/data.md
-@docs/architecture/ai.md
-@docs/architecture/infrastructure.md
-@docs/architecture/security.md
-@docs/architecture/integrations.md
-@docs/adr/*.md
-@docs/ROADMAP.md
 
+@docs/adr/*.md
 Full Project Context:
 $ARGUMENTS
 

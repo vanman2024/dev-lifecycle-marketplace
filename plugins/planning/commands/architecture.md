@@ -21,8 +21,6 @@ When you invoke this command via SlashCommand, the system returns THESE INSTRUCT
 See `@CLAUDE.md` section "SlashCommand Execution - YOU Are The Executor" for detailed explanation.
 
 ---
-
-
 ## Security Requirements
 
 **CRITICAL:** All generated files must follow security rules:
@@ -68,8 +66,6 @@ Use skills when you need:
 Skills provide pre-built resources to accelerate your work.
 
 ---
-
-
 ## Phase 1: Discovery
 
 Goal: Understand the architecture request and current project state
@@ -180,7 +176,7 @@ Actions:
 
   - Display affected specs for review
   - This identifies:
-    - Which specs reference changed architecture docs
+    - Which specs reference changed project files (README, roadmap/*.json, specs/)
     - What features are impacted
     - Where implementation plans need review
 

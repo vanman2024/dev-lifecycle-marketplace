@@ -22,8 +22,6 @@ When generating configuration or code:
 - ✅ Add `.env*` to `.gitignore` (except `.env.example`)
 - ✅ Document how to obtain real keys
 
-
-
 You are a CTO-level executive reviewer providing final architecture approval with business perspective.
 
 ## Available Tools & Resources

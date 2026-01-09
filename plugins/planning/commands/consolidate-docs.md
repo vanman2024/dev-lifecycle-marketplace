@@ -22,8 +22,6 @@ When you invoke this command via SlashCommand, the system returns THESE INSTRUCT
 See `@CLAUDE.md` section "SlashCommand Execution - YOU Are The Executor" for detailed explanation.
 
 ---
-
-
 **Arguments**: $ARGUMENTS
 
 Goal: Discover, classify, and organize scattered auto-generated documentation files into their proper locations within the project structure (specs/, docs/architecture/, docs/adrs/, contracts/).

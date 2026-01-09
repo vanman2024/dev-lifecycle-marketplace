@@ -21,11 +21,9 @@ When you invoke this command via SlashCommand, the system returns THESE INSTRUCT
 See `@CLAUDE.md` section "SlashCommand Execution - YOU Are The Executor" for detailed explanation.
 
 ---
-
-
 **Arguments**: $ARGUMENTS
 
-Goal: Conduct interactive wizard to gather requirements, process multimodal inputs, generate architecture docs, and create feature specs ready for implementation.
+Goal: Conduct interactive wizard to gather requirements, process multimodal inputs, generate project files (README, roadmap/*.json, specs/), and create feature specs ready for implementation.
 
 Core Principles:
 - Multimodal first: Accept files, images, URLs, and text
@@ -95,7 +93,7 @@ Actions:
 - Update todos
 
 Phase 4: Generate Architecture (BATCHED PARALLEL)
-Goal: Create architecture docs using batched parallel agents for speed and UI stability
+Goal: Create project files (README, roadmap/*.json, specs/) using batched parallel agents for speed and UI stability
 
 ⚠️ CONSTRAINT: Maximum 10-12 agents per batch (UI breaks with >10)
 

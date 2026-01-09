@@ -10,13 +10,13 @@ tags: [documentation, mem0, sync, relationships, tracking]
 
 This skill provides tools and scripts for intelligently synchronizing documentation across the dev-lifecycle-marketplace using Mem0 for relationship tracking.
 
-**Purpose:** Keep specs, architecture docs, ADRs, and roadmap interconnected and updated when dependencies change.
+**Purpose:** Keep specs, project files (README, roadmap/*.json, specs/), ADRs, and roadmap interconnected and updated when dependencies change.
 
 ## Key Concepts
 
 ### Documentation Types
 - **Specs** (`specs/{number}-{name}/spec.md`) - Feature specifications derived from architecture
-- **Architecture** (`docs/architecture/*.md`) - System design and component specifications
+- **Architecture** (`roadmap/*.json and specs/`) - System design and component specifications
 - **ADRs** (`docs/adr/*.md`) - Architecture Decision Records
 - **Roadmap** (`docs/ROADMAP.md`) - Project timeline and milestones
 

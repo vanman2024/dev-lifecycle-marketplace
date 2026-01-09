@@ -1,5 +1,5 @@
 ---
-description: Update existing feature across roadmap, specs, and architecture docs when requirements change
+description: Update existing feature across roadmap, specs, and project files (README, roadmap/*.json, specs/) when requirements change
 argument-hint: <spec-number> [changes] [--all]
 ---
 
@@ -21,8 +21,6 @@ When you invoke this command via SlashCommand, the system returns THESE INSTRUCT
 See `@CLAUDE.md` section "SlashCommand Execution - YOU Are The Executor" for detailed explanation.
 
 ---
-
-
 **Arguments**: $ARGUMENTS
 
 Goal: Update an existing feature across all planning documentation when requirements, priorities, or architecture changes.
@@ -104,7 +102,7 @@ Actions:
 - Update todos
 
 Phase 6: Update Architecture (if needed)
-Goal: Update architecture docs
+Goal: Update project files (README, roadmap/*.json, specs/)
 
 Actions:
 - If architecture approach changed:

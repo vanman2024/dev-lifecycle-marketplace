@@ -36,7 +36,7 @@ BUILD-GUIDE organizes commands into sequential layers:
 
 ### Layer 2: Tech Stack Initialization
 - Initialize detected frameworks
-- Dynamic based on architecture docs
+- Dynamic based on project files (README, roadmap/*.json, specs/)
 - Plugins: Project-specific (nextjs-frontend, fastapi-backend, supabase, etc.)
 
 ### Layer 3: Feature Implementation
@@ -78,12 +78,12 @@ Location: `scripts/generate-manifest.py`
 **Usage**:
 ```bash
 python scripts/generate-manifest.py \
-  --architecture docs/architecture/README.md \
+  --project files (README, roadmap/*.json, specs/)/architecture/README.md \
   --output BUILD-GUIDE
 ```
 
 **Process**:
-1. Read architecture docs to detect tech stack
+1. Read project files (README, roadmap/*.json, specs/) to detect tech stack
 2. Query Airtable for plugins matching detected technologies
 3. Query Airtable for commands in those plugins
 4. Organize commands into layers
@@ -165,7 +165,7 @@ The skill validates:
 
 Typical workflow:
 ```bash
-# 1. Planning wizard creates architecture docs
+# 1. Planning wizard creates project files (README, roadmap/*.json, specs/)
 /planning:wizard
 
 # 2. Generate build manifest

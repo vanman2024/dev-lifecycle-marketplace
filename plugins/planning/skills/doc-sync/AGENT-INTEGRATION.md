@@ -210,7 +210,7 @@ python query-docs.py "Why was ADR-0005 created?"
 ### Find Gaps
 ```bash
 python query-docs.py "What specs have no architecture references?"
-python query-docs.py "What architecture docs are not referenced?"
+python query-docs.py "What project files (README, roadmap/*.json, specs/) are not referenced?"
 ```
 
 ---

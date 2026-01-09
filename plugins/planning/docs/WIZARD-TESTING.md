@@ -375,13 +375,13 @@ Agent 1-10: feature-spec-writer agents for features 011-020
 ```
 specs/
 └── features/
-    ├── 001-exam-question-bank/
+    ├── 001-feature-name/
     │   ├── spec.md
     │   └── tasks.md
-    ├── 002-exam-taking-interface/
+    ├── 002-dependent-feature/
     │   ├── spec.md
     │   └── tasks.md
-    ├── 003-voice-companion/
+    ├── 003-another-feature/
     │   ├── spec.md
     │   └── tasks.md
     └── ...
@@ -389,19 +389,19 @@ specs/
 
 **Feature Spec Validation:**
 
-**File: `specs/features/001-exam-question-bank/spec.md`**
+**File: `specs/features/001-feature-name/spec.md`**
 - Size: 100-150 lines (NOT 647!)
 - Contains:
   - Feature name and description
   - User stories (As a... I want... So that...)
   - Acceptance criteria (3-5 testable criteria)
-  - References to architecture docs
+  - References to project files (README, roadmap/*.json, specs/)
   - Dependencies on other features
   - Scope (what's in, what's out)
 - ✅ Success: Concise, references architecture, clear scope
 - ❌ Failure: Duplicates architecture content, >200 lines, vague criteria
 
-**File: `specs/features/001-exam-question-bank/tasks.md`**
+**File: `specs/features/001-feature-name/tasks.md`**
 - Size: 30-50 tasks
 - Contains phase-based structure:
   - Database phase (migration, schema, RLS, tests)
@@ -420,15 +420,15 @@ specs/
   "features": [
     {
       "number": "001",
-      "name": "exam-question-bank",
-      "shortName": "exam-question-bank",
+      "name": "feature-name",
+      "shortName": "feature-name",
       "focus": "Question database with categories and trade-specific content",
       "dependencies": [],
       "estimatedDays": 3,
       "complexity": "medium",
       "architectureReferences": [
-        "docs/architecture/data.md#exam-schema",
-        "docs/architecture/backend.md#question-api"
+        "specs/features/phase-0/",
+        "roadmap/features.json"
       ],
       "buildPhase": 1,
       "sharedEntities": {
@@ -442,8 +442,8 @@ specs/
     "userTypes": ["Apprentice", "Mentor", "Admin"],
     "dataEntities": ["Question", "QuestionCategory", "TradeSpecialization"],
     "entityOwnership": {
-      "Question": "001-exam-question-bank",
-      "QuestionCategory": "001-exam-question-bank"
+      "Question": "001-feature-name",
+      "QuestionCategory": "001-feature-name"
     }
   }
 }
@@ -635,7 +635,7 @@ $ python plugins/planning/skills/doc-sync/scripts/register-worktree.py query --q
 Results:
 - Worktree: ../TradeExam-001
 - Branch: spec-001
-- Spec: 001-exam-question-bank
+- Spec: 001-feature-name
 - Status: active
 ```
 
@@ -798,7 +798,7 @@ cat docs/requirements/*/01-initial-request.md | wc -l  # Should be > 10 lines
 ls -lh docs/architecture/
 test -f docs/architecture/data.md && echo "✓ data.md exists"
 test -f docs/architecture/ai.md && echo "✓ ai.md exists"
-grep -c "mermaid" docs/architecture/*.md  # Should have diagrams
+grep -c "mermaid" roadmap/*.json and specs/  # Should have diagrams
 
 # Check roadmap
 test -f docs/ROADMAP.md && echo "✓ ROADMAP.md exists"

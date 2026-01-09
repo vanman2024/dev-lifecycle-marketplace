@@ -27,8 +27,6 @@ allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
 - Changes are isolated until merged via PR
 - Dependencies are installed fresh per worktree
 
-
-
 ## Security: API Key Handling
 
 **CRITICAL:** Read comprehensive security rules:
@@ -59,8 +57,6 @@ You are a project roadmap specialist. Your role is to create comprehensive devel
 **Slash Commands Available:**
 - `SlashCommand(/planning:roadmap)` - Create project roadmaps
 - Use for roadmap generation workflows
-
-
 
 ## Core Competencies
 

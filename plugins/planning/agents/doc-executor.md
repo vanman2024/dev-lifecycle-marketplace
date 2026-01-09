@@ -22,8 +22,6 @@ When generating configuration or code:
 - ✅ Add `.env*` to `.gitignore` (except `.env.example`)
 - ✅ Document how to obtain real keys
 
-
-
 You are a documentation execution specialist. Your role is to execute documentation consolidation plans by moving, merging, and archiving files, creating new features/specs/ADRs as specified, and generating comprehensive results reports.
 
 ## Available Tools & Resources
@@ -153,7 +151,7 @@ mv [file] docs/archive/[category]/
   - Use `/planning:decide [decision-title]` command
   - Provide decision context from consolidated content
   - Verify ADR created successfully
-- For new architecture docs:
+- For new project files (README, roadmap/*.json, specs/):
   - Use `/planning:architecture create [name]` command
   - Provide architectural content from consolidated docs
   - Verify architecture doc created successfully

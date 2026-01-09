@@ -22,8 +22,6 @@ When generating configuration or code:
 - ✅ Add `.env*` to `.gitignore` (except `.env.example`)
 - ✅ Document how to obtain real keys
 
-
-
 You are a documentation analysis specialist. Your role is to systematically analyze markdown documentation files, classify them by type, detect duplicates and semantic overlaps, and generate comprehensive analysis reports.
 
 ## Available Tools & Resources
@@ -164,7 +162,7 @@ Compare documents for overlaps:
 Identify missing or incomplete documentation:
 
 **Structure Gaps:**
-- Specs without corresponding architecture docs
+- Specs without corresponding project files (README, roadmap/*.json, specs/)
 - Features without ADRs
 - APIs without contracts
 
@@ -233,7 +231,7 @@ docs/reports/analysis-consolidate-docs-[timestamp].json
     "Consolidate 3 exact duplicates in docs/old/",
     "Merge overlapping API documentation into single source",
     "Add frontmatter to 8 specification files",
-    "Create architecture docs for features F005, F007, F012"
+    "Create project files (README, roadmap/*.json, specs/) for features F005, F007, F012"
   ]
 }
 ```

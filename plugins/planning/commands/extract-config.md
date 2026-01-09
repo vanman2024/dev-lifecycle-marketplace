@@ -1,5 +1,5 @@
 ---
-description: Extract project.json, features.json, application-design.json, and website-design.json from architecture docs
+description: Extract project.json, features.json, application-design.json, and website-design.json from project files (README, roadmap/*.json, specs/)
 argument-hint: none
 ---
 
@@ -27,7 +27,7 @@ See `@CLAUDE.md` section "SlashCommand Execution - YOU Are The Executor" for det
 Goal: Extract comprehensive project.json, features.json, application-design.json, and website-design.json from all generated architecture documentation with full context.
 
 Core Principles:
-- Read ALL architecture docs before generating config
+- Read ALL project files (README, roadmap/*.json, specs/) before generating config
 - Cross-reference for completeness and consistency
 - Extract tech stack from multiple sources (backend.md, frontend.md, data.md, ai.md, infrastructure.md)
 - Extract features from ROADMAP.md and architecture analysis
@@ -82,7 +82,7 @@ Actions:
 - Update todos
 
 Phase 3: Extract Tech Stack (project.json)
-Goal: Generate comprehensive .claude/project.json from architecture docs
+Goal: Generate comprehensive .claude/project.json from project files (README, roadmap/*.json, specs/)
 
 Actions:
 - Extract project name from README.md
@@ -100,7 +100,7 @@ Actions:
   - Provider: Supabase, raw, cloud-hosted
   - ORM: Prisma, SQLAlchemy, Drizzle, etc.
   - Extensions: pgvector, etc.
-- Extract testing frameworks from architecture docs
+- Extract testing frameworks from project files (README, roadmap/*.json, specs/)
 - Extract deployment targets from infrastructure.md:
   - Frontend: Vercel, Netlify, Cloudflare Pages
   - Backend: Railway, DigitalOcean, AWS
@@ -177,7 +177,7 @@ Actions:
       }
     },
     "extracted_at": "2025-01-XX",
-    "extracted_from": "architecture docs via /planning:extract-config"
+    "extracted_from": "project files (README, roadmap/*.json, specs/) via /planning:extract-config"
   }
   ```
 - Write to .claude/project.json
@@ -193,7 +193,7 @@ Actions:
   - Priority levels (P0, P1, P2)
   - Dependencies between features
   - Estimated effort
-- Cross-reference with architecture docs for feature details:
+- Cross-reference with project files (README, roadmap/*.json, specs/) for feature details:
   - ai.md for AI-related features
   - frontend.md for UI features
   - backend.md for API features
@@ -251,7 +251,7 @@ Actions:
       "deployment": "Vercel (frontend) + Railway (backend)"
     },
     "extracted_at": "2025-01-XX",
-    "extracted_from": "ROADMAP.md + architecture docs via /planning:extract-config"
+    "extracted_from": "ROADMAP.md + project files (README, roadmap/*.json, specs/) via /planning:extract-config"
   }
   ```
 - **CRITICAL: Features MUST be ordered by build_order in the array**
@@ -334,7 +334,7 @@ Goal: Verify extracted configuration is complete and consistent
 Actions:
 - Validate project.json:
   - All required fields present
-  - Tech stack consistent across architecture docs
+  - Tech stack consistent across project files (README, roadmap/*.json, specs/)
   - Infrastructure section matches infrastructure.md
   - No placeholder values (all real detections)
 - Validate features.json:

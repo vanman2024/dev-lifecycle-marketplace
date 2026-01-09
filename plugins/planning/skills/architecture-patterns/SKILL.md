@@ -16,7 +16,7 @@ Provides comprehensive architecture design capabilities including mermaid diagra
 
 ### Create Architecture Documentation
 
-1. Use `bash scripts/create-architecture.sh <project-path> <architecture-type>` to scaffold architecture docs
+1. Use `bash scripts/create-architecture.sh <project-path> <architecture-type>` to scaffold project files (README, roadmap/*.json, specs/)
 2. Architecture types: `nextjs`, `fastapi`, `fullstack`, `microservices`, `rag`, `generic`
 3. Generates complete architecture overview with mermaid diagrams
 4. Creates directory structure: `docs/architecture/` with overview, components, data-flow, deployment
@@ -59,7 +59,7 @@ Provides comprehensive architecture design capabilities including mermaid diagra
 - **create-architecture.sh**: Scaffold complete architecture documentation with diagrams
 - **validate-mermaid.sh**: Validate mermaid diagram syntax and structure
 - **generate-diagrams.sh**: Create diagram template placeholders
-- **update-architecture.sh**: Add new sections to existing architecture docs
+- **update-architecture.sh**: Add new sections to existing project files (README, roadmap/*.json, specs/)
 - **export-diagrams.sh**: Extract mermaid diagrams to separate files
 
 ## Templates
@@ -177,7 +177,7 @@ Scripts perform these validations:
 ## Integration
 
 This skill is used by:
-- `planning:architecture` command - Generate architecture docs
+- `planning:architecture` command - Generate project files (README, roadmap/*.json, specs/)
 - `architecture-designer` agent - Create system designs
 - Documentation tools - Include architecture diagrams
 - Code generation - Architecture-aware scaffolding

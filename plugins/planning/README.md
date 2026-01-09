@@ -14,15 +14,15 @@ The planning plugin provides tools for creating specifications, designing archit
 
 When generating multiple feature specs in parallel **without coordination**, you get disasters:
 
-❌ **Agent 1** creates `users` table in `001-exam-system`
-❌ **Agent 2** creates `users` table in `002-voice-companion` (DUPLICATE!)
+❌ **Agent 1** creates `users` table in `001-feature-name`
+❌ **Agent 2** creates `users` table in `002-another-feature` (DUPLICATE!)
 ❌ **Agent 3** tries to build `003` before `001` exists (WRONG ORDER!)
 
 ### The Solution: Entity Ownership Tracking
 
 Our system uses **intelligent dependency analysis** to prevent duplicates and ensure correct build order:
 
-✅ **Agent 1** creates `users` table in `001-exam-system` (OWNS it)
+✅ **Agent 1** creates `users` table in `001-feature-name` (OWNS it)
 ✅ **Agent 2** references `users` via FK → `001.users.id` (no duplicate)
 ✅ **Build phases** ensure `001` completes before `002` starts
 
@@ -87,11 +87,11 @@ Our system uses **intelligent dependency analysis** to prevent duplicates and en
 specs/
 ├── 000-project-overview/
 │   └── README.md (build phases, dependency graph, critical path)
-├── 001-exam-system/        [Phase 1: OWNS User, Exam]
+├── 001-feature-name/        [Phase 1: OWNS User, Exam]
 │   ├── spec.md
 │   ├── plan.md
 │   └── tasks.md
-├── 002-voice-companion/    [Phase 2: REFERENCES User, Exam]
+├── 002-another-feature/    [Phase 2: REFERENCES User, Exam]
 │   ├── spec.md
 │   ├── plan.md
 │   └── tasks.md
@@ -116,13 +116,13 @@ Spawns N parallel agents, each creates spec/plan/tasks for one feature. Prevents
 #### `/planning:add-feature <feature-description>` ⭐ RECOMMENDED
 **Add feature with complete planning sync**
 
-Intelligently adds features with similarity checking to prevent duplicates. Updates roadmap, creates ADRs, updates architecture docs automatically.
+Intelligently adds features with similarity checking to prevent duplicates. Updates roadmap, creates ADRs, updates project files (README, roadmap/*.json, specs/) automatically.
 
 **Features:**
 - ✅ Similarity checking (prevents duplicate specs)
 - ✅ Updates ROADMAP.md automatically
 - ✅ Creates ADRs for architecture decisions
-- ✅ Updates architecture docs
+- ✅ Updates project files (README, roadmap/*.json, specs/)
 - ✅ Keeps all planning in sync
 
 **Example:**

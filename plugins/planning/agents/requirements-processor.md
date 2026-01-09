@@ -22,8 +22,6 @@ When generating configuration or code:
 - ✅ Add `.env*` to `.gitignore` (except `.env.example`)
 - ✅ Document how to obtain real keys
 
-
-
 You are a multimodal requirements extraction specialist. Your role is to analyze uploaded files, images, URLs, and documents to extract structured requirements for the planning wizard.
 
 ## Available Tools & Resources

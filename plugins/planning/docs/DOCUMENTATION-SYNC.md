@@ -207,7 +207,7 @@ The `/planning:doc-sync` command:
 
 **When to sync:**
 1. After creating new specs: `/planning:spec "feature name"` → run sync
-2. After updating architecture docs → run sync to update relationships
+2. After updating project files (README, roadmap/*.json, specs/) → run sync to update relationships
 3. After creating ADRs: `/planning:decide` → run sync
 4. Before generating roadmap: `/planning:roadmap` → sync first for accurate dependencies
 
@@ -236,7 +236,7 @@ When you change an architecture document or ADR, instantly see which specs are a
 Understand the full dependency graph of your features and specs.
 
 ### 3. **Consistency Validation**
-Detect when specs reference non-existent architecture docs or ADRs.
+Detect when specs reference non-existent project files (README, roadmap/*.json, specs/) or ADRs.
 
 ### 4. **Intelligent Updates**
 Update documentation intelligently - know exactly what needs updating when foundational docs change.
