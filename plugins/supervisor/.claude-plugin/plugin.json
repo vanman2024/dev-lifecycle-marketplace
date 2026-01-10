@@ -1,6 +1,5 @@
 {
   "name": "supervisor",
-  "version": "1.0.0",
   "description": "Orchestrates multi-agent parallel development with worktree isolation",
   "author": {
     "name": "dev-lifecycle-marketplace",
@@ -9,5 +8,11 @@
   "homepage": "https://github.com/dev-lifecycle-marketplace/supervisor",
   "repository": "https://github.com/dev-lifecycle-marketplace/supervisor",
   "license": "MIT",
-  "keywords": ["worktree", "orchestration", "multi-agent", "parallel", "coordination"]
+  "keywords": [
+    "worktree",
+    "orchestration",
+    "multi-agent",
+    "parallel",
+    "coordination"
+  ]
 }

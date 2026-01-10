@@ -1,6 +1,5 @@
 {
   "name": "quality",
-  "version": "1.0.0",
   "description": "Standardized testing framework with Newman/Postman API testing, DigitalOcean webhook testing, Playwright E2E, and comprehensive quality checks",
   "author": {
     "name": "dev-lifecycle-marketplace",

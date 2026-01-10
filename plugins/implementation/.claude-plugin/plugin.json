@@ -1,6 +1,5 @@
 {
   "name": "implementation",
-  "version": "1.0.0",
   "description": "Orchestrate execution of layered tasks by mapping to tech-specific commands",
   "author": {
     "name": "dev-lifecycle-marketplace",
@@ -9,5 +8,11 @@
   "homepage": "https://github.com/dev-lifecycle-marketplace/implementation",
   "repository": "https://github.com/dev-lifecycle-marketplace/implementation",
   "license": "MIT",
-  "keywords": ["implementation", "orchestration", "task-execution", "lifecycle", "automation"]
+  "keywords": [
+    "implementation",
+    "orchestration",
+    "task-execution",
+    "lifecycle",
+    "automation"
+  ]
 }

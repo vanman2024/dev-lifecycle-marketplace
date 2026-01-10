@@ -1,6 +1,5 @@
 {
   "name": "testing",
-  "version": "1.0.0",
   "description": "Automated testing with Newman/Postman for API testing and Playwright for E2E browser testing",
   "author": {
     "name": "dev-lifecycle-marketplace",

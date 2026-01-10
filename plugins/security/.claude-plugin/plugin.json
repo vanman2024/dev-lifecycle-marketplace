@@ -1,6 +1,5 @@
 {
   "name": "security",
-  "version": "1.0.0",
   "description": "Security infrastructure with git hooks, secret scanning, vulnerability detection, and OWASP best practices",
   "author": {
     "name": "dev-lifecycle-marketplace",

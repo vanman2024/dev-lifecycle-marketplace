@@ -1,6 +1,5 @@
 {
   "name": "versioning",
-  "version": "1.0.0",
   "description": "Semantic versioning automation with changelog generation and CI/CD integration",
   "author": {
     "name": "dev-lifecycle-marketplace",

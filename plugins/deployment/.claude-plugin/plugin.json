@@ -1,6 +1,5 @@
 {
   "name": "deployment",
-  "version": "1.1.0",
   "description": "Automated deployment orchestration with observability (Sentry MCP), canary deployments, feature flags, and auto-rollback - routes to FastMCP Cloud, DigitalOcean, Vercel, Netlify, Cloudflare Pages",
   "author": {
     "name": "dev-lifecycle-marketplace",

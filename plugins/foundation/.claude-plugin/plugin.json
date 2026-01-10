@@ -1,6 +1,5 @@
 {
   "name": "foundation",
-  "version": "1.0.0",
   "description": "MCP ecosystem management and minimal environment setup for dev-lifecycle-marketplace",
   "author": {
     "name": "dev-lifecycle-marketplace",
