@@ -16,7 +16,7 @@ allowed-tools: Read, Write, Bash(*), Grep, Glob, Skill, TodoWrite
    python plugins/planning/skills/doc-sync/scripts/register-worktree.py query --query "worktree for spec {number}"
    ```
 3. If Mem0 returns a worktree:
-   - Parse the path (e.g., `Path: ../RedAI-001`)
+   - Parse the path (e.g., `Path: ../project-worktree-001`)
    - Change to that directory: `cd {path}`
    - Verify branch: `git branch --show-current` (should show `spec-{number}`)
    - Continue your work in this isolated worktree
