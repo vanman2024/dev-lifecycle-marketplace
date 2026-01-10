@@ -1,6 +1,6 @@
 ---
 description: Add complete feature with roadmap, spec, ADR, and architecture updates
-argument-hint: <feature-description> OR --doc=<path/to/document.md>
+argument-hint: <feature-description> OR --plan=<name> OR --doc=<path>
 allowed-tools: Read, Bash, Task, TodoWrite, AskUserQuestion
 ---
 
@@ -14,17 +14,34 @@ Goal: Determine input mode and basic context
 Actions:
 - Create todo: "Add feature to project"
 - Parse $ARGUMENTS:
+  * If contains "--plan=": MODE = "plan", extract PLAN_NAME
+    - Look for plan in ~/.claude/plans/
+    - Try exact match: ~/.claude/plans/[PLAN_NAME].md
+    - Try partial match: ~/.claude/plans/*[PLAN_NAME]*.md
+    - Set DOC_PATH to found plan
   * If contains "--doc=": MODE = "document", extract DOC_PATH
+  * If empty or not provided: MODE = "auto-detect"
+    - Find most recent plan: !{bash ls -t ~/.claude/plans/*.md 2>/dev/null | head -5}
+    - If plan modified within last 2 hours, use AskUserQuestion:
+      "Use recent plan '[filename]' created [time ago]?" with options: Yes (use it), No (describe manually)
+    - If Yes: Set DOC_PATH to that plan
+    - If No: MODE = "text", prompt for description
   * Otherwise: MODE = "text", DESCRIPTION = $ARGUMENTS
-- If MODE = "document":
+- If MODE = "plan" or MODE = "document":
   * Validate file exists: !{bash test -f "$DOC_PATH" && echo "exists" || echo "missing"}
+  * If missing and MODE = "plan":
+    - Show available plans: !{bash ls -t ~/.claude/plans/*.md | head -10 | xargs -I{} basename {}}
+    - Error and exit
   * If missing: Error and exit
-- Display: "Mode: [MODE]"
+- Display: "Mode: [MODE], Source: [DOC_PATH or 'text input']"
 
 Phase 2: Launch Feature Analyzer
 Goal: Analyze context and determine what to create
 
 Actions:
+- If MODE = "plan" or MODE = "document":
+  * Read plan content: !{bash cat "$DOC_PATH"}
+  * Store as PLAN_CONTENT
 - Launch feature-analyzer agent:
 
 ```
@@ -36,6 +53,9 @@ Task(
   Input Mode: [MODE]
   Description: $ARGUMENTS
   Document Path: [DOC_PATH if applicable]
+
+  Plan Content (if from plan/document):
+  [PLAN_CONTENT]
 
   Read schema templates:
   - @~/.claude/plugins/marketplaces/dev-lifecycle-marketplace/plugins/foundation/skills/project-detection/templates/project-json-schema.json
