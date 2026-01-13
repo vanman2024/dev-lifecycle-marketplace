@@ -1,60 +1,38 @@
 ---
-description: Update existing feature across roadmap, specs, and project files (README, roadmap/*.json, specs/) when requirements change
-argument-hint: <spec-number> [changes] [--all]
+description: Update existing feature across roadmap, specs, and project files. Supports feature updates and enhancement management.
+argument-hint: <feature-id> [changes] [--add-enhancement] [--all]
+allowed-tools: Read, Write, Edit, Bash, Task, TodoWrite, AskUserQuestion
 ---
 
----
-🚨 **EXECUTION NOTICE FOR CLAUDE**
-
-When you invoke this command via SlashCommand, the system returns THESE INSTRUCTIONS below.
-
-**YOU are the executor. This is NOT an autonomous subprocess.**
-
-- ✅ The phases below are YOUR execution checklist
-- ✅ YOU must run each phase immediately using tools (Bash, Read, Write, Edit, TodoWrite)
-- ✅ Complete ALL phases before considering this command done
-- ❌ DON't wait for "the command to complete" - YOU complete it by executing the phases
-- ❌ DON't treat this as status output - it IS your instruction set
-
-**Immediately after SlashCommand returns, start executing Phase 0, then Phase 1, etc.**
-
-See `@CLAUDE.md` section "SlashCommand Execution - YOU Are The Executor" for detailed explanation.
-
----
 **Arguments**: $ARGUMENTS
 
-Goal: Update an existing feature across all planning documentation when requirements, priorities, or architecture changes.
+Goal: Update an existing feature across all planning documentation. Also handles adding/updating enhancements.
 
 Core Principles:
-- Identify scope of change: Requirements vs priority vs architecture
+- Identify scope: Requirements vs priority vs architecture vs enhancement
 - Cascade updates across all affected docs
-- Create new ADR if architecture decision changed
-- Maintain consistency across roadmap, specs, and architecture
+- Support enhancement management within features
+- Maintain consistency across roadmap, specs, enhancements.json
 
 Phase 1: Discovery
 Goal: Identify feature and understand what needs to change
 
 Actions:
-- Create todo list tracking workflow phases using TodoWrite
+- Create todo list using TodoWrite
 - Parse $ARGUMENTS for:
-  - Spec number or --all flag
+  - Feature ID (F###) or --all flag
   - Change description
-  - Flags: --all (update all features with same change)
-- If --all flag present:
-  - Display: "🔄 Updating ALL features with change: [changes]"
-  - List all features: !{bash find specs/phase-* -maxdepth 1 -type d -name "F[0-9][0-9][0-9]-*" 2>/dev/null || ls -d specs/features/[0-9][0-9][0-9]-* 2>/dev/null}
-  - Confirm with AskUserQuestion: "Update all [count] features?"
-- Else if spec number not provided, use AskUserQuestion to ask:
-  - Which feature needs updating? (spec number or name)
-- Validate feature(s) exist (check phase-nested first, then legacy):
-  !{bash find specs/phase-* -type d -name "F$SPEC_NUMBER-*" 2>/dev/null | head -1 || find specs/features -name "$SPEC_NUMBER-*" -type d 2>/dev/null | head -1}
-- If not found, display error and list available features:
-  !{bash find specs/phase-* -maxdepth 1 -type d -name "F[0-9][0-9][0-9]-*" 2>/dev/null || ls -d specs/features/[0-9][0-9][0-9]-* 2>/dev/null}
-- Load existing feature files (from discovered path):
-  - Read spec: [SPEC_DIR]/spec.md
-  - Read tasks: [SPEC_DIR]/tasks.md
-- Find feature in ROADMAP.md:
-  !{bash grep -n "$SPEC_NUMBER" docs/ROADMAP.md}
+  - Flags: --add-enhancement, --all
+- If --add-enhancement flag:
+  - Redirect to: /planning:add-enhancement [FEATURE_ID] "[DESCRIPTION]"
+  - Exit
+- If --all flag:
+  - Display: "Updating ALL features with change: [changes]"
+  - List all features and confirm
+- Validate feature exists:
+  !{bash find specs/features -type d -name "${FEATURE_ID}-*" 2>/dev/null | head -1}
+- Load existing feature files: spec.md, tasks.md
+- Check for enhancements: !{bash ls specs/features/*/[FEATURE_ID]-*/enhancements/ 2>/dev/null}
 
 Phase 2: Determine Change Scope
 Goal: Understand what changed and what needs updating
@@ -63,67 +41,100 @@ Actions:
 - Use AskUserQuestion to determine change type:
   - What changed? (select all that apply)
     - Requirements/scope changed
-    - Priority changed (P0 ↔ P1 ↔ P2)
+    - Priority changed
     - Timeline/phase changed
     - Architecture/approach changed
     - Dependencies changed
-  - Describe the changes:
+    - Enhancement updates
 - For each change type, determine affected docs:
-  - Requirements → spec.md, tasks.md
-  - Priority → spec.md, ROADMAP.md
-  - Timeline → ROADMAP.md, tasks.md
-  - Architecture → spec.md, docs/architecture/*, new ADR
-  - Dependencies → spec.md, ROADMAP.md
-- Ask: Does this change require a new architecture decision? (Yes/No)
+  - Requirements -> spec.md, tasks.md
+  - Priority -> spec.md, roadmap/, features.json
+  - Enhancement -> enhancements/, enhancements.json
+- Ask: Does this change require a new ADR?
 
 Phase 3: Update Spec
 Goal: Update feature specification
 
 Actions:
+- If spec changes needed:
 
-Task(description="Update spec", subagent_type="planning:feature-spec-writer", prompt="Update spec [NUMBER]-[NAME] with changes: [from Phase 2]. Read specs/features/[NUMBER]-*/spec.md and tasks.md. Apply changes (requirements/priority/timeline/architecture/dependencies). Maintain minimal format (100-150 lines). Preserve architecture references.")
+Task(description="Update spec", subagent_type="planning:feature-spec-writer",
+  prompt="Update spec [FEATURE_ID]-[NAME] with changes: [from Phase 2].
+  Read and update spec.md, tasks.md. Maintain format and architecture references.")
 
-Update todos
+- Update todos
 
-Phase 4: Update Roadmap
-Goal: Update roadmap
+Phase 4: Update Enhancements (if applicable)
+Goal: Update enhancements for this feature
+
+Actions:
+- If enhancement updates needed:
+  - List existing enhancements: !{bash ls -d specs/features/*/[FEATURE_ID]-*/enhancements/E* 2>/dev/null}
+  - For each enhancement to update:
+    - Read enhancement spec.md and tasks.md
+    - Apply changes
+    - Write updated files
+  - Update roadmap/enhancements.json:
+    - Read file
+    - Find enhancement entries for this feature
+    - Update status, tasks_total, tasks_completed
+    - Write file
+  - Update features.json enhancements array
+- Update todos
+
+Phase 5: Update Roadmap
+Goal: Update roadmap files
 
 Actions:
 - If Priority/Timeline/Dependencies changed:
-  Task(description="Update roadmap", subagent_type="planning:roadmap-planner", prompt="Update docs/ROADMAP.md for spec [NUMBER]: Priority [old→new], Timeline [old→new], Dependencies [old→new], Phase [old→new]. Read ROADMAP.md, find feature, apply changes, update gantt if needed, recalculate totals.")
+
+Task(description="Update roadmap", subagent_type="planning:roadmap-planner",
+  prompt="Update roadmap for [FEATURE_ID]: Priority [old->new], Timeline [old->new].
+  Update docs/ROADMAP.md and roadmap/features.json.")
+
 - Update todos
 
-Phase 5: Create ADR (if needed)
+Phase 6: Create ADR (if needed)
 Goal: Document decision change
 
 Actions:
 - If architecture decision changed:
-  Task(description="Create ADR", subagent_type="planning:decision-documenter", prompt="Create ADR for spec [NUMBER] decision change: [from Phase 2]. Document old→new approach, rationale, impact, consequences. Reference previous ADR if superseding. Create docs/adr/[NUMBER]-[slug].md.")
+
+Task(description="Create ADR", subagent_type="planning:decision-documenter",
+  prompt="Create ADR for [FEATURE_ID] decision change: [from Phase 2].
+  Document old->new approach, rationale, impact.")
+
 - Update todos
 
-Phase 6: Update Architecture (if needed)
-Goal: Update project files (README, roadmap/*.json, specs/)
+Phase 7: Update Architecture (if needed)
+Goal: Update architecture documentation
 
 Actions:
 - If architecture approach changed:
-  Task(description="Update architecture", subagent_type="planning:architecture-designer", prompt="Update docs/architecture/ for spec [NUMBER] changes: [from Phase 2]. Read affected files, update sections, update diagrams, cross-reference spec and ADR.")
+
+Task(description="Update architecture", subagent_type="planning:architecture-designer",
+  prompt="Update docs/architecture/ for [FEATURE_ID] changes.")
+
 - Update todos
 
-Phase 7: Update Mem0
-Goal: Update stored relationships
+Phase 8: Sync JSON Files
+Goal: Ensure all JSON files are consistent
 
 Actions:
-- Run doc-sync: !{bash python plugins/planning/skills/doc-sync/scripts/update-relationships.py --spec [NUMBER]}
-- Update todos
+- Read and update features.json
+- Read and update enhancements.json (if exists)
+- Recalculate task counts
+- Update status based on progress
+- Write updated files
 
-Phase 8: Summary
+Phase 9: Summary
 Goal: Report results
 
 Actions:
 - Mark all todos complete
 - Display:
-  - Feature: [NUMBER]-[NAME]
-  - Changes: Spec (updated), Roadmap (if changed), ADR (if created), Architecture (if updated)
-  - Before→After: Priority [old→new], Timeline [old→new], Dependencies [old→new]
-- Show changes: !{bash git status --short specs/features/[NUMBER]-* docs/ROADMAP.md docs/adr/ docs/architecture/ 2>/dev/null}
-- Next steps: Review (git diff), sync code (/iterate:sync if needed), commit
+  - Feature: [FEATURE_ID]-[NAME]
+  - Changes: Spec, Roadmap, Enhancements, ADR, Architecture
+  - Enhancements: [count] total, [updated] updated
+- Show changes: !{bash git status --short specs/ roadmap/ docs/}
+- Next steps: Review changes, commit when ready

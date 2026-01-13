@@ -1,0 +1,30 @@
+{
+  "$schema": "roadmap-worktree-config-schema-v1",
+  "_template_description": "Worktree strategy and port configuration",
+  "strategy": "individual",
+  "description": "Each feature/infra gets its own worktree",
+  "infrastructure_worktrees": {},
+  "feature_worktrees": {
+    "strategy": "individual",
+    "description": "Each feature gets its own worktree (F001, F002, etc.)"
+  },
+  "port_scheme": {
+    "main": {
+      "frontend": 3000,
+      "backend": 8000
+    },
+    "features": {
+      "offset": "base + feature_number",
+      "example": "F001 -> FE:3001, BE:8001"
+    },
+    "infrastructure": {
+      "offset": "base + 1000 + infra_number",
+      "example": "I001 -> FE:4001, BE:9001"
+    }
+  },
+  "metadata": {
+    "created": "2026-01-01",
+    "project": "project-name",
+    "worktree_dir": "../project-name-worktrees"
+  }
+}

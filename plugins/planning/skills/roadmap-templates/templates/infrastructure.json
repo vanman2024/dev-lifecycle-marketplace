@@ -1,0 +1,48 @@
+{
+  "$schema": "roadmap-infrastructure-schema-v1",
+  "_template_description": "Infrastructure component tracking",
+  "infrastructure": [
+    {
+      "id": "I001",
+      "name": "Example Infrastructure",
+      "type": "database",
+      "provider": "PostgreSQL",
+      "status": "planned",
+      "phase": 1,
+      "description": "Description of infrastructure component",
+      "features": [
+        "Feature 1",
+        "Feature 2"
+      ],
+      "dependencies": [],
+      "blocks": [],
+      "architecture_refs": [],
+      "priority": "Critical",
+      "created_at": "2026-01-01",
+      "last_updated": "2026-01-01",
+      "implementation": 0,
+      "feature_links": [],
+      "tasks_total": 0,
+      "tasks_completed": 0,
+      "spec_path": "specs/infrastructure/phase-1/I001-example-infra"
+    }
+  ],
+  "types": [
+    "database",
+    "caching",
+    "messaging",
+    "real_time",
+    "process_management",
+    "version_control",
+    "storage",
+    "authentication",
+    "notifications",
+    "monitoring"
+  ],
+  "metadata": {
+    "total_infrastructure": 1,
+    "completed_infrastructure": 0,
+    "in_progress_infrastructure": 0,
+    "planned_infrastructure": 1
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "$schema": "roadmap-project-schema-v1",
+  "_template_description": "Project metadata and configuration",
+  "name": "Project Name",
+  "description": "Project description",
+  "version": "0.1.0",
+  "frameworks": {
+    "backend": {
+      "primary": "Bun",
+      "version": "1.0+",
+      "language": "TypeScript",
+      "language_version": "5.0+",
+      "server": "Bun HTTP Server",
+      "patterns": []
+    },
+    "frontend": {
+      "primary": "SvelteKit",
+      "version": "2.0+",
+      "language": "TypeScript",
+      "styling": "Tailwind CSS",
+      "patterns": []
+    }
+  },
+  "languages": ["TypeScript"],
+  "ai_stack": {
+    "sdks": [],
+    "models": [],
+    "orchestration": null
+  },
+  "databases": [],
+  "infrastructure": {
+    "hosting": null,
+    "ci_cd": null,
+    "monitoring": null
+  },
+  "paths": {
+    "specs": "specs/",
+    "roadmap": "roadmap/",
+    "docs": "docs/",
+    "backend": "backend/",
+    "frontend": "frontend/"
+  },
+  "metadata": {
+    "created_at": "2026-01-01",
+    "last_updated": "2026-01-01"
+  }
+}

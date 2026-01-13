@@ -1,0 +1,28 @@
+{
+  "$schema": "roadmap-worktree-history-schema-v1",
+  "_template_description": "Worktree lifecycle event history",
+  "worktrees": {},
+  "events": [
+    {
+      "worktree_id": "example",
+      "event": "created",
+      "timestamp": "2026-01-01T00:00:00Z",
+      "metadata": {}
+    }
+  ],
+  "event_types": [
+    "created",
+    "started",
+    "paused",
+    "resumed",
+    "completed",
+    "deleted",
+    "merged",
+    "abandoned"
+  ],
+  "metadata": {
+    "total_worktrees_created": 0,
+    "active_worktrees": 0,
+    "completed_worktrees": 0
+  }
+}

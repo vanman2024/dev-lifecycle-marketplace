@@ -1,0 +1,26 @@
+{
+  "$schema": "roadmap-sprints-schema-v1",
+  "_template_description": "Sprint planning and execution tracking",
+  "version": "1.0",
+  "sprints": [
+    {
+      "id": "sprint-foundation",
+      "name": "Foundation Sprint",
+      "description": "Initial infrastructure and core features",
+      "scope": ["I001", "F001"],
+      "status": "pending",
+      "depends_on": [],
+      "concurrency": 2,
+      "started_at": null,
+      "completed_at": null,
+      "worktrees": []
+    }
+  ],
+  "active_sprint": null,
+  "metadata": {
+    "total_sprints": 1,
+    "completed_sprints": 0,
+    "active_sprints": 0,
+    "pending_sprints": 1
+  }
+}

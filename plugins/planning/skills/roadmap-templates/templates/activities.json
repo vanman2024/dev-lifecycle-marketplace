@@ -1,0 +1,33 @@
+{
+  "$schema": "roadmap-activities-schema-v1",
+  "_template_description": "Activity log for project events",
+  "activities": [
+    {
+      "id": "act-001",
+      "type": "project_init",
+      "description": "Project initialized",
+      "timestamp": "2026-01-01T00:00:00Z",
+      "metadata": {}
+    }
+  ],
+  "types": [
+    "project_init",
+    "feature_created",
+    "feature_started",
+    "feature_completed",
+    "infra_created",
+    "infra_completed",
+    "sprint_started",
+    "sprint_completed",
+    "worktree_created",
+    "worktree_deleted",
+    "commit",
+    "pr_created",
+    "pr_merged",
+    "deployment"
+  ],
+  "metadata": {
+    "total_activities": 1,
+    "last_activity": "2026-01-01T00:00:00Z"
+  }
+}

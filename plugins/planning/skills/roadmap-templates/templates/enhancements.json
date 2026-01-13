@@ -1,0 +1,28 @@
+{
+  "$schema": "roadmap-enhancements-schema-v1",
+  "_template_description": "Feature enhancement/sub-spec tracking",
+  "enhancements": [
+    {
+      "id": "E001",
+      "parent_feature": "F001",
+      "name": "Example Enhancement",
+      "description": "Enhancement to parent feature",
+      "status": "planned",
+      "priority": "P2",
+      "tasks_total": 0,
+      "tasks_completed": 0,
+      "created_at": "2026-01-01",
+      "last_updated": "2026-01-01",
+      "spec_path": "specs/features/phase-1/F001-example-feature/enhancements/E001"
+    }
+  ],
+  "by_feature": {
+    "F001": ["E001"]
+  },
+  "metadata": {
+    "total_enhancements": 1,
+    "completed_enhancements": 0,
+    "in_progress_enhancements": 0,
+    "planned_enhancements": 1
+  }
+}
