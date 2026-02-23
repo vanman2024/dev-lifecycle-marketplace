@@ -24,11 +24,21 @@ This skill provides tools to run Newman (Postman CLI) tests and analyze the resu
    - Parse JSON output with: `scripts/analyze-newman-results.py output.json`
    - Extract: Pass/fail status, response times, error messages, assertions
 
+4. **Run in CI/CD**
+   - Use `scripts/run-newman-ci.sh <collection.json>` for CI-optimized execution
+   - Produces JUnit XML for CI reporting + JSON for analysis
+   - Uses GitHub Actions annotation format for inline error reporting
+
 ### Available Scripts
 
 - **`scripts/run-newman.sh`** - Run Newman with standard options
+- **`scripts/run-newman-ci.sh`** - CI-optimized runner with JUnit output
 - **`scripts/analyze-newman-results.py`** - Parse Newman JSON output
 - **`scripts/validate-collection.sh`** - Validate Postman collection structure
+
+### Advanced Patterns
+
+For OpenAPI-to-Newman pipeline, auth injection, and collection management, see the `api-contract-testing` skill which builds on this runner.
 
 ## Examples
 
@@ -47,6 +57,16 @@ This skill provides tools to run Newman (Postman CLI) tests and analyze the resu
 ./scripts/validate-collection.sh my-collection.json
 ```
 
+**Example 3: Run in CI**
+```bash
+# CI-optimized run with JUnit output
+./scripts/run-newman-ci.sh my-api-tests.json
+
+# Results in:
+# test-results/api-contract/newman-results.json  (JSON)
+# test-results/api-contract/newman-junit.xml     (JUnit XML)
+```
+
 ## Requirements
 
 - Newman installed globally: `npm install -g newman`
@@ -55,7 +75,7 @@ This skill provides tools to run Newman (Postman CLI) tests and analyze the resu
 
 ## Success Criteria
 
-- ✅ Newman tests run successfully
-- ✅ Results parsed and analyzed
-- ✅ Pass/fail status clearly reported
-- ✅ Error details extracted for failures
+- Newman tests run successfully
+- Results parsed and analyzed
+- Pass/fail status clearly reported
+- Error details extracted for failures

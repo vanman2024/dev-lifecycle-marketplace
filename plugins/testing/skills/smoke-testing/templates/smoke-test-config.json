@@ -1,0 +1,21 @@
+{
+  "base_url": "http://localhost:3000",
+  "health_endpoint": "/api/health",
+  "timeout_seconds": 10,
+  "critical_paths": [
+    { "path": "/", "expected_status": 200, "description": "Homepage" },
+    { "path": "/login", "expected_status": 200, "description": "Login page" },
+    { "path": "/api/health", "expected_status": 200, "expected_body": "{\"status\":\"ok\"}", "description": "Health check" }
+  ],
+  "environments": {
+    "development": {
+      "base_url": "http://localhost:3000"
+    },
+    "staging": {
+      "base_url": "https://staging.example.com"
+    },
+    "production": {
+      "base_url": "https://example.com"
+    }
+  }
+}

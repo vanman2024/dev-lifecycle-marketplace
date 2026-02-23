@@ -73,14 +73,31 @@
   },
 
   "testing": {
-    "backend": {
-      "framework": "{pytest | jest | etc}",
-      "location": "{path}"
+    "unit": {
+      "framework": "{vitest | jest | pytest | go-test | cargo-test | etc}",
+      "config": "{vitest.config.ts | jest.config.js | pyproject.toml | etc}",
+      "command": "{npm run test | pytest | go test ./... | cargo test}"
     },
-    "frontend": {
-      "framework": "{jest | vitest | etc}",
-      "e2e": "{playwright | cypress | etc}"
-    }
+    "api_contract": {
+      "framework": "{newman | supertest | httpx | null}",
+      "collections": [],
+      "auth_strategy": "{none | supabase_cookie | clerk_jwt | auth0_token | bearer_token | api_key}"
+    },
+    "e2e": {
+      "framework": "{playwright | cypress | null}",
+      "config": "{playwright.config.ts | cypress.config.ts | null}"
+    },
+    "smoke": {
+      "health_endpoint": "{/api/health | null}",
+      "critical_paths": []
+    },
+    "coverage": {
+      "tool": "{v8 | istanbul | coverage.py | go-cover | tarpaulin | null}",
+      "threshold": 80
+    },
+    "ci_workflows": [],
+    "ai_detected": false,
+    "llm_evals_plugin": "llm-evals"
   },
 
   "deployment": {

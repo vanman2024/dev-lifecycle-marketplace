@@ -1,0 +1,55 @@
+{
+  "version": 1.0,
+  "tests": {
+    "contractTests": [
+      {
+        "openApiOperation": "*::**",
+        "statusSuccess": {
+          "enabled": true
+        },
+        "responseTime": {
+          "enabled": true,
+          "maxMs": 2000
+        },
+        "contentType": {
+          "enabled": true
+        },
+        "jsonBody": {
+          "enabled": true
+        },
+        "schemaValidation": {
+          "enabled": true
+        }
+      }
+    ],
+    "variationTests": [
+      {
+        "openApiOperation": "*::**",
+        "openApiResponse": "400",
+        "overwrites": [
+          {
+            "key": "body",
+            "value": {},
+            "overwrite": true
+          }
+        ]
+      }
+    ]
+  },
+  "assignVariables": [
+    {
+      "openApiOperation": "POST::**",
+      "collectionVariables": [
+        {
+          "responseBodyProp": "id",
+          "name": "created_id"
+        }
+      ]
+    }
+  ],
+  "globals": {
+    "stripResponseExamples": false,
+    "variableCasing": "snakeCase",
+    "separatorSymbol": "_"
+  }
+}

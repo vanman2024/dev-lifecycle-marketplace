@@ -1,0 +1,53 @@
+name: API Contract Tests
+
+on:
+  pull_request:
+    paths:
+      - 'src/app/api/**'
+      - '*.postman_collection.json'
+      - 'openapi.*'
+
+jobs:
+  api-contract-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Newman
+        run: npm install -g newman newman-reporter-junitfull
+
+      - name: Start application
+        run: |
+          npm install
+          npm run build
+          npm start &
+          npx wait-on http://localhost:3000/api/health --timeout 60000
+
+      - name: Run API contract tests
+        run: |
+          bash plugins/testing/skills/api-contract-testing/scripts/run-newman-ci.sh \
+            api-tests.postman_collection.json
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+          TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-contract-test-results
+          path: test-results/api-contract/
+
+      - name: Publish JUnit report
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: API Contract Tests
+          path: test-results/api-contract/newman-junit.xml
+          reporter: java-junit

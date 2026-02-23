@@ -1,0 +1,60 @@
+{
+  "info": {
+    "name": "API Contract Tests (with Auth)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "API contract tests with authentication pre-request script"
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Auth strategy: Modify based on your auth provider",
+          "const authToken = pm.environment.get('AUTH_TOKEN');",
+          "if (authToken) {",
+          "  pm.request.headers.add({",
+          "    key: 'Authorization',",
+          "    value: 'Bearer ' + authToken",
+          "  });",
+          "}"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{base_url}}/api/health",
+          "host": ["{{base_url}}"],
+          "path": ["api", "health"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+              "pm.test('Returns JSON', () => pm.response.to.be.json);",
+              "pm.test('Has status ok', () => {",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.status).to.eql('ok');",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

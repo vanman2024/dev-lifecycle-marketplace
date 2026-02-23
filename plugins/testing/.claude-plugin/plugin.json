@@ -1,6 +1,6 @@
 {
   "name": "testing",
-  "description": "Automated testing with Newman/Postman for API testing and Playwright for E2E browser testing",
+  "description": "Comprehensive testing wizard: auto-detection, generation, and execution across unit, smoke, API contract, E2E testing for any tech stack",
   "author": {
     "name": "dev-lifecycle-marketplace",
     "email": "noreply@dev-lifecycle-marketplace.dev"
@@ -10,6 +10,14 @@
   "license": "MIT",
   "keywords": [
     "testing",
+    "unit-testing",
+    "smoke-testing",
+    "vitest",
+    "jest",
+    "pytest",
+    "ci-cd",
+    "test-generation",
+    "test-detection",
     "newman",
     "postman",
     "playwright",

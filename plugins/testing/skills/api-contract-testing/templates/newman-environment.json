@@ -1,0 +1,49 @@
+{
+  "id": "api-contract-test-env",
+  "name": "API Contract Test Environment",
+  "values": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "SUPABASE_URL",
+      "value": "your_supabase_url_here",
+      "type": "secret",
+      "enabled": true
+    },
+    {
+      "key": "SUPABASE_ANON_KEY",
+      "value": "your_supabase_anon_key_here",
+      "type": "secret",
+      "enabled": true
+    },
+    {
+      "key": "AUTH_TOKEN",
+      "value": "",
+      "type": "secret",
+      "enabled": true
+    },
+    {
+      "key": "API_KEY",
+      "value": "your_api_key_here",
+      "type": "secret",
+      "enabled": true
+    },
+    {
+      "key": "TEST_USER_EMAIL",
+      "value": "test@example.com",
+      "type": "default",
+      "enabled": true
+    },
+    {
+      "key": "TEST_USER_PASSWORD",
+      "value": "your_test_password_here",
+      "type": "secret",
+      "enabled": true
+    }
+  ],
+  "_postman_variable_scope": "environment"
+}

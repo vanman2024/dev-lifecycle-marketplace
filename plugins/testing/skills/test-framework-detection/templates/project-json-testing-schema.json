@@ -1,0 +1,111 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Testing Configuration Schema",
+  "description": "Schema for the 'testing' key in .claude/project.json",
+  "type": "object",
+  "properties": {
+    "unit": {
+      "type": "object",
+      "description": "Unit test framework configuration",
+      "properties": {
+        "framework": {
+          "type": ["string", "null"],
+          "enum": ["vitest", "jest", "mocha", "ava", "pytest", "unittest", "nose2", "go-test", "cargo-test", null],
+          "description": "Detected unit test framework"
+        },
+        "config": {
+          "type": ["string", "null"],
+          "description": "Path to test configuration file"
+        },
+        "command": {
+          "type": ["string", "null"],
+          "description": "Command to run unit tests"
+        }
+      }
+    },
+    "api_contract": {
+      "type": "object",
+      "description": "API contract testing configuration",
+      "properties": {
+        "framework": {
+          "type": ["string", "null"],
+          "enum": ["newman", "supertest", "httpx", null],
+          "description": "API testing framework"
+        },
+        "collections": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Paths to Postman collection files"
+        },
+        "auth_strategy": {
+          "type": "string",
+          "enum": ["none", "supabase_cookie", "clerk_jwt", "auth0_token", "bearer_token", "api_key"],
+          "description": "Authentication strategy for API tests"
+        }
+      }
+    },
+    "e2e": {
+      "type": "object",
+      "description": "End-to-end test framework configuration",
+      "properties": {
+        "framework": {
+          "type": ["string", "null"],
+          "enum": ["playwright", "cypress", null],
+          "description": "E2E testing framework"
+        },
+        "config": {
+          "type": ["string", "null"],
+          "description": "Path to E2E configuration file"
+        }
+      }
+    },
+    "smoke": {
+      "type": "object",
+      "description": "Smoke test configuration",
+      "properties": {
+        "health_endpoint": {
+          "type": ["string", "null"],
+          "description": "Health check endpoint path"
+        },
+        "critical_paths": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Critical URL paths to verify"
+        }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "description": "Code coverage configuration",
+      "properties": {
+        "tool": {
+          "type": ["string", "null"],
+          "enum": ["v8", "istanbul", "coverage.py", "go-cover", "tarpaulin", null],
+          "description": "Coverage tool"
+        },
+        "threshold": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "default": 80,
+          "description": "Minimum coverage percentage"
+        }
+      }
+    },
+    "ci_workflows": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Paths to CI workflow files that run tests"
+    },
+    "ai_detected": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether AI/ML frameworks are detected in the project"
+    },
+    "llm_evals_plugin": {
+      "type": "string",
+      "default": "llm-evals",
+      "description": "Plugin to use for LLM evaluation testing"
+    }
+  }
+}
